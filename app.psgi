@@ -79,7 +79,91 @@ use base qw(Tatsumaki::Handler);
 
 sub get {
     my($self, $channel) = @_;
-    $self->render('chat.html');
+    $self->render('epoch-teacher.html');
+}
+
+package ContentRepoHandler;
+use base qw(Tatsumaki::Handler);
+use JSON;
+use Plack::App::Directory;
+use Plack::Request;
+use Plack::Util;
+use URI::Escape;
+# use Plack::App::File;
+
+#
+# JSON Format
+#
+# {"ContentSet":
+#	"totalResultsAvailable":"<INT>",
+#	"totalResultsReturned":"<INT>",
+# 	"Content":[
+#	{"Title":"<STRING>",
+# 	 "Url":"<STRING>",
+# 	 "Tags":"<CSV>",
+#	 "MimeType":"<STRING>",
+#	 "SourceURI":"<STRING">,
+#	 "License":"<STRING>",
+#	}
+#	]
+# "}
+#
+sub get {
+	my $self = shift;
+	my $pathinfo = $self->request->path_info;
+	my $output = $self->request->param("output");
+	my @contentlist = ();
+	my $contentliststr = '';
+	
+	if ($output eq 'json') {
+		$self->response->content_type('application/json');
+	} else {
+		$self->response->content_type('text/plain');
+	}
+	opendir(DIR, "./contentrepo");
+	# my @files = grep(/\.jpg$/,readdir(DIR));
+	while (my $file = readdir(DIR)) {
+		# Use a regular expression to ignore files beginning with a period
+		next if ($file =~ m/^\./);
+		push(@contentlist, $pathinfo . "/" . uri_escape("$file"));
+		# $self->write($pathinfo . "/" . uri_escape("$file") . "\n");
+	}
+	closedir(DIR);
+	
+	foreach my $index (1 .. $#contentlist) {
+		my $sep = ',';
+		if ($index eq @contentlist - 1) {
+			$sep = '';
+		}
+		$contentliststr = $contentliststr . $contentlist[$index] . $sep;
+	}
+	my $contentresults = {
+		totalResults => @contentlist . "",
+		contents => $contentliststr,
+	};
+	
+	my $json_out = to_json($contentresults);
+	
+	
+	$self->write($json_out . "\n");
+	$self->finish;
+	#if ($path_info eq '/foo.json') {
+	#	my $body = JSON::encode_json({
+	#		hello => 'world',
+	#	});
+	#	return [ 200, ['Content-Type', 'application/json'], [ $body ] ];
+	#}
+	# return [ 404, ['Content-Type', 'text/html'], ['Not Found']];
+
+	
+	# my $app = Plack::App::Directory->new({root => "$ENV{HOME}/Sites"})->to_app;
+	# my $self = shift;
+	# $self->(Plack::App::Directory->new(root => "$ENV{HOME}/Sites"));
+	# my $self = shift;
+	# $self->response->content_type('text/plain');
+	# Plack::App::Directory->new(root => "$ENV{HOME}/Sites");
+    # $self->render(Plack::App::Directory->new(root => "$ENV{HOME}/Sites"));
+	# Plack::App::File->new(root => "$ENV{HOME}/Sites");
 }
 
 package main;
@@ -91,9 +175,16 @@ my $app = Tatsumaki::Application->new([
     "/chat/($chat_re)/mxhrpoll" => 'ChatMultipartPollHandler',
     "/chat/($chat_re)/post" => 'ChatPostHandler',
     "/chat/($chat_re)" => 'ChatRoomHandler',
+	"/contentrepo" => 'ContentRepoHandler',
 ]);
 
 $app->template_path(dirname(__FILE__) . "/templates");
 $app->static_path(dirname(__FILE__) . "/static");
+
+use Plack::Builder;
+builder {
+    enable "JSONP";
+    $app;
+};
 
 return $app;
