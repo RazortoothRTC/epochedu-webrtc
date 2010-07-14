@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 use strict;
 use warnings;
 use Tatsumaki;
@@ -82,7 +84,7 @@ sub get {
     $self->render('epoch-teacher.html');
 }
 
-package ContentRepoHandler;
+package ContentRepoDBHandler;
 use base qw(Tatsumaki::Handler);
 use JSON;
 use Plack::App::Directory;
@@ -111,6 +113,7 @@ use URI::Escape;
 sub get {
 	my $self = shift;
 	my $pathinfo = $self->request->path_info;
+	my $serverhost = $self->request->headers->header('Host');
 	my $output = $self->request->param("output");
 	my @contentlist = ();
 	my $contentliststr = '';
@@ -121,11 +124,11 @@ sub get {
 		$self->response->content_type('text/plain');
 	}
 	opendir(DIR, "./contentrepo");
-	# my @files = grep(/\.jpg$/,readdir(DIR));
+
 	while (my $file = readdir(DIR)) {
 		# Use a regular expression to ignore files beginning with a period
 		next if ($file =~ m/^\./);
-		push(@contentlist, $pathinfo . "/" . uri_escape("$file"));
+		push(@contentlist, 'http://' . $serverhost . "/" . uri_escape("$file"));
 		# $self->write($pathinfo . "/" . uri_escape("$file") . "\n");
 	}
 	closedir(DIR);
@@ -175,16 +178,16 @@ my $app = Tatsumaki::Application->new([
     "/chat/($chat_re)/mxhrpoll" => 'ChatMultipartPollHandler',
     "/chat/($chat_re)/post" => 'ChatPostHandler',
     "/chat/($chat_re)" => 'ChatRoomHandler',
-	"/contentrepo" => 'ContentRepoHandler',
+	"/crdb" => 'ContentRepoDBHandler',
 ]);
 
 $app->template_path(dirname(__FILE__) . "/templates");
 $app->static_path(dirname(__FILE__) . "/static");
 
-use Plack::Builder;
-builder {
-    enable "JSONP";
-    $app;
-};
+if (__FILE__ eq $0) {
+    require Tatsumaki::Server;
+    Tatsumaki::Server->new(port => 5000)->run($app);
+} else {
+    return $app;
+}
 
-return $app;
