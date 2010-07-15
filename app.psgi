@@ -5,8 +5,12 @@ use warnings;
 use Tatsumaki;
 use Tatsumaki::Error;
 use Tatsumaki::Application;
+use Tatsumaki::HTTPClient;
 use Time::HiRes;
 
+#
+# Epoch EDU 
+#
 package ChatPollHandler;
 use base qw(Tatsumaki::Handler);
 __PACKAGE__->asynchronous(1);
@@ -81,6 +85,63 @@ use base qw(Tatsumaki::Handler);
 
 sub get {
     my($self, $channel) = @_;
+    $self->render('epoch-student.html');
+}
+
+package StartSessionHandler;
+use base qw(Tatsumaki::Handler);
+use Digest::MD5 qw(md5_hex);
+
+__PACKAGE__->asynchronous(1);
+
+sub get {
+	my($self, $channel) = @_;
+	my $ident = $self->request->param("ident");
+	my $serverhost = $self->request->headers->header('Host');
+	my $client = Tatsumaki::HTTPClient->new;
+	# Get the list of crdb entries
+	$client->get("http://" . $serverhost . "/crdb?output=json", sub { $self->on_response(@_, $channel, $ident) });
+}
+
+sub on_response {
+    my($self, $res, $channel, $ident) = @_;
+    if ($res->is_error) {
+        Tatsumaki::Error::HTTP->throw(500, $res->status_line);
+    }
+
+    my $json = JSON::decode_json($res->content);
+	
+	
+    $self->write("Fetched " . $json->{totalResults} . " Classroom Contents.\n");
+	$self->write("channel = " . $channel . "\n");
+	my $contents = $json->{contents};
+	my @contentslist = split(',', $contents);
+	
+	# my $client = Tatsumaki::HTTPClient->new;
+	for my $content (@contentslist) {
+		my @name = split('@',$ident);
+		my $html = ChatPostHandler->format_message($content);
+		my $mq = Tatsumaki::MessageQueue->instance($channel);
+		my $avatar = 'http://www.gravatar.com/avatar/' . md5_hex($ident);
+	    $mq->publish({
+	        type => "message", html => $html, ident => $ident,
+	        avatar => $avatar, name => $name[0],
+	        address => $self->request->address,
+	        time => scalar Time::HiRes::gettimeofday,
+	    });
+		$self->write("Foo bar");
+	}
+	
+
+    $self->finish;
+
+}
+
+package ClassRoomHandler;
+use base qw(Tatsumaki::Handler);
+
+sub get {
+    my($self, $channel) = @_;
     $self->render('epoch-teacher.html');
 }
 
@@ -114,6 +175,7 @@ sub get {
 	my $self = shift;
 	my $pathinfo = $self->request->path_info;
 	my $serverhost = $self->request->headers->header('Host');
+	my @crserverhost = split(':',$serverhost);
 	my $output = $self->request->param("output");
 	my @contentlist = ();
 	my $contentliststr = '';
@@ -128,7 +190,7 @@ sub get {
 	while (my $file = readdir(DIR)) {
 		# Use a regular expression to ignore files beginning with a period
 		next if ($file =~ m/^\./);
-		push(@contentlist, 'http://' . $serverhost . "/" . uri_escape("$file"));
+		push(@contentlist, 'http://' . $crserverhost[0] .":5001" . "/" . uri_escape("$file"));
 		# $self->write($pathinfo . "/" . uri_escape("$file") . "\n");
 	}
 	closedir(DIR);
@@ -150,23 +212,6 @@ sub get {
 	
 	$self->write($json_out . "\n");
 	$self->finish;
-	#if ($path_info eq '/foo.json') {
-	#	my $body = JSON::encode_json({
-	#		hello => 'world',
-	#	});
-	#	return [ 200, ['Content-Type', 'application/json'], [ $body ] ];
-	#}
-	# return [ 404, ['Content-Type', 'text/html'], ['Not Found']];
-
-	
-	# my $app = Plack::App::Directory->new({root => "$ENV{HOME}/Sites"})->to_app;
-	# my $self = shift;
-	# $self->(Plack::App::Directory->new(root => "$ENV{HOME}/Sites"));
-	# my $self = shift;
-	# $self->response->content_type('text/plain');
-	# Plack::App::Directory->new(root => "$ENV{HOME}/Sites");
-    # $self->render(Plack::App::Directory->new(root => "$ENV{HOME}/Sites"));
-	# Plack::App::File->new(root => "$ENV{HOME}/Sites");
 }
 
 package main;
@@ -174,19 +219,37 @@ use File::Basename;
 
 my $chat_re = '[\w\.\-]+';
 my $app = Tatsumaki::Application->new([
-    "/chat/($chat_re)/poll" => 'ChatPollHandler',
-    "/chat/($chat_re)/mxhrpoll" => 'ChatMultipartPollHandler',
-    "/chat/($chat_re)/post" => 'ChatPostHandler',
-    "/chat/($chat_re)" => 'ChatRoomHandler',
+    "/class/($chat_re)/poll" => 'ChatPollHandler',
+    "/class/($chat_re)/mxhrpoll" => 'ChatMultipartPollHandler',
+    "/class/($chat_re)/post" => 'ChatPostHandler',
+    "/class/($chat_re)" => 'ChatRoomHandler',
+    "/classmoderator/($chat_re)" => 'ClassRoomHandler',
+	"/startsession/($chat_re)" => 'StartSessionHandler',
 	"/crdb" => 'ContentRepoDBHandler',
 ]);
 
 $app->template_path(dirname(__FILE__) . "/templates");
 $app->static_path(dirname(__FILE__) . "/static");
 
+#
+# Epoch Content Repo Server
+#
+
+use HTTP::Server::PSGI;
+use Plack::App::Directory;
+
+my $server = HTTP::Server::PSGI->new(
+	host => "127.0.0.1",
+	port => 5001,
+	timeout => 120,
+);
+my $app2 = Plack::App::Directory->new({ root => "./contentrepo" })->to_app;
+
+
 if (__FILE__ eq $0) {
     require Tatsumaki::Server;
     Tatsumaki::Server->new(port => 5000)->run($app);
+	$server->run($app2); # Hmm, need to figure out how to do this....
 } else {
     return $app;
 }
