@@ -35,31 +35,36 @@ function doPost(el1, el) {
 $(function(){
   var onNewEvent = function(e) {
     try {
-      var src    = e.avatar || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
-      var name   = e.name   || e.ident || 'Anonymous';
-      var avatar = $('<img/>').attr('src', src).attr('alt', name);
-      if (e.ident) {
-        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
-        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
-      }
-      avatar = $('<td/>').addClass('avatar').append(avatar);
+	  if ((e.name != null) && (e.name.match(/#killsession/i))) {
+		alert('killsession received\n');
+		$('table#messages').children().remove();
+	  } else {
+      	  var src    = e.avatar || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+	      var name   = e.name   || e.ident || 'Anonymous';
+	      var avatar = $('<img/>').attr('src', src).attr('alt', name);
+	      if (e.ident) {
+	        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
+	        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
+	      }
+	      avatar = $('<td/>').addClass('avatar').append(avatar);
 
-      var message = $('<td/>').addClass('chat-message');
-      if (e.text) message.text(e.text);
-      if (e.html) message.html(e.html);
-      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
-      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
-      if (name)
-        message.prepend($('<span/>').addClass('name').text(name+ ': '));
+	      var message = $('<td/>').addClass('chat-message');
+	      if (e.text) message.text(e.text);
+	      if (e.html) message.html(e.html);
+	      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
+	      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
+	      if (name)
+	        message.prepend($('<span/>').addClass('name').text(name+ ': '));
 
-      var date = new Date(e.time * 1000);
-      var meta = $('<td/>').addClass('meta').append(
-        '(' +
-        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
-        ' from ' + e.address + ')'
-      );
-      $('.pretty-time', meta).prettyDate();
-      $('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta));
+	      var date = new Date(e.time * 1000);
+	      var meta = $('<td/>').addClass('meta').append(
+	        '(' +
+	        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
+	        ' from ' + e.address + ')'
+	      );
+	      $('.pretty-time', meta).prettyDate();
+	      $('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta));
+  		}
     } catch(e) { if (console) console.log(e) };
   }
 

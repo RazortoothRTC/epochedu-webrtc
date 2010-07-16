@@ -16,8 +16,8 @@
 <script src="/static/pretty.js"></script>
 <script>
 var cookieName = 'tatsumaki_chat_ident';
-$(document).ready(function() { 	
-  $('#startsession').bind('click', function() { 
+  $(document).ready(function() { 	
+  	$('#startsession').bind('click', function() { 
 		$('#startsession').fadeOut();
 		$.get(
 			"/startsession/<%= $channel %>", 
@@ -31,6 +31,13 @@ $(document).ready(function() {
   $('#endsession').bind('click', function() { 
 		$('#endsession').fadeOut();
 		// Need to kill off the class room session, clear the queue for channel
+		$.get(
+			"/endsession/<%= $channel %>", 
+			{ ident: $('#ident').val()},
+			function(data) {
+				$('table#messages').children().remove();
+				return false;
+		});
 		$('#startsession').fadeIn();
   });
 });

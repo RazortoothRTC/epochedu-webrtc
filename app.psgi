@@ -60,6 +60,8 @@ use Encode;
 sub post {
     my($self, $channel) = @_;
 
+	# XXX This section can be refactored into a single subroutine, but instead of reading off the request, pass in 
+	# data as args
     my $v = $self->request->params;
     my $html = $self->format_message($v->{text});
     my $mq = Tatsumaki::MessageQueue->instance($channel);
@@ -86,6 +88,41 @@ use base qw(Tatsumaki::Handler);
 sub get {
     my($self, $channel) = @_;
     $self->render('epoch-student.html');
+}
+
+package EndSessionHandler;
+use base qw(Tatsumaki::Handler);
+use Digest::MD5 qw(md5_hex);
+
+__PACKAGE__->asynchronous(1);
+
+sub get {
+	my($self, $channel) = @_;
+	my $client_id = $self->request->param("ident");
+	
+	my $mq = Tatsumaki::MessageQueue->instance($channel);
+	
+	# We need to loop and do this for all clients, not just 
+	my $client = $mq->clients->{$client_id};
+	my @events = $mq->backlog_events;
+    $mq->flush_events($client_id, @events) if @events;
+    # if (@{ $client->{buffer}}) {
+	#	$mq->flush_events($client_id, @{ $client->{buffer} });
+	# }
+	# $self->write({ success => 1 });
+	
+	# send up an empty message with a hash sign to send directives
+	my $html = ChatPostHandler->format_message("");
+	$mq = Tatsumaki::MessageQueue->instance($channel);
+	my $avatar = '';
+    $mq->publish({
+        type => "message", html => $html, ident => $client_id,
+        avatar => $avatar, name => '#killsession',
+        address => $self->request->address,
+        time => scalar Time::HiRes::gettimeofday,
+    });
+
+	$self->finish;
 }
 
 package StartSessionHandler;
@@ -117,8 +154,9 @@ sub on_response {
 	my $contents = $json->{contents};
 	my @contentslist = split(',', $contents);
 	
-	# my $client = Tatsumaki::HTTPClient->new;
+	
 	for my $content (@contentslist) {
+		# XXX This section can be refactored into a single subroutine
 		my @name = split('@',$ident);
 		my $html = ChatPostHandler->format_message($content);
 		my $mq = Tatsumaki::MessageQueue->instance($channel);
@@ -129,12 +167,8 @@ sub on_response {
 	        address => $self->request->address,
 	        time => scalar Time::HiRes::gettimeofday,
 	    });
-		$self->write("Foo bar");
 	}
-	
-
-    $self->finish;
-
+	$self->finish;
 }
 
 package ClassRoomHandler;
@@ -225,6 +259,7 @@ my $app = Tatsumaki::Application->new([
     "/class/($chat_re)" => 'ChatRoomHandler',
     "/classmoderator/($chat_re)" => 'ClassRoomHandler',
 	"/startsession/($chat_re)" => 'StartSessionHandler',
+	"/endsession/($chat_re)" => 'EndSessionHandler',
 	"/crdb" => 'ContentRepoDBHandler',
 ]);
 
