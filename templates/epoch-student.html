@@ -37,7 +37,6 @@ $(function(){
   var onNewEvent = function(e) {
     try {
 	  if ((e.name != null) && (e.name.match(/#killsession/i))) {
-		alert('killsession received\n');
 		$('table#messages').children().remove();
 	  } else {
 		  if (lastTime != e.time) {
