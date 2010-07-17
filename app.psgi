@@ -160,7 +160,17 @@ sub on_response {
 		my @name = split('@',$ident);
 		my $html = ChatPostHandler->format_message($content);
 		my $mq = Tatsumaki::MessageQueue->instance($channel);
-		my $avatar = 'http://www.gravatar.com/avatar/' . md5_hex($ident);
+		
+		# Publish a #startsession directive
+		my $avatar = '';
+	    $mq->publish({
+	        type => "message", html => $html, ident => $ident,
+	        avatar => $avatar, name => '#startsession',
+	        address => $self->request->address,
+	        time => scalar Time::HiRes::gettimeofday,
+	    });
+	
+		$avatar = 'http://www.gravatar.com/avatar/' . md5_hex($ident);
 	    $mq->publish({
 	        type => "message", html => $html, ident => $ident,
 	        avatar => $avatar, name => $name[0],
