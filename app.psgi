@@ -1,4 +1,8 @@
 #!/usr/bin/perl
+#
+#
+# copyright 2010 Razortooth Communications, LLC
+#
 
 use strict;
 use warnings;

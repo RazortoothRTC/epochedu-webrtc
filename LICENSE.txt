@@ -1,1 +1,3 @@
-Copyright 2010 Razortooth Communications, LLC
+Application is Copyright 2010 Razortooth Communications, LLC
+Application is based on chat demo from the Tatsumaki framework.
+Tatsumaki framework is under the Artistic License, and is the property of the author, Miyagawa (http://profile.typepad.com/miyagawa).

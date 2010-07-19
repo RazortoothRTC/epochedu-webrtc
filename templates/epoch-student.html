@@ -141,13 +141,14 @@ body {
 <!-- move this input out of form so Firefox can submit with enter key :/ -->
 Your email (for Gravatar): <input id="ident" type="text" name="ident" size="24"/>
 <form onsubmit="doPost($('#ident'), $('#chat')); return false">
-Something to say: <input id="chat" type="text" size="48"/>
+Enter a message to send to class: <input id="chat" type="text" size="48"/>
 </form>
 
 <table id="messages">
 </table>
 <div id="waiting" style="display:none;">
-	<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/poweredby.gif"/></H1>
+	<!-- <H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/poweredby.gif"/></H1> -->
+	<H1>...Waiting to begin Class Session: <%= $channel %></H1>
 </div>
 <div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
 
