@@ -15,7 +15,6 @@
 <script type="text/javascript" src="/static/jquery.oembed.js"></script>
 <script type="text/javascript" src="/static/pretty.js"></script>
 <script type="text/javascript" src="/static/jquery.blockUI.js"></script>
-<script type="text/javascript" src="/static/jquery.bxslider2.0.1.min.js"></script>
 <script>
 var cookieName = 'tatsumaki_chat_ident';
 var lastTime = new Date();
@@ -23,18 +22,7 @@ var lastTime = new Date();
 
 
 $(document).ready(function() {
-		// $.blockUI({ message: $('#waiting') });  
-		$('#slides1').bxSlider({
-				controls: false,
-				wrapper_class: 'slides1_wrap',
-				margin: 70,
-				auto: true,
-				pager: false,
-				speed: 1000,
-				pause: 3500,
-				auto_controls: false
-		});
-		
+		$.blockUI({ message: $('#waiting') });  	
 });
 
 function doPost(el1, el) {
@@ -58,13 +46,9 @@ $(function(){
     try {
 	  if ((e.name != null) && (e.name.match(/#killsession/i))) {
 		$('table#messages').children().remove();
-		// $.blockUI({ message: $('#waiting') });  
-		$("#classroom").fadeOut();
-		$("#waitingroom").fadeIn();
+		$.blockUI({ message: $('#waiting') });  
 	  } else if ((e.name != null) && (e.name.match(/#startsession/i))) {
-			// $.unblockUI();
-			$("#waitingroom").fadeOut();
-			$("#classroom").fadeIn();
+			$.unblockUI();
 			return false;
 	 } else {
 		  if (lastTime != e.time) {
@@ -153,42 +137,6 @@ body {
 </style>
 </head>
 <body>
-<div class="waitingroom" id="waitingroom">
-	<ul id="slides1">
-				<li>
-					<img src="/static/logo_001.jpg" width="200" height="100" alt="Pic Discovery" />
-					<div class="content">
-						<p>Discovery Education</p>
-					</div>
-					<!-- <div class="clear"></div> -->
-				</li>
-				<li>
-					<img src="/static/bg_hero_armada.png" width="200" height="100" alt="Pic Armada" />
-					<div class="content">
-
-						<p>Marvell Armada</p>
-					</div>
-					<!-- <div class="clear"></div> -->
-				</li>
-				<li>
-					<img src="/static/logo_marvell.jpg" width="200" height="100" alt="Pic Marvell" />
-					<div class="content">
-
-						<p>Marvell</p>
-					</div>
-					<!-- <div class="clear"></div> -->
-				</li>
-				<li>
-					<img src="/static/RAZORTOOTHhorizontalRGB_59mmX16mm.jpg" width="200" height="100" alt="Pic RT" />
-					<div class="content">
-
-						<p>Razortooth Communications, LLC</p>
-					</div>
-					<!-- <div class="clear"></div> -->
-				</li>
-	</ul>
-</div>
-<div id="classroom" style="display:none;">
 <h1 class="chat-room-name">Class room: <%= $channel %></h1>
 <!-- move this input out of form so Firefox can submit with enter key :/ -->
 Your email (for Gravatar): <input id="ident" type="text" name="ident" size="24"/>
@@ -198,9 +146,8 @@ Something to say: <input id="chat" type="text" size="48"/>
 
 <table id="messages">
 </table>
-</div>
 <div id="waiting" style="display:none;">
-	<H1>...Waiting to begin Class Session: <%= $channel %></H1>
+	<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/poweredby.gif"/></H1>
 </div>
 <div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
 
