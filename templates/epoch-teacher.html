@@ -65,7 +65,11 @@ $(function(){
   var onNewEvent = function(e) {
   if ((e.name != null) && (e.name.match(/#killsession/i))) {
 		$('table#messages').children().remove();
+  } else if ((e.name != null) && (e.name.match(/#startsession/i))) {
+		// IGNORE
   } else {
+	  // if ((lastTime != e.time) && (e.name != null) && (!e.name.match(/#/i))) {
+	  // if ((lastTime != e.time) && ((e.name != null) && (!e.name.match(/#/i)))) {
 	  if (lastTime != e.time) {
 		  lastTime = e.time;
    		try {

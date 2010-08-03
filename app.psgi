@@ -12,6 +12,7 @@ use Tatsumaki::Application;
 use Tatsumaki::HTTPClient;
 use Time::HiRes;
 
+
 #
 # Epoch EDU 
 #
@@ -286,13 +287,18 @@ $app->static_path(dirname(__FILE__) . "/static");
 
 use HTTP::Server::PSGI;
 use Plack::App::Directory;
-
+use Plack::Builder;
 my $server = HTTP::Server::PSGI->new(
 	host => "127.0.0.1",
 	port => 5001,
 	timeout => 120,
 );
 my $app2 = Plack::App::Directory->new({ root => "./contentrepo" })->to_app;
+builder {
+       enable 'Debug', panels => [ qw(DBITrace Memory Timer) ];
+       $app;
+	   $app2;
+};
 
 
 if (__FILE__ eq $0) {
