@@ -145,6 +145,7 @@ $(function(){
 			// Make sure you don't register the teacher
 			if (e.ident.split('@')[0].localeCompare($('#ident').attr('value').split('@')[0]) != 0)
 				$("#onlinestudents").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '</li>');
+				$("#studentStatusList").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '<span class="status">Vestibulum lorem elit</span></li>');
   } else {
 	  if (lastTime != e.time) {
 		  lastTime = e.time;
@@ -449,7 +450,7 @@ $(function(){
 					<h2>Students</h2>
 				</div>
 				<div id="studentStatus">
-					<ul>
+					<ul id="studentStatusList">
 						<li>Stacy P: <span class="status">Vestibulum lorem elit</span></li>
 					</ul>
 				</div>
