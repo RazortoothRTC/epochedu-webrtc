@@ -221,30 +221,37 @@ use URI::Escape;
 # "}
 #
 sub get {
-	my $self = shift;
+	my($self, $channel) = @_;
+	# my $self = shift;
 	my $pathinfo = $self->request->path_info;
+	my $dirpath = '';
 	my $serverhost = $self->request->headers->header('Host');
 	my @crserverhost = split(':',$serverhost);
 	my $output = $self->request->param("output");
 	my @contentlist = ();
 	my $contentliststr = '';
+	# $self->request->logger->({ level => 'debug', message => "This is a debug message" });
 	
 	if ($output eq 'json') {
 		$self->response->content_type('application/json');
 	} else {
 		$self->response->content_type('text/plain');
 	}
-	opendir(DIR, "./contentrepo");
+	
+	if ($channel) {
+		$dirpath = '/' . $channel;
+	}
+	opendir(DIR, "./contentrepo" . $dirpath . "/");
 
 	while (my $file = readdir(DIR)) {
 		# Use a regular expression to ignore files beginning with a period
 		next if ($file =~ m/^\./);
-		push(@contentlist, 'http://' . $crserverhost[0] .":5001" . "/" . uri_escape("$file"));
+		push(@contentlist, 'http://' . $crserverhost[0] .":5001" . $dirpath . "/" . uri_escape("$file"));
 		# $self->write($pathinfo . "/" . uri_escape("$file") . "\n");
 	}
 	closedir(DIR);
 	
-	foreach my $index (1 .. $#contentlist) {
+	foreach my $index (0 .. $#contentlist) {
 		my $sep = ',';
 		if ($index eq @contentlist - 1) {
 			$sep = '';
@@ -254,6 +261,7 @@ sub get {
 	my $contentresults = {
 		totalResults => @contentlist . "",
 		contents => $contentliststr,
+		path => $dirpath,
 	};
 	
 	my $json_out = to_json($contentresults);
@@ -275,7 +283,7 @@ my $app = Tatsumaki::Application->new([
     "/classmoderator/($chat_re)" => 'ClassRoomHandler',
 	"/startsession/($chat_re)" => 'StartSessionHandler',
 	"/endsession/($chat_re)" => 'EndSessionHandler',
-	"/crdb" => 'ContentRepoDBHandler',
+	"/crdb/($chat_re)" => 'ContentRepoDBHandler',
 ]);
 
 $app->template_path(dirname(__FILE__) . "/templates");
