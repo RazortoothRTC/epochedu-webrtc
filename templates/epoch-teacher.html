@@ -53,16 +53,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	$('#ident').blur(function() {
-		$(this).parents().find('span.error-message').removeClass('error-message').text('');
-		if ($(this).hasClass('required')) {
-			if (this.value == '') { // XXX Refactor this into a function
-				var errorMessage = 'This is a required field'; 
-				$(this).addClass('error-message').text(errorMessage);
-			}
-		}
-	});
-	
   	$('#startsession').bind('click', function() { 
 		$('#startsession').fadeOut();
 		$.get(
@@ -113,6 +103,11 @@ $(document).ready(function() {
 		var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
 		$(activeTab).fadeIn(); //Fade in the active ID content
 		return false;
+	});
+	
+	$('#chatsubmit').submit(function() {
+	  doPost($('#ident'), $('#sendchat'));
+	  return false;
 	});
 });
 
@@ -223,13 +218,7 @@ $(function(){
 						</div>
 				        <div id="sliderContent">
 							<ul id="onlinestudents">
-								<li><a href="#tab1">John D</a></li>
-								<li><a href="#tab2">Stacy P</a></li>
-								<li><a href="#tab3">Mark L</a></li>
-								<li><a href="#tab4">David K</a></li>
-								<li><a href="#tab5">Brian F</a></li>
-								<li><a href="#tab1">Sharon U</a></li>
-								<li><a href="#tab1">Julie M</a></li>
+								<!-- <li><a href="#tab1">John D</a></li> -->
 							</ul>
 						</div>
 					</div>
@@ -243,8 +232,8 @@ $(function(){
 									</div>
 								</div>
 								<div class="chatsend">
-									<form>
-										<input type="text"/>
+									<form id="chatsubmit" onsubmit="doPost($('#ident'), $('#chatsend')); return false">
+										<input id="sendchat" type="text" size="48" />
 									</form>
 								</div>
 						    </div>
