@@ -3,18 +3,18 @@
 <html>
 <head>
 <title>Epoch EDU Student Classroom demo</title>
-<script type="text/javascript" src="/static/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
 % if ($mxhr) {
-<script type="text/javascript" src="/static/DUI.js"></script>
-<script type="text/javascript" src="/static/Stream.js"></script>
+<script type="text/javascript" src="/static/js/DUI.js"></script>
+<script type="text/javascript" src="/static/js/Stream.js"></script>
 % } else {
-<script type="text/javascript" src="/static/jquery.ev.js"></script>
+<script type="text/javascript" src="/static/js/jquery.ev.js"></script>
 % }
-<script type="text/javascript" src="/static/jquery.md5.js"></script>
-<script type="text/javascript" src="/static/jquery.cookie.js"></script>
-<script type="text/javascript" src="/static/jquery.oembed.js"></script>
-<script type="text/javascript" src="/static/pretty.js"></script>
-<script type="text/javascript" src="/static/jquery.blockUI.js"></script><!-- XXX This thing is buggy -->
+<script type="text/javascript" src="/static/js/jquery.md5.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
+<script type="text/javascript" src="/static/js/pretty.js"></script>
+<script type="text/javascript" src="/static/js/jquery.blockUI.js"></script><!-- XXX This thing is buggy -->
 <script>
 var cookieName = 'tatsumaki_chat_ident';
 var lastTime = new Date();
@@ -103,7 +103,7 @@ $(function(){
   window.setInterval(function(){ $(".pretty-time").prettyDate() }, 1000 * 30);
 });
 </script>
-<link rel="stylesheet" href="/static/screen.css" />
+<link rel="stylesheet" href="/static/css/screen.css" />
 <style>
 #messages {
   margin-top: 1em;
