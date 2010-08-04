@@ -142,7 +142,7 @@ sub get {
 	my $serverhost = $self->request->headers->header('Host');
 	my $client = Tatsumaki::HTTPClient->new;
 	# Get the list of crdb entries
-	$client->get("http://" . $serverhost . "/crdb?output=json", sub { $self->on_response(@_, $channel, $ident) });
+	$client->get("http://" . $serverhost . "/crdb/" . $channel . "?output=json", sub { $self->on_response(@_, $channel, $ident) });
 }
 
 sub on_response {

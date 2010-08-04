@@ -71,6 +71,8 @@ $(document).ready(function() {
 			"/endsession/<%= $channel %>", 
 			{ ident: $('#ident').val()},
 			function(data) {
+				// XXX Is there some way to avoid removing all of the messages?
+				// Maybe move this over to a history tab?
 				$('table#messages').children().remove();
 				return false;
 		});
@@ -353,7 +355,7 @@ $(function(){
 								</div>
 				</div>
 				<div id="lessonlist">
-					<ul>
+					<ul id="contentlist">
 						<li>
 							<div class="lessonImg">
 								<img src="/static/images/lesson-img-holder.png" alt="lesson-img-holder"/>
@@ -366,74 +368,6 @@ $(function(){
 							</div>
 							<div class="lessonProgress">
 								<p>Progress: 55% Complete</p>
-							</div>
-							<div class="lessonDescription">
-								<p>Vestibulum lorem elit, ullamcorper sed egestas vitae, bibendum a nibh.</p>
-							</div>
-						</li>
-						<li>
-							<div class="lessonImg">
-								<img src="/static/images/lesson-img-holder.png" alt="lesson-img-holder"/>
-							</div>
-							<div class="lessonTitle">
-								<h3>Donec sed ante</h3>
-							</div>
-							<div class="lessonSession">
-								<p>Last Session: 08/27/2009</p>
-							</div>
-							<div class="lessonProgress">
-								<p>Progress: 75% Complete</p>
-							</div>
-							<div class="lessonDescription">
-								<p>Vestibulum lorem elit, ullamcorper sed egestas vitae, bibendum a nibh.</p>
-							</div>
-						</li>
-						<li>
-							<div class="lessonImg">
-								<img src="/static/images/lesson-img-holder.png" alt="lesson-img-holder"/>
-							</div>
-							<div class="lessonTitle">
-								<h3>Curabitur tincidunt</h3>
-							</div>
-							<div class="lessonSession">
-								<p>Last Session: 06/214/2009</p>
-							</div>
-							<div class="lessonProgress">
-								<p>Progress: 45% Complete</p>
-							</div>
-							<div class="lessonDescription">
-								<p>Vestibulum lorem elit, ullamcorper sed egestas vitae, bibendum a nibh.</p>
-							</div>
-						</li>
-						<li>
-							<div class="lessonImg">
-								<img src="/static/images/lesson-img-holder.png" alt="lesson-img-holder"/>
-							</div>
-							<div class="lessonTitle">
-								<h3>Nunc sodales viverra</h3>
-							</div>
-							<div class="lessonSession">
-								<p>Last Session: 07/12/2009</p>
-							</div>
-							<div class="lessonProgress">
-								<p>Progress: 65% Complete</p>
-							</div>
-							<div class="lessonDescription">
-								<p>Vestibulum lorem elit, ullamcorper sed egestas vitae, bibendum a nibh.</p>
-							</div>
-						</li>
-						<li>
-							<div class="lessonImg">
-								<img src="/static/images/lesson-img-holder.png" alt="lesson-img-holder"/>
-							</div>
-							<div class="lessonTitle">
-								<h3>Suspendisse id diam</h3>
-							</div>
-							<div class="lessonSession">
-								<p>Last Session: 05/23/2009</p>
-							</div>
-							<div class="lessonProgress">
-								<p>Progress: 75% Complete</p>
 							</div>
 							<div class="lessonDescription">
 								<p>Vestibulum lorem elit, ullamcorper sed egestas vitae, bibendum a nibh.</p>
