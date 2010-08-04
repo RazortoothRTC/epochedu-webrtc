@@ -296,8 +296,6 @@ my $server = HTTP::Server::PSGI->new(
 my $app2 = Plack::App::Directory->new({ root => "./contentrepo" })->to_app;
 builder {
        enable 'Debug', panels => [ qw(DBITrace Memory Timer) ];
-       $app;
-	   $app2;
 };
 
 
