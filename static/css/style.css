@@ -74,6 +74,10 @@ a:active {
 	width:25%;
 }
 
+#chatreg {
+	float:left;
+	width:25%;
+}
 #lessons {
 	float:left;
 	width:40%;
@@ -538,6 +542,40 @@ a.wav {
 	color:#bf0000;
 	background:url('../images/css/error-20x20.png') no-repeat top right;
 }
+
+/* Added by dkords */
+#minitabs {
+	float:right;
+	display:block;
+	list-style:none;
+	padding:6px 20px 0px 0px;
+}
+
+#minitabs li {
+	margin:0px 5px;
+	padding:0px;
+	float: left;
+}
+
+#minitabs li a {
+	padding: 4px 8px;
+	color: #868176;
+	font-size: 1.1em;
+	text-decoration:none;
+	background:#545454;
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #676767;
+	color: #818181;
+}
+
+#minitabs li a:hover, #minitabs li.selected a {
+	background: #bbbbbb;
+	color:#545454;
+}
+
 /* FROM Blueprint CSS Framework 0.7.1 */
 #footer { clear: both; text-align: center; padding-top: 2em }
 #footer a,body {
