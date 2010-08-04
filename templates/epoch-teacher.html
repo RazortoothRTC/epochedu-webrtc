@@ -109,6 +109,12 @@ $(document).ready(function() {
 	  doPost($('#ident'), $('#sendchat'));
 	  return false;
 	});
+	
+	$('#regid').submit(function() {
+	  alert("registering user");
+	  doPost($('#ident'), $('#reg'));
+	  return false;
+	});
 });
 
 function doPost(el1, el) {
@@ -197,7 +203,7 @@ $(function(){
 	<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="all"/>
 </head>
 <body>
-	<form onsubmit="doPost($('#ident'), $('#reg')); return false">[<EM>Moderated Classroom Session: <%= $channel %><EM>][Your email handle:<input class="required" id="ident" type="text" name="ident" size="24"/>]<input id="reg"type="hidden" name="#reg" value="#reg"/><!-- <input id="subtn"type="submit" name="subtn" value="Login"/> --></form><br>
+	<form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">[<EM>Moderated Classroom Session: <%= $channel %><EM>][Your email handle:<input class="required" id="ident" type="text" name="ident" size="24"/>]<input id="reg"type="hidden" name="#reg" value="#reg"/></form><br>
 	
 	<!-- page -->
 	<div id="page">
@@ -445,13 +451,6 @@ $(function(){
 				<div id="studentStatus">
 					<ul>
 						<li>Stacy P: <span class="status">Vestibulum lorem elit</span></li>
-						<li>John D: <span class="status">Vestibulum lorem elit</span></li>
-						<li>Mark L: <span class="status">Vestibulum lorem elit</span></li>
-						<li>David K: <span class="status red">Vestibulum lorem elit</span></li>
-						<li>Sharon U: <span class="status">Vestibulum lorem elit</span></li>
-						<li>Suzy Q: <span class="status red">Vestibulum lorem elit</span></li>
-						<li>Brian F: <span class="status">Vestibulum lorem elit</span></li>
-						<li>Julie M: <span class="status red">Vestibulum lorem elit</span></li>
 					</ul>
 				</div>
 			</div>
