@@ -22,7 +22,7 @@ var lastTime = new Date();
 
 
 $(document).ready(function() {
-		$.blockUI({ message: $('#waiting') });  	
+		$.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/images/poweredby.gif"/></H1>' });  	
 });
 
 function doPost(el1, el) {
@@ -46,7 +46,7 @@ $(function(){
     try {
 	  if ((e.name != null) && (e.name.match(/#killsession/i))) {
 		$('table#messages').children().remove();
-		$.blockUI({ message: $('#waiting') });  
+		$.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/images/poweredby.gif"/></H1>' });  
 	  } else if ((e.name != null) && (e.name.match(/#startsession/i))) {
 			$.unblockUI();
 			return false;
@@ -146,10 +146,6 @@ Enter a message to send to class: <input id="chat" type="text" size="48"/>
 
 <table id="messages">
 </table>
-<div id="waiting" style="display:none;">
-	<!-- <H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/poweredby.gif"/></H1> -->
-	<H1>...Waiting to begin Class Session: <%= $channel %></H1>
-</div>
 <div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
 
 </body>
