@@ -92,7 +92,9 @@ use base qw(Tatsumaki::Handler);
 
 sub get {
     my($self, $channel) = @_;
+	my $req = $self->request->params;
     $self->render('epoch-student.html');
+	
 }
 
 package EndSessionHandler;
@@ -202,6 +204,11 @@ use Plack::Request;
 use Plack::Util;
 use URI::Escape;
 # use Plack::App::File;
+
+sub pullcontent {
+	my($self) = @_;
+	return 'foo';
+}
 
 #
 # JSON Format
