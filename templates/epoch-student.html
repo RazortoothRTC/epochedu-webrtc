@@ -22,7 +22,8 @@ var lastTime = new Date();
 
 
 $(document).ready(function() {
-		$.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/images/poweredby.gif"/></H1>' }); 
+		$.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.' }); 
+		// $.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/images/poweredby.gif"/></H1>' }); 
 		$('#regid').submit(function() {
 		  alert("registering user");
 		  doPost($('#ident'), $('#reg'));
@@ -51,7 +52,8 @@ $(function(){
     try {
 	  if ((e.name != null) && (e.name.match(/#killsession/i))) {
 		$('table#messages').children().remove();
-		$.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/images/poweredby.gif"/></H1>' });  
+		// $.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.  Powered by: <img src="/static/images/poweredby.gif"/></H1>' });  
+		$.blockUI({ message: '<H1>...Waiting to begin Class Session: <%= $channel %>.' });  
 	  } else if ((e.name != null) && (e.name.match(/#startsession/i))) {
 			$.unblockUI();
 			return false;
