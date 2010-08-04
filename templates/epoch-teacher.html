@@ -1,6 +1,5 @@
 % my $channel = $_[0]->{handler}->args->[0];
 % my $mxhr = $_[0]->{handler}->request->param('mxhr');
-% my $foob = $_[0]->{handler}->args->[2];
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -206,7 +205,12 @@ $(function(){
 	<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="all"/>
 </head>
 <body>
-	<form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">[<EM>Moderated Classroom Session: <%= $channel %>:<%= $foob %><EM>][Your email handle:<input class="required" id="ident" type="text" name="ident" size="24"/>]<input id="reg"type="hidden" name="#reg" value="#reg"/></form><br>
+	<div id="teachernav">
+		<ul>
+			<li>Hello, Teacher! <a href="#">Logout</a></li>
+		</ul>
+	</div>
+	<form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">[<EM>Moderated Classroom Session: <%= $channel %><EM>][Your email handle:<input class="required" id="ident" type="text" name="ident" size="24"/>]<input id="reg"type="hidden" name="#reg" value="#reg"/></form><br>
 	
 	<!-- page -->
 	<div id="page">

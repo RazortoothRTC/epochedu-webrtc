@@ -92,9 +92,23 @@ use base qw(Tatsumaki::Handler);
 
 sub get {
     my($self, $channel) = @_;
-	my $req = $self->request->params;
     $self->render('epoch-student.html');
-	
+}
+
+package TeacherLandingPageHandler;
+use base qw(Tatsumaki::Handler);
+
+sub get {
+    my($self) = @_;
+    $self->render('epoch-teacher-landing.html');
+}
+
+package StudentLandingPageHandler;
+use base qw(Tatsumaki::Handler);
+
+sub get {
+    my($self) = @_;
+    $self->render('epoch-student-landing.html');
 }
 
 package EndSessionHandler;
@@ -290,6 +304,8 @@ my $app = Tatsumaki::Application->new([
     "/classmoderator/($chat_re)" => 'ClassRoomHandler',
 	"/startsession/($chat_re)" => 'StartSessionHandler',
 	"/endsession/($chat_re)" => 'EndSessionHandler',
+	"/teacher" => 'TeacherLandingPageHandler',
+	"/student" => 'StudentLandingPageHandler',
 	"/crdb/($chat_re)" => 'ContentRepoDBHandler',
 ]);
 
