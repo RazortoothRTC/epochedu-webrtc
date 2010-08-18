@@ -213,7 +213,7 @@ $(function(){
 	  if (lastTime != e.time) {
 		  lastTime = e.time;
    		try {
-	      var src    = e.avatar || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+	      var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
 	      var name   = e.name   || e.ident || 'Anonymous';
 	      var avatar = $('<img/>').attr('src', src).attr('alt', name);
 	      if (e.ident) {
