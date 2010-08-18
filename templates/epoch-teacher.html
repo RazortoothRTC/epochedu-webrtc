@@ -1,17 +1,20 @@
 % my $channel = $_[0]->{handler}->args->[0];
 % my $mxhr = $_[0]->{handler}->request->param('mxhr');
+% my $val1 = ContentRepoDBHandler->mytest(); # OK's this is the secret to calling your handler business logic
+% my $host = $_[0]->{handler}->request->headers->header('Host');
+% my @roomcl = ContentRepoDBHandler->pullcontent($channel, $host);
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-	<title>Epoch EDU Teacher Classroom demo</title>
+	<title>Epoch EDU Teacher Classroom - <%= $channel %></title>
+	<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="/static/js/jquery.tools.min.js"></script>
 <script type="text/javascript" src="/static/js/jquery.mousewheel.js"></script>
 <script type="text/javascript" src="/static/js/jScrollPane.js"></script>
-<!--
-<script type="text/javascript" src="/static/js/jquery-1.3.2.min.js"></script> -->
 % if ($mxhr) {
 <script type="text/javascript" src="/static/js/DUI.js"></script>
 <script type="text/javascript" src="/static/js/Stream.js"></script>
@@ -23,6 +26,20 @@
 <script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
 <script type="text/javascript" src="/static/js/pretty.js"></script>
 <script type="text/javascript" src="/static/js/jquery.blockUI.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+<script type="text/javascript">
+Shadowbox.init({
+    handleOversize: "drag",
+	overlayColor: "#ffffff",
+	overlayOpacity: "0.75",
+    modal: false,
+	displayNav:         true,
+	handleUnsupported:  "link",
+	autoplayMovies:     true
+	
+});
+</script>
 <script type="text/javascript">
 $(function() {
 	// this initialises the demo scollpanes on the page.
@@ -112,16 +129,61 @@ $(document).ready(function() {
 	});
 	
 	$('#regid').submit(function() {
-	  alert("registering user");
+	  $(this).fadeOut();
 	  doPost($('#ident'), $('#reg'));
+	  $(this).parent().find('#loggedin').fadeIn().find('#handle').before($('#ident').attr('value'));
 	  return false;
+	});
+	
+	$('.send').click(function(e){
+			var text = $(this).attr('alt');
+			$(this).fadeOut();
+			if (text) {
+				$.get(
+					"/runplayer/<%= $channel %>", 
+					{ ident: $('#ident').val(), contenturl: text},
+					function(data) {
+						return false;
+				});
+			}
+			$(this).parent().find('.end').fadeIn();
+			return false;
+	});
+	
+	$('.end').click(function(e){
+			var text = $('.end').attr('alt');
+			$(this).fadeOut();
+			if (text) {
+				$.get(
+					"/endplayer/<%= $channel %>", 
+					{ ident: $('#ident').val(), contenturl:text},
+					function(data) {
+						return false;
+				});
+			}
+			$(this).parent().find('.send:hidden').fadeIn();
+			return false;
+	});
+	
+	$('a[name=sendlink]').click(function(e){
+		e.preventDefault();
+		var contenturl = $(this).attr('href');
+		doPost($('#ident'), $(this));
+		Shadowbox.open({
+					        title:      "Content Preview",
+							player: 'iframe',
+							content: contenturl
+					});
 	});
 });
 
+/* XXX We should just fix this up to handle all dispatching to other clients in session */
 function doPost(el1, el) {
   var ident = el1.attr('value');
-  if (ident) $.cookie(cookieName, ident, { path: '/class' });
+  if (ident) $.cookie(cookieName, ident, { path: '/classmoderator' });
   var text = el.attr('value');
+  if (!text) 
+	text = el.attr('href');
   if (!text) return;
   $.ajax({
     url: "/class/<%= $channel %>/post",
@@ -206,11 +268,12 @@ $(function(){
 </head>
 <body>
 	<div id="teachernav">
-		<ul>
-			<li>Hello, Teacher! <a href="#">Logout</a></li>
+		<EM><big>Moderated Classroom Session: <%= $channel %></big><EM><form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">Enter Your Teacher Email Address:<input class="required" id="ident" type="text" name="ident" size="24"/><input type="submit" value="Login"/><input id="reg" type="hidden" name="#reg" value="#reg"/></form>
+		<ul id="loggedin" style="display: none;">
+			<li>Hello, <span id="handle"></a> <a href="#">Logout</a></li>
 		</ul>
 	</div>
-	<form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">[<EM>Moderated Classroom Session: <%= $channel %><EM>][Your email handle:<input class="required" id="ident" type="text" name="ident" size="24"/>]<input id="reg"type="hidden" name="#reg" value="#reg"/></form><br>
+	
 	
 	<!-- page -->
 	<div id="page">
@@ -353,30 +416,39 @@ $(function(){
 		<div id="lessons">
 			<div class="box">
 				<div class="header">
-					<h2>Lessons</h2><div id="sessionmgr">
-								<p><input type="button" class="button" id="startsession" value="Start Session" /><br/>
-								<p><input type="button" class="button" id="endsession" value="End Session" style="display: none;"/>
-								</div>
+					<h2>Lessons</h2>
+					<div id="sessionmgr">
+						<p><input type="button" class="button" id="startsession" value="Start Session" /><br/>
+						<p><input type="button" class="button" id="endsession" value="End Session" style="display: none;"/>
+					</div>
 				</div>
+				<br/>
+				<br/>
 				<div id="lessonlist">
 					<ul id="contentlist">
-						<li>
-							<div class="lessonImg">
-								<img src="/static/images/lesson-img-holder.png" alt="lesson-img-holder"/>
-							</div>
-							<div class="lessonTitle">
-								<h3>Tempor eu sodales</h3>
-							</div>
-							<div class="lessonSession">
-								<p>Last Session: 08/23/2009</p>
-							</div>
-							<div class="lessonProgress">
-								<p>Progress: 55% Complete</p>
-							</div>
-							<div class="lessonDescription">
-								<p>Vestibulum lorem elit, ullamcorper sed egestas vitae, bibendum a nibh.</p>
-							</div>
-						</li>
+%						if (@roomcl) {
+%							for my $item (@roomcl) {
+%								my @tmparray = split('/',$item);
+%								my $title = @tmparray[@tmparray-1];
+							<li id="contentitem">
+								<div class="lessonImg">
+									<img class="send" src="/static/images/lesson-img-holder.png" alt="<%= $item %>"/><img class="end" src="/static/images/css/error.png" alt="<%= $item %>" style="display: none;" />
+								</div>
+								<div class="lessonTitle">
+									<h3><%= $title %></h3>
+								</div>
+								<div class="lessonDescription">
+									<p><a class="ctooltip" name="sendlink" href="<%= $item %>"><%= $item %><span>Click to send link to student</span></a></p>
+								</div>
+							</li>
+%							}
+%						} else {
+							<li>
+								<div class="lessonTitle">
+									<h3>Sorry, there is no content available in this classroom.</h3>
+								</div>
+							</li>
+%						}
 					</ul>
 				</div>
 				<div class="clear"></div>
@@ -397,198 +469,6 @@ $(function(){
 			</div>
 		</div>
 		<!-- end students -->
-		
-		<!-- resources --> <!--
-		<div id="resources">
-			<ul>
-				<li>
-					<a id="r01" class="pdf" href="#">Vestibulum lorem elit</a>
-					<div class="r01tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/pdf.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r02" class="img" href="#">Vestibulum lorem elit</a>
-					<div class="r02tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/pdf.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r03" class="pdf" href="#">Vestibulum lorem elit</a>
-					<div class="r03tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/pdf.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r04" class="movie" href="#">Vestibulum lorem elit</a>
-					<div class="r04tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/movie.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r05" class="wav" href="#">Vestibulum lorem elit</a>
-					<div class="r05tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/wav.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r06" class="img" href="#">Vestibulum lorem elit</a>
-					<div class="r06tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/img.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r07" class="pdf" href="#">Vestibulum lorem elit</a>
-					<div class="r07tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/pdf.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r08" class="movie" href="#">Vestibulum lorem elit</a>
-					<div class="r08tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/movie.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r09" class="movie" href="#">Vestibulum lorem elit</a>
-					<div class="r09tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/movie.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-				<li>
-					<a id="r10" class="wav" href="#">Vestibulum lorem elit</a>
-					<div class="r10tip tooltip">
-						<div class="tooltiptop"></div>
-						<div class="tooltipmiddle">
-							<div class="tooltipimg">
-								<a href="#"><img alt="PDF" src="/static/images/wav.png"></a>
-							</div>
-							<div class="tooltipinfo">
-								<h3><a href="#">Vestibulum lorem elit</a></h3>
-								<p>Donec sed ante ut dolor pharetra congue. Mauris consectetur, felis eget bibendum viverra, diam eros elementum nibh, et scelerisque quam velit gravida ligula.</p>
-							</div>
-							<div class="clear"></div>
-						</div>
-						<div class="tooltipbottom"></div>
-					</div>
-				</li>
-			</ul>
-			<script type="text/javascript">
-			$(document).ready(function() {
-				$("#r01").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r01tip'});
-				$("#r02").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r02tip'});
-				$("#r03").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r03tip'});
-				$("#r04").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r04tip'});
-				$("#r05").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r05tip'});
-				$("#r06").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r06tip'});
-				$("#r07").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r07tip'});
-				$("#r08").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r08tip'});
-				$("#r09").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r09tip'});
-				$("#r10").tooltip({ offset: [0, -10],relative: 'true',effect: 'slide',tipClass: 'r10tip'});
-			});
-			</script>
-		</div>
-		-->
-		<!-- end resources -->
 	</div>
 	<div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
 	<!-- end page -->

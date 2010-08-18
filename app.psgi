@@ -82,14 +82,14 @@ sub post {
 sub format_message {
     my($self, $text) = @_;
     $text =~ s{ (https?://\S+) | ([&<>"']+) }
-              { $1 ? do { my $url = HTML::Entities::encode($1); qq(<a target="_blank" href="$url">$url</a>) } :
+              { $1 ? do { my $url = HTML::Entities::encode($1); qq(<a target="_blank" rel="shadowbox" href="$url">$url</a>) } :
                 $2 ? HTML::Entities::encode($2) : '' }egx;
     $text;
 }
 
 package ChatRoomHandler;
 use base qw(Tatsumaki::Handler);
-
+my @roomcl = {};
 sub get {
     my($self, $channel) = @_;
     $self->render('epoch-student.html');
@@ -110,6 +110,58 @@ sub get {
     my($self) = @_;
     $self->render('epoch-student-landing.html');
 }
+
+package RunPlayerHandler;
+use base qw(Tatsumaki::Handler);
+use Digest::MD5 qw(md5_hex);
+
+__PACKAGE__->asynchronous(1);
+
+sub get {
+	my($self, $channel) = @_;
+	my $ident = $self->request->param("ident");
+	my $contenturl = $self->request->param("contenturl");
+	# Publish a #runplayer directive
+	my $avatar = '';
+	my $mq = Tatsumaki::MessageQueue->instance($channel);
+    $mq->publish({
+        type => "message", html => ChatPostHandler->format_message($contenturl), ident => $ident,
+		text => $contenturl,
+        avatar => $avatar, name => '#runplayer',
+        address => $self->request->address,
+        time => scalar Time::HiRes::gettimeofday,
+    });
+	$self->response->content_type('text/plain');
+	my $json_out = to_json('status:ok');
+	$self->write($json_out . "\n");
+	$self->finish;
+}
+
+package EndPlayerHandler;
+use base qw(Tatsumaki::Handler);
+use Digest::MD5 qw(md5_hex);
+
+__PACKAGE__->asynchronous(1);
+
+sub get {
+	my($self, $channel) = @_;
+	my $ident = $self->request->param("ident");
+	my $contenturl = $self->request->param("contenturl");
+	# Publish a #endplayer directive
+	my $avatar = '';
+	my $mq = Tatsumaki::MessageQueue->instance($channel);
+    $mq->publish({
+        type => "message", html => ChatPostHandler->format_message($contenturl), ident => $ident,
+        avatar => $avatar, name => '#endplayer',
+        address => $self->request->address,
+        time => scalar Time::HiRes::gettimeofday,
+    });
+	$self->response->content_type('text/plain');
+	my $json_out = to_json('status:ok');
+	$self->write($json_out . "\n");
+	$self->finish;
+}
+
 
 package EndSessionHandler;
 use base qw(Tatsumaki::Handler);
@@ -155,6 +207,27 @@ __PACKAGE__->asynchronous(1);
 sub get {
 	my($self, $channel) = @_;
 	my $ident = $self->request->param("ident");
+	# Publish a #startsession directive
+	my $avatar = '';
+	my $mq = Tatsumaki::MessageQueue->instance($channel);
+    $mq->publish({
+        type => "message", html => ChatPostHandler->format_message('let\'s get started!'), ident => $ident,
+        avatar => $avatar, name => '#startsession',
+        address => $self->request->address,
+        time => scalar Time::HiRes::gettimeofday,
+    });
+	$self->finish;
+}
+
+package ContentGroupStartSessionHandler;
+use base qw(Tatsumaki::Handler);
+use Digest::MD5 qw(md5_hex);
+
+__PACKAGE__->asynchronous(1);
+
+sub get {
+	my($self, $channel) = @_;
+	my $ident = $self->request->param("ident");
 	my $serverhost = $self->request->headers->header('Host');
 	my $client = Tatsumaki::HTTPClient->new;
 	# Get the list of crdb entries
@@ -169,28 +242,26 @@ sub on_response {
 
     my $json = JSON::decode_json($res->content);
 	
-	
     $self->write("Fetched " . $json->{totalResults} . " Classroom Contents.\n");
 	$self->write("channel = " . $channel . "\n");
 	my $contents = $json->{contents};
 	my @contentslist = split(',', $contents);
 	
-	
+	# Publish a #startsession directive
+	my $avatar = '';
+	my $mq = Tatsumaki::MessageQueue->instance($channel);
+    $mq->publish({
+        type => "message", html => ChatPostHandler->format_message('ready!'), ident => $ident,
+        avatar => $avatar, name => '#startsession',
+        address => $self->request->address,
+        time => scalar Time::HiRes::gettimeofday,
+    });
+
 	for my $content (@contentslist) {
 		# XXX This section can be refactored into a single subroutine
 		my @name = split('@',$ident);
 		my $html = ChatPostHandler->format_message($content);
-		my $mq = Tatsumaki::MessageQueue->instance($channel);
 		
-		# Publish a #startsession directive
-		my $avatar = '';
-	    $mq->publish({
-	        type => "message", html => $html, ident => $ident,
-	        avatar => $avatar, name => '#startsession',
-	        address => $self->request->address,
-	        time => scalar Time::HiRes::gettimeofday,
-	    });
-	
 		$avatar = 'http://www.gravatar.com/avatar/' . md5_hex($ident);
 	    $mq->publish({
 	        type => "message", html => $html, ident => $ident,
@@ -219,11 +290,34 @@ use Plack::Util;
 use URI::Escape;
 # use Plack::App::File;
 
-sub pullcontent {
+sub mytest {
 	my($self) = @_;
-	return 'foo';
+	return 'bar';
 }
+sub pullcontent {
+	my($self, $channel, $serverhost) = @_;
+	my $dirpath = '';
+	my @contentlist = ();
+	my @crserverhost = split(':',$serverhost);
+	my $crdburlprefix = 'http://' . $crserverhost[0] .':5001'; # XXX 5001 should go into a config
+	if ($channel) {
+		$dirpath = '/' . $channel;
+	}
+	opendir(DIR, "./contentrepo" . $dirpath . "/");
 
+	while (my $file = readdir(DIR)) {
+		# Use a regular expression to ignore files beginning with a period
+		next if ($file =~ m/^\./);
+		if (-d $file) {
+			push(@contentlist, $crdburlprefix . $dirpath . "/" . uri_escape("$file") . "/index.html");
+		} else {
+			push(@contentlist, $crdburlprefix . $dirpath . "/" . uri_escape("$file"));
+		}
+		# push(@contentlist, $dirpath . "/" . uri_escape("$file"));
+	}
+	closedir(DIR);
+	return @contentlist;
+}
 #
 # JSON Format
 #
@@ -243,7 +337,6 @@ sub pullcontent {
 #
 sub get {
 	my($self, $channel) = @_;
-	# my $self = shift;
 	my $pathinfo = $self->request->path_info;
 	my $dirpath = '';
 	my $serverhost = $self->request->headers->header('Host');
@@ -303,6 +396,8 @@ my $app = Tatsumaki::Application->new([
     "/class/($chat_re)" => 'ChatRoomHandler',
     "/classmoderator/($chat_re)" => 'ClassRoomHandler',
 	"/startsession/($chat_re)" => 'StartSessionHandler',
+	"/runplayer/($chat_re)" => 'RunPlayerHandler',
+	"/endplayer/($chat_re)" => 'EndPlayerHandler',
 	"/endsession/($chat_re)" => 'EndSessionHandler',
 	"/teacher" => 'TeacherLandingPageHandler',
 	"/student" => 'StudentLandingPageHandler',
