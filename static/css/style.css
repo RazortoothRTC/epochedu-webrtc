@@ -44,6 +44,10 @@ a {
 	/* font-size: 12px; */
 	text-decoration: none;
 }
+h2 a:link {
+	color: #FFFFFF;
+	text-decoration: underline;
+}
 a:link {
 	color: #000000;
 	text-decoration: underline;
@@ -91,17 +95,22 @@ a:active {
 
 #chat {
 	float:left;
-	width:25%;
+	width:330px;
+	margin-left:8px
+	/* width:25%; */
 }
 
 #chat-wide {
 	float:left;
 	width:50%;
 }
+
 #lessons {
 	float:left;
-	width:40%;
-	margin:0px 50px;
+	width:300px;
+	margin:0px 40px;
+	/* width:40%;
+	margin:0px 50px; */
 }
 
 #lessons .box {
@@ -569,6 +578,95 @@ a.wav {
 }
 
 /* Added by dkords */
+#main {
+	clear: both;
+	overflow: hidden;
+	/* width: 1024; */
+	height: 600px;
+	margin-left: 24%;
+	margin-right: 24%;
+	/* padding-top: 90px; */
+}
+
+/* Z-index of #mask must lower than #boxes .window */
+#mask {
+	position: absolute;
+	z-index: 9000;
+	background-color: #000;
+	display: none;
+}
+
+#boxes .window {
+	position: absolute;
+	width: 440px;
+	height: 200px;
+	display: none;
+	z-index: 9999;
+	padding: 20px;
+}
+
+
+/* Customize your modal window here, you can add background image too */
+#boxes #login  {
+	width: 240px;
+	height: 192px;
+	background:url('/static/images/login-box-small.png') no-repeat;
+	padding:25px 30px;
+	color:#FFFFFF;
+}
+
+#boxes #login input.text {
+	background:#FFFFFF;
+	border:none;
+	border:1px solid #1e4f8a;
+	width:160px;
+	height:20px;
+	margin:0px 0px 5px 0px;
+}
+
+#boxes #login .loginb {
+	background:#4c89da;
+	border:none;
+	border:1px solid #427ec7;
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding:5px 10px;
+	clear:both;
+	float:right;
+	color:#FFFFFF;
+}
+
+#boxes #login .loginb:hover {
+	color:#427ec7;
+	background:#FFFFFF;
+}
+
+#boxes #login h2 {
+	color:#FFFFFF;
+	font-weight:bold;
+	margin:0px 0px 5px 0px;
+}
+
+#boxes #login a {
+	color:#FFFFFF;
+	clear:both;
+	display:block;
+	text-align:right;
+}
+
+#boxes #dialog1 {
+	width: 375px;
+	height: 203px;
+	background-color: #333399;
+	padding: 50px;
+}
+
+/* Borrowed from http://www.kollermedia.at/archive/2008/03/24/easy-css-tooltip/ */
+#contentitem a:hover {background:#ffffff; text-decoration:none;} /*BG color is a must for IE6*/
+#contentitem a.ctooltip span {display:none; padding:2px 3px; margin-left:8px; width:130px;}
+#contentitem a.ctooltip:hover span{display:inline; position:absolute; background:#ffffff; border:1px solid #cccccc; color:#6c6c6c;}
 
 
 /* FROM Blueprint CSS Framework 0.7.1 */
