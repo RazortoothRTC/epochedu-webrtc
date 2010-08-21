@@ -18,6 +18,7 @@
 <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
 <script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
 <script type="text/javascript" src="/static/js/pretty.js"></script>
+<script type="text/javascript" src="/static/js/epochedu.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 <script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 <script type="text/javascript">
@@ -106,7 +107,15 @@ function refresh()
     window.location.href = sURL;
 }
 
+var ss = 0;
+var es = 0;
 var bs = 0;
+var ch = 0;
+var rp = 0;
+var ep = 0;
+var rg = 0;
+var uc = 0;
+
 $(function(){
   var onNewEvent = function(e) {
     try {
@@ -116,16 +125,18 @@ $(function(){
 			  lastTime = e.time;
 		  	if ((e.name != null) && (e.name.match(/#killsession/i))) {
 			// alert('Got killsession');
+				es = es + 1;
+				
 				$('table#messages').children().remove();
 				$('#mask, .window').show();
 		  	} else if ((e.name != null) && (e.name.match(/#startsession/i))) {
 				// alert('Got start');
-				bs = bs + 1;
-				$('#bs').text(bs);
-				setTimeout( function() {}, 2);
+				ss = ss + 1;
+	
 				hideModal();
 				return false;
 		  	} else if ((e.name != null) && (e.name.match(/#runplayer/i))) { 
+				rp = rp + 1;
 				var contenturl = e.text;
 				if (!contenturl) 
 					conenturl = 'Sorry, no media is available';
@@ -138,13 +149,15 @@ $(function(){
 			
 				return false;
 		  	} else if ((e.name != null) && (e.name.match(/#endplayer/i))) {
+				ep = ep + 1;
 				Shadowbox.close();
 				Shadowbox.clearCache();
 				return false;
 		  	} else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
+				rg = rg + 1;
 				// Pass
 			} else {
-		  
+		  		  ch = ch + 1;
 	      	  	  var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
 			      var name   = e.name   || e.ident || 'Anonymous';
 			      var avatar = $('<img/>').attr('src', src).attr('alt', name);
@@ -171,10 +184,10 @@ $(function(){
 			      $('.pretty-time', meta).prettyDate();		$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
 		  	 } 
 		} else {
-			setTimeout( function() {}, 1);
-			
+			uc = uc + 1;
+			// setTimeout( function() {}, 1);
 		}
-		
+		messageDbg(ss, es, ch, rp, ep, rg, uc);
     } catch(e) { if (console) console.log(e) };
   }
 
@@ -276,7 +289,7 @@ body {
 	</div>
 </div>
 
-<div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a><span id="bs"></span></div>
+<div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a><br><span id="dbg"></span></div>
 
 </body>
 </html>
