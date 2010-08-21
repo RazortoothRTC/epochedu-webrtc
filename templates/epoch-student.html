@@ -106,73 +106,74 @@ function refresh()
     window.location.href = sURL;
 }
 
-
+var bs = 0;
 $(function(){
   var onNewEvent = function(e) {
     try {
-	  setTimeout( function() {}, 1);
-	  if ((e.name != null) && (e.name.match(/#killsession/i))) {
-		// alert('Got killsession');
-		$('table#messages').children().remove();
-		$('#mask, .window').show();
-	  } else if ((e.name != null) && (e.name.match(/#startsession/i))) {
-			// alert('Got start');
-			hideModal();
-			return false;
-	  } else if ((e.name != null) && (e.name.match(/#runplayer/i))) { 
-			var contenturl = e.text;
-			if (!contenturl) 
-				conenturl = 'Sorry, no media is available';
-;			Shadowbox.open({
-			        title:      "Media Player",
-					player: 'iframe',
-					content: contenturl,
-					width: 800,
-					height: 600
-			});
+		// alert(e.name + 'received');
+	  	if (lastTime != e.time) {
+	  	      // setTimeout( function() {}, 1);
+			  lastTime = e.time;
+		  	if ((e.name != null) && (e.name.match(/#killsession/i))) {
+			// alert('Got killsession');
+				$('table#messages').children().remove();
+				$('#mask, .window').show();
+		  	} else if ((e.name != null) && (e.name.match(/#startsession/i))) {
+				// alert('Got start');
+				bs = bs + 1;
+				$('#bs').text(bs);
+				hideModal();
+				return false;
+		  	} else if ((e.name != null) && (e.name.match(/#runplayer/i))) { 
+				var contenturl = e.text;
+				if (!contenturl) 
+					conenturl = 'Sorry, no media is available';
+					Shadowbox.open({
+				        title:      "Media Player",
+						player: 'iframe',
+						content: contenturl
+				});
 
 			
-			return false;
-	  } else if ((e.name != null) && (e.name.match(/#endplayer/i))) {
-			Shadowbox.close();
-			Shadowbox.clearCache();
-			return false;
-	  }else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
-			if (e.ident)
-			// Make sure you don't register yourself in the students list
-			if (e.ident.split('@')[0].localeCompare($('#ident').attr('value').split('@')[0]) != 0)
-				$("#onlinestudents").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '</li>');
+				return false;
+		  	} else if ((e.name != null) && (e.name.match(/#endplayer/i))) {
+				Shadowbox.close();
+				Shadowbox.clearCache();
+				return false;
+		  	} else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
+				// Pass
+			} else {
+		  
+	      	  	  var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+			      var name   = e.name   || e.ident || 'Anonymous';
+			      var avatar = $('<img/>').attr('src', src).attr('alt', name);
+			      if (e.ident) {
+			        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
+			        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
+			      }
+			      avatar = $('<td/>').addClass('avatar').append(avatar);
+
+			      var message = $('<td/>').addClass('chat-message');
+			      if (e.text) message.text(e.text);
+			      if (e.html) message.html(e.html);
+			      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
+			      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
+			      if (name)
+			        message.prepend($('<span/>').addClass('name').text(name+ ': '));
+
+			      var date = new Date(e.time * 1000);
+			      var meta = $('<td/>').addClass('meta').append(
+			        '(' +
+			        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
+			        ' from ' + e.address + ')'
+			      );
+			      $('.pretty-time', meta).prettyDate();		$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+		  	 } 
 		} else {
-		  if (lastTime != e.time) {
-			  lastTime = e.time;
-      	  	  var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
-		      var name   = e.name   || e.ident || 'Anonymous';
-		      var avatar = $('<img/>').attr('src', src).attr('alt', name);
-		      if (e.ident) {
-		        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
-		        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
-		      }
-		      avatar = $('<td/>').addClass('avatar').append(avatar);
-
-		      var message = $('<td/>').addClass('chat-message');
-		      if (e.text) message.text(e.text);
-		      if (e.html) message.html(e.html);
-		      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
-		      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
-		      if (name)
-		        message.prepend($('<span/>').addClass('name').text(name+ ': '));
-
-		      var date = new Date(e.time * 1000);
-		      var meta = $('<td/>').addClass('meta').append(
-		        '(' +
-		        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
-		        ' from ' + e.address + ')'
-		      );
-		      $('.pretty-time', meta).prettyDate();		$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-	  	  	} else {
-				// IGNORE?
-		  	}
+			setTimeout( function() {}, 1);
+			
 		}
+		
     } catch(e) { if (console) console.log(e) };
   }
 
@@ -274,7 +275,7 @@ body {
 	</div>
 </div>
 
-<div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
+<div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a><span id="bs"></span></div>
 
 </body>
 </html>

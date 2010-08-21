@@ -207,10 +207,9 @@ function refresh()
 
 $(function(){
   var onNewEvent = function(e) {
+  // alert(e.html);
   if ((e.name != null) && (e.name.match(/#killsession/i))) {
 		$('table#messages').children().remove();
-  } else if ((e.name != null) && (e.name.match(/#startsession/i))) {
-		// IGNORE
   } else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
 		if (e.ident)
 			// Make sure you don't register the teacher
@@ -276,9 +275,9 @@ $(function(){
 </head>
 <body>
 	<div id="teachernav">
-		<EM><big>Moderated Classroom Session: <%= $channel %></big><EM><form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">Enter Your Teacher Email Address:<input class="required" id="ident" type="text" name="ident" size="24"/><input type="submit" value="Login"/><input id="reg" type="hidden" name="#reg" value="#reg"/></form>
+		<EM><big>Moderated Classroom Session: <%= $channel %></big></EM><form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">Enter Your Teacher Email Address:<input class="required" id="ident" type="text" name="ident" size="24"/><input type="submit" value="Login"/><input id="reg" type="hidden" name="#reg" value="#reg"/></form>
 		<ul id="loggedin" style="display: none;">
-			<li>Hello, <span id="handle"></a> <a href="javascript:refresh()">Logout</a></li>
+			<li>Hello, <span id="handle"><a href="javascript:refresh()">Logout</a></li>
 			<li><a href="javascript:refresh()">Refresh Link</a></li>
 		</ul>
 	</div>
