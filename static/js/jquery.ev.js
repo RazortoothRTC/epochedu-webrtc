@@ -23,15 +23,16 @@
      *
      */
     run: function(messages) {
-	  // alert('running ev'); // XXX
       var i, m, h; // index, event, handler
-      for (i = 0; i < messages.length; i++) {
-        m = messages[i];
-        if (!m) continue;
-        h = this.handlers[m.type];
-        if (!h) h = this.handlers['*'];
-        if ( h) h(m);
-      }
+	  if (messages != null) { // XXX Guard against badness with null messages
+      	for (i = 0; i < messages.length; i++) {
+	        m = messages[i];
+	        if (!m) continue;
+	        h = this.handlers[m.type];
+	        if (!h) h = this.handlers['*'];
+	        if ( h) h(m);
+	      }
+   	   }
     },
 
     /* Method: stop
@@ -77,7 +78,7 @@
         url      : url,
         timeout  : self.timeout,
         success  : function(messages, status) {
-          console.log('success', messages); // XXX 
+          // console.log('success', messages); // XXX 
           self.run(messages)
         },
         complete : function(xhr, status) {
@@ -85,7 +86,7 @@
           if (status == 'success') {
             delay = 5000; // XXX 100
           } else {
-            console.log('status: ' + status, '; waiting before long-polling again...'); // XXX
+            // console.log('status: ' + status, '; waiting before long-polling again...'); // XXX
             delay = 10000; // XXX 5000
           }
           // "recursively" loop

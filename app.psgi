@@ -132,8 +132,9 @@ sub get {
         time => scalar Time::HiRes::gettimeofday,
     });
 	$self->response->content_type('text/plain');
-	my $json_out = to_json('status:ok');
-	$self->write($json_out . "\n");
+	# my $json_out = to_json('status:ok');
+	# $self->write($json_out . "\n");
+	$self->write({ success => 1 });
 	$self->finish;
 }
 
@@ -157,8 +158,9 @@ sub get {
         time => scalar Time::HiRes::gettimeofday,
     });
 	$self->response->content_type('text/plain');
-	my $json_out = to_json('status:ok');
-	$self->write($json_out . "\n");
+	# my $json_out = to_json('status:ok');
+	# $self->write($json_out . "\n");
+	$self->write({ success => 1 });
 	$self->finish;
 }
 
@@ -299,7 +301,7 @@ sub pullcontent {
 	my $dirpath = '';
 	my @contentlist = ();
 	my @crserverhost = split(':',$serverhost);
-	my $crdburlprefix = 'http://' . $crserverhost[0] .':5001'; # XXX 5001 should go into a config
+	my $crdburlprefix = 'http://' . $crserverhost[0] .':80/~dkords'; # XXX 5001 should go into a config
 	if ($channel) {
 		$dirpath = '/' . $channel;
 	}
@@ -385,10 +387,31 @@ sub get {
 	$self->finish;
 }
 
+package BrowserProfilerHandler;
+use base qw(Tatsumaki::Handler);
+
+sub get {
+    my($self, $channel) = @_;
+    $self->render('epochedu-browser-profiler.html');
+}
+
+#
+# XXX TODO: Need to implement this I think!
+#
+package StreamingContentHandler;
+use base qw(Tatsumaki::Handler);
+
+sub get {
+    my($self, $content) = @_;
+	$self->response->content_type('text/plain');
+    $self->render('epochedu-browser-profiler.html');
+}
+
 package main;
 use File::Basename;
 
 my $chat_re = '[\w\.\-]+';
+my $content_re = '[\w\.\-]+';
 my $app = Tatsumaki::Application->new([
     "/class/($chat_re)/poll" => 'ChatPollHandler',
     "/class/($chat_re)/mxhrpoll" => 'ChatMultipartPollHandler',
@@ -402,6 +425,8 @@ my $app = Tatsumaki::Application->new([
 	"/teacher" => 'TeacherLandingPageHandler',
 	"/student" => 'StudentLandingPageHandler',
 	"/crdb/($chat_re)" => 'ContentRepoDBHandler',
+	"/sc/($content_re)" => 'StreamingContentHandler',
+	"/browser-profiler" => 'BrowserProfilerHandler',
 ]);
 
 $app->template_path(dirname(__FILE__) . "/templates");

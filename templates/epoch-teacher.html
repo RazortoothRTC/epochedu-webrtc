@@ -70,18 +70,18 @@ $(document).ready(function() {
 	});
 	
   	$('#startsession').bind('click', function() { 
-		$('#startsession').fadeOut();
+		$('#startsession').fadeOut('fast');
 		$.get(
 			"/startsession/<%= $channel %>", 
 			{ ident: $('#ident').val()},
 			function(data) {
 				return false;
 		});
-		$('#endsession').fadeIn();
+		$('#endsession').fadeIn('fast');
 	}); 
 
   $('#endsession').bind('click', function() { 
-		$('#endsession').fadeOut();
+		$('#endsession').fadeOut('fast');
 		// Need to kill off the class room session, clear the queue for channel
 		$.get(
 			"/endsession/<%= $channel %>", 
@@ -92,7 +92,7 @@ $(document).ready(function() {
 				$('table#messages').children().remove();
 				return false;
 		});
-		$('#startsession').fadeIn();
+		$('#startsession').fadeIn('fast');
 	});
 	
 	//When page loads...
@@ -108,7 +108,7 @@ $(document).ready(function() {
 		$(".tab_content").hide(); //Hide all tab content
 
 		var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
-		$(activeTab).fadeIn(); //Fade in the active ID content
+		$(activeTab).fadeIn('fast'); //Fade in the active ID content
 		return false;
 	});
 	//On Click Event
@@ -119,7 +119,7 @@ $(document).ready(function() {
 		$(".tab_content").hide(); //Hide all tab content
 
 		var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
-		$(activeTab).fadeIn(); //Fade in the active ID content
+		$(activeTab).fadeIn('fast'); //Fade in the active ID content
 		return false;
 	});
 	
@@ -129,15 +129,15 @@ $(document).ready(function() {
 	});
 	
 	$('#regid').submit(function() {
-	  $(this).fadeOut();
+	  $(this).fadeOut('fast');
 	  doPost($('#ident'), $('#reg'));
-	  $(this).parent().find('#loggedin').fadeIn().find('#handle').before($('#ident').attr('value'));
+	  $(this).parent().find('#loggedin').fadeIn('fast').find('#handle').before($('#ident').attr('value'));
 	  return false;
 	});
 	
 	$('.send').click(function(e){
 			var text = $(this).attr('alt');
-			$(this).fadeOut();
+			$(this).fadeOut('fast');
 			if (text) {
 				$.get(
 					"/runplayer/<%= $channel %>", 
@@ -146,13 +146,13 @@ $(document).ready(function() {
 						return false;
 				});
 			}
-			$(this).parent().find('.end').fadeIn();
+			$(this).parent().find('.end').fadeIn('fast');
 			return false;
 	});
 	
 	$('.end').click(function(e){
 			var text = $('.end').attr('alt');
-			$(this).fadeOut();
+			$(this).fadeOut('fast');
 			if (text) {
 				$.get(
 					"/endplayer/<%= $channel %>", 
@@ -234,18 +234,21 @@ $(function(){
 	      if (e.html) message.html(e.html);
 	      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
 	      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
-	      if (name)
+	      if (name) 
 	        message.prepend($('<span/>').addClass('name').text(name+ ': '));
 
-	      var date = new Date(e.time * 1000);
-	      var meta = $('<td/>').addClass('meta').append(
-	        '(' +
-	        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
-	        ' from ' + e.address + ')'
-	      );
-	      $('.pretty-time', meta).prettyDate();
-	      
+		  if (name.charAt(0) != '#') {
+	      	var date = new Date(e.time * 1000);
+		      var meta = $('<td/>').addClass('meta').append(
+		        '(' +
+		        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
+		        ' from ' + e.address + ')'
+		      );
+		      $('.pretty-time', meta).prettyDate();
+   
+
 	$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+ 	  		}
 	    } catch(e) { if (console) console.log(e) };
 	   } else {
 		// IGNORE for now
@@ -426,8 +429,7 @@ $(function(){
 				<div class="header">
 					<h2>Lessons</h2>
 					<div id="sessionmgr">
-						<p><input type="button" class="button" id="startsession" value="Start Session" /><br/>
-						<p><input type="button" class="button" id="endsession" value="End Session" style="display: none;"/>
+						<p><input type="button" class="button" id="startsession" value="Start Session" /><input type="button" class="button" id="endsession" value="End Session" style="display: none;"/>
 					</div>
 				</div>
 				<br/>
