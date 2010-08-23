@@ -301,7 +301,7 @@ sub pullcontent {
 	my $dirpath = '';
 	my @contentlist = ();
 	my @crserverhost = split(':',$serverhost);
-	my $crdburlprefix = 'http://' . $crserverhost[0] .':80/~dkords'; # XXX 5001 should go into a config
+	my $crdburlprefix = 'http://' . $crserverhost[0] .':80/contentrepo'; # XXX 5001 should go into a config
 	if ($channel) {
 		$dirpath = '/' . $channel;
 	}
