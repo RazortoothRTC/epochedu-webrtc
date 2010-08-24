@@ -148,6 +148,7 @@ $(document).ready(function() {
 			var text = $('.end').attr('alt');
 			$(this).fadeOut('fast');
 			if (text) {
+				alert('clicked end');
 				$.get(
 					"/endplayer/<%= $channel %>", 
 					{ ident: $('#ident').val(), contenturl:text},

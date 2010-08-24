@@ -146,6 +146,7 @@ $(function(){
 				return false;
 		  	} else if ((e.name != null) && (e.name.match(/#endplayer/i))) {
 				ep = ep + 1;
+				alert('endplayer received');
 				Shadowbox.close();
 				Shadowbox.clearCache();
 				return false;
