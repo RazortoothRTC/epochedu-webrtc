@@ -181,10 +181,12 @@ sub get {
 	my $client = $mq->clients->{$client_id};
 	my @events = $mq->backlog_events;
     $mq->flush_events($client_id, @events) if @events;
-    # if (@{ $client->{buffer}}) {
-	#	$mq->flush_events($client_id, @{ $client->{buffer} });
-	# }
-	# $self->write({ success => 1 });
+
+	# XXX try this out
+    if (@{ $client->{buffer}}) {
+		$mq->flush_events($client_id, @{ $client->{buffer} });
+	}
+	self->write({ success => 1 });
 	
 	# send up an empty message with a hash sign to send directives
 	my $html = ChatPostHandler->format_message("");

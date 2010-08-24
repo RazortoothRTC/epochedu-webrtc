@@ -1,4 +1,7 @@
-alert('IMPORTANT: Remove this line from json2.js before deployment.');
+/* 
+% my $channel = $_[0]->{handler}->args->[0];
+% if ($mxhr) {
+alert('IMPORTANT: Remove this line from json2.js before deployment.'); */
 /*
     http://www.JSON.org/json2.js
     2010-03-20
