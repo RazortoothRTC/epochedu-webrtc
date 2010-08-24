@@ -34,7 +34,10 @@ sub get {
 
 sub on_new_event {
     my($self, @events, $mq, $client_id) = @_;
-    $self->write(\@events);
+ 	my @eventscopy = @events; # XXX
+    $self->write(\@eventscopy); # XXX
+	# XXX $self->write(\@events);
+	$mq->flush_events($client_id, @events) if @events;
     $self->finish;
 }
 
