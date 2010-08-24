@@ -29,12 +29,12 @@ sub get {
         or Tatsumaki::Error::HTTP->throw(500, "'client_id' needed");
     $client_id = rand(1) if $client_id eq 'dummy'; # for benchmarking stuff
     $mq->poll_once($client_id, sub { $self->on_new_event(@_) });
+	# $mq->flush_events($client_id, @events) if @events;
 }
 
 sub on_new_event {
     my($self, @events, $mq, $client_id) = @_;
     $self->write(\@events);
-    $mq->flush_events($client_id, @events) if @events;
     $self->finish;
 }
 
