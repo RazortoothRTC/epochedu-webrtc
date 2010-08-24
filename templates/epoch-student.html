@@ -39,7 +39,8 @@ $(function() {
 </script>
 <script>
 var cookieName = 'tatsumaki_chat_ident';
-var lastTime = new Date();
+var lastTime = new Date(0);
+
 var intervalID = 0;
 
 
@@ -113,7 +114,9 @@ $(function(){
     try {
 		// alert(e.name + 'received');
 		msg = JSON.stringify(e);
-	  	if (lastTime != e.time) {
+		// alert(e.time + ' since last ' + lastTime);
+	  	if (e.time > lastTime) {
+		// XXX if (lastTime != e.time) {
 	  	      // setTimeout( function() {}, 1);
 			  lastTime = e.time;
 		  	if ((e.name != null) && (e.name.match(/#killsession/i))) {
