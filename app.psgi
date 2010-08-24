@@ -183,10 +183,10 @@ sub get {
     $mq->flush_events($client_id, @events) if @events;
 
 	# XXX try this out
-    if (@{ $client->{buffer}}) {
-		$mq->flush_events($client_id, @{ $client->{buffer} });
-	}
-	self->write({ success => 1 });
+    # if (@{ $client->{buffer}}) {
+	#	$mq->flush_events($client_id, @{ $client->{buffer} });
+	#}
+	# self->write({ success => 1 });
 	
 	# send up an empty message with a hash sign to send directives
 	my $html = ChatPostHandler->format_message("");
