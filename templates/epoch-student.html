@@ -206,13 +206,8 @@ $(function(){
 	// XXX Does this need a timeout value?  Maybe need to use $.ajax()?
 	$.get('/class/<%= $channel %>/poll?client_id=' + Math.random(), {}, 
 	 	function(data) {
-			// var events = eval('(' + data + ')');  
 			var events = data;
 			// alert('looping on events: ' + JSON.stringify(events));
-			/* for (var event in events) {
-				
-				onNewEvent(JSON.parse(event));
-			} */
 			for (var i = 0; i < events.length ; i++) {
 				var newevent = events[i];
 				// alert(newevent.time);

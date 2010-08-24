@@ -12,15 +12,8 @@
 	<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
 
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="/static/js/jquery.tools.min.js"></script> -->
 <script type="text/javascript" src="/static/js/jquery.mousewheel.js"></script>
 <script type="text/javascript" src="/static/js/jScrollPane.js"></script>
-% if ($mxhr) {
-<script type="text/javascript" src="/static/js/DUI.js"></script>
-<script type="text/javascript" src="/static/js/Stream.js"></script>
-% } else {
-<script type="text/javascript" src="/static/js/jquery.ev.js"></script>
-% }
 <script type="text/javascript" src="/static/js/jquery.md5.js"></script>
 <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
 <script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
@@ -50,7 +43,8 @@ $(function() {
 <script type="text/javascript">
 
 var cookieName = 'tatsumaki_chat_ident';
-var lastTime = new Date();
+var lastTime = new Date(0); // Set to like a long long time ago
+var intervalID = 0;
 
 $(document).ready(function() { 	
 	$(".topMenuAction").click( function() {
@@ -208,54 +202,55 @@ function refresh()
 $(function(){
   var onNewEvent = function(e) {
   // alert(e.html);
-  if ((e.name != null) && (e.name.match(/#killsession/i))) {
-		$('table#messages').children().remove();
-  } else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
-		if (e.ident)
-			// Make sure you don't register the teacher
-			if (e.ident.split('@')[0].localeCompare($('#ident').attr('value').split('@')[0]) != 0)
-				$("#onlinestudents").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '</li>');
-				$("#studentStatusList").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '<span class="status">In Class session</span></li>');
-  } else {
-	  if (lastTime != e.time) {
-		  lastTime = e.time;
-   		try {
-	      var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
-	      var name   = e.name   || e.ident || 'Anonymous';
-	      var avatar = $('<img/>').attr('src', src).attr('alt', name);
-	      if (e.ident) {
-	        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
-	        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
-	      }
-	      avatar = $('<td/>').addClass('avatar').append(avatar);
+  if (lastTime < e.time) {
+	lastTime = e.time;
+  		if ((e.name != null) && (e.name.match(/#killsession/i))) {
+				$('table#messages').children().remove();
+		} else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
+				if (e.ident)
+					// Make sure you don't register the teacher
+					if (e.ident.split('@')[0].localeCompare($('#ident').attr('value').split('@')[0]) != 0)
+						$("#onlinestudents").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '</li>');
+						$("#studentStatusList").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '<span class="status">In Class session</span></li>');
+		} else {
+			try {
+			      var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+			      var name   = e.name   || e.ident || 'Anonymous';
+			      var avatar = $('<img/>').attr('src', src).attr('alt', name);
+			      if (e.ident) {
+			        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
+			        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
+			      }
+			      avatar = $('<td/>').addClass('avatar').append(avatar);
 
-	      var message = $('<td/>').addClass('chat-message');
-	      if (e.text) message.text(e.text);
-	      if (e.html) message.html(e.html);
-	      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
-	      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
-	      if (name) 
-	        message.prepend($('<span/>').addClass('name').text(name+ ': '));
+			      var message = $('<td/>').addClass('chat-message');
+			      if (e.text) message.text(e.text);
+			      if (e.html) message.html(e.html);
+			      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
+			      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
+			      if (name) 
+			        message.prepend($('<span/>').addClass('name').text(name+ ': '));
 
-		  if (name != null && name.charAt(0) != '#') {
-	      	var date = new Date(e.time * 1000);
-		      var meta = $('<td/>').addClass('meta').append(
-		        '(' +
-		        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
-		        ' from ' + e.address + ')'
-		      );
-		      $('.pretty-time', meta).prettyDate();
+				  if (name != null && name.charAt(0) != '#') {
+			      	var date = new Date(e.time * 1000);
+				      var meta = $('<td/>').addClass('meta').append(
+				        '(' +
+				        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
+				        ' from ' + e.address + ')'
+				      );
+				      $('.pretty-time', meta).prettyDate();
    
 
-	$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
- 	  		}
-	    } catch(e) { if (console) console.log(e) };
-	   } else {
+			$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+		 	  		}
+			} catch(e) { if (console) console.log(e) };
+		}
+	} else {
 		// IGNORE for now
-	   }
 	}
   }
 
+/*
   if (typeof DUI != 'undefined') {
     var s = new DUI.Stream();
     s.listen('application/json', function(payload) {
@@ -267,10 +262,26 @@ $(function(){
     $.ev.handlers.message = onNewEvent;
     $.ev.loop('/class/<%= $channel %>/poll?client_id=' + Math.random());
   } 
+*/
+
+  var longPoll = function() {
+	// XXX Does this need a timeout value?  Maybe need to use $.ajax()?
+	$.get('/class/<%= $channel %>/poll?client_id=' + Math.random(), {}, 
+	 	function(data) {
+			var events = data;
+			// alert('looping on events: ' + JSON.stringify(events));
+			for (var i = 0; i < events.length ; i++) {
+				var newevent = events[i];
+				// alert(newevent.time);
+				onNewEvent(newevent);
+			}
+		}, 
+		'json');
+  }
 
   if ($.cookie(cookieName))
     $('#ident').attr('value', $.cookie(cookieName));
-
+  intervalID = setInterval(longPoll,5000); // XXX Is there some way to detect network 
   window.setInterval(function(){ $(".pretty-time").prettyDate() }, 1000 * 30);
 });
 </script>
