@@ -128,7 +128,6 @@ $(function(){
 		  	} else if ((e.name != null) && (e.name.match(/#startsession/i))) {
 				// alert('Got start');
 				ss = ss + 1;
-	
 				hideModal();
 				return false;
 		  	} else if ((e.name != null) && (e.name.match(/#runplayer/i))) { 
@@ -141,12 +140,11 @@ $(function(){
 						player: 'iframe',
 						content: contenturl
 				});
-
-			
 				return false;
 		  	} else if ((e.name != null) && (e.name.match(/#endplayer/i))) {
 				ep = ep + 1;
-				alert('endplayer received');
+				setTimeout( function() {}, 1);
+				// alert('endplayer received');
 				Shadowbox.close();
 				Shadowbox.clearCache();
 				return false;
