@@ -27,6 +27,12 @@
 #(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-function messageDbg(startsession, endsession, chat, runplayer, endplayer, reg, uncategorized) {
-	$('#dbg').text('ss: ' + startsession + ' es:' + endsession + ' ch:' + chat + ' rp:' + runplayer + ' ep:' + endplayer + ' rg:' + reg + ' uc:' + uncategorized);
+function messageDbg(startsession, endsession, chat, runplayer, endplayer, reg, uncategorized, msg) {
+	$('#dbg').text('ss: ' + startsession + ' es:' + endsession + ' ch:' + chat + ' rp:' + runplayer + ' ep:' + endplayer + ' rg:' + reg + ' uc:' + uncategorized + ' msg:' + msg);
+}
+
+var sURL = unescape(window.location.pathname);
+
+function refresh() {
+    window.location.href = sURL;
 }

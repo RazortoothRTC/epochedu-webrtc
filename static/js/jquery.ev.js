@@ -90,7 +90,7 @@
             delay = 10000; // XXX 5000
           }
           // "recursively" loop
-          window.setTimeout(function(){ if (self.running) self.loop(url); }, delay);
+          window.setTimeout(function(){ if (self.running) self.loop(url); }, delay); // XXX I think this blows up on Android, threading issue maybe?
         }
       });
     }

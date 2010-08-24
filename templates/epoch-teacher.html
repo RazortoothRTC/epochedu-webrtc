@@ -237,7 +237,7 @@ $(function(){
 	      if (name) 
 	        message.prepend($('<span/>').addClass('name').text(name+ ': '));
 
-		  if (name.charAt(0) != '#') {
+		  if (name != null && name.charAt(0) != '#') {
 	      	var date = new Date(e.time * 1000);
 		      var meta = $('<td/>').addClass('meta').append(
 		        '(' +

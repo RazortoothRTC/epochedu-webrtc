@@ -10,16 +10,11 @@
 <!-- <script type="text/javascript" src="/static/js/jquery.tools.min.js"></script> -->
 <script type="text/javascript" src="/static/js/jquery.mousewheel.js"></script>
 <script type="text/javascript" src="/static/js/jScrollPane.js"></script>
-% if ($mxhr) {
-<script type="text/javascript" src="/static/js/DUI.js"></script>
-<script type="text/javascript" src="/static/js/Stream.js"></script>
-% } else {
-<script type="text/javascript" src="/static/js/jquery.ev.js"></script>
-% }
 <script type="text/javascript" src="/static/js/jquery.md5.js"></script>
 <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
 <script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
 <script type="text/javascript" src="/static/js/pretty.js"></script>
+<script type="text/javascript" src="/static/js/json2.js"></script>
 <script type="text/javascript" src="/static/js/epochedu.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 <script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
@@ -45,7 +40,7 @@ $(function() {
 <script>
 var cookieName = 'tatsumaki_chat_ident';
 var lastTime = new Date();
-
+var intervalID = 0;
 
 
 $(document).ready(function() {
@@ -102,12 +97,7 @@ function doPost(el1, el) {
   return;
 }
 
-var sURL = unescape(window.location.pathname);
 
-function refresh()
-{
-    window.location.href = sURL;
-}
 
 var ss = 0;
 var es = 0;
@@ -117,11 +107,12 @@ var rp = 0;
 var ep = 0;
 var rg = 0;
 var uc = 0;
-
+var msg = ""
 $(function(){
   var onNewEvent = function(e) {
     try {
 		// alert(e.name + 'received');
+		msg = JSON.stringify(e);
 	  	if (lastTime != e.time) {
 	  	      // setTimeout( function() {}, 1);
 			  lastTime = e.time;
@@ -189,10 +180,13 @@ $(function(){
 			uc = uc + 1;
 			// setTimeout( function() {}, 1);
 		}
-		messageDbg(ss, es, ch, rp, ep, rg, uc);
+		messageDbg(ss, es, ch, rp, ep, rg, uc, msg);
     } catch(e) { if (console) console.log(e) };
   }
 
+  // XXX Commenting out this problematic block of code!!! Was causing an android specific bug that shows 
+  // Up in Android 1.6-2.2.  TODO: File a bug.
+  /*
   if (typeof DUI != 'undefined') {
     var s = new DUI.Stream();
     s.listen('application/json', function(payload) {
@@ -204,9 +198,34 @@ $(function(){
     $.ev.handlers.message = onNewEvent;
     $.ev.loop('/class/<%= $channel %>/poll?client_id=' + Math.random());
   }
+*/
+  var longPoll = function() {
+	// XXX Does this need a timeout value?  Maybe need to use $.ajax()?
+	$.get('/class/<%= $channel %>/poll?client_id=' + Math.random(), {}, 
+	 	function(data) {
+			// var events = eval('(' + data + ')');  
+			var events = data;
+			// alert('looping on events: ' + JSON.stringify(events));
+			/* for (var event in events) {
+				
+				onNewEvent(JSON.parse(event));
+			} */
+			for (var i = 0; i < events.length ; i++) {
+				var newevent = events[i];
+				// alert(newevent.time);
+				onNewEvent(newevent);
+			}
+		}, 
+		'json');
+  }
 
   if ($.cookie(cookieName))
     $('#ident').attr('value', $.cookie(cookieName));
+  intervalID = setInterval(longPoll,5000); // XXX Is there some way to detect network 
+  // connectivity, if so, we can halt the polling -> clearInterval(intervalID);
+  /* function longPoll() {
+	$.get('/class/<%= $channel %>/poll?client_id=' + Math.random(), {}, onNewEvent, 'json');
+  } */
 
   window.setInterval(function(){ $(".pretty-time").prettyDate() }, 1000 * 30);
 });
