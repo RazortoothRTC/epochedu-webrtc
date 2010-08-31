@@ -1,9 +1,8 @@
 % my $channel = $_[0]->{handler}->args->[0];
-% my $mxhr = $_[0]->{handler}->request->param('mxhr');
 % my $val1 = ContentRepoDBHandler->mytest(); # OK's this is the secret to calling your handler business logic
 % my $host = $_[0]->{handler}->request->headers->header('Host');
 % my @roomcl = ContentRepoDBHandler->pullcontent($channel, $host);
-
+% my @pathinfo = split('/', $_[0]->{handler}->request->path_info);
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -17,8 +16,9 @@
 <script type="text/javascript" src="/static/js/jquery.md5.js"></script>
 <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
 <script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
+<script type="text/javascript" src="/static/js/jquery.ev.js"></script>
 <script type="text/javascript" src="/static/js/pretty.js"></script>
-<script type="text/javascript" src="/static/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="/static/js/epochedu.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 <script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 <script type="text/javascript">
@@ -43,8 +43,51 @@ $(function() {
 <script type="text/javascript">
 
 var cookieName = 'tatsumaki_chat_ident';
-var lastTime = new Date(0); // Set to like a long long time ago
-var intervalID = 0;
+var path = '<%= @pathinfo[1] %>';
+var channel = '<%= $channel %>'
+var onNewEvent = function(e) {
+	if ((e.name != null) && (e.name.match(/#killsession/i))) {
+		$('table#messages').children().remove();
+	} else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
+		if (e.ident) {
+			// Make sure you don't register the teacher
+			if (e.ident.split('@')[0].localeCompare($('#ident').attr('value').split('@')[0]) != 0) {
+				$("#onlinestudents").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '</li>');
+				$("#studentStatusList").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '<span class="status">In Class session</span></li>');
+			}
+		}
+	} else {
+		try {
+			var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+			var name   = e.name   || e.ident || 'Anonymous';
+			var avatar = $('<img/>').attr('src', src).attr('alt', name);
+			if (e.ident) {
+			  var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
+			  avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
+			}
+			avatar = $('<td/>').addClass('avatar').append(avatar);
+
+			var message = $('<td/>').addClass('chat-message');
+			if (e.text) message.text(e.text);
+			if (e.html) message.html(e.html);
+			message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
+			var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
+			if (name) 
+			  message.prepend($('<span/>').addClass('name').text(name+ ': '));
+			if (name != null && name.charAt(0) != '#') {
+				var date = new Date(e.time * 1000);
+				var meta = $('<td/>').addClass('meta').append(
+			        '(' +
+			        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
+			        ' from ' + e.address + ')'
+			      );
+				$('.pretty-time', meta).prettyDate();
+
+	$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+			} 
+		} catch(e) { if (console) console.log(e) };
+	}
+}
 
 $(document).ready(function() { 	
 	$(".topMenuAction").click( function() {
@@ -170,121 +213,17 @@ $(document).ready(function() {
 							content: contenturl
 					});
 	});
+	
+	$.ev.handlers.message = onNewEvent;
+	$.ev.loop('/class/<%= $channel %>/poll?client_id=' + Math.random());
+	if ($.cookie(cookieName))
+	  $('#ident').attr('value', $.cookie(cookieName));
+	window.setInterval(function(){ $(".pretty-time").prettyDate() }, 1000 * 30);
 });
 
-/* XXX We should just fix this up to handle all dispatching to other clients in session */
-function doPost(el1, el) {
-  var ident = el1.attr('value');
-  if (ident) $.cookie(cookieName, ident, { path: '/classmoderator' });
-  var text = el.attr('value');
-  if (!text) 
-	text = el.attr('href');
-  if (!text) return;
-  $.ajax({
-    url: "/class/<%= $channel %>/post",
-    data: { ident: ident, text: text },
-    type: 'post',
-    dataType: 'json',
-    success: function(r) { }
-  });
-  el.attr('value', '');
-  return;
-}
 
-var sURL = unescape(window.location.pathname);
+  
 
-function refresh()
-{
-    window.location.href = sURL;
-}
-
-
-
-$(function(){
-  var onNewEvent = function(e) {
-  // alert(e.html);
-  if (lastTime < e.time) {
-	lastTime = e.time;
-  		if ((e.name != null) && (e.name.match(/#killsession/i))) {
-				$('table#messages').children().remove();
-		} else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
-				if (e.ident)
-					// Make sure you don't register the teacher
-					if (e.ident.split('@')[0].localeCompare($('#ident').attr('value').split('@')[0]) != 0)
-						$("#onlinestudents").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '</li>');
-						$("#studentStatusList").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '<span class="status">In Class session</span></li>');
-		} else {
-			try {
-			      var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
-			      var name   = e.name   || e.ident || 'Anonymous';
-			      var avatar = $('<img/>').attr('src', src).attr('alt', name);
-			      if (e.ident) {
-			        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
-			        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
-			      }
-			      avatar = $('<td/>').addClass('avatar').append(avatar);
-
-			      var message = $('<td/>').addClass('chat-message');
-			      if (e.text) message.text(e.text);
-			      if (e.html) message.html(e.html);
-			      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
-			      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
-			      if (name) 
-			        message.prepend($('<span/>').addClass('name').text(name+ ': '));
-
-				  if (name != null && name.charAt(0) != '#') {
-			      	var date = new Date(e.time * 1000);
-				      var meta = $('<td/>').addClass('meta').append(
-				        '(' +
-				        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
-				        ' from ' + e.address + ')'
-				      );
-				      $('.pretty-time', meta).prettyDate();
-   
-
-			$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-		 	  		}
-			} catch(e) { if (console) console.log(e) };
-		}
-	} else {
-		// IGNORE for now
-	}
-  }
-
-/*
-  if (typeof DUI != 'undefined') {
-    var s = new DUI.Stream();
-    s.listen('application/json', function(payload) {
-      var event = eval('(' + payload + ')');
-      onNewEvent(event);
-    });
-    s.load('/class/<%= $channel %>/mxhrpoll');
-  } else {
-    $.ev.handlers.message = onNewEvent;
-    $.ev.loop('/class/<%= $channel %>/poll?client_id=' + Math.random());
-  } 
-*/
-
-  var longPoll = function() {
-	// XXX Does this need a timeout value?  Maybe need to use $.ajax()?
-	$.get('/class/<%= $channel %>/poll?client_id=' + Math.random(), {}, 
-	 	function(data) {
-			var events = data;
-			// alert('looping on events: ' + JSON.stringify(events));
-			for (var i = 0; i < events.length ; i++) {
-				var newevent = events[i];
-				// alert(newevent.time);
-				onNewEvent(newevent);
-			}
-		}, 
-		'json');
-  }
-
-  if ($.cookie(cookieName))
-    $('#ident').attr('value', $.cookie(cookieName));
-  intervalID = setInterval(longPoll,5000); // XXX Is there some way to detect network 
-  window.setInterval(function(){ $(".pretty-time").prettyDate() }, 1000 * 30);
-});
 </script>
 	<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="all"/>
 </head>

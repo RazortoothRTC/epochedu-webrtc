@@ -27,6 +27,28 @@
 #(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
+
+function doPost(el1, el) {
+  var ident = el1.attr('value');
+  var isTeacher = false;
+  if (path.indexOf('classmoderator') < 0)
+	path = 'class';
+  if (ident) $.cookie(cookieName, ident, { path: '/' + path });
+  var text = el.attr('value');
+  if (!text) 
+	text = el.attr('href');
+  if (!text) return;
+  $.ajax({
+    url: "/class/" + channel + "/post",
+    data: { ident: ident, text: text },
+    type: 'post',
+    dataType: 'json',
+    success: function(r) { }
+  });
+  el.attr('value', '');
+  return;
+}
+
 function messageDbg(startsession, endsession, chat, runplayer, endplayer, reg, uncategorized, msg) {
 	$('#dbg').text('ss: ' + startsession + ' es:' + endsession + ' ch:' + chat + ' rp:' + runplayer + ' ep:' + endplayer + ' rg:' + reg + ' uc:' + uncategorized + ' msg:' + msg);
 }
@@ -36,3 +58,19 @@ var sURL = unescape(window.location.pathname);
 function refresh() {
     window.location.href = sURL;
 }
+
+/* Depricate this XXX */
+var longPoll = function() {
+	// XXX Does this need a timeout value?  Maybe need to use $.ajax()?
+	$.get('/class/<%= $channel %>/poll?client_id=' + Math.random(), {}, 
+	 	function(data) {
+			var events = data;
+			// alert('looping on events: ' + JSON.stringify(events));
+			for (var i = 0; i < events.length ; i++) {
+				var newevent = events[i];
+				// alert(newevent.time);
+				onNewEvent(newevent);
+			}
+		}, 
+		'json');
+  }

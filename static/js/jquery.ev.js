@@ -15,7 +15,7 @@
     running  : false,
     xhr      : null,
     verbose  : true,
-    timeout  : null,
+    timeout  : null, // PASS THIS VALUE IN!
 
     /* Method: run
      *
@@ -23,16 +23,25 @@
      *
      */
     run: function(messages) {
-      var i, m, h; // index, event, handler
-	  if (messages != null) { // XXX Guard against badness with null messages
-      	for (i = 0; i < messages.length; i++) {
+      var i, m, h; // index, event, handler 
+	  if (messages != null) {
+	  	console.log('>>>>>>run invoked: messages length = ' + messages.length + ' - ' + new Date());
+	      for (i = 0; i < messages.length; i++) {
 	        m = messages[i];
 	        if (!m) continue;
 	        h = this.handlers[m.type];
 	        if (!h) h = this.handlers['*'];
 	        if ( h) h(m);
 	      }
-   	   }
+		  return true;
+  	  }	else {
+		// alert('fail!');
+		console.error('>>>>>>messages object is null, wait a bit - ' + new Date());
+		// window.location.href = unescape(window.location.pathname);
+		setTimeout(function () { /* do nada */}, 10000); // XXX
+		self.status = null;
+		return false;
+	  }
     },
 
     /* Method: stop
@@ -41,11 +50,11 @@
      *
      */
     stop: function() {
+	  console.log('>>>>>>>>>>>stop loop: - ' + new Date());
       if (this.xhr) {
         this.xhr.abort();
         this.xhr = null;
       }
-	  alert('stopping ev');
       this.running = false;
     },
 
@@ -61,6 +70,7 @@
      *
      */
     loop: function(url, handlers) {
+	  console.log('>>>>>>>>>>>>>ev.loop again - ' + new Date());
       var self = this;
       if (handlers) {
         if (typeof handlers == "object") {
@@ -77,20 +87,25 @@
         dataType : 'json',
         url      : url,
         timeout  : self.timeout,
-        success  : function(messages, status) {
-          // console.log('success', messages); // XXX 
-          self.run(messages)
+        success  : function(messages, status, xhr) {
+          // console.log('>>>>>>success', messages);
+		  if (xhr.status >= 200 && xhr.status < 300) self.run(messages);
         },
+		error 	 : function(xhr, textStatus) { console.log(">>>>>>>>>>AJAX ERROR: Type: "+textStatus.name);},
         complete : function(xhr, status) {
           var delay;
-          if (status == 'success') {
-            delay = 5000; // XXX 100
-          } else {
-            // console.log('status: ' + status, '; waiting before long-polling again...'); // XXX
-            delay = 10000; // XXX 5000
-          }
+		  if (status == 'success') { // Guard against false success
+          	if (xhr && (xhr.status >= 200 && xhr.status < 300)) {
+	            delay = 100;
+				console.log('>>>>>>status: success retry in 100ms - ' + new Date());
+	          } else {
+	            console.log('>>>>>>status: ' + xhr.status, '; waiting before long-polling again... - ' + new Date());
+	            delay = 5000;
+	          }
+	  	  }	
           // "recursively" loop
-          window.setTimeout(function(){ if (self.running) self.loop(url); }, delay); // XXX I think this blows up on Android, threading issue maybe?
+		  console.log('>>>>>>>>self.running = ' + self.running + ' - ' + new Date());
+          window.setTimeout(function(){ if (self.running) self.loop(url); }, delay);
         }
       });
     }
