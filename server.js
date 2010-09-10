@@ -1,3 +1,27 @@
+/* 
+
+Original node_chat.git LICENSE:
+
+Copyright 2009,2010 Ryan Dahl <ry@tinyclouds.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+*/
 HOST = null; // localhost
 PORT = 5000;
 
@@ -122,9 +146,13 @@ setInterval(function () {
 
 fu.listen(Number(process.env.PORT || PORT), HOST);
 
-fu.get("/student", fu.staticHandler("index-boiler.html"));
-fu.get("/", fu.staticHandler("index-boiler.html"));
-fu.get("/css/style.css", fu.staticHandler("css/style-nodejs-chat.css"));
+// XXX This is ok for caching and routing the urls, but we should write a handler for static image content
+fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
+fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
+fu.get("/class", fu.staticHandler("templates/epoch-student.html"));
+fu.get("/classmoderator", fu.staticHandler("templates/epoch-teacher.html"));
+fu.get("/", fu.staticHandler("index.html"));
+fu.get("/css/style.css", fu.staticHandler("css/style-epochedu.css"));
 fu.get("/js/client.js", fu.staticHandler("js/client.js"));
 fu.get("/js/jquery.min.js", fu.staticHandler("js/jquery-1.4.2.min.js")); 
 fu.get("/js/plugins.js", fu.staticHandler("js/plugins.js"));
@@ -137,6 +165,8 @@ fu.get("/js/modernizr-1.5.min.js", fu.staticHandler("js/modernizr-1.5.min.js"));
 fu.get("/images/logo_marvell.jpg", fu.staticHandler("images/logo_marvell.jpg"));
 fu.get("/images/logo_001.jpg", fu.staticHandler("images/logo_001.jpg"));
 fu.get("/images/favicon.ico", fu.staticHandler("images/favicon.ico"));
+fu.get("/images/lesson-img-holder.png", fu.staticHandler("images/lesson-img-holder.png"));
+fu.get("/images/css/header-bg.gif", fu.staticHandler("images/css/header-bg.gif"));
 
 fu.get("/who", function (req, res) {
   var nicks = [];

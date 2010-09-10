@@ -9,11 +9,10 @@ var fu = exports;
 var NOT_FOUND = "Not Found\n";
 
 function notFound(req, res) {
-  /* res.writeHead(404, { "Content-Type": "text/plain"
+  res.writeHead(404, { "Content-Type": "text/plain"
                      , "Content-Length": NOT_FOUND.length
                      });
-  res.end(NOT_FOUND); */
-  fu.get("/", fu.staticHandler("index-boiler.html"));
+  res.end(NOT_FOUND);
 }
 
 var getMap = {};

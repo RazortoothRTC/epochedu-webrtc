@@ -5,19 +5,19 @@
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Expires" CONTENT="-1">
 <title>Epoch EDU Student Classroom demo</title>
-<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.mousewheel.js"></script>
-<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
-<script type="text/javascript" src="/static/js/jquery.md5.js"></script>
-<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
-<script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
-<script type="text/javascript" src="/static/js/jquery.ev.js"></script>
-<script type="text/javascript" src="/static/js/pretty.js"></script>
-<script type="text/javascript" src="/static/js/json2.js"></script>
-<script type="text/javascript" src="/static/js/epochedu.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
-<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="/js/jScrollPane.js"></script>
+<script type="text/javascript" src="/js/jquery.md5.js"></script>
+<script type="text/javascript" src="/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/js/jquery.oembed.js"></script>
+<script type="text/javascript" src="/js/jquery.ev.js"></script>
+<script type="text/javascript" src="/js/pretty.js"></script>
+<script type="text/javascript" src="/js/json2.js"></script>
+<script type="text/javascript" src="/js/epochedu.js"></script>
+<link rel="stylesheet" type="text/css" href="/js/shadowbox-3.0.3/shadowbox.css">
+<script type="text/javascript" src="/js/shadowbox-3.0.3/shadowbox.js"></script>
 <script type="text/javascript">
 Shadowbox.init({
     handleOversize: "drag",
@@ -51,7 +51,7 @@ $(document).ready(function() {
 	$('#regid').submit(function() {
 	  doPost($('#ident'), $('#reg'));
 	  $('#regid').hide();
-	  $('#login').append('<H2>Hello, Waiting for class session: <%= $channel %> to begin ...</H2><br><p>When class begins, you will receive instructions from your teacher on content to view.  Please standby.<br/><a href="javascript:refresh()"><img src="/static/images/discovery_logo.jpg" /></a>');
+	  $('#login').append('<H2>Hello, Waiting for class session: <%= $channel %> to begin ...</H2><br><p>When class begins, you will receive instructions from your teacher on content to view.  Please standby.<br/><a href="javascript:refresh()"><img src="/images/discovery_logo.jpg" /></a>');
 	  return false;
 	});
 	
@@ -135,7 +135,7 @@ var onNewEvent = function(e) {
 				// Pass
 			} else {
 		  		  ch = ch + 1;
-	      	  	  var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+	      	  	  var src    = e.avatar || "/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
 			      var name   = e.name   || e.ident || 'Anonymous';
 			      var avatar = $('<img/>').attr('src', src).attr('alt', name);
 			      if (e.ident) {
@@ -167,7 +167,7 @@ var onNewEvent = function(e) {
 
 
 </script>
-	<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="all"/>
+	<link type="text/css" rel="stylesheet" href="/css/style.css" media="all"/>
 <style>
 #messages {
   margin-top: 1em;
