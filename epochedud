@@ -1,7 +1,5 @@
 #!/bin/sh
 # 
-# first run screen -D -R epochedu
 #
 cd /home/discovered/epochedu-work
-plackup -E deployment -s Starman -MPlack::App::Directory  -e 'Plack::App::Directory->new(root => "./contentrepo");' --port 5001&
-plackup -E deployment -r -s Twiggy app.psgi &
+node server.js
