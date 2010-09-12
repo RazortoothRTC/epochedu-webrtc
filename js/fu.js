@@ -2,11 +2,19 @@ var createServer = require("http").createServer;
 var readFile = require("fs").readFile;
 var sys = require("sys");
 var url = require("url");
-DEBUG = false;
+var assert = require("assert");
+
+DEBUG = false; // XXX turn off for production
+
+if (DEBUG) {
+	console.log("TURN OFF DEBUG for Production");
+}
 
 var fu = exports;
 
+// XXX Localize these strings?
 var NOT_FOUND = "Not Found\n";
+var INTERNAL_SERVER_ERROR = "Internal Server Error.  Oh pshaw!\n";
 
 function notFound(req, res) {
   res.writeHead(404, { "Content-Type": "text/plain"
@@ -15,15 +23,58 @@ function notFound(req, res) {
   res.end(NOT_FOUND);
 }
 
+function internalServerError(req, res) {
+  res.writeHead(500, { "Content-Type": "text/plain"
+                     , "Content-Length": INTERNAL_SERVER_ERROR.length
+                     });
+  res.end(INTERNAL_SERVER_ERROR);
+}
+
 var getMap = {};
+var regexMap = {};
 
 fu.get = function (path, handler) {
   getMap[path] = handler;
 };
+
+fu.getterer = function(path, handler) {
+	// See if this can be converted into a regexp
+	try {
+		var repath = RegExp(path);
+		regexMap[path] = repath;
+		fu.get(repath, handler);
+	} catch (e) {
+		console.log("An exception occurred generating a regexp. Error name: " + e.name 
+		+ ". Error message: " + e.message);
+		internalServerError;
+	}
+}
+
 var server = createServer(function (req, res) {
   if (req.method === "GET" || req.method === "HEAD") {
-    var handler = getMap[url.parse(req.url).pathname] || notFound;
+    // var handler = getMap[url.parse(req.url).pathname] || notFound; // XXX Test for regex
+	var handler = false;
+	// XXX Do a quick lookup.  If there is no match
+	// Walk the regex object in a loop
+	handler = getMap[url.parse(req.url).pathname];
+	if (!handler) {
+		for (var unid in regexMap) { 
+			console.log("testing path " + req.url + " vs. " + unid);
+			// if (unid.test && unid.test(req.url)) handler = getMap[unid];
+			// break;
+			if (regexMap[unid].test(url.parse(req.url).pathname)) {
+				console.log("Found matching regex for unid " + unid);
+				handler = getMap[regexMap[unid].toString()];
+				console.log(getMap);
+			} else {
+				console.log("No match for regex");
+				handler = notFound;
+			}
+		}
+	}
 
+	// if (!handler) { handler = getMap[url.parse(req.url).pathname] || notFound; }
+	
     res.simpleText = function (code, body) {
       res.writeHead(code, { "Content-Type": "text/plain"
                           , "Content-Length": body.length

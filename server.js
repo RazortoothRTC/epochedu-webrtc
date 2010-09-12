@@ -149,8 +149,6 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 // XXX This is ok for caching and routing the urls, but we should write a handler for static image content
 fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
 fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
-fu.get("/class", fu.staticHandler("templates/epoch-student.html"));
-fu.get("/classmoderator", fu.staticHandler("templates/epoch-teacher.html"));
 fu.get("/", fu.staticHandler("index.html"));
 fu.get("/css/style.css", fu.staticHandler("css/style-epochedu.css"));
 fu.get("/js/client.js", fu.staticHandler("js/client.js"));
@@ -167,6 +165,26 @@ fu.get("/images/logo_001.jpg", fu.staticHandler("images/logo_001.jpg"));
 fu.get("/images/favicon.ico", fu.staticHandler("images/favicon.ico"));
 fu.get("/images/lesson-img-holder.png", fu.staticHandler("images/lesson-img-holder.png"));
 fu.get("/images/css/header-bg.gif", fu.staticHandler("images/css/header-bg.gif"));
+
+fu.get("/helloworld", function(req, res) {
+	var body = 'hello world';
+	res.writeHead(200, {
+	  'Content-Length': body.length,
+	  'Content-Type': 'text/plain'
+	});
+	res.write(body);
+	res.end();
+});
+
+fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
+	var body = 'entering new class room';
+	res.writeHead(200, {
+	  'Content-Length': body.length,
+	  'Content-Type': 'text/plain'
+	});
+	res.write(body);
+	res.end();
+});
 
 fu.get("/who", function (req, res) {
   var nicks = [];
