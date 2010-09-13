@@ -4,7 +4,7 @@ var sys = require("sys");
 var url = require("url");
 var assert = require("assert");
 
-DEBUG = false; // XXX turn off for production
+DEBUG = true;
 
 if (DEBUG) {
 	console.log("TURN OFF DEBUG for Production");
@@ -17,17 +17,17 @@ var NOT_FOUND = "Not Found\n";
 var INTERNAL_SERVER_ERROR = "Internal Server Error.  Oh pshaw!\n";
 
 function notFound(req, res) {
-  res.writeHead(404, { "Content-Type": "text/plain"
-                     , "Content-Length": NOT_FOUND.length
-                     });
-  res.end(NOT_FOUND);
+	getMap["/404.html"](req,res); // XXX Ok, this is a little wierd to hardcode this in. 
+	// Add these URLs to a set of standard URLs
 }
 
-function internalServerError(req, res) {
+function internalServerError(req, res) { // XXX Add a nicely formatted version!
   res.writeHead(500, { "Content-Type": "text/plain"
                      , "Content-Length": INTERNAL_SERVER_ERROR.length
                      });
-  res.end(INTERNAL_SERVER_ERROR);
+  res.write(INTERNAL_SERVER_ERROR);
+  sys.log(sys.inspect(getMap, true, null)); // XXX Dump the getMap to the logs
+  res.end();
 }
 
 var getMap = {};
@@ -38,60 +38,58 @@ fu.get = function (path, handler) {
 };
 
 fu.getterer = function(path, handler) {
-	// See if this can be converted into a regexp
-	try {
-		var repath = RegExp(path);
-		regexMap[path] = repath;
-		fu.get(repath, handler);
-	} catch (e) {
-		console.log("An exception occurred generating a regexp. Error name: " + e.name 
-		+ ". Error message: " + e.message);
-		internalServerError;
-	}
+	var repath = RegExp(path);
+	regexMap[path] = repath;
+	fu.get(repath, handler);
 }
 
 var server = createServer(function (req, res) {
-  if (req.method === "GET" || req.method === "HEAD") {
-    // var handler = getMap[url.parse(req.url).pathname] || notFound; // XXX Test for regex
-	var handler = false;
-	// XXX Do a quick lookup.  If there is no match
-	// Walk the regex object in a loop
-	handler = getMap[url.parse(req.url).pathname];
-	if (!handler) {
-		for (var unid in regexMap) { 
-			console.log("testing path " + req.url + " vs. " + unid);
-			// if (unid.test && unid.test(req.url)) handler = getMap[unid];
-			// break;
-			if (regexMap[unid].test(url.parse(req.url).pathname)) {
-				console.log("Found matching regex for unid " + unid);
-				handler = getMap[regexMap[unid].toString()];
-				console.log(getMap);
-			} else {
-				console.log("No match for regex");
-				handler = notFound;
+	try {
+	  if (req.method === "GET" || req.method === "HEAD") {
+	    // var handler = getMap[url.parse(req.url).pathname] || notFound; // XXX Test for regex
+		var handler = false;
+		// XXX Do a quick lookup.  If there is no match
+		// Walk the regex object in a loop
+		handler = getMap[url.parse(req.url).pathname];
+		if (!handler) {
+			for (var unid in regexMap) { 
+				console.log("testing path " + req.url + " vs. " + unid);
+				// if (unid.test && unid.test(req.url)) handler = getMap[unid];
+				// break;
+				if (regexMap[unid].test(url.parse(req.url).pathname)) {
+					console.log("Found matching regex for unid " + unid);
+					handler = getMap[regexMap[unid].toString()];
+					break;
+				} else {
+					console.log("No match for regex");
+					handler = notFound;
+				}
 			}
 		}
+
+	    res.simpleText = function (code, body) {
+	      res.writeHead(code, { "Content-Type": "text/plain"
+	                          , "Content-Length": body.length
+	                          });
+	      res.end(body);
+	    };
+
+	    res.simpleJSON = function (code, obj) {
+	      var body = JSON.stringify(obj);
+	      res.writeHead(code, { "Content-Type": "text/json"
+	                          , "Content-Length": body.length
+	                          });
+	      res.end(body);
+	    };
+
+	    handler(req, res);
+	  }
+	} catch (e) {
+		handler = internalServerError;
+		console.log("Caught a server-side Node.js exception.  Ouch!  Here's what happened: " + e.name 
+		+ ". Error message: " + e.message);
+		handler(req, res);
 	}
-
-	// if (!handler) { handler = getMap[url.parse(req.url).pathname] || notFound; }
-	
-    res.simpleText = function (code, body) {
-      res.writeHead(code, { "Content-Type": "text/plain"
-                          , "Content-Length": body.length
-                          });
-      res.end(body);
-    };
-
-    res.simpleJSON = function (code, obj) {
-      var body = JSON.stringify(obj);
-      res.writeHead(code, { "Content-Type": "text/json"
-                          , "Content-Length": body.length
-                          });
-      res.end(body);
-    };
-
-    handler(req, res);
-  }
 });
 
 fu.listen = function (port, host) {

@@ -150,6 +150,7 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
 fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
 fu.get("/", fu.staticHandler("index.html"));
+fu.get("/404.html", fu.staticHandler("templates/404.html"));
 fu.get("/css/style.css", fu.staticHandler("css/style-epochedu.css"));
 fu.get("/js/client.js", fu.staticHandler("js/client.js"));
 fu.get("/js/jquery.min.js", fu.staticHandler("js/jquery-1.4.2.min.js")); 
@@ -163,6 +164,7 @@ fu.get("/js/modernizr-1.5.min.js", fu.staticHandler("js/modernizr-1.5.min.js"));
 fu.get("/images/logo_marvell.jpg", fu.staticHandler("images/logo_marvell.jpg"));
 fu.get("/images/logo_001.jpg", fu.staticHandler("images/logo_001.jpg"));
 fu.get("/images/favicon.ico", fu.staticHandler("images/favicon.ico"));
+fu.get("/favicon.ico", fu.staticHandler("images/favicon.ico"));
 fu.get("/images/lesson-img-holder.png", fu.staticHandler("images/lesson-img-holder.png"));
 fu.get("/images/css/header-bg.gif", fu.staticHandler("images/css/header-bg.gif"));
 
@@ -177,13 +179,15 @@ fu.get("/helloworld", function(req, res) {
 });
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
-	var body = 'entering new class room';
+	/* var body = 'entering new class room';
 	res.writeHead(200, {
 	  'Content-Length': body.length,
 	  'Content-Type': 'text/plain'
 	});
 	res.write(body);
 	res.end();
+	*/
+	return fu.staticHandler("index.html")(req, res);
 });
 
 fu.get("/who", function (req, res) {
