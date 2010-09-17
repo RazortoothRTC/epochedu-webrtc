@@ -1,8 +1,10 @@
 var createServer = require("http").createServer;
-var readFile = require("fs").readFile;
+var fs = require("fs");
 var sys = require("sys");
 var url = require("url");
 var assert = require("assert");
+var path = require("path");
+var qs = require("querystring");
 
 DEBUG = true;
 
@@ -17,7 +19,7 @@ var NOT_FOUND = "Not Found\n";
 var INTERNAL_SERVER_ERROR = "Internal Server Error.  Oh pshaw!\n";
 
 function notFound(req, res) {
-	getMap["/404.html"](req,res); // XXX Ok, this is a little wierd to hardcode this in. 
+	getMap["/templates/404.html"](req,res); // XXX Ok, this is a little wierd to hardcode this in. 
 	// Add these URLs to a set of standard URLs
 }
 
@@ -40,6 +42,7 @@ fu.get = function (path, handler) {
 fu.getterer = function(path, handler) {
 	var repath = RegExp(path);
 	regexMap[path] = repath;
+	console.log(regexMap);
 	fu.get(repath, handler);
 }
 
@@ -104,6 +107,23 @@ function extname (path) {
   return index < 0 ? "" : path.substring(index);
 }
 
+fu.pullcontent = function(crdbpath, crdburl, chan) {
+	// XXX This should get cached intelligently so you don't do file IO
+
+	var dirpath = "";
+	var contentlist = [ ];
+	if (chan) {
+		dirpath = "/" + chan;
+	}
+	
+	var dircontents = readdir(crdbpath + dirpath);
+	for (var i = 0 ; i < dircontents.length; i++) {
+		if (fs.stat(dircontents[i]).isDirectory()) continue; // XXX there is an opportunity to handle directories 
+		contentlist.push(crdburl + path.normalize(dircontents) + "/" + qs.escape(dircontents[i]));
+	}
+	return contentlist;
+}
+
 fu.staticHandler = function (filename) {
   var body, headers;
   var content_type = fu.mime.lookupExtension(extname(filename));
@@ -115,7 +135,7 @@ fu.staticHandler = function (filename) {
     }
 
     sys.puts("loading " + filename + "...");
-    readFile(filename, function (err, data) {
+    fs.readFile(filename, function (err, data) {
       if (err) {
         sys.puts("Error loading " + filename);
       } else {

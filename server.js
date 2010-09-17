@@ -24,6 +24,8 @@ IN THE SOFTWARE.
 */
 HOST = null; // localhost
 PORT = 5000;
+CONTENT_REPO_URL = "http://localhost:80/~dkords/";
+CONTENT_REPO_FILE_PATH = "./contentrepo";
 
 // when the daemon started
 var starttime = (new Date()).getTime();
@@ -35,7 +37,7 @@ setInterval(function () {
 }, 10*1000);
 
 
-var fu = require("./js/fu"),
+var fu = require("./static/js/fu"), // XXX Move this to static
     sys = require("sys"),
     url = require("url"),
     qs = require("querystring");
@@ -44,36 +46,46 @@ var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000;
 
 var channel = new function () {
-  var messages = [],
-      callbacks = [];
+	var messages = [],
+		callbacks = [];
 
-  this.appendMessage = function (nick, type, text) {
-    var m = { nick: nick
-            , type: type // "msg", "join", "part"
-            , text: text
-            , timestamp: (new Date()).getTime()
-            };
+	this.appendMessage = function (nick, type, text) {
+		var m = { nick: nick
+		   , type: type // See switch statement below
+		   , text: text
+		   , timestamp: (new Date()).getTime()
+		};
 
-    switch (type) {
-      case "msg":
-        sys.puts("<" + nick + "> " + text);
-        break;
-      case "join":
-        sys.puts(nick + " join");
-        break;
-      case "part":
-        sys.puts(nick + " part");
-        break;
-    }
+		switch (type) {
+			case "msg":
+				sys.puts("<" + nick + "> " + text);
+				break;
+			case "join":
+				sys.puts(nick + " join");
+				break;
+			case "part":
+				sys.puts(nick + " part");
+				break;
+			case "startclass":
+				break;
+			case "endclass":
+				break;
+			case "runplayer":
+				break;
+			case "runplayerlocal":
+				break;
+			case "endplayer":
+				break;
+		}
 
-    messages.push( m );
+	    messages.push( m );
 
-    while (callbacks.length > 0) {
-      callbacks.shift().callback([m]);
-    }
+	    while (callbacks.length > 0) {
+	      callbacks.shift().callback([m]);
+	    }
 
-    while (messages.length > MESSAGE_BACKLOG)
-      messages.shift();
+	    while (messages.length > MESSAGE_BACKLOG)
+	      messages.shift();
   };
 
   this.query = function (since, callback) {
@@ -147,11 +159,16 @@ setInterval(function () {
 fu.listen(Number(process.env.PORT || PORT), HOST);
 
 // XXX This is ok for caching and routing the urls, but we should write a handler for static image content
-fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
-fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
-fu.get("/", fu.staticHandler("index.html"));
-fu.get("/404.html", fu.staticHandler("templates/404.html"));
-fu.get("/css/style.css", fu.staticHandler("css/style-epochedu.css"));
+fu.get("/", fu.staticHandler("templates/index.html"));
+fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
+	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
+});
+
+fu.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
+	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
+});
+
+/* fu.get("/css/style.css", fu.staticHandler("css/style-epochedu.css"));
 fu.get("/js/client.js", fu.staticHandler("js/client.js"));
 fu.get("/js/jquery.min.js", fu.staticHandler("js/jquery-1.4.2.min.js")); 
 fu.get("/js/plugins.js", fu.staticHandler("js/plugins.js"));
@@ -167,6 +184,7 @@ fu.get("/images/favicon.ico", fu.staticHandler("images/favicon.ico"));
 fu.get("/favicon.ico", fu.staticHandler("images/favicon.ico"));
 fu.get("/images/lesson-img-holder.png", fu.staticHandler("images/lesson-img-holder.png"));
 fu.get("/images/css/header-bg.gif", fu.staticHandler("images/css/header-bg.gif"));
+*/
 
 fu.get("/helloworld", function(req, res) {
 	var body = 'hello world';
@@ -179,15 +197,31 @@ fu.get("/helloworld", function(req, res) {
 });
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
-	/* var body = 'entering new class room';
-	res.writeHead(200, {
-	  'Content-Length': body.length,
-	  'Content-Type': 'text/plain'
-	});
-	res.write(body);
-	res.end();
-	*/
-	return fu.staticHandler("index.html")(req, res);
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	return fu.staticHandler("templates/index.html")(req, res); // XXX For now default to generic chat URL
+});
+
+fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
+	var requrlobj = url.parse(req.url);
+	var chan = requrlobj.pathname.split("/")[2];
+	var host = requrlobj.host;
+	var output = qs.parse(requrlobj.query).output;
+	var contentlist;
+	
+	// Load all of the content from disk
+	contentlist = fu.pullcontent(self.CONTENT_REPO_FILE_PATH, self.CONTENT_REPO_URL, chan);
+	if (output != null && output == "json") {
+		res.simpleJSON(200, contentlist)
+	} else {
+		var body = JSON.stringify(contentlist)
+		
+		res.writeHead(200, {
+		  'Content-Length': body.length,
+		  'Content-Type': 'text/plain'
+		});
+		res.write(body);
+		res.end();
+	}
 });
 
 fu.get("/who", function (req, res) {
