@@ -37,10 +37,12 @@ setInterval(function () {
 }, 10*1000);
 
 
-var fu = require("./static/js/fu"), // XXX Move this to static
+var fu = require("./static/js/fu"),
     sys = require("sys"),
     url = require("url"),
     qs = require("querystring");
+	tmpl = require( "./static/js/tmpl-node" );
+	
 
 var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000;
@@ -158,33 +160,37 @@ setInterval(function () {
 
 fu.listen(Number(process.env.PORT || PORT), HOST);
 
+//
+// ===============================================
+// Fixed routes
+// ===============================================
+//
+// tmpl.load("./mytpl/", function(tmpl){});
+
+fu.get("/hello", function( req, res ) {
+  res.sendHeader(200, {"Content-Type": "text/html"});   
+  // tmpl[ "hello.html" ]({ title: "Welcome!" })
+  // tmpl.defaultContexts.push( GLOBAL );
+  var foox = tmpl[ "./mytpl/hello.html" ]({ foobar : "Welcome!" });
+
+  res.render( foox, req, GLOBAL );
+});
+
+fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
+fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
+
 // XXX This is ok for caching and routing the urls, but we should write a handler for static image content
 fu.get("/", fu.staticHandler("templates/index.html"));
 fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
 
+
+
+
 fu.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
-
-/* fu.get("/css/style.css", fu.staticHandler("css/style-epochedu.css"));
-fu.get("/js/client.js", fu.staticHandler("js/client.js"));
-fu.get("/js/jquery.min.js", fu.staticHandler("js/jquery-1.4.2.min.js")); 
-fu.get("/js/plugins.js", fu.staticHandler("js/plugins.js"));
-fu.get("/js/script.js", fu.staticHandler("js/script.js"));
-fu.get("/js/client.js", fu.staticHandler("js/client.js"));
-fu.get("/js/profiling/yahoo-profiling.min.js", fu.staticHandler("js/profiling/yahoo-profiling.min.js"));
-fu.get("/js/profiling/config.js", fu.staticHandler("js/profiling/config.js"));
-fu.get("/css/handheld.css", fu.staticHandler("css/handheld.css"));
-fu.get("/js/modernizr-1.5.min.js", fu.staticHandler("js/modernizr-1.5.min.js"));
-fu.get("/images/logo_marvell.jpg", fu.staticHandler("images/logo_marvell.jpg"));
-fu.get("/images/logo_001.jpg", fu.staticHandler("images/logo_001.jpg"));
-fu.get("/images/favicon.ico", fu.staticHandler("images/favicon.ico"));
-fu.get("/favicon.ico", fu.staticHandler("images/favicon.ico"));
-fu.get("/images/lesson-img-holder.png", fu.staticHandler("images/lesson-img-holder.png"));
-fu.get("/images/css/header-bg.gif", fu.staticHandler("images/css/header-bg.gif"));
-*/
 
 fu.get("/helloworld", function(req, res) {
 	var body = 'hello world';
@@ -197,6 +203,11 @@ fu.get("/helloworld", function(req, res) {
 });
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	return fu.staticHandler("templates/index.html")(req, res); // XXX For now default to generic chat URL
+});
+
+fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	return fu.staticHandler("templates/index.html")(req, res); // XXX For now default to generic chat URL
 });

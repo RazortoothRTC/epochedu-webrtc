@@ -19,7 +19,8 @@ var NOT_FOUND = "Not Found\n";
 var INTERNAL_SERVER_ERROR = "Internal Server Error.  Oh pshaw!\n";
 
 function notFound(req, res) {
-	getMap["/templates/404.html"](req,res); // XXX Ok, this is a little wierd to hardcode this in. 
+	console.log(getMap);
+	fu.staticHandler("templates/404.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
 	// Add these URLs to a set of standard URLs
 }
 
@@ -42,7 +43,7 @@ fu.get = function (path, handler) {
 fu.getterer = function(path, handler) {
 	var repath = RegExp(path);
 	regexMap[path] = repath;
-	console.log(regexMap);
+	// console.log(regexMap);
 	fu.get(repath, handler);
 }
 
@@ -138,6 +139,7 @@ fu.staticHandler = function (filename) {
     fs.readFile(filename, function (err, data) {
       if (err) {
         sys.puts("Error loading " + filename);
+		console.log("Error loading file: " + filename + " because of " + err)
       } else {
         body = data;
         headers = { "Content-Type": content_type

@@ -119,7 +119,7 @@ function userJoin(nick, timestamp) {
   //put it in the stream
   addMessage(nick, "joined", timestamp, "join");
   //if we already know about this user, ignore it
-  for (var i = 0; i < nicks.length; i++)
+  for (var i = 0; i < nicks.length; i++) // XXX Put this data into a DB so lookup is quick
     if (nicks[i] == nick) return;
   //otherwise, add the user to the list
   nicks.push(nick);
@@ -263,7 +263,7 @@ var first_poll = true;
 // is being made from the response handler, and not at some point during the
 // function's execution.
 function longPoll (data) {
-  if (transmission_errors > 2) {
+  if (transmission_errors > 2) { // XXX Make this more robust and reconnect opportunistically
     showConnect();
     return;
   }
@@ -284,6 +284,7 @@ function longPoll (data) {
         CONFIG.last_message_time = message.timestamp;
 
       //dispatch new messages to their appropriate handlers
+	  // XXX Add message types here
       switch (message.type) {
         case "msg":
           if(!CONFIG.focus){

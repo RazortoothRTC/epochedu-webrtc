@@ -1,8 +1,3 @@
-% my $channel = $_[0]->{handler}->args->[0];
-% my $val1 = ContentRepoDBHandler->mytest(); # OK's this is the secret to calling your handler business logic
-% my $host = $_[0]->{handler}->request->headers->header('Host');
-% my @roomcl = ContentRepoDBHandler->pullcontent($channel, $host);
-% my @pathinfo = split('/', $_[0]->{handler}->request->path_info);
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -43,8 +38,8 @@ $(function() {
 <script type="text/javascript">
 
 var cookieName = 'tatsumaki_chat_ident';
-var path = '<%= @pathinfo[1] %>';
-var channel = '<%= $channel %>'
+// var path = '<%= @pathinfo[1] %>';
+// var channel = '<%= $channel %>'
 var onNewEvent = function(e) {
 	if ((e.name != null) && (e.name.match(/#killsession/i))) {
 		$('table#messages').children().remove();
@@ -343,7 +338,7 @@ $(document).ready(function() {
 		</div>
 		<!-- end students -->
 	</div>
-	<div id="footer">Powered by <a href="http://github.com/miyagawa/Tatsumaki">Tatsumaki/<%= $Tatsumaki::VERSION %></a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
+	<div id="footer">Powered by <a href="http://nodejs.org">NodeJS</a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
 	<!-- end page -->
 </body>
 </html>
