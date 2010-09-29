@@ -1,0 +1,50 @@
+{%set name index %}
+{%set args userfax,username,usermail %}
+
+{%extends 'base' %}
+
+{%block 'title' %}nTPL Simple demo{%/block %}
+
+{%block 'head' %}
+{%
+	var shadow = "0 0 4px #333";
+	var radius = "30px";
+	
+	function crossbrowser( attr , val) {
+		return [
+			"-webkit-" , attr ,  ":" , val , ";",
+			"-moz-" , attr ,  ":" , val , ";",
+			attr ,  ":" , val , ";"
+		].join("");
+	}
+%}
+<style type="text/css">
+	#A {
+		background: black;
+		color: white;
+		font-size: 20px;
+		margin: 25% auto 0 auto;
+		width: 200px;
+		
+		{%= crossbrowser("border-radius", radius) %}
+		
+		{%= crossbrowser("box-shadow", shadow) %}
+		
+		padding: 30px;
+		text-align: center;
+	}
+</style>
+{%/block %}
+
+{%block 'content' %}
+	{*
+		Hi all!
+		This is a commented block!
+		
+		And here comes body of page!
+	*}
+	<div id="A">
+		Hello, {%= username %}!!!<br />
+		Your fax number is : {%= userfax %}
+	</div>
+{%/block %}
