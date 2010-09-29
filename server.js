@@ -40,8 +40,9 @@ setInterval(function () {
 var fu = require("./static/js/fu"),
     sys = require("sys"),
     url = require("url"),
-    qs = require("querystring");
-	tmpl = require( "./static/js/tmpl-node" );
+    qs = require("querystring"),
+	tmpl = require( "./static/js/tmpl-node" ), 
+	nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 	
 
 var MESSAGE_BACKLOG = 200,
@@ -165,15 +166,28 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 // Fixed routes
 // ===============================================
 //
-// tmpl.load("./mytpl/", function(tmpl){});
+tmpl.load("./mytpl/", function(tmpl){});
 
-fu.get("/hello", function( req, res ) {
-  res.sendHeader(200, {"Content-Type": "text/html"});   
+fu.get("/hello-test-tmpl-node", function( req, res ) {
+  res.writeHead(200, {"Content-Type": "text/html"});   
   // tmpl[ "hello.html" ]({ title: "Welcome!" })
   // tmpl.defaultContexts.push( GLOBAL );
-  var foox = tmpl[ "./mytpl/hello.html" ]({ foobar : "Welcome!" });
+  // var foox = tmpl[ "./mytpl/hello.html" ]({ foobar : "Welcome!" });
+  tmpl[ "test1.html" ]({ title: "Welcome!" }, GLOBAL);
+  tmpl.defaultContexts.push( { foobar: "Welcome!" } );
+  res.render( "hello.html", req, GLOBAL );
+});
 
-  res.render( foox, req, GLOBAL );
+fu.get("/hello-test-nTPL", function( req, res ) {
+  res.writeHead(200, {"Content-Type": "text/html"});   
+  var test2_tpl = nTPL("/Users/dkords/dev/repos/nTPL.git/tpl/index.html");
+  var base = nTPL("/Users/dkords/dev/repos/nTPL.git/tpl/base.html");
+  res.end(test2_tpl({
+      username: "Paul",
+      userfax: "12345678",
+      usermail: "a@a.com"
+    }));
+  // res.end();
 });
 
 fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
