@@ -116,11 +116,13 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 	if (chan) {
 		dirpath = "/" + chan;
 	}
+	console.log(crdbpath + dirpath);
+	var dircontents = fs.readdirSync(crdbpath + dirpath); // XXX Can we make this more performant async
 	
-	var dircontents = readdir(crdbpath + dirpath);
+	// XXX Need to check to see if path exists or else we will hit an exception
 	for (var i = 0 ; i < dircontents.length; i++) {
-		if (fs.stat(dircontents[i]).isDirectory()) continue; // XXX there is an opportunity to handle directories 
-		contentlist.push(crdburl + path.normalize(dircontents) + "/" + qs.escape(dircontents[i]));
+		if (fs.statSync(crdbpath + dirpath + "/" + dircontents[i]).isDirectory()) continue; // XXX there is an opportunity to handle directories 
+		contentlist.push(crdburl + path.normalize(dirpath) + "/" + qs.escape(dircontents[i])); // XXX Double check this path on deply
 	}
 	return contentlist;
 }

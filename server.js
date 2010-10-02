@@ -24,7 +24,7 @@ IN THE SOFTWARE.
 */
 HOST = null; // localhost
 PORT = 5000;
-CONTENT_REPO_URL = "http://localhost:80/~dkords/";
+CONTENT_REPO_URL = "http://localhost:80/~dkords";
 CONTENT_REPO_FILE_PATH = "./contentrepo";
 
 // when the daemon started
@@ -162,10 +162,13 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 
 //
 // ===============================================
-// Fixed routes
+// Route Setup
 // ===============================================
 //
 
+// 
+// TEST ROUTES, REMOVE LATER
+//
 fu.get("/hello-test-nTPL", function( req, res ) {
   res.writeHead(200, {"Content-Type": "text/html"});   
   var test_tpl = nTPL("./templates/ntpl-index.html");
@@ -190,22 +193,6 @@ fu.get("/hello-test2-nTPL", function( req, res ) {
   // res.end();
 });
 
-fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
-fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
-
-// XXX This is ok for caching and routing the urls, but we should write a handler for static image content
-fu.get("/", fu.staticHandler("templates/index.html"));
-fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
-	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
-});
-
-
-
-
-fu.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
-	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
-});
-
 fu.get("/helloworld", function(req, res) {
 	var body = 'hello world';
 	res.writeHead(200, {
@@ -215,6 +202,24 @@ fu.get("/helloworld", function(req, res) {
 	res.write(body);
 	res.end();
 });
+
+//
+// STATIC ROUTES
+//
+fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
+fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
+fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
+	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
+});
+fu.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
+	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
+});
+
+//
+// APP ROUTES
+//
+
+fu.get("/", fu.staticHandler("templates/index.html")); // Default node_chat app XXX change this
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
@@ -234,7 +239,7 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	var contentlist;
 	
 	// Load all of the content from disk
-	contentlist = fu.pullcontent(self.CONTENT_REPO_FILE_PATH, self.CONTENT_REPO_URL, chan);
+	contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, CONTENT_REPO_URL, chan);
 	if (output != null && output == "json") {
 		res.simpleJSON(200, contentlist)
 	} else {
