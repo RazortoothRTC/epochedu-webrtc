@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>epochedu-browser-profiler</title>
+<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var L = navigator.plugins.length;
+	
+document.write(L.toString().bold() + " Plugin(s)".bold());
+document.write("<br>");
+document.write("Name | Filename | description".bold());
+document.write("<br>");
+for(var i=0; i<L; i++) {
+  document.write(navigator.plugins[i].name);
+  document.write(" | ");
+  document.write(navigator.plugins[i].filename);
+  document.write(" | ");
+  document.write(navigator.plugins[i].description);
+  document.write(" | ");
+  document.write(navigator.plugins[i].version);
+  document.write("<br>");
+}
+</script>
+	
+</head>
+
+<body>
+<div id="plugintest"></div>
+<div id="html5test"></div>
+	<video src="http://ricardocabello.com/files/blog/ogvembed_test.ogg" width="350" controls>
+	34*Your browser does not support the video tag*
+	35</video><br />
+</body>
+</html>

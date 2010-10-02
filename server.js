@@ -223,8 +223,14 @@ fu.get("/", fu.staticHandler("templates/index.html")); // Default node_chat app 
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	return fu.staticHandler("templates/index.html")(req, res); // XXX For now default to generic chat URL
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var student_tpl = nTPL("./templates/epoch-student-v2.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html");
+	  res.end(student_tpl({
+	      channel: chan,
+	    }));
 });
+
 
 fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
