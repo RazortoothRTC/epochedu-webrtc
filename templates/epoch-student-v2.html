@@ -1,7 +1,7 @@
 {%set name student %}
 {%set args channel %}
 {%extends 'boilerplate' %}
-{%block 'title' %}{%= channel%}{%/block %}
+{%block 'title' %}Welcome to class: {%= channel%}{%/block %}
 {%block 'css-styles' %}
 	<link type="text/css" rel="stylesheet" href="/static/css/student.css" media="all">
 {%/block %}
@@ -11,7 +11,8 @@
 		<form id="chatwindow">
 			<div id="chatmsg">
 				<div class="chathistory">
-					<div class="chatscroll">
+					<div class="chatscroll"><!-- id="log" -->
+						<!-- class="message" class="nick" class="msg-text" -->
 						<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
 						<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
 						<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla u sodales a, feu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
@@ -51,7 +52,7 @@
 					</div>
 				</div>
 			</div>
-			<input type="text" class="cinput"/>
+			<input id="entry" type="text" class="cinput"/>
 			<input type="image" src="/static/images/submit.png" class="csubmit"/>
 		</form>
 	</div>
@@ -70,25 +71,33 @@
 	<form>
 		<div class="modalrow">
 			<label>Username:</label>
-			<input type="text" class="modalform"/>
+			<input id="nickInput" type="text" class="modalform" name="nick"/>
 		</div>
 		<div class="modalrow">
 			<label>Password:</label>
 			<input type="text" class="modalform"/>
 		</div>
 		<div class="modalrow">
-			<input type="image" src="/static/images/login-btn.png" class="login jqmClose"/>
+			<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login jqmClose"/>
 		</div>
 	</form>
 </div>
 {%/block %}
 {%block 'body-scripts' %}
+	<!-- <script type="text/javascript" src="/static/js/jquery.jscrollpane.min.js"></script> -->
 	<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
 	<script type="text/javascript" src="/static/js/jqModal.js"></script>
+	<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('body').addClass('bg');
-			$('.chatscroll').jScrollPane({showArrows:true,scrollbarWidth:30,dragMinHeight:50,dragMaxHeight:100});
+			$('.chatscroll').jScrollPane({
+				showArrows:true,
+				scrollbarWidth:30,
+				dragMinHeight:50,
+				dragMaxHeight:100,
+				animateTo: true, 
+			});
 			$('#dialog').jqm().jqmShow({autofire:true,modal:true});
 			var h = $(window).height();
 	        var w = $(window).width();
@@ -108,4 +117,5 @@
 			   });
 		});
 	</script>
+	
 {%/block %}
