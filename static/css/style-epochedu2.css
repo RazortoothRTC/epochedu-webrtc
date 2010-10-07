@@ -44,6 +44,35 @@ h1 {
 	padding:5px;
 }
 
+#mediacontrol {
+	position:absolute;
+	bottom:10;
+	left:40%;
+}
+
+.local {
+	width:114px;
+	height:21px;
+	text-indent:-10000px;
+	background:url('../images/css/send-local.gif');
+	display:block;
+	float:left;
+	margin-right:1px;
+}
+
+.url {
+	width:114px;
+	height:21px;
+	text-indent:-10000px;
+	background:url('../images/css/send-url.gif');
+	display:block;
+	float:left;
+}
+
+.url:active, .local:active {
+	background-position:left -21px;
+}
+
 .mediaCarousel {
 	width: 1010px;
 	position: relative;
@@ -52,7 +81,7 @@ h1 {
 .mediaCarousel .wrapper {
 	width: 940px; /* .mediaCarousel width - (.wrapper margin-left + .wrapper margin-right) */
 	overflow: auto;
-	min-height: 10em;
+	height:105px;
 	margin: 0 35px;
 	position: absolute;
 	top: 0;
@@ -80,7 +109,7 @@ h1 {
 	display:block;
 	float:left;
 	padding: 5px 0px 0px 60px;
-	height: 100px;
+	height: 60px;
 	width: 160px;
 	margin:30px 6px 0px 0px;
 	color:#e6e8ea;

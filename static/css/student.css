@@ -16,7 +16,7 @@ outline:0;
 
 #chat {
 	float:left;
-	margin:30px;
+	margin:50px 30px 30px 30px;
 }
 
 #chat .cinput {
@@ -214,3 +214,23 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 }
 
 .jqmOverlay { background-color: #000; }
+
+#account {
+	width:172px;
+	height:23px;
+/*	background:url('../images/css/account-bg.png') no-repeat;*/
+	top:20px;
+	right:10px;
+	position:absolute;
+	color:#FFFFFF;
+	padding:10px 20px;
+}
+
+.logout {
+	background:url('../images/css/logout.png');
+	text-indent:-10000px;
+	height:22px;
+	width:70px;
+	display:block;
+	float:right;
+}
