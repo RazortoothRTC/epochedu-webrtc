@@ -204,18 +204,6 @@ function addMessage (from, text, time, _class) {
     time = new Date(time);
   }
 
-
-  // $('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-  // 	<div class="chatscroll"><!-- id="log" -->
-  //    <!-- class="message" class="nick" class="msg-text" -->
-  //    <div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
-		
-  // var messageElement = $(document.createElement("table"));
-
-  // messageElement.addClass("message");
-  // if (_class)
-  //  messageElement.addClass(_class);
-
   // sanitize
   text = util.toStaticHTML(text);
 
@@ -225,32 +213,18 @@ function addMessage (from, text, time, _class) {
     messageElement.addClass("personal"); */
 
   // replace URLs with links
-  text = text.replace(util.urlRE, '<a target="_blank" href="$&">$&</a>');
+  
+  text = text.replace(util.urlRE, '<a target="_blank" rel="shadowbox" href="$&">$&</a>');
+  
 
-  var content = '<tr>'
-              + '  <td class="date">' + util.timeString(time) + '</td>'
-              + '  <td class="nick">' + util.toStaticHTML(from) + '</td>'
-              + '  <td class="msg-text">' + text  + '</td>'
-              + '</tr>'
-              ;
-  // messageElement.html(content);
-
-  //the log is the stream that we view
-  // $("#log").append(messageElement);
-  // $('.chatscroll').data('jsp').getContentPane().append($('<p />').text('This is paragraph number ' + new Date()));
-  // $('.chatscroll').append('<div class="msg">' + text + '</div>');
-  // $('.chatscroll').prepend('<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>');
-  //always view the most recent message when it is added
-  // $('.chatscroll').append('<div class="msg"><span class="user">snarf:</span>   <div class="msgcon">' + text + '</div><div class="ts">' + new Date() + '</div></div>').parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-  // api.reinitialise();
-  // $('.chatscroll').data('jsp').getContentPane().append($('<p />').text('This is paragraph number ' + new Date()));
   $pane = $('.chatscroll');
   var autoScroll = $pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'); 
   
   if (autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
   $pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-  
-  scrollDown();
+
+  Shadowbox.setup();
+
 }
 
 function updateRSS () {
