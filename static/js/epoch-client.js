@@ -489,6 +489,7 @@ $(document).ready(function() {
 
   // remove fixtures
   $(".msg").remove();
+  // $("#resources > li").remove();
 
   //begin listening for updates right away
   //interestingly, we don't need to join a room to get its updates

@@ -1,5 +1,5 @@
 {%set name teacher %}
-{%set args channel %}
+{%set args channel, roomcl %}
 {%extends 'boilerplate' %}
 {%block 'title' %}Teachers: Welcome to class: {%= channel %}{%/block %}
 {%block 'css-styles' %}
@@ -89,10 +89,11 @@
 <div id="bottom">
 		<!-- media -->
 		<div id="media">
-			<form name="resources">
+			<form>
 			<div class="mediaCarousel">
 			      <div class="wrapper">
 					<ul id="resources">
+						{*
 						<li class="html">
 							<input type="checkbox" name="item1" id="item1" value="item1"/>
 							<label for="item1">Etiam in tincidunt arcu. Nulla at augue sem.</label>
@@ -129,6 +130,7 @@
 							<input type="checkbox" name="item7" id="item7" value="item7"/>
 							<label for="item7">Lla at augue sem. Tiam in tincidunt arcu. </label>
 						</li>
+						*}
 					</ul>
 				</div>
 			</div>
@@ -185,7 +187,7 @@
 	<link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 	<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 	<script type="text/javascript">
-			Shadowbox.init({
+		Shadowbox.init({
 		    handleOversize: "drag",
 			overlayColor: "#330099",
 			overlayOpacity: "0.75",
@@ -194,6 +196,21 @@
 			handleUnsupported:  "link",
 			autoplayMovies:     true,
 		});
+	</script>
+	<script type="text/javascript">
+		var contents = {%= roomcl %};
+		var listitemdata = '';
+		
+		$.each(contents, function(i, content) {
+			var mime, path, filename, itemi, contentli, contentin, contentlab;
+			mime = contents[i].split('.')[1].toLowerCase();
+			path = contents[i].split('.')[0];
+			itemi = 'item' + (i+1);
+			filename = path.substring(path.lastIndexOf('/') + 1); // XXX Escape me			
+			listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+		});
+		$('#resources').append(listitemdata);
+		
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function() {

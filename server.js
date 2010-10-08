@@ -158,6 +158,7 @@ setInterval(function () {
   }
 }, 1000);
 
+
 fu.listen(Number(process.env.PORT || PORT), HOST);
 
 //
@@ -234,11 +235,15 @@ fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 
 fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
+	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, CONTENT_REPO_URL, chan);
+	var roomcl = JSON.stringify(contentlist);
+		
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var teacher_tpl = nTPL("./templates/epoch-teacher-v2.html");
 	  var base = nTPL("./templates/boilerplate-ntpl.html");
 	  res.end(teacher_tpl({
 	      channel: chan,
+		  roomcl: roomcl,
 	    }));
 });
 

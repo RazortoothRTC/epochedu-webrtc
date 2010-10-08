@@ -119,6 +119,14 @@ li.html {
 	background:url('../images/css/html-icon.png') no-repeat;
 }
 
+li.htm {
+	background:url('../images/css/html-icon.png') no-repeat;
+}
+
+li.txt {
+	background:url('../images/css/html-icon.png') no-repeat;
+}
+
 li.pdf {
 	background:url('../images/css/pdf-icon.png') no-repeat;
 }
@@ -131,6 +139,19 @@ li.jpg {
 	background:url('../images/css/jpg-icon.png') no-repeat;
 }
 
+li.mp4 {
+	background:url('../images/css/jpg-icon.png') no-repeat;
+}
+
+li.3gp {
+	background:url('../images/css/jpg-icon.png') no-repeat;
+}
+
+li.wav {
+	background:url('../images/css/jpg-icon.png') no-repeat;
+}
+
+
 .mediaCarousel ul li a {
 	display:block;
 	text-decoration:none;
@@ -138,10 +159,6 @@ li.jpg {
 	height: 100px;
 	width: 160px;
 }
-
-/*.mediaCarousel ul li.empty {
-	display:none;
-}*/
 
 .mediaCarousel .arrow {
 	display: block;
