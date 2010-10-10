@@ -153,6 +153,9 @@
 </div>
 	</div>
 	<!-- end page -->
+	{*
+		XXX TEMPLATE THIS SNIPPET
+	*}
 	<div class="jqmWindow" id="dialog">
 		<div class="modalmsg">
 			<div class="modaltxt">
@@ -163,7 +166,7 @@
 				
 			</div>
 		</div>
-		<form>
+		<form id="loginform">
 			<div class="modalrow">
 				<label>Username:</label>
 				<input id="nickInput" type="text" class="modalform"/>
@@ -175,6 +178,7 @@
 			<div class="modalrow">
 				<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login jqmClose"/>
 			</div>
+			<span class="modalrow" id="status"></span>
 		</form>
 	</div>
 {%/block %}
@@ -220,6 +224,11 @@
 			$('#dialog').jqm().jqmShow({autofire:true,modal:true});
 			$('#timer').stopwatch();
 		});
+	</script>
+	<script type="text/javascript">
+		function isTeacher() {
+			return true;
+		}
 	</script>
 	<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
 {%/block %}

@@ -7,7 +7,7 @@ var CONFIG = { debug: false
              };
 
 var nicks = [];
-
+var teacher = false;
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
 http://github.com/jherdman/javascript-relative-time-helpers/
@@ -368,6 +368,7 @@ function sendviewer(msg, type) {
   }
 }
 
+// XXX Can I modify these to continue to work for this demo?
 //Transition the page to the state that prompts the user for a nickname
 function showConnect () {
   $("#connect").show();
@@ -379,7 +380,7 @@ function showConnect () {
 //transition the page to the loading screen
 function showLoad () {
   $("#connect").hide();
-  $("#loading").show();
+  setStatusMessage('#loginform', 'Contacting server....', 'status')
   $("#toolbar").hide();
 }
 
@@ -388,9 +389,9 @@ function showChat (nick) {
   $("#toolbar").show();
   $("#entry").focus();
 
-  $("#connect").hide();
-  $("#loading").hide();
-
+  // $("#connect").hide();
+  // $("#loading").hide();
+  $('#dialog').jqmHide();
   scrollDown();
 }
 
@@ -411,7 +412,8 @@ var rss;
 //handle the server's response to our nickname and join request
 function onConnect (session) {
   if (session.error) {
-    alert("error connecting: " + session.error);
+    // alert("error connecting: " + session.error);
+	setStatusMessage('#loginform', 'error connecting: ' + session.error, 'status')
     showConnect();
     return;
   }
@@ -455,7 +457,16 @@ function who () {
   }, "json");
 }
 
+function setStatusMessage(selector, message, id) {
+	var statusMessage = 'Unspecified error';
+	var statusID = 'status';
+	if (message) statusMessage = message; 
+	// alert(statusMessage);
+	$(selector).find('span#' + id).addClass('error-message').text(statusMessage); // XXX We can make this more generic
+}
+
 $(document).ready(function() {
+  teacher = isTeacher();
 
   //submit new messages when the user hits enter if the message isnt blank
   $("#entry").keypress(function (e) {
@@ -474,20 +485,35 @@ $(document).ready(function() {
 
   $("#usersLink").click(outputUsers); // We won't implement this yet in the UI, but maybe for teacher XXX
 
-  //try joining the chat when the user clicks the connect button
   $("#connectButton").click(function () {
-    //lock the UI while waiting for a response
-    showLoad();
-    var nick = $("#nickInput").attr("value");
-
-    //dont bother the backend if we fail easy validations
+	$(this).parents().find('span.error-message').removeClass('error-message').text('');
+	var nick = $("#nickInput").attr("value");
+	
+	//dont bother the backend if we fail easy validations
+	
+	if (!nick || nick.length < 1) {
+		setStatusMessage('#loginform', "Login name is required.", 'status');
+	    return false;
+	}
+	
     if (nick.length > 50) {
-      alert("Nick too long. 50 character max.");
-      // showConnect();
-	  $('#dialog').jqm().show();
+      	// showConnect();
+	  	// $('#dialog').jqm().show();
+		setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
+      return false;
+    }
+	//more validations
+    if (/[^\w_\-^!]/.exec(nick)) {
+      setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
       return false;
     }
 
+	//lock the UI while waiting for a response
+    showLoad();
+    
+
+    
+ 	
 	$(".start").click(function () {
 		var msg = "#startsession";
 	    if (!util.isBlank(msg)) send(msg);
@@ -535,12 +561,7 @@ $(document).ready(function() {
 		return false;
 	});
 	
-    //more validations
-    if (/[^\w_\-^!]/.exec(nick)) {
-      alert("Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'");
-      showConnect();
-      return false;
-    }
+    
 
     //make the actual join request to the server
     $.ajax({ cache: false
@@ -555,8 +576,14 @@ $(document).ready(function() {
            , success: onConnect
            });
     return false;
+
   });
 
+  $('#loginform').submit(function() {
+	// XXX Should probably use this instead of the connectButton 
+	// because we need to capture the default submit
+  	return false;
+  });
   // update the daemon uptime every 10 seconds
   setInterval(function () {
     updateUptime();

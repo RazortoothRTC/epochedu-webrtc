@@ -62,6 +62,9 @@
 	</div>
 </div>
 <!-- end page -->
+{*
+	XXX TEMPLATE THIS SNIPPET
+*}
 <div class="jqmWindow" id="dialog">
 	<div class="modalmsg">
 		<div class="modaltxt">
@@ -72,7 +75,7 @@
 			
 		</div>
 	</div>
-	<form>
+	<form id="loginform">
 		<div class="modalrow">
 			<label>Username:</label>
 			<input id="nickInput" type="text" class="modalform" name="nick"/>
@@ -82,15 +85,16 @@
 			<input type="text" class="modalform"/>
 		</div>
 		<div class="modalrow">
-			<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login jqmClose"/>
+			<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login"/>
 		</div>
+		<span class="modalrow" id="status"></span>
 	</form>
+	
 </div>
 {%/block %}
 {%block 'body-scripts' %}
 	<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
 	<script type="text/javascript" src="/static/js/jqModal.js"></script>
-	<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
 	<link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 	<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 	<script type="text/javascript">
@@ -114,7 +118,7 @@
 				dragMaxHeight:100,
 				animateTo: true, 
 			});
-			$('#dialog').jqm().jqmShow({autofire:true,modal:true});
+			$('#dialog').jqm().jqmShow({modal:true});
 			var h = $(window).height();
 	        var w = $(window).width();
 	        $(".jScrollPaneContainer").css('height',(h < 600) ? 430 : 850).css('width',(h < 600) ? 950 : 530);
@@ -145,5 +149,9 @@
 		});
 	</script>
 	<script type="text/javascript">
+		function isTeacher() {
+			return false;
+		}
 	</script>
+	<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
 {%/block %}
