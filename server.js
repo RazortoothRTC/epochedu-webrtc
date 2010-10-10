@@ -24,7 +24,7 @@ IN THE SOFTWARE.
 */
 HOST = null; // localhost
 PORT = 5000;
-CONTENT_REPO_URL = "http://localhost:80/~dkords";
+CONTENT_REPO_URL = "http://192.168.1.16:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
 CONTENT_REPO_FILE_PATH = "./contentrepo";
 
 // when the daemon started
@@ -68,15 +68,20 @@ var channel = new function () {
 			case "part":
 				sys.puts(nick + " part");
 				break;
-			case "startclass":
+			case "startsession":
+				sys.puts(nick + " startsession");
 				break;
-			case "endclass":
+			case "endsession":
+				sys.puts(nick + " endsession");
 				break;
-			case "runplayer":
+			case "sendviewer":
+				sys.puts(nick + " sendviewer");
 				break;
-			case "runplayerlocal":
+			case "sendviewerlocal":
+			 	sys.puts(nick + " sendviewerlocal");
 				break;
-			case "endplayer":
+			case "endviewer":
+				sys.puts(nick + " endviewer");
 				break;
 		}
 
@@ -208,6 +213,7 @@ fu.get("/helloworld", function(req, res) {
 // STATIC ROUTES
 //
 fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
+// fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
 fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
 fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
@@ -337,7 +343,10 @@ fu.get("/recv", function (req, res) {
 fu.get("/send", function (req, res) {
   var id = qs.parse(url.parse(req.url).query).id;
   var text = qs.parse(url.parse(req.url).query).text;
+  var type = qs.parse(url.parse(req.url).query).type;
 
+  if (!type) type = "msg";
+  sys.puts("send received message type = " + type);
   var session = sessions[id];
   if (!session || !text) {
     res.simpleJSON(400, { error: "No such session id" });
@@ -346,6 +355,13 @@ fu.get("/send", function (req, res) {
 
   session.poke();
 
-  channel.appendMessage(session.nick, "msg", text);
+  if (text != null && text.match(/#startsession/i)) {
+	channel.appendMessage(session.nick, "startsession", text);
+  } else if (text != null && text.match(/#endsession/i)) {
+		channel.appendMessage(session.nick, "endsession", text);
+  } else {
+  	channel.appendMessage(session.nick, type, text);
+  }
   res.simpleJSON(200, { rss: mem.rss });
 });
+

@@ -60,6 +60,16 @@ h1 {
 	margin-right:1px;
 }
 
+.runviewer {
+	width:114px;
+	height:21px;
+	text-indent:-10000px;
+	background:url('../images/css/send-runviewer.gif');
+	display:block;
+	float:left;
+	margin-right:1px;
+}
+
 .url {
 	width:114px;
 	height:21px;
@@ -140,6 +150,10 @@ li.jpg {
 }
 
 li.mp4 {
+	background:url('../images/css/jpg-icon.png') no-repeat;
+}
+
+li.flv {
 	background:url('../images/css/jpg-icon.png') no-repeat;
 }
 

@@ -50,7 +50,7 @@
 							</div>
 						</div>
 					</div>
-					<input type="text" class="cinput"/>
+					<input id="entry" type="text" class="cinput"/>
 					<input type="image" src="/static/images/submit.png" class="csubmit"/>
 				</form>
 			</div>
@@ -140,7 +140,7 @@
 		
 		<!-- media control -->
 		<div id="mediacontrol">
-			<a class="local" href="#">Send Local</a><a class="url" href="#">Send URL</a>
+			<a id="sendviewer" class="runviewer" href="#">Send Remote Viewer</a><a id="sendlocal" class="local" href="#">Send Local</a><a id="sendurl" class="url" href="#">Send URL</a>
 		</div>
 		<!-- end media control -->
 		
@@ -202,11 +202,12 @@
 		var listitemdata = '';
 		
 		$.each(contents, function(i, content) {
-			var mime, path, filename, itemi, contentli, contentin, contentlab;
-			mime = contents[i].split('.')[1].toLowerCase();
-			path = contents[i].split('.')[0];
+			var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+			
 			itemi = 'item' + (i+1);
-			filename = path.substring(path.lastIndexOf('/') + 1); // XXX Escape me			
+			fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+			mime = fqname.split('.')[1].toLowerCase();
+			filename = fqname.split('.')[0];	
 			listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
 		});
 		$('#resources').append(listitemdata);

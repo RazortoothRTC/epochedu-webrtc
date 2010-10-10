@@ -120,7 +120,13 @@
 	        $(".jScrollPaneContainer").css('height',(h < 600) ? 430 : 850).css('width',(h < 600) ? 950 : 530);
 			$(".chatscroll").css('width',(h < 600) ? 900 : 480);
 			$(".msgcon").css('width',(h < 600) ? 770 : 350);
-			$(".bg").css('backgroundImage',(h < 600) ? 'url(/static/images/css/student-bg-h.jpg)' : 'url(/static/images/css/student-bg-v.jpg)').css('width',(h < 600) ? 580 : 300);
+			// $(".bg").css('backgroundImage',(h < 600) ? 'url(/static/images/css/student-bg-h.jpg)' : 'url(/static/images/css/student-bg-v.jpg)').css('width',(h < 600) ? 580 : 300);
+			
+			// 700 Device
+			$(".jScrollPaneContainer").css('height',(h < 600) ? 430 : 810).css('width',(h < 600) ? 950 : 530);
+            $(".chatscroll").css('width',(h < 600) ? 900 : 480);
+            $(".msgcon").css('width',(h < 600) ? 770 : 350);
+            $(".cinput").css('width',(h < 600) ? '87%' : '78%');
 			$(".cinput").css('width',(h < 600) ? '87%' : '78%');
 			$(window).resize(function(){
 			        var h = $(window).height();
@@ -128,10 +134,16 @@
 			        $(".jScrollPaneContainer").css('height',(h < 600) ? 430 : 850).css('width',(h < 600) ? 950 : 530);
 					$(".chatscroll").css('width',(h < 600) ? 900 : 480);
 					$(".msgcon").css('width',(h < 600) ? 770 : 350);
-					$(".bg").css('backgroundImage',(h < 600) ? 'url(/static/images/css/student-bg-h.jpg)' : 'url(/static/images/css/student-bg-v.jpg)').css('width',(h < 600) ? 580 : 300);
+					// $(".bg").css('backgroundImage',(h < 600) ? 'url(/static/images/css/student-bg-h.jpg)' : 'url(/static/images/css/student-bg-v.jpg)').css('width',(h < 600) ? 580 : 300);
 					$(".cinput").css('width',(h < 600) ? '87%' : '78%');
+					// 700 Device
+					$(".jScrollPaneContainer").css('height',(h < 600) ? 430 : 810).css('width',(h < 600) ? 950 : 530);
+                    $(".chatscroll").css('width',(h < 600) ? 900 : 480);
+                    $(".msgcon").css('width',(h < 600) ? 770 : 350);
+                    $(".cinput").css('width',(h < 600) ? '87%' : '78%');
 			   });
 		});
 	</script>
-	
+	<script type="text/javascript">
+	</script>
 {%/block %}

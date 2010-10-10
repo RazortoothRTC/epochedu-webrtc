@@ -288,6 +288,32 @@ function longPoll (data) {
         case "part":
           userPart(message.nick, message.timestamp);
           break;
+		
+		case "sendviewer":
+		 	alert('started a viewer');
+			var contenturl = message.text;
+			if (!contenturl)
+				conenturl = 'Sorry, no media is available';
+				Shadowbox.open({
+					title:      "Media Player",
+					player: 'iframe',
+					content: contenturl,
+					width: 800,
+					height: 600
+            });
+			break;
+		
+		case "sendviewerlocal":
+		 	alert('started a viewer local');
+			break;
+			
+		case "startsession":
+			// alert('started a class');
+			break;
+		
+		case "endsession":
+		 	alert('ended a class');
+			break;
       }
     }
     //update the document title to include unread message count if blurred
@@ -330,6 +356,15 @@ function send(msg) {
     // XXX should be POST
     // XXX should add to messages immediately
     jQuery.get("/send", {id: CONFIG.id, text: msg}, function (data) { }, "json");
+  }
+}
+
+//push a viewer out to clients
+function sendviewer(msg, type) {
+  if (CONFIG.debug === false) {
+    // XXX should be POST
+    // XXX should add to messages immediately
+    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type}, function (data) { }, "json");
   }
 }
 
@@ -453,6 +488,53 @@ $(document).ready(function() {
       return false;
     }
 
+	$(".start").click(function () {
+		var msg = "#startsession";
+	    if (!util.isBlank(msg)) send(msg);
+		return false;
+	});
+	
+	$(".stop").click(function () {
+		var msg = "#endsession";
+	    if (!util.isBlank(msg)) send(msg);
+		return false;
+	});
+	
+	$("#sendurl").click(function (e) {
+		$('#resources').find('input:checked').each( 
+		    function(index) {
+				var msg = this.value;
+			    if (!util.isBlank(msg)) send(msg);
+		    } 
+		);
+
+		return false;
+	});
+	
+	$("#sendviewer").click(function (e) {
+		$('#resources').find('input:checked').each( 
+		    function(index) {
+				var msg = this.value;
+				// alert('click sendviewer ' + msg);
+			    if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+		    } 
+		);
+
+		return false;
+	});
+	
+	$("#sendlocal").click(function (e) {
+		$('#resources').find('input:checked').each( 
+		    function(index) {
+				var msg = this.value;
+				alert('click sendviewer local ' + msg);
+			    if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
+		    } 
+		);
+
+		return false;
+	});
+	
     //more validations
     if (/[^\w_\-^!]/.exec(nick)) {
       alert("Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'");
