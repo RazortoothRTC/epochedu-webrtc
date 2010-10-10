@@ -221,11 +221,15 @@
 		$(document).ready(function() {
 			$('.chatscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
-			$('#dialog').jqm().jqmShow({autofire:true,modal:true});
+			$('#dialog').jqm({modal:true}).jqmShow();
 			$('#timer').stopwatch();
 		});
 	</script>
 	<script type="text/javascript">
+		function getChannel() {
+			return {%= channel%};
+		}
+		
 		function isTeacher() {
 			return true;
 		}

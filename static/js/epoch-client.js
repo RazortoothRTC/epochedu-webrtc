@@ -309,10 +309,12 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
+			if (!teacher) $('#dialog').jqmHide();
 			break;
 		
 		case "endsession":
-		 	alert('ended a class');
+		 	// alert('ended a class');
+			if (!teacher) $('#dialog').jqmShow();
 			break;
       }
     }
@@ -380,8 +382,16 @@ function showConnect () {
 //transition the page to the loading screen
 function showLoad () {
   $("#connect").hide();
-  setStatusMessage('#loginform', 'Contacting server....', 'status')
+  setStatusMessage('#loginform', 'Contacting server....', 'status');
   $("#toolbar").hide();
+}
+
+// transition page for connected, waiting for class to begin
+function showWaiting(nick, channel) {
+	$('#loginform').hide();
+	$('.jqmWindow').append('<div class="modalrow">Hello ' + nick + ' , Waiting for class session: ' 
+	+ getChannel() + ' to begin ...</H2><br><p>When class begins, you will receive instructions \
+	from your teacher on content to view.  Please standby.<br/>');
 }
 
 //transition the page to the main chat view, putting the cursor in the textfield
@@ -391,8 +401,10 @@ function showChat (nick) {
 
   // $("#connect").hide();
   // $("#loading").hide();
-  $('#dialog').jqmHide();
-  scrollDown();
+  if (teacher) { 
+	$('#dialog').jqmHide();
+  	scrollDown();
+  }
 }
 
 //we want to show a count of unread messages when the window does not have focus
@@ -426,8 +438,11 @@ function onConnect (session) {
   updateUptime();
 
   //update the UI to show the chat
-  showChat(CONFIG.nick);
-
+  if (!teacher) {
+	showWaiting(CONFIG.nick);
+  } else {
+  	showChat(CONFIG.nick);
+  }
   //listen for browser events so we know to update the document title
   $(window).bind("blur", function() {
     CONFIG.focus = false;

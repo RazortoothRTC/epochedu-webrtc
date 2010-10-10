@@ -118,7 +118,7 @@
 				dragMaxHeight:100,
 				animateTo: true, 
 			});
-			$('#dialog').jqm().jqmShow({modal:true});
+			$('#dialog').jqm({modal:true}).jqmShow();
 			var h = $(window).height();
 	        var w = $(window).width();
 	        $(".jScrollPaneContainer").css('height',(h < 600) ? 430 : 850).css('width',(h < 600) ? 950 : 530);
@@ -149,6 +149,9 @@
 		});
 	</script>
 	<script type="text/javascript">
+		function getChannel() {
+			return '{%= channel%}';
+		}
 		function isTeacher() {
 			return false;
 		}
