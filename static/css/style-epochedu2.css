@@ -525,3 +525,9 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 .error-message {
 	color: #fff000;
 }
+
+#toolbar {
+	position:absolute;
+	top:0;
+	left:42%;
+}

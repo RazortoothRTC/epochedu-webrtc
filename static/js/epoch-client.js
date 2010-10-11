@@ -114,6 +114,34 @@ function updateUsersLink ( ) {
   $("#usersLink").text(t);
 }
 
+function updateUserStatus(nick, timestamp) {
+	if (teacher) {
+		if (timestamp > 0) {
+			if ($('#userstatus > li').length > 0) {
+				if ($('li#' + nick).length > 0) {
+					alert('found a match, do not insert');
+				} else {
+					$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+				}
+				/*
+				$('#userstatus > li').filter(function(index) {
+					// alert(index);
+					alert ($(this).val());
+					return $(this).val() == nick;
+				});
+				*/
+				// alert($('#userstatus > li').val());
+			} else {
+				$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+			}
+			// $('#userstatus > li:not(:contains(' + nick + '))').append('<li class="online">' + nick +'</li>');
+			// .length $('#userstatus').append('<li class="online">' + nick +'</li>');
+		} else {
+			$('li#' + nick).remove();
+			// $('#userstatus  > li:contains(' + nick +')').append('<li class="offline">' + nick +'</li>');
+		}
+	}
+}
 //handles another person joining chat
 function userJoin(nick, timestamp) {
   //put it in the stream
@@ -125,6 +153,7 @@ function userJoin(nick, timestamp) {
   nicks.push(nick);
   //update the UI
   updateUsersLink();
+  updateUserStatus(nick, timestamp);
 }
 
 //handles someone leaving
@@ -140,6 +169,7 @@ function userPart(nick, timestamp) {
   }
   //update the UI
   updateUsersLink();
+  updateUserStatus(nick, -1);
 }
 
 // utility functions
@@ -583,7 +613,7 @@ $(document).ready(function() {
            , type: "GET" // XXX should be POST
            , dataType: "json"
            , url: "/join"
-           , data: { nick: nick }
+           , data: { nick: nick, channel: getChannel() }
            , error: function () {
                alert("error connecting to server");
                showConnect();
@@ -613,6 +643,7 @@ $(document).ready(function() {
 
   // remove fixtures
   $(".msg").remove();
+  $('.userscroll').find('li').remove();
   // $("#resources > li").remove();
 
   //begin listening for updates right away
@@ -625,5 +656,5 @@ $(document).ready(function() {
 
 //if we can, notify the server that we're going away.
 $(window).unload(function () {
-  jQuery.get("/part", {id: CONFIG.id}, function (data) { }, "json");
+  jQuery.get("/part", {id: CONFIG.id, channel: getChannel()}, function (data) { }, "json");
 });

@@ -25,6 +25,13 @@
 			<div id="account">
 				<p>Hello, Sharon! <a class="logout jqModal" href="#">Logout</a></p>
 			</div>
+			<div id="toolbar">
+		        <ul id="status">
+		          <li><a id="usersLink" href="#">5 users</a></li>
+		          <li>uptime: <span id="uptime">?</span></li>
+		          <li>memory: <span id="rss">?</span>mb RSS</li>
+		        </ul>
+		    </div>
 		</div>
 		<!-- end header -->
 
@@ -58,7 +65,7 @@
 				<div class="mwrapper">
 					<div class="userhistory">
 						<div class="userscroll">
-							<ul>
+							<ul id="userstatus">
 								<li class="online">Brian Langer</li>
 								<li class="offline">Collin Campbell</li>
 								<li class="online">Kristi Rooney</li>
@@ -86,7 +93,7 @@
 			</div>
 		</div>
 		<!-- end content -->
-<div id="bottom">
+ 	<div id="bottom">
 		<!-- media -->
 		<div id="media">
 			<form>
@@ -150,7 +157,7 @@
 			<p class="right">Copyright 2010 by Razortooth Communications, LLC</p>
 		</div>
 		<!-- end footer -->
-</div>
+	  </div>
 	</div>
 	<!-- end page -->
 	{*
@@ -226,8 +233,9 @@
 		});
 	</script>
 	<script type="text/javascript">
+		/* XXX Refactor this into epoch-client.js */
 		function getChannel() {
-			return {%= channel%};
+			return '{%= channel%}';
 		}
 		
 		function isTeacher() {
