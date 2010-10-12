@@ -119,26 +119,16 @@ function updateUserStatus(nick, timestamp) {
 		if (timestamp > 0) {
 			if ($('#userstatus > li').length > 0) {
 				if ($('li#' + nick).length > 0) {
-					alert('found a match, do not insert');
+					// alert('found a match, do not insert'); 
+					// XXX No op is dumb, fix this later
 				} else {
 					$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
 				}
-				/*
-				$('#userstatus > li').filter(function(index) {
-					// alert(index);
-					alert ($(this).val());
-					return $(this).val() == nick;
-				});
-				*/
-				// alert($('#userstatus > li').val());
 			} else {
 				$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
 			}
-			// $('#userstatus > li:not(:contains(' + nick + '))').append('<li class="online">' + nick +'</li>');
-			// .length $('#userstatus').append('<li class="online">' + nick +'</li>');
 		} else {
 			$('li#' + nick).remove();
-			// $('#userstatus  > li:contains(' + nick +')').append('<li class="offline">' + nick +'</li>');
 		}
 	}
 }
@@ -428,7 +418,7 @@ function showWaiting(nick, channel) {
 function showChat (nick) {
   $("#toolbar").show();
   $("#entry").focus();
-
+  $("#nick").text(nick);
   // $("#connect").hide();
   // $("#loading").hide();
   if (teacher) { 
@@ -471,6 +461,7 @@ function onConnect (session) {
   if (!teacher) {
 	showWaiting(CONFIG.nick);
   } else {
+	$('#account').show()
   	showChat(CONFIG.nick);
   }
   //listen for browser events so we know to update the document title
@@ -512,6 +503,7 @@ function setStatusMessage(selector, message, id) {
 
 $(document).ready(function() {
   teacher = isTeacher();
+  $('#account').hide(); // XXX Only for teacher?
 
   //submit new messages when the user hits enter if the message isnt blank
   $("#entry").keypress(function (e) {
