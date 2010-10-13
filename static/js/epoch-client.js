@@ -586,6 +586,7 @@ $(document).ready(function() {
 		    function(index) {
 				var msg = this.value;
 			    if (!util.isBlank(msg)) send(msg);
+				this.checked = false;
 		    } 
 		);
 
@@ -598,6 +599,7 @@ $(document).ready(function() {
 				var msg = this.value;
 				// alert('click sendviewer ' + msg);
 			    if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+				this.checked = false;
 		    } 
 		);
 
@@ -621,6 +623,7 @@ $(document).ready(function() {
 				var msg = this.value;
 				// alert('click sendviewer local ' + msg);
 			    if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
+				this.checked = false;
 		    } 
 		);
 

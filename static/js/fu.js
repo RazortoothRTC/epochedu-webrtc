@@ -113,6 +113,7 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 
 	var dirpath = "";
 	var contentlist = [ ];
+	var filter = /pdf|ds_store/i;
 	if (chan) {
 		dirpath = "/" + chan;
 	}
@@ -123,6 +124,7 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 	for (var i = 0 ; i < dircontents.length; i++) {
 		if (fs.statSync(crdbpath + dirpath + "/" + dircontents[i]).isDirectory()) continue; // XXX there is an opportunity to handle directories 
 		if (dircontents[i].toLowerCase().indexOf('img') == 0) continue; // Skip HTML img template files
+		if (dircontents[i].toLowerCase().match(filter)) continue; // Skip all items we want to filter.
 		contentlist.push(crdburl + path.normalize(dirpath) + "/" + qs.escape(dircontents[i])); // XXX Double check this path on deploy?
 	}
 	return contentlist;
