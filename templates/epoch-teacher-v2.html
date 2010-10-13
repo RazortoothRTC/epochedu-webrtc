@@ -226,7 +226,12 @@
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('.chatscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
+			$('.chatscroll').jScrollPane({
+				showArrows:true,
+				scrollbarWidth:30,
+				maintainPosition: false,
+				animateTo: true,
+			});
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
 			$('#dialog').jqm({modal:true}).jqmShow();
 			$('#timer').stopwatch();
