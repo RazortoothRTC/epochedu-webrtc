@@ -316,30 +316,36 @@ function longPoll (data) {
 		
 		case "sendviewer":
 		 	// alert('started a viewer');
-			var contenturl = message.text;
-			if (!contenturl)
-				conenturl = 'Sorry, no media is available';
-				Shadowbox.open({
-					title:      "Media Player",
-					player: 'iframe',
-					content: contenturl,
-					width: 800,
-					height: 600
-            });
+			if (!first_poll) {
+				var contenturl = message.text;
+				if (!contenturl)
+					conenturl = 'Sorry, no media is available';
+					Shadowbox.open({
+						title:      "Media Player",
+						player: 'iframe',
+						content: contenturl,
+						width: 800,
+						height: 600
+	            });
+			}
 			break;
 		
 		case "endviewer":
 		 	// alert('ended a viewer');
-			Shadowbox.close();
-			Shadowbox.clearCache();
+			if (!first_poll) {
+				Shadowbox.close();
+				Shadowbox.clearCache();
+			}
 			break;
 				
 		case "sendviewerlocal":
-		 	var contenturl = message.text;
-			// if (!teacher) alert('started a local viewer ' + contenturl);
-			// window.open('about:blank');
-			if (!teacher) window.open(contenturl);
-			// if (!teacher) window.open('about:plugins');
+			if (!first_poll) {
+		 		var contenturl = message.text;
+				// if (!teacher) alert('started a local viewer ' + contenturl);
+				// window.open('about:blank');
+				if (!teacher) window.open(contenturl);
+				// if (!teacher) window.open('about:plugins');
+			}
 			break;
 			
 		case "startsession":

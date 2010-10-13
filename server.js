@@ -31,7 +31,7 @@ CONTENT_REPO_FILE_PATH = "./contentrepo"; // XXX This is lame... but best effort
 										  // CMS, but we need something that will give us a nice file list
 										  // but also serve up content appropriately for each format with correct
 										  // mime types returned.  
-CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard"; // XXX This is fixed for android!!!!
+CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content/demo"; // XXX This is fixed for android!!!!
 																		  // Since android sucks... this will only
 																		  // work on android.  Ideally we should
 																		  // be detecting browser capabilities

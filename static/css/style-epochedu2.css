@@ -79,8 +79,17 @@ h1 {
 	float:left;
 }
 
-.url:active, .local:active, #endviewer {
+.url:active, .local:active {
 	background-position:left -21px;
+}
+
+.endviewer {
+	width:30px;
+	height:21px;
+	text-indent:-10000px;
+	background:url('../images/css/stopx-sm.png');
+	display:block;
+	float:left;
 }
 
 .mediaCarousel {
