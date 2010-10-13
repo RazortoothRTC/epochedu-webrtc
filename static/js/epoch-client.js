@@ -341,10 +341,7 @@ function longPoll (data) {
 		case "sendviewerlocal":
 			if (!first_poll) {
 		 		var contenturl = message.text;
-				// if (!teacher) alert('started a local viewer ' + contenturl);
-				// window.open('about:blank');
 				if (!teacher) window.open(contenturl);
-				// if (!teacher) window.open('about:plugins');
 			}
 			break;
 			
@@ -607,13 +604,8 @@ $(document).ready(function() {
 	});
 	
 	$("#endviewer").click(function (e) {
-		$('#resources').find('input:checked').each( 
-		    function(index) {
-				var msg = this.value;
-			    if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
-		    } 
-		);
-
+		var msg = "#endviewer";
+		if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
 		return false;
 	});
 	
