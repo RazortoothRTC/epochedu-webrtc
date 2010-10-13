@@ -245,9 +245,9 @@ function addMessage (from, text, time, _class) {
   $pane = $('.chatscroll');
   var autoScroll = $pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'); 
   
-  if (autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
   $pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-
+  // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
+  if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
   Shadowbox.setup();
 
 }
