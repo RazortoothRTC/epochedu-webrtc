@@ -109,7 +109,7 @@ function extname (path) {
 }
 
 fu.pullcontent = function(crdbpath, crdburl, chan) {
-	// XXX This should get cached intelligently so you don't do file IO
+	// XXX This should get cached intelligently so you don't do file IO for each call unless cache is dirty
 
 	var dirpath = "";
 	var contentlist = [ ];
@@ -122,6 +122,7 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 	// XXX Need to check to see if path exists or else we will hit an exception
 	for (var i = 0 ; i < dircontents.length; i++) {
 		if (fs.statSync(crdbpath + dirpath + "/" + dircontents[i]).isDirectory()) continue; // XXX there is an opportunity to handle directories 
+		if (dircontents[i].toLowerCase().indexOf('img') == 0) continue; // Skip HTML img template files
 		contentlist.push(crdburl + path.normalize(dirpath) + "/" + qs.escape(dircontents[i])); // XXX Double check this path on deploy?
 	}
 	return contentlist;

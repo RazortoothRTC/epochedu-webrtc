@@ -24,8 +24,19 @@ IN THE SOFTWARE.
 */
 HOST = null; // localhost
 PORT = 5000;
-CONTENT_REPO_URL = "http://192.168.1.16:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
-CONTENT_REPO_FILE_PATH = "./contentrepo";
+CONTENT_REPO_URL = "http://192.168.1.148:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
+CONTENT_REPO_FILE_PATH = "./contentrepo"; // XXX This is lame... but best effort for now, we
+										  // We need to crawl the list of files available on the web server
+										  // where the content is located.  This is best to have come from a 
+										  // CMS, but we need something that will give us a nice file list
+										  // but also serve up content appropriately for each format with correct
+										  // mime types returned.  
+CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard"; // XXX This is fixed for android!!!!
+																		  // Since android sucks... this will only
+																		  // work on android.  Ideally we should
+																		  // be detecting browser capabilities
+																		  // not sniffing browser user agents or 
+																		  // versions.
 
 // when the daemon started
 var starttime = (new Date()).getTime();
@@ -78,7 +89,10 @@ var channel = new function () {
 				sys.puts(nick + " sendviewer");
 				break;
 			case "sendviewerlocal":
-			 	sys.puts(nick + " sendviewerlocal");
+				var local_url = text.replace(CONTENT_REPO_URL, CONTENT_REPO_LOCAL_URL)
+			 	sys.puts(nick + " sendviewerlocal, transforming player URL from " + text + 
+				" to " + local_url);
+				m.text = local_url;
 				break;
 			case "endviewer":
 				sys.puts(nick + " endviewer");

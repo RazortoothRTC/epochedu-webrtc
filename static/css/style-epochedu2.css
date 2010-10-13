@@ -79,7 +79,7 @@ h1 {
 	float:left;
 }
 
-.url:active, .local:active {
+.url:active, .local:active, #endviewer {
 	background-position:left -21px;
 }
 
@@ -134,7 +134,7 @@ li.htm {
 }
 
 li.txt {
-	background:url('../images/css/html-icon.png') no-repeat;
+	background:url('../images/css/TXT-icon.png') no-repeat;
 }
 
 li.pdf {
@@ -150,19 +150,23 @@ li.jpg {
 }
 
 li.mp4 {
-	background:url('../images/css/jpg-icon.png') no-repeat;
+	background:url('../images/css/MP4-icon.png') no-repeat;
+}
+
+li.mp3 {
+	background:url('../images/css/WAV-icon.png') no-repeat;
 }
 
 li.flv {
-	background:url('../images/css/jpg-icon.png') no-repeat;
+	background:url('../images/css/FLV-icon.png') no-repeat;
 }
 
 li.3gp {
-	background:url('../images/css/jpg-icon.png') no-repeat;
+	background:url('../images/css/3GP-icon.png') no-repeat;
 }
 
 li.wav {
-	background:url('../images/css/jpg-icon.png') no-repeat;
+	background:url('../images/css/WAV-icon.png') no-repeat;
 }
 
 

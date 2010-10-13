@@ -166,7 +166,7 @@ function userPart(nick, timestamp) {
 
 util = {
   urlRE: /https?:\/\/([-\w\.]+)+(:\d+)?(\/([^\s]*(\?\S+)?)?)?/g, 
-
+  contenturlRE: /content?:\/\/([-\w\.]+)+(:\d+)?(\/([^\s]*(\?\S+)?)?)?/g, 
   //  html sanitizer 
   toStaticHTML: function(inputHtml) {
     inputHtml = inputHtml.toString();
@@ -234,8 +234,13 @@ function addMessage (from, text, time, _class) {
 
   // replace URLs with links
   
-  text = text.replace(util.urlRE, '<a target="_blank" rel="shadowbox" href="$&">$&</a>');
-  
+  if (text.match(/http/i)) {
+	var rel = "";
+	var ext = text.substring(text.lastIndexOf('.') + 1);
+	if (ext.match(/png|gif|jpg|html|htm/i)) rel = "shadowbox";
+  	text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
+  }  
+  text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
 
   $pane = $('.chatscroll');
   var autoScroll = $pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'); 
@@ -310,7 +315,7 @@ function longPoll (data) {
           break;
 		
 		case "sendviewer":
-		 	alert('started a viewer');
+		 	// alert('started a viewer');
 			var contenturl = message.text;
 			if (!contenturl)
 				conenturl = 'Sorry, no media is available';
@@ -323,8 +328,18 @@ function longPoll (data) {
             });
 			break;
 		
+		case "endviewer":
+		 	// alert('ended a viewer');
+			Shadowbox.close();
+			Shadowbox.clearCache();
+			break;
+				
 		case "sendviewerlocal":
-		 	alert('started a viewer local');
+		 	var contenturl = message.text;
+			// if (!teacher) alert('started a local viewer ' + contenturl);
+			// window.open('about:blank');
+			if (!teacher) window.open(contenturl);
+			// if (!teacher) window.open('about:plugins');
 			break;
 			
 		case "startsession":
@@ -409,7 +424,7 @@ function showLoad () {
 // transition page for connected, waiting for class to begin
 function showWaiting(nick, channel) {
 	$('#loginform').hide();
-	$('.jqmWindow').append('<div class="modalrow">Hello ' + nick + ' , Waiting for class session: ' 
+	$('.jqmWindow').append('<div id="waiting" class="modalrow"><H2>Hello ' + nick + ' , Waiting for class session: ' 
 	+ getChannel() + ' to begin ...</H2><br><p>When class begins, you will receive instructions \
 	from your teacher on content to view.  Please standby.<br/>');
 }
@@ -547,10 +562,7 @@ $(document).ready(function() {
 
 	//lock the UI while waiting for a response
     showLoad();
-    
 
-    
- 	
 	$(".start").click(function () {
 		var msg = "#startsession";
 	    if (!util.isBlank(msg)) send(msg);
@@ -586,11 +598,22 @@ $(document).ready(function() {
 		return false;
 	});
 	
+	$("#endviewer").click(function (e) {
+		$('#resources').find('input:checked').each( 
+		    function(index) {
+				var msg = this.value;
+			    if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
+		    } 
+		);
+
+		return false;
+	});
+	
 	$("#sendlocal").click(function (e) {
 		$('#resources').find('input:checked').each( 
 		    function(index) {
 				var msg = this.value;
-				alert('click sendviewer local ' + msg);
+				// alert('click sendviewer local ' + msg);
 			    if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
 		    } 
 		);

@@ -236,6 +236,10 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 	float:right;
 }
 
+#waiting {
+	color: #000000;
+}
+
 .error-message {
 	color: #cc3300;
 }
