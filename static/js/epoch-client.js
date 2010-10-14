@@ -630,9 +630,9 @@ $(document).ready(function() {
            , dataType: "json"
            , url: "/join"
            , data: { nick: nick, channel: getChannel() }
-           , error: function () {
-               alert("error connecting to server");
-               showConnect();
+           , error: function (xhr, text, err) {
+				var errMsg =  eval("(" + xhr.responseText + ")");
+			 	setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
              }
            , success: onConnect
            });

@@ -24,8 +24,10 @@ IN THE SOFTWARE.
 */
 HOST = null; // localhost
 PORT = 5000;
-CONTENT_REPO_URL = "http://192.168.1.16:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
-CONTENT_REPO_FILE_PATH = "./contentrepo"; // XXX This is lame... but best effort for now, we
+// CONTENT_REPO_URL = "http://192.168.1.16:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
+CONTENT_REPO_URL = "http://192.168.1.148:80/~dkords";
+CONTENT_REPO_FILE_PATH = "./contentrepo";
+// CONTENT_REPO_FILE_PATH = "./contentrepo"; // XXX This is lame... but best effort for now, we
 										  // We need to crawl the list of files available on the web server
 										  // where the content is located.  This is best to have come from a 
 										  // CMS, but we need something that will give us a nice file list
