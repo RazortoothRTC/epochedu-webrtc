@@ -113,7 +113,7 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 
 	var dirpath = "";
 	var contentlist = [ ];
-	var filter = /pdf|ds_store/i;
+	var filter = /pdf|^\./i;
 	if (chan) {
 		dirpath = "/" + chan;
 	}
