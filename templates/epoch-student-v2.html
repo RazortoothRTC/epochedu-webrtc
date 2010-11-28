@@ -59,6 +59,7 @@
 				</div>
 			</div>
 			<input id="entry" type="text" class="cinput"/>
+			<input type="image" src="/static/images/ask-btn-short2.png" class="qsubmit"/>
 			<input type="image" src="/static/images/submit.png" class="csubmit"/>
 		</form>
 	</div>
@@ -90,8 +91,27 @@
 			<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login"/>
 		</div>
 		<span class="modalrow" id="status"></span>
-	</form>
-	
+	</form>	
+</div>
+<div class="jqmWindow" id="qadialog">
+	<div class="modalmsg">
+		<div class="modaltxt">
+			<h3><span id="nick"></span> Has Asked A Question</h3>
+			<p><span id="question"></span></p>
+		</div>
+		<div class="modalbranding">
+			
+		</div>
+	</div>
+	<form id="answerform">
+		<div class="modalrow">
+			<label>Answer:</label>
+			<input id="entry" type="text" class="cinput modalform"/>
+		</div>
+		<div class="modalrow">
+			<input type="image" src="/static/images/submit.png" class="asubmit"/>
+		</div>
+	</form>	
 </div>
 {%/block %}
 {%block 'body-scripts' %}
@@ -122,6 +142,7 @@
 				maintainPosition: false,
 			});
 			$('#dialog').jqm({modal:true}).jqmShow();
+			$('#qadialog').jqm({modal:false, autofire:true});
 			var h = $(window).height();
 	        var w = $(window).width();
 	        $(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);

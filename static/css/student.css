@@ -36,6 +36,11 @@ outline:0;
 	margin-right:10px;
 }
 
+#chat .qsubmit {
+	float:right;
+	margin-right:0px;
+}
+
 .msg {
 	clear:both;
 	padding:10px 0px;

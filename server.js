@@ -24,7 +24,8 @@ IN THE SOFTWARE.
 */
 HOST = null; // localhost
 PORT = 5000;
-VERSION = "ces-marvell-phase3-b1";
+CONTENT_REPO_URL = "http://192.168.1.148:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
+VERSION = "elearn-marvell-rc7-10202010";
 
 // CONTENT_REPO_URL = "http://192.168.1.148:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
 CONTENT_REPO_URL = "http://localhost:5000/content"; // XXX Just figure out the IP address
@@ -92,6 +93,9 @@ var channel = new function () {
 				break;
 			case "sendviewer":
 				sys.puts(nick + " sendviewer");
+				break;
+			case "askquestion":
+				sys.puts(nick + " askquestion");
 				break;
 			case "sendviewerlocal":
 				var local_url = text.replace(CONTENT_REPO_URL, CONTENT_REPO_LOCAL_URL);
