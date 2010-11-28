@@ -354,10 +354,20 @@ function longPoll (data) {
 		 	// alert('ended a class');
 			if (!teacher) $('#dialog').jqmShow();
 			break;
+			
+		case "askquestion":
+			if ((!first_poll ) && (message.nick != CONFIG.nick)){
+				var question = message.text;
+				$("#nick").text(message.nick);
+				$("#question").text(question);
+				$('#qadialog').jqmShow();
+				// alert('ask a question');
+			}
+			break;
       }
     }
     //update the document title to include unread message count if blurred
-    updateTitle();
+    // updateTitle();
 
     //only after the first request for messages do we want to show who is here
     if (first_poll) {
@@ -391,11 +401,11 @@ function longPoll (data) {
 }
 
 //submit a new message to the server
-function send(msg) {
+function send(msg, type) {
   if (CONFIG.debug === false) {
     // XXX should be POST
     // XXX should add to messages immediately
-    jQuery.get("/send", {id: CONFIG.id, text: msg}, function (data) { }, "json");
+    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type}, function (data) { }, "json");
   }
 }
 
@@ -427,7 +437,7 @@ function showLoad () {
 // transition page for connected, waiting for class to begin
 function showWaiting(nick, channel) {
 	$('#loginform').hide();
-	$('.jqmWindow').append('<div id="waiting" class="modalrow"><H2>Hello ' + nick + ' , Waiting for class session: ' 
+	$('#dialog').append('<div id="waiting" class="modalrow"><H2>Hello ' + nick + ' , Waiting for class session: ' 
 	+ getChannel() + ' to begin ...</H2><br><p>When class begins, you will receive instructions \
 	from your teacher on content to view.  Please standby.<br/>');
 }
@@ -445,6 +455,7 @@ function showChat (nick) {
   }
 }
 
+// XXX Change this to show title updates properly
 //we want to show a count of unread messages when the window does not have focus
 function updateTitle(){
   if (CONFIG.unread) {
@@ -485,13 +496,13 @@ function onConnect (session) {
   //listen for browser events so we know to update the document title
   $(window).bind("blur", function() {
     CONFIG.focus = false;
-    updateTitle();
+    // updateTitle();
   });
 
   $(window).bind("focus", function() {
     CONFIG.focus = true;
     CONFIG.unread = 0;
-    updateTitle();
+    // updateTitle();
   });
 }
 
@@ -535,6 +546,22 @@ $(document).ready(function() {
 	var msg = $("#entry").attr("value").replace("\n", "");
     if (!util.isBlank(msg)) send(msg);
     $("#entry").attr("value", ""); // clear the entry field.
+	return false;
+  });
+
+  $(".qsubmit").click(function() {
+	var msg = $("#entry").attr("value").replace("\n", "");
+    if (!util.isBlank(msg)) send(msg, "askquestion");
+    $("#entry").attr("value", ""); // clear the entry field.
+	return false;
+  });
+
+  $(".asubmit").click(function() {
+	// var msg = $("#answerform #entry").attr("value").replace("\n", "");
+	var msg = "Q: " + $('#question').text() + " : A:" + $("#answerform #entry").attr("value").replace("\n", "");
+	if (!util.isBlank(msg)) send(msg);
+    $("#entry").attr("value", ""); // clear the entry field.
+    $('#qadialog').jqmHide();
 	return false;
   });
 
