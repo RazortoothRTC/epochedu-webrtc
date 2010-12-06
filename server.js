@@ -53,8 +53,8 @@ IN THE SOFTWARE.
 */
 HOST = null; // localhost
 PORT = 5000;
-CONTENT_REPO_URL = "http://192.168.1.148:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
-VERSION = "elearn-marvell-rc7-10202010";
+// CONTENT_REPO_URL = "http://192.168.1.148:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
+VERSION = "elearn-marvell-rc7-10202010";  // XXX Can  we instrument this using hudson during packaging
 
 // CONTENT_REPO_URL = "http://192.168.1.148:80/~dkords"; // XXX Configure this!!!! We need a GUI to manage this
 CONTENT_REPO_URL = "http://localhost:5000/content"; // XXX Just figure out the IP address
@@ -203,7 +203,7 @@ function createSession (nick, chan) {
     },
 
     destroy: function () {
-      sessions.appendMessage(session.nick, "part");
+      channel.appendMessage(session.nick, "part");
       delete sessions[session.id];
     }
   };
@@ -417,45 +417,45 @@ fu.get("/recv", function (req, res) {
   var achannel = channels[chan];
   var sessions;
   
-  sys.puts("channel is " + chan);
+  // sys.puts("channel is " + chan);
   if (achannel == null) {
-	  sys.puts("Creating new channel for " + chan);
+	  // sys.puts("Creating new channel for " + chan);
 	  achannel = channelFactory();
 	  
 	  if (achannel == null) sys.puts('/recv achannel is null');
 	  channels[chan] = achannel;
 	  
   }
-  sys.puts('/recv channels = ' + channels);
+  // sys.puts('/recv channels = ' + channels);
   achannel = channels[chan];
-  sys.puts('/recv achannel = ' + achannel);
+  // sys.puts('/recv achannel = ' + achannel);
   sessions = achannel.sessions;
-  sys.puts('/recv sessions is = ' + sessions);
-  sys.puts('/recv parsing query');
+  // sys.puts('/recv sessions is = ' + sessions);
+  // sys.puts('/recv parsing query');
   if (!qs.parse(url.parse(req.url).query).since) {
     res.simpleJSON(400, { error: "Must supply since parameter" });
     return;
   }
   var id = qs.parse(url.parse(req.url).query).id;
-  sys.puts('/recv parsing id = ' + id);
+  // sys.puts('/recv parsing id = ' + id);
   
   var session;
   
   if (id != null && sessions[id]) {
-    sys.puts('/recv setting session for id = ' + id);
+    // sys.puts('/recv setting session for id = ' + id);
     session = sessions[id];
     session.poke();
   }
-  sys.puts('/recv setting since');
+  // sys.puts('/recv setting since');
   
   var since = parseInt(qs.parse(url.parse(req.url).query).since, 10);
 
   achannel.query(since, function (messages) { 
-    sys.puts("channel session query");
+    // sys.puts("channel session query");
     if (session) session.poke();
     res.simpleJSON(200, { messages: messages, rss: mem.rss });
   });
-  sys.puts("Done with /recv");
+  // sys.puts("Done with /recv");
 });
 
 fu.get("/send", function (req, res) {
@@ -463,7 +463,8 @@ fu.get("/send", function (req, res) {
   var text = qs.parse(url.parse(req.url).query).text;
   var type = qs.parse(url.parse(req.url).query).type;
   var chan = qs.parse(url.parse(req.url).query).channel;
-  var sessions = channels[chan];
+  var channel = channels[chan];
+  var sessions = channel.sessions;
   if (!chan) { // XXX refactor to use default channel
 	  res.simpleJSON(400, { error: "Channel required"});
 	  return;
@@ -471,7 +472,7 @@ fu.get("/send", function (req, res) {
 	  res.simpleJSON(400, { error: "Unable to get the session for channel " + chan});
 	  return;
   }
-  if (!type) type = "msg";
+  if (!type) type = "msg"; // XXX Are there any side effects to this?
   sys.puts("send received message type = " + type);
   var session = sessions[id];
   if (!session || !text) {
@@ -480,10 +481,10 @@ fu.get("/send", function (req, res) {
   }
 
   session.poke();
-
-  if (text != null && text.match(/#startsession/i)) {
+  sys.puts("/send testing for text value");
+  if (text && text.match(/#startsession/i)) {
 	channel.appendMessage(session.nick, "startsession", text);
-  } else if (text != null && text.match(/#endsession/i)) {
+  } else if (text && text.match(/#endsession/i)) {
 	channel.appendMessage(session.nick, "endsession", text);
   } else {
   	channel.appendMessage(session.nick, type, text);

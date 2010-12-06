@@ -434,7 +434,7 @@ function send(msg, type) {
   if (CONFIG.debug === false) {
     // XXX should be POST
     // XXX should add to messages immediately
-    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type}, function (data) { }, "json");
+    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
   }
 }
 
