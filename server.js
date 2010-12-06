@@ -78,6 +78,10 @@ var starttime = (new Date()).getTime();
 
 var mem = process.memoryUsage();
 // every 10 seconds poll for the memory.
+
+// var sessions = {};
+var channels = {};
+
 setInterval(function () {
   mem = process.memoryUsage();
 }, 10*1000);
@@ -87,16 +91,17 @@ var fu = require("./static/js/fu"),
     sys = require("sys"),
     url = require("url"),
     qs = require("querystring"),
-	nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
+    nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 	
 
 var MESSAGE_BACKLOG = 200,
-    SESSION_TIMEOUT = 60 * 1000;
+    SESSION_TIMEOUT = 60 * 1000; // XXX this should be configurable
 
+function channelFactory() {
 var channel = new function () {
 	var messages = [],
 		callbacks = [];
-
+	this.sessions = {};
 	this.appendMessage = function (nick, type, text) {
 		var m = { nick: nick
 		   , type: type // See switch statement below
@@ -171,16 +176,21 @@ var channel = new function () {
     }
   }, 3000);
 };
-
-var sessions = {};
-
-function createSession (nick) {
+	return channel;
+} // channelFactory
+	
+function createSession (nick, chan) {
   if (nick.length > 50) return null;
   if (/[^\w_\-^!]/.exec(nick)) return null;
-
+  
+  var channel = channels[chan];
+  var sessions;
+  
+  if (channel == null) sessions = {}; else sessions = channel.sessions;
+	  
   for (var i in sessions) {
     var session = sessions[i];
-    if (session && session.nick === nick) return null;
+    if (session && session.nick === nick) return null; // XXX Why do we not simply rejoin?  We should at least respond with an affirmative
   }
 
   var session = { 
@@ -193,7 +203,7 @@ function createSession (nick) {
     },
 
     destroy: function () {
-      channel.appendMessage(session.nick, "part");
+      sessions.appendMessage(session.nick, "part");
       delete sessions[session.id];
     }
   };
@@ -205,13 +215,16 @@ function createSession (nick) {
 // interval to kill off old sessions
 setInterval(function () {
   var now = new Date();
-  for (var id in sessions) {
-    if (!sessions.hasOwnProperty(id)) continue;
-    var session = sessions[id];
+  for (var chan in channels) {
+	var sessions = channels[chan].sessions; // XXX I may need to guard against null or undefined
+	for (var id in sessions) {
+		if (!sessions.hasOwnProperty(id)) continue;
+		var session = sessions[id];
 
-    if (now - session.timestamp > SESSION_TIMEOUT) {
-      session.destroy();
-    }
+		if (now - session.timestamp > SESSION_TIMEOUT) {
+			session.destroy();
+		}
+	}
   }
 }, 1000);
 
@@ -342,6 +355,9 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 
 fu.get("/who", function (req, res) {
   var nicks = [];
+  var chan = qs.parse(url.parse(req.url).query).channel;
+  var sessions = channels[chan];
+  	
   for (var id in sessions) {
     if (!sessions.hasOwnProperty(id)) continue;
     var session = sessions[id];
@@ -354,19 +370,27 @@ fu.get("/who", function (req, res) {
 
 fu.get("/join", function (req, res) {
   var nick = qs.parse(url.parse(req.url).query).nick;
+  var chan = qs.parse(url.parse(req.url).query).channel;
+	
   if (nick == null || nick.length == 0) {
     res.simpleJSON(400, {error: "Bad nick."});
     return;
   }
-  var session = createSession(nick);
-  if (session == null) {
+  var session = createSession(nick, chan);
+  // XXX Cleanup this error handling!!!!!
+  if (channels[chan] == null) {
+	  res.simpleJSON(400, {error: "Unable to create channel for " + chan}); // can I just return this resp?
+	  return;
+  } else if (session == null) { // XXX Need to clean up the handling of "nick in use"
     res.simpleJSON(400, {error: "Nick in use"});
     return;
+  } else {
+	  channels[chan].sessions[session.id] = session;
   }
 
-  //sys.puts("connection: " + nick + "@" + res.connection.remoteAddress);
+  sys.puts("connection: " + nick + "@" + res.connection.remoteAddress + " on " + chan);
 
-  channel.appendMessage(session.nick, "join");
+  channels[chan].appendMessage(session.nick, "join");
   res.simpleJSON(200, { id: session.id
                       , nick: session.nick
                       , rss: mem.rss
@@ -376,6 +400,8 @@ fu.get("/join", function (req, res) {
 
 fu.get("/part", function (req, res) {
   var id = qs.parse(url.parse(req.url).query).id;
+  var chan = qs.parse(url.parse(req.url).query).channel;
+  var sessions = channels[chan].sessions;
   var session;
   if (id && sessions[id]) {
     session = sessions[id];
@@ -385,30 +411,66 @@ fu.get("/part", function (req, res) {
 });
 
 fu.get("/recv", function (req, res) {
+  var chan = qs.parse(url.parse(req.url).query).channel;
+  // XXX Clean up this mess
+  if (chan == null) return res.simpleJSON(400, {error: "Must provide a channel"}); // XXX Need to just provide a default channel
+  var achannel = channels[chan];
+  var sessions;
+  
+  sys.puts("channel is " + chan);
+  if (achannel == null) {
+	  sys.puts("Creating new channel for " + chan);
+	  achannel = channelFactory();
+	  
+	  if (achannel == null) sys.puts('/recv achannel is null');
+	  channels[chan] = achannel;
+	  
+  }
+  sys.puts('/recv channels = ' + channels);
+  achannel = channels[chan];
+  sys.puts('/recv achannel = ' + achannel);
+  sessions = achannel.sessions;
+  sys.puts('/recv sessions is = ' + sessions);
+  sys.puts('/recv parsing query');
   if (!qs.parse(url.parse(req.url).query).since) {
     res.simpleJSON(400, { error: "Must supply since parameter" });
     return;
   }
   var id = qs.parse(url.parse(req.url).query).id;
+  sys.puts('/recv parsing id = ' + id);
+  
   var session;
-  if (id && sessions[id]) {
+  
+  if (id != null && sessions[id]) {
+    sys.puts('/recv setting session for id = ' + id);
     session = sessions[id];
     session.poke();
   }
-
+  sys.puts('/recv setting since');
+  
   var since = parseInt(qs.parse(url.parse(req.url).query).since, 10);
 
-  channel.query(since, function (messages) {
+  achannel.query(since, function (messages) { 
+    sys.puts("channel session query");
     if (session) session.poke();
     res.simpleJSON(200, { messages: messages, rss: mem.rss });
   });
+  sys.puts("Done with /recv");
 });
 
 fu.get("/send", function (req, res) {
   var id = qs.parse(url.parse(req.url).query).id;
   var text = qs.parse(url.parse(req.url).query).text;
   var type = qs.parse(url.parse(req.url).query).type;
-
+  var chan = qs.parse(url.parse(req.url).query).channel;
+  var sessions = channels[chan];
+  if (!chan) { // XXX refactor to use default channel
+	  res.simpleJSON(400, { error: "Channel required"});
+	  return;
+  } else if (!sessions) {
+	  res.simpleJSON(400, { error: "Unable to get the session for channel " + chan});
+	  return;
+  }
   if (!type) type = "msg";
   sys.puts("send received message type = " + type);
   var session = sessions[id];
@@ -422,7 +484,7 @@ fu.get("/send", function (req, res) {
   if (text != null && text.match(/#startsession/i)) {
 	channel.appendMessage(session.nick, "startsession", text);
   } else if (text != null && text.match(/#endsession/i)) {
-		channel.appendMessage(session.nick, "endsession", text);
+	channel.appendMessage(session.nick, "endsession", text);
   } else {
   	channel.appendMessage(session.nick, type, text);
   }

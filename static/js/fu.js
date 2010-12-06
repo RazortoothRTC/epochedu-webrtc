@@ -58,12 +58,13 @@ function internalServerError(req, res) { // XXX Add a nicely formatted version!
                      , "Content-Length": INTERNAL_SERVER_ERROR.length
                      });
   res.write(INTERNAL_SERVER_ERROR);
-  sys.log(sys.inspect(getMap, true, null)); // XXX Dump the getMap to the logs
+  // sys.log(sys.inspect(getMap, true, null)); // XXX Dump the getMap to the logs
   res.end();
 }
 
 var getMap = {};
 var regexMap = {};
+
 
 fu.get = function (path, handler) {
   getMap[path] = handler;
@@ -86,15 +87,15 @@ var server = createServer(function (req, res) {
 		handler = getMap[url.parse(req.url).pathname];
 		if (!handler) {
 			for (var unid in regexMap) { 
-				console.log("testing path " + req.url + " vs. " + unid);
+				// console.log("testing path " + req.url + " vs. " + unid);
 				// if (unid.test && unid.test(req.url)) handler = getMap[unid];
 				// break;
 				if (regexMap[unid].test(url.parse(req.url).pathname)) {
-					console.log("Found matching regex for unid " + unid);
+					// console.log("Found matching regex for unid " + unid);
 					handler = getMap[regexMap[unid].toString()];
 					break;
 				} else {
-					console.log("No match for regex");
+					// console.log("No match for regex");
 					handler = notFound;
 				}
 			}
@@ -119,6 +120,7 @@ var server = createServer(function (req, res) {
 	  }
 	} catch (e) {
 		handler = internalServerError;
+		sys.puts(new Error().stack);
 		console.log("Caught a server-side Node.js exception.  Ouch!  Here's what happened: " + e.name 
 		+ ". Error message: " + e.message);
 		handler(req, res);

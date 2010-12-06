@@ -410,7 +410,7 @@ function longPoll (data) {
          , type: "GET"
          , url: "/recv"
          , dataType: "json"
-         , data: { since: CONFIG.last_message_time, id: CONFIG.id }
+         , data: { since: CONFIG.last_message_time, id: CONFIG.id, channel: getChannel() }
          , error: function () {
              addMessage("", "long poll error. trying again...", new Date(), "error");
              transmission_errors += 1;
@@ -443,7 +443,7 @@ function sendviewer(msg, type) {
   if (CONFIG.debug === false) {
     // XXX should be POST
     // XXX should add to messages immediately
-    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type}, function (data) { }, "json");
+    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
   }
 }
 
@@ -544,7 +544,7 @@ function outputUsers () {
 
 //get a list of the users presently in the room, and add it to the stream
 function who () {
-  jQuery.get("/who", {}, function (data, status) {
+  jQuery.get("/who", { channel: getChannel()}, function (data, status) {
     if (status != "success") return;
     nicks = data.nicks;
     outputUsers();
