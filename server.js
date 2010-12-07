@@ -356,7 +356,7 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 fu.get("/who", function (req, res) {
   var nicks = [];
   var chan = qs.parse(url.parse(req.url).query).channel;
-  var sessions = channels[chan];
+  var sessions = channels[chan].sessions;
   	
   for (var id in sessions) {
     if (!sessions.hasOwnProperty(id)) continue;
