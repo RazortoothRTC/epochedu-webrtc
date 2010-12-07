@@ -1,0 +1,30 @@
+<project name="epochedu-master" default="dist" basedir=".">
+
+  <!-- set global properties for this build -->
+  <property name="dist.name" value="epochedu-master"/>
+  <property name="dist" location="dist"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+
+    <property environment="env" />
+    <echo message="BUILD_ID = ${env.BUILD_NUMBER}-${DSTAMP}"/>
+  </target>
+
+  <target name="dist" depends="clean,init" description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}"/>
+
+    <!-- Put everything in a tar.gz file -->
+    <tar destfile="${dist}/${dist.name}.tar" basedir="."/>
+    <gzip destfile="${dist}/${dist.name}-${env.BUILD_NUMBER}-${DSTAMP}.tar.gz" src="${dist}/${dist.name}.tar"/>
+    <delete file="${dist}/${dist.name}.tar"/>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <!-- Delete the ${dist} directory trees -->
+    <delete dir="${dist}"/>
+  </target>
+
+</project>
