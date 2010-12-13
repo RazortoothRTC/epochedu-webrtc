@@ -1,6 +1,6 @@
 #!/bin/sh
 # 
 #
-export NODE_PATH=/home/discovered/root
-cd /home/discovered/epochedu-work
+export NODE_PATH=$HOME/root
+cd $HOME/deploy
 node server.js
