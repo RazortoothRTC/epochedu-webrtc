@@ -1,6 +1,6 @@
 /**
-#Created by David J. Kordsmeier on 2009-01-30.
-#Copyright (c) 2009 Razortooth Communications, LLC. All rights reserved.
+#
+#Copyright (c) 2010-2011 Razortooth Communications, LLC. All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification,
 #are permitted provided that the following conditions are met:

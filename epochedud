@@ -1,5 +1,7 @@
 #!/bin/sh
 # 
+# Add any npm dependencies here
+# We can make this efficient later.
 #
 npm install nTPL
 npm install nodemon
