@@ -1,6 +1,8 @@
 #!/bin/sh
 # 
 #
+npm install nTPL
+npm install nodemon
 export NODE_PATH=$HOME/root
 cd $HOME/deploy
 node server.js
