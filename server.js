@@ -63,10 +63,6 @@ HOST = null; // localhost
 //
 PORT = 5000;
 
-//
-// VERSION - generic version string for support and QA
-//
-VERSION = "ces-marvell-v1";  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 
 //
 // CONTENT_REPO_URL - the base URL for hosting all content
@@ -97,6 +93,11 @@ CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"
 
 // when the daemon started
 var starttime = (new Date()).getTime();
+//
+// VERSION - generic version string for support and QA
+//
+VERSION = "ces-marvell-v1-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+
 var mem = process.memoryUsage();
 
 var channels = {};
@@ -326,7 +327,16 @@ req.url.indexOf('/content') + '/content'.length)) (req, res);
 // APP ROUTES
 //
 
-fu.get("/", fu.staticHandler("templates/index.html")); // Default node_chat app XXX change this
+
+fu.getterer("/", function(req, res) {
+	var chan = "default"
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var student_tpl = nTPL("./templates/index.html"); // XXX later, force this over to generic chat page
+	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html");
+	  res.end(student_tpl({
+	      channel: chan,
+	    }));
+});
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];

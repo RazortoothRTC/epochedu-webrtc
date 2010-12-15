@@ -1,0 +1,56 @@
+<!DOCTYPE html>{%set name boilerplate-jqm %}
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>{%block 'title' %}Override default 'title'{%/block %}</title>
+	<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+	<link rel="shortcut icon" href="/static/images/favicon.ico">
+	<link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+	<!-- CSS : implied media="all" -->
+	{%block 'css-styles' %}
+	<link rel="stylesheet" href="/static/css/jquery.mobile-1.0a2.css" />
+	<link rel="stylesheet" href="/static/css/style.css?v=1">
+	{%/block %}
+	
+	<script src="/static/js/jquery-1.4.4.min.js"></script><script type="text/javascript" src="/static/js/jquery.mobile-1.0a2.js"></script>
+	<script src="/static/js/script.js?v=1"></script>
+	{%block 'body-scripts' %}
+	{*
+			add any small custom scripts here
+	*}
+	{%/block %}
+	
+	{%block 'head' %}
+	{*
+			add Additional CSS or META tags here
+	*}
+	{%/block %}
+</head> 
+<body> 
+<div data-role="page" data-theme="b" id="jqm-home">
+	<div data-role="content">
+		<header>
+			{%block 'content-header' %}
+			<div id="jqm-homeheader">
+				<h1 id="jqm-logo"><img src="/static/images/rtlogo_sm.jpg" alt="RT Rules"/></h1>
+				<p>A Touch-Optimized Web Framework for Smartphones &amp; Tablets</p>
+				<p id="jqm-version">Alpha Release</p>
+			</div>
+			{%/block %}
+	    </header>
+		{%block 'content' %}
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+				<li data-role="list-divider">Overview</li>
+				<li><a rel="external" href="http://www.yahoo.com">Yahoo is best</a></li>
+				<li><a rel="external" href="http://google.com">Google has good search</a></li>
+				<li><a rel="external" href="http://ask.com">Ask Jeeves</a></li>
+			</ul>
+		{%/block %}
+		<footer>
+			{%block 'content-footer' %}
+			{%/block %}
+	    </footer>
+	</div>
+</div>
+</body>
+</html>
