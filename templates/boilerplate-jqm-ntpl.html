@@ -8,6 +8,9 @@
 	<link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
 	<!-- CSS : implied media="all" -->
 	{%block 'css-styles' %}
+	{*
+			Only override this CSS if you don't want what's here, otherwise, add your CSS to head
+	*}
 	<link rel="stylesheet" href="/static/css/jquery.mobile-1.0a2.css" />
 	<link rel="stylesheet" href="/static/css/style.css?v=1">
 	{%/block %}
@@ -26,9 +29,11 @@
 	*}
 	{%/block %}
 </head> 
-<body> 
-<div data-role="page" data-theme="b" id="jqm-home">
+<body>
+{%block 'container' %} 
+<div data-role="page" data-theme="b" id="{%block 'pageid' %}jqm-home{%/block%}">
 	<div data-role="content">
+		{%block 'content' %}
 		<header>
 			{%block 'content-header' %}
 			<div id="jqm-homeheader">
@@ -50,7 +55,9 @@
 			{%block 'content-footer' %}
 			{%/block %}
 	    </footer>
+		{%/block %}
 	</div>
 </div>
+{%/block %}
 </body>
 </html>

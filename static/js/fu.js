@@ -45,17 +45,25 @@ var fu = exports;
 
 // XXX Localize these strings?
 var NOT_FOUND = "Not Found\n";
-var INTERNAL_SERVER_ERROR = "Internal Server Error.  Oh pshaw!\n";
+var INTERNAL_SERVER_ERROR = 'Internal Server Error!  Oh pshaw\n';
 
 function notFound(req, res) {
-	console.log(getMap);
-	fu.staticHandler("templates/404.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
+	console.log("404 Error - ");
+	fu.staticHandler("templates/learn-simplified-german.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
+	// Add these URLs to a set of standard URLs
+}
+
+function internalServerError2(req, res) {
+	console.log("500 Error - ");
+	fu.staticHandler("templates/oh-pshaw.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
 	// Add these URLs to a set of standard URLs
 }
 
 function internalServerError(req, res) { // XXX Add a nicely formatted version!
-  res.writeHead(500, { "Content-Type": "text/plain"
-                     , "Content-Length": INTERNAL_SERVER_ERROR.length
+  // XXX For some reason, this always returns garbage: 22 Internal Server Error.  Oh psh
+  // Need to debug this!
+  res.writeHead(500, {  'Content-Type': 'text/plain',
+						'Content-Length': INTERNAL_SERVER_ERROR.length
                      });
   res.write(INTERNAL_SERVER_ERROR);
   // sys.log(sys.inspect(getMap, true, null)); // XXX Dump the getMap to the logs
@@ -91,7 +99,7 @@ var server = createServer(function (req, res) {
 				// if (unid.test && unid.test(req.url)) handler = getMap[unid];
 				// break;
 				if (regexMap[unid].test(url.parse(req.url).pathname)) {
-					// console.log("Found matching regex for unid " + unid);
+					console.log("Found matching regex for unid " + unid);
 					handler = getMap[regexMap[unid].toString()];
 					break;
 				} else {
@@ -119,11 +127,11 @@ var server = createServer(function (req, res) {
 	    handler(req, res);
 	  }
 	} catch (e) {
-		handler = internalServerError;
-		sys.puts(new Error().stack);
-		console.log("Caught a server-side Node.js exception.  Ouch!  Here's what happened: " + e.name 
-		+ ". Error message: " + e.message);
-		handler(req, res);
+		// handler = internalServerError;
+		// sys.puts(new Error().stack);
+		console.log("Caught a server-side Node.js exception.  Ouch!  Here's what happened: " + e.name + ". Error message: " + e.message);
+		internalServerError2(req, res);
+		sys.puts("done done");
 	}
 });
 

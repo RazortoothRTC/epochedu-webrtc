@@ -1,0 +1,31 @@
+{%set name teacher-jqm %}
+{%set args userfax,username,usermail %}
+
+{%extends 'boilerplate-jqm' %}
+
+{%block 'title' %}Cruzy Chat{%/block %}
+
+{%block 'body-scripts' %}
+{%/block %}
+{%block 'head' %}
+{%/block %}
+
+
+{%block 'content-header' %}
+	<div id="jqm-homeheader">
+		<h1 id="jqm-logo"><img src="/static/images/rtlogo_sm.jpg" alt="RT Rules"/></h1>
+		<p>A Touch-Optimized Web Framework for Smartphones &amp; Tablets</p>
+		<p id="jqm-version">Alpha Release</p>
+	</div>
+{%/block %}
+
+{%block 'content' %}
+	<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+		<li data-role="list-divider">Overview</li>
+		<li><a rel="external" href="http://ask.com">Ask Jeeves</a></li>
+		<li><a rel="external" href="http://www.yahoo.com">Yahoo is best</a></li>
+		<li><a rel="external" href="http://google.com">Google has good search</a></li>
+	</ul>
+{%/block %}
+{%block 'content-footer' %}
+{%/block %}

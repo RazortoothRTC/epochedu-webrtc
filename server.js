@@ -312,6 +312,7 @@ fu.get("/about", function(req, res) {
 //
 fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
 fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
+fu.get("/cruzy", fu.staticHandler("templates/chat.html"));
 fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
@@ -319,40 +320,62 @@ fu.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
 fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
-	return fu.staticHandler(CONTENT_REPO_FILE_PATH + req.url.substring(
-req.url.indexOf('/content') + '/content'.length)) (req, res);
+	return fu.staticHandler(CONTENT_REPO_FILE_PATH + req.url.substring(req.url.indexOf('/content') + '/content'.length)) (req, res);
 });
 
 //
 // APP ROUTES
 //
-
-
-fu.getterer("/", function(req, res) {
-	var chan = "default"
+/*
+fu.getterer("/x", function(req, res) {
+	var chan = "default";
 	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var student_tpl = nTPL("./templates/index.html"); // XXX later, force this over to generic chat page
+	  var index_tpl = nTPL("./templates/index.html"); // XXX later, force this over to generic chat page
 	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html");
-	  res.end(student_tpl({
+	  res.end(index_tpl({
 	      channel: chan,
 	    }));
-});
+}); */
+// fu.get("/class/[\\w\\.\\-]+", fu.staticHandler("templates/epoch-teacher-landing.html"));
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var student_tpl = nTPL("./templates/epoch-student-v2.html");
-	  var base = nTPL("./templates/boilerplate-ntpl.html");
+	  var student_tpl = nTPL("./templates/student-jqm-ntpl.html");
+	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM
 	  res.end(student_tpl({
 	      channel: chan,
 	    }));
 });
 
+fu.getterer("/class-v1/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var student_tpl = nTPL("./templates/epoch-student-v2.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
+	  res.end(student_tpl({
+	      channel: chan,
+	    }));
+});
 
 fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, CONTENT_REPO_URL, chan);
 	var roomcl = JSON.stringify(contentlist);
+		
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var teacher_tpl = nTPL("./templates/teacher-jqm-ntpl.html");
+	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM
+	  res.end(teacher_tpl({
+	      channel: chan,
+		  roomcl: roomcl,
+	    }));
+});
+
+fu.getterer("/classmoderator-v1/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, CONTENT_REPO_URL, chan);
+	var roomcl = JSON.stringify(contentlist); // V1
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var teacher_tpl = nTPL("./templates/epoch-teacher-v2.html");
@@ -524,4 +547,5 @@ fu.get("/send", function (req, res) {
   }
   res.simpleJSON(200, { rss: mem.rss });
 });
+
 
