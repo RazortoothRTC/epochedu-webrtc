@@ -326,8 +326,8 @@ fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 //
 // APP ROUTES
 //
-/*
-fu.getterer("/x", function(req, res) {
+
+fu.getterer("/cruzy", function(req, res) {
 	var chan = "default";
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var index_tpl = nTPL("./templates/index.html"); // XXX later, force this over to generic chat page
@@ -335,7 +335,7 @@ fu.getterer("/x", function(req, res) {
 	  res.end(index_tpl({
 	      channel: chan,
 	    }));
-}); */
+});
 // fu.get("/class/[\\w\\.\\-]+", fu.staticHandler("templates/epoch-teacher-landing.html"));
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {

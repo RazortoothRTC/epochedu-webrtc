@@ -59,5 +59,53 @@
 	</div>
 </div>
 {%/block %}
+{*
+	XXX TEMPLATE THIS SNIPPET
+*}
+<div class="jqmWindow" id="dialog">
+	<div class="modalmsg">
+		<div class="modaltxt">
+			<h3>Welcome to the digital classroom demo.</h3>
+			<p>This is the student’s demonstration device.<br />Please touch the “Login Now” to login to the student’s control panel.</p>
+		</div>
+		<div class="modalbranding">
+			
+		</div>
+	</div>
+	<form id="loginform">
+		<div class="modalrow">
+			<label>Username:</label>
+			<input id="nickInput" type="text" class="modalform" name="nick"/>
+		</div>
+		<div class="modalrow">
+			<label>Password:</label>
+			<input type="text" class="modalform"/>
+		</div>
+		<div class="modalrow">
+			<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login"/>
+		</div>
+		<span class="modalrow" id="status"></span>
+	</form>	
+</div>
+<div class="jqmWindow" id="qadialog">
+	<div class="modalmsg">
+		<div class="modaltxt">
+			<h3><span id="nick"></span> Has Asked A Question</h3>
+			<p><span id="question"></span></p>
+		</div>
+		<div class="modalbranding">
+			
+		</div>
+	</div>
+	<form id="answerform">
+		<div class="modalrow">
+			<label>Answer:</label>
+			<input id="entry" type="text" class="cinput modalform"/>
+		</div>
+		<div class="modalrow">
+			<input type="image" src="/static/images/submit.png" class="asubmit"/>
+		</div>
+	</form>	
+</div>
 </body>
 </html>

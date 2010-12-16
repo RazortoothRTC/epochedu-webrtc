@@ -469,7 +469,7 @@ $(document).ready(function() {
            , type: "GET" // XXX should be POST
            , dataType: "json"
            , url: "/join"
-           , data: { nick: nick }
+           , data: { nick: nick, channel: getChannel() }
            , error: function () {
                alert("error connecting to server");
                showConnect();
