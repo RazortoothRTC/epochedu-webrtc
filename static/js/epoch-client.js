@@ -270,13 +270,12 @@ function addMessage (from, text, time, _class) {
   	text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
   }  
   text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
-
+  // XXX Remove references to JScrollpane	
   $pane = $('.chatscroll');
-  var autoScroll = $pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'); 
-  
-  $pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  // var autoScroll = $pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'); 
+  // $pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
   // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
-  if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
+  // if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
   Shadowbox.setup();
 
 }

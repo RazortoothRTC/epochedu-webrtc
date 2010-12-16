@@ -33,9 +33,10 @@
 			maintainPosition: false,
 		});
 		*/
-		alert("show dialogs");
-		$('#dialog').jqm({modal:true}).jqmShow();
-		$('#qadialog').jqm({modal:false, autofire:true});
+		$.mobile.changePage("loginpanel", "slideup");
+		$("#loginpanel").find("span#channel").html("<em>{%= channel%}</em>");
+		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
+		$('#qadialog').jqm({modal:false, autofire:true}); */
 		var h = $(window).height();
         var w = $(window).width();
 		/* XXX I think we can get rid of this

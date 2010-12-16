@@ -109,3 +109,22 @@ li.link4 a.ui-btn-hover-a { border: 1px solid #000; background: #444444; font-we
 	padding-left:10px;
 	width:80%;
 }
+
+h1.marvellbranding1 {
+	width: 200; height: 25;
+	background:url('../images/marvell_horiz_logo.jpg') no-repeat;
+}
+
+h1.marvellbranding1 span {
+	display: none;
+}
+
+h1.rtbranding1 {
+	width: 100; height: 26;
+	background:url('../images/rtlogo-100x26.jpg') no-repeat;
+}
+
+h1.rtbranding1 span {
+	display: none;
+}
+

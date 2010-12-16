@@ -15,8 +15,9 @@
 	<link rel="stylesheet" href="/static/css/style.css?v=1">
 	{%/block %}
 	
-	<script src="/static/js/jquery-1.4.4.min.js"></script><script type="text/javascript" src="/static/js/jquery.mobile-1.0a2.js"></script>
+	<script src="/static/js/jquery-1.4.4.min.js"></script>
 	<script src="/static/js/script.js?v=1"></script>
+	<script type="text/javascript" src="/static/js/jquery.mobile-1.0a2.js"></script>
 	{%block 'body-scripts' %}
 	{*
 			add any small custom scripts here
@@ -28,6 +29,7 @@
 			add Additional CSS or META tags here
 	*}
 	{%/block %}
+	
 </head> 
 <body>
 {%block 'container' %} 
@@ -60,52 +62,47 @@
 </div>
 {%/block %}
 {*
-	XXX TEMPLATE THIS SNIPPET
+	XXX TEMPLATE THIS SNIPPET - Do we want to share this betweem each
 *}
-<div class="jqmWindow" id="dialog">
-	<div class="modalmsg">
-		<div class="modaltxt">
-			<h3>Welcome to the digital classroom demo.</h3>
-			<p>This is the student’s demonstration device.<br />Please touch the “Login Now” to login to the student’s control panel.</p>
+
+<div id="loginpanel" data-theme="c" data-role="dialog" role="dialog">
+	<!-- <div data-role="header" role="banner">
+		<a data-iconpos="notext" data-icon"delete" href="#" title="Close" data-theme="a">Close</a><h1>Account Settings</h1>
+	</div>-->
+	<div data-role="content" data-theme="c" role="main" id="dialog">	
+		<div class="modalmsg">
+			<div class="modaltxt">
+				<h3>Welcome to the digital classroom <span id="channel"></span>.  You are waiting to join the classroom.</h3>
+				<h1 class="marvellbranding1">
+					<img src="/static/images/blank_1x1.png" />
+					<span>Marvell Branding 1</span>
+				</h1>
+				<h1 class="rtbranding1">
+					<img src="/static/images/blank_1x1.png" />
+					<span>RT Branding 1</span>
+				</h1>
+			</div>
 		</div>
-		<div class="modalbranding">
-			
-		</div>
-	</div>
-	<form id="loginform">
-		<div class="modalrow">
-			<label>Username:</label>
-			<input id="nickInput" type="text" class="modalform" name="nick"/>
-		</div>
-		<div class="modalrow">
-			<label>Password:</label>
-			<input type="text" class="modalform"/>
-		</div>
-		<div class="modalrow">
-			<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login"/>
-		</div>
-		<span class="modalrow" id="status"></span>
-	</form>	
-</div>
-<div class="jqmWindow" id="qadialog">
-	<div class="modalmsg">
-		<div class="modaltxt">
-			<h3><span id="nick"></span> Has Asked A Question</h3>
-			<p><span id="question"></span></p>
-		</div>
-		<div class="modalbranding">
-			
-		</div>
-	</div>
-	<form id="answerform">
-		<div class="modalrow">
-			<label>Answer:</label>
-			<input id="entry" type="text" class="cinput modalform"/>
-		</div>
-		<div class="modalrow">
-			<input type="image" src="/static/images/submit.png" class="asubmit"/>
-		</div>
-	</form>	
-</div>
+		<form id="loginform">
+			<p>Please touch the “Login Now” to login to the student’s control panel.</p>
+			<div class="modalrow">
+				<label>Username:</label>
+				<input id="nickInput" type="text" class="modalform" name="nick"/>
+			</div>
+			<div class="modalrow">
+				<label>Password:</label>
+				<input type="text" class="modalform"/>
+			</div>
+			<div class="modalrow">
+				<input type="submit" class="login" name="submit" id="connectButton" aria-label="submit" data-theme="a" value="Login Now" />
+				
+			</div>
+			<span class="modalrow" id="status"></span>
+		</form>
+		
+	</div><!-- /content -->
+	
+	
+</div> <!-- loginplanel>
 </body>
 </html>
