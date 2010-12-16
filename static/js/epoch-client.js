@@ -273,11 +273,14 @@ function addMessage (from, text, time, _class) {
   // XXX Remove references to JScrollpane	
   $pane = $('.chatscroll');
   // var autoScroll = $pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'); 
-  // $pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  if (document.jScrollPane) {
+  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  } else {
+	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>'));
+  } 
   // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
   // if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
-  Shadowbox.setup();
-
+  Shadowbox.setup(); // XXX Make sure I still need this
 }
 
 function updateRSS () {
@@ -375,7 +378,14 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
-			if (!teacher) $('#dialog').jqmHide();
+			if (!teacher) {
+				if (document.jqm) {
+					$('#dialog').jqmHide();
+				} else { // XXX We need to do better than this and know what our UI is
+					// $('#loginpanel').
+					$('.ui-dialog').dialog('close'); 
+				}
+			}
 			break;
 		
 		case "endsession":
