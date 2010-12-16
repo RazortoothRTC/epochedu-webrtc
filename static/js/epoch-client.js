@@ -138,7 +138,7 @@ Date.fromString = function(str) {
 
 //updates the users link to reflect the number of active users
 function updateUsersLink ( ) {
-  var t = nicks.length.toString() + " user";
+  var t = nicks.length.toString() + " student";
   if (nicks.length != 1) t += "s";
   $("#usersLink").text(t);
 }
