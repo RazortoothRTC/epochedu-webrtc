@@ -96,7 +96,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v1-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces-marvell-v2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 
 var mem = process.memoryUsage();
 

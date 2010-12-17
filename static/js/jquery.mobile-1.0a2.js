@@ -3236,7 +3236,7 @@ $.fn.grid = function(options){
 		resetBaseURL();
 			
 		// if the new href is the same as the previous one
-		if ( back ) {
+		if ( urlStack.pop && back && urlStack.length > 1 ) {
 			transition = urlStack.pop().transition;
 		} else {
 			urlStack.push({ url: url, transition: transition });
