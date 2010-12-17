@@ -96,7 +96,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v1-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces-marvell-v1-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 
 var mem = process.memoryUsage();
 
@@ -122,11 +122,11 @@ var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000; // XXX this should be configurable
 
 function channelFactory() {
-var channel = new function () {
-	var messages = [],
-		callbacks = [];
-	this.sessions = {};
-	this.appendMessage = function (nick, type, text) {
+	var channel = new function () {
+		var messages = [],
+			callbacks = [];
+		this.sessions = {};
+		this.appendMessage = function (nick, type, text) {
 		var m = { nick: nick
 		   , type: type // See switch statement below
 		   , text: text
@@ -429,6 +429,7 @@ fu.get("/join", function (req, res) {
   var chan = qs.parse(url.parse(req.url).query).channel;
 	
   if (nick == null || nick.length == 0) {
+	sys.puts('Error 400: bad nock');
     res.simpleJSON(400, {error: "Bad nick."});
     return;
   }
@@ -438,6 +439,7 @@ fu.get("/join", function (req, res) {
 	  res.simpleJSON(400, {error: "Unable to create channel for " + chan}); // can I just return this resp?
 	  return;
   } else if (session == null) { // XXX Need to clean up the handling of "nick in use"
+    sys.puts('Error: nick in use');
     res.simpleJSON(400, {error: "Nick in use"});
     return;
   } else {
@@ -469,7 +471,10 @@ fu.get("/part", function (req, res) {
 fu.get("/recv", function (req, res) {
   var chan = qs.parse(url.parse(req.url).query).channel;
   // XXX Clean up this mess
-  if (chan == null) return res.simpleJSON(400, {error: "Must provide a channel"}); // XXX Need to just provide a default channel
+  if (chan == null) {
+	 sys.puts('channel is null');
+	 return res.simpleJSON(400, {error: "Must provide a channel"}); // XXX Need to just provide a default channel
+  }
   var achannel = channels[chan];
   var sessions;
   
@@ -489,6 +494,7 @@ fu.get("/recv", function (req, res) {
   // sys.puts('/recv sessions is = ' + sessions);
   // sys.puts('/recv parsing query');
   if (!qs.parse(url.parse(req.url).query).since) {
+	sys.puts('ERROR: 400 must supply since parameter');
     res.simpleJSON(400, { error: "Must supply since parameter" });
     return;
   }
@@ -522,17 +528,33 @@ fu.get("/send", function (req, res) {
   var channel = channels[chan];
   var sessions = channel.sessions;
   if (!chan) { // XXX refactor to use default channel
+	  sys.puts('Error 400: channel required');
 	  res.simpleJSON(400, { error: "Channel required"});
 	  return;
   } else if (!sessions) {
+	  sys.puts('Error 400: unable to get sessions');
 	  res.simpleJSON(400, { error: "Unable to get the session for channel " + chan});
 	  return;
   }
   if (!type) type = "msg"; // XXX Are there any side effects to this?
   sys.puts("send received message type = " + type);
   var session = sessions[id];
-  if (!session || !text) {
-    res.simpleJSON(400, { error: "No such session id" });
+  if (!session) {
+	sys.puts('Error 400: no such session for id');
+	//
+	// Try to reconnect
+	// 
+	// XXX TODO, implement ...
+	// If the server went down, rebooted, or reset, we should be able
+	// lookup the session in a DB and reconnect
+	//
+    res.simpleJSON(400, { error: "No such session for id" });
+    return;
+  }
+  
+  if (!text) {
+	sys.puts('Error 400: empty message not allowed');
+    res.simpleJSON(400, { error: "empty message not allowed" });
     return;
   }
 

@@ -161,6 +161,12 @@ function updateUserStatus(nick, timestamp) {
 		}
 	}
 }
+
+function isUserInSession() {
+	for (var i = 0; i < nicks.length; i++) // XXX Put this data into a DB so lookup is quick
+	    if (nicks[i] == nick) return true;
+	return false;
+}
 //handles another person joining chat
 function userJoin(nick, timestamp) {
   //put it in the stream
@@ -423,8 +429,8 @@ function longPoll (data) {
          , error: function () {
              addMessage("", "long poll error. trying again...", new Date(), "error");
              transmission_errors += 1;
-             //don't flood the servers on error, wait 10 seconds before retrying
-             setTimeout(longPoll, 10*1000);
+             //don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
+             setTimeout(longPoll, transmission_errors * 10*1000);
            }
          , success: function (data) {
              transmission_errors = 0;
@@ -534,12 +540,14 @@ function onConnect (session) {
   //listen for browser events so we know to update the document title
   $(window).bind("blur", function() {
     CONFIG.focus = false;
+	// alert('lost focus');
     // updateTitle();
   });
 
   $(window).bind("focus", function() {
     CONFIG.focus = true;
     CONFIG.unread = 0;
+	// alert('got focus');
     // updateTitle();
   });
 }
@@ -586,6 +594,16 @@ $(document).ready(function() {
     $("#entry").attr("value", ""); // clear the entry field.
 	return false;
   });
+
+  if ($.mobile) {
+	$("#csubmit").bind('tap', function() {
+		// alert('tap event');
+		var msg = $("#entry").attr("value").replace("\n", "");
+	    if (!util.isBlank(msg)) send(msg);
+	    $("#entry").attr("value", ""); // clear the entry field.
+		return false;
+	});
+  }
 
   $(".qsubmit").click(function() {
 	var msg = $("#entry").attr("value").replace("\n", "");

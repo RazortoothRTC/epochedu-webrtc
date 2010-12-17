@@ -110,6 +110,10 @@ li.link4 a.ui-btn-hover-a { border: 1px solid #000; background: #444444; font-we
 	width:80%;
 }
 
+.error-message {
+	color: #ff3300;
+}
+
 h1.marvellbranding1 {
 	width: 200; height: 25;
 	background:url('../images/marvell_horiz_logo.jpg') no-repeat;

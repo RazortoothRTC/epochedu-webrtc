@@ -33,6 +33,7 @@
 			maintainPosition: false,
 		});
 		*/
+		// alert('document ready');
 		$.mobile.changePage("loginpanel", "slideup");
 		$("#loginpanel").find("span#channel").html("<em>{%= channel%}</em>");
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
@@ -131,18 +132,18 @@
 
 		<div data-role="footer" class="footer" data-position="fixed">
 			<div data-role="fieldcontain" class="chatinput">
-			    <input type="text" name="name" id="name" value=""  />
-				<input type="submit" name="submit" id="submit" role="button" aria-label="submit" data-theme="a" value="Submit" />
+			    <input type="text" name="name" id="entry" value=""  />
+				<div id="csubmit" data-role="button">Send</div>
 				<div class="right"><a data-icon="gear" data-transition="pop" data-rel="dialog" href="panel" data-theme="a">Options</a></div>
-				<div class="right" style="padding:0px;">Hello, Student!</div>
+				<div class="right" style="padding:0px;">Hello, <span id="nick"></span>!</div>
 			</div>
 			<div class="footercopy">
-				<p>Powered by Razortooth Communications</p>
+				<p>Powered by Razortooth Communications, LLC</p>
 			</div>
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-
+	<!-- XXX What is the point of this Page 2 code???? Really? Remove it... -->
 	<!-- Start of second page -->
 	<div data-role="page" id="lessons">
 		<form action="#" method="get">
