@@ -396,7 +396,13 @@ function longPoll (data) {
 		
 		case "endsession":
 		 	// alert('ended a class');
-			if (!teacher) $('#dialog').jqmShow();
+			if (!teacher) {
+				if ($.mobile) { 
+					$.mobile.changePage("loginpanel", "slideup");
+				} else {	
+					$('#dialog').jqmShow();
+				}
+			}
 			break;
 			
 		case "askquestion":
@@ -726,6 +732,7 @@ $(document).ready(function() {
   $('#loginform').submit(function() {
 	// XXX Should probably use this instead of the connectButton 
 	// because we need to capture the default submit
+	alert('login submit?');
   	return false;
   });
   // update the daemon uptime every 10 seconds

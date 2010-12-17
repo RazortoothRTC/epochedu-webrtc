@@ -559,7 +559,7 @@ fu.get("/send", function (req, res) {
   }
 
   session.poke();
-  sys.puts("/send testing for text value");
+  // sys.puts("/send testing for text value");
   if (text && text.match(/#startsession/i)) {
 	channel.appendMessage(session.nick, "startsession", text);
   } else if (text && text.match(/#endsession/i)) {
