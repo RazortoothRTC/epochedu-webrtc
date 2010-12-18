@@ -22,6 +22,8 @@
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
+		var sessionid;
+		var nick;
 		/* XXX Not sure we need this anymore
 		$('body').addClass('bg');
 		$('.chatscroll').jScrollPane({
@@ -34,8 +36,17 @@
 		});
 		*/
 		// alert('document ready');
-		$.mobile.changePage("loginpanel", "slideup");
-		$("#loginpanel").find("span#channel").html("<em>{%= channel%}</em>");
+		if (!(sessionid = isEpochCookieSet())) {
+			$.mobile.changePage("loginpanel", "slideup");
+			$("#loginpanel").find("span#channel").html("<em>{%= channel%}</em>");
+		} else {
+			if (!(nick = verifyEpochCookie(sessionid))) {
+				// alert('couldn not restore session');
+				invalidateEpochCookie();
+				$.mobile.changePage("loginpanel", "slideup");
+			}
+		}
+		
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
 		$('#qadialog').jqm({modal:false, autofire:true}); */
 		var h = $(window).height();

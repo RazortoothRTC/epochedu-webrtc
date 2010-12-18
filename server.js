@@ -119,7 +119,7 @@ var fu = require("./static/js/fu"),
 	
 
 var MESSAGE_BACKLOG = 200,
-    SESSION_TIMEOUT = 60 * 1000; // XXX this should be configurable
+    SESSION_TIMEOUT = 60 * 1000; // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
 
 function channelFactory() {
 	var channel = new function () {
@@ -440,7 +440,7 @@ fu.get("/join", function (req, res) {
 	  return;
   } else if (session == null) { // XXX Need to clean up the handling of "nick in use"
     sys.puts('Error: nick in use');
-    res.simpleJSON(400, {error: "Nick in use"});
+    res.simpleJSON(400, {error: "Nick in use", code: 1});
     return;
   } else {
 	  channels[chan].sessions[session.id] = session;

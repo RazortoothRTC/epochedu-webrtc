@@ -37,6 +37,8 @@ var CONFIG = { debug: false
 
 var nicks = [];
 var teacher = false;
+var EPOCH_COOKIE = "epochedu_cookie";
+var COOKIE_TIMEOUT_IN_MILLIS = 60 * 60 * 1000; // 1 hour 
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
 http://github.com/jherdman/javascript-relative-time-helpers/
@@ -134,7 +136,49 @@ Date.fromString = function(str) {
 
 //  CUT  ///////////////////////////////////////////////////////////////////
 
+//
+// dateInFutureMilliseconds() - use to add milliseconds to an existing date
+//
+function dateInFutureMilliseconds(aDate, milliseconds) {
+	if (aDate.constructor != Date) return undefined;
+	if (!(typeof milliseconds == 'number')) return undefined;
+	aDate.setUTCMilliseconds(aDate.getUTCMilliseconds() + milliseconds);
+	return aDate; 
+}
 
+function isEpochCookieSet() {
+	alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
+	return $.cookie(EPOCH_COOKIE);
+}
+
+function invalidateEpochCookie() {
+	alert('invalidateEpochCookie');
+	$.cookie(EPOCH_COOKIE, null);
+}
+
+function verifyEpochCookie(sessionid) {
+	var nick;
+	$.ajax({ cache: false
+	           , type: "GET" // XXX should be POST
+	           , dataType: "json"
+	           , url: "/rejoin"
+	           , data: { id: sessionid, channel: getChannel() }
+	           , error: function (xhr, text, err) {
+					// var errMsg =  eval("(" + xhr.responseText + ")");
+				 	// setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
+					alert('Error rejoining session, reason: ' + text);
+	             }
+	           , success: function(data) {
+					nick = data;	 		 
+			 	 } 
+	           });
+	if (nick) return nick;
+	return undefined; 
+}
+
+function setEpochCookie(sessionid, startdate) {
+	$.cookie(EPOCH_COOKIE, sessionid, { path: '/class', expires: dateInFutureMilliseconds(startdate, COOKIE_TIMEOUT_IN_MILLIS) }); // XXX We may want to make the path configurable as an arg
+}
 
 //updates the users link to reflect the number of active users
 function updateUsersLink ( ) {
@@ -535,7 +579,7 @@ function onConnect (session) {
   rss         = session.rss;
   updateRSS();
   updateUptime();
-
+  setEpochCookie(CONFIG.id, starttime); // Set the cookie
   //update the UI to show the chat
   if (!teacher) {
 	showWaiting(CONFIG.nick);
@@ -630,109 +674,108 @@ $(document).ready(function() {
   $("#usersLink").click(outputUsers); // We won't implement this yet in the UI, but maybe for teacher XXX
 
   $("#connectButton").click(function () {
-	$(this).parents().find('span.error-message').removeClass('error-message').text('');
-	var nick = $("#nickInput").attr("value");
+		$(this).parents().find('span.error-message').removeClass('error-message').text('');
+		var nick = $("#nickInput").attr("value");
 	
-	//dont bother the backend if we fail easy validations
+		//dont bother the backend if we fail easy validations
 	
-	if (!nick || nick.length < 1) {
-		setStatusMessage('#loginform', "Login name is required.", 'status');
-	    return false;
-	}
+		if (!nick || nick.length < 1) {
+			setStatusMessage('#loginform', "Login name is required.", 'status');
+		    return false;
+		}
 	
-    if (nick.length > 50) {
-      	// showConnect();
-	  	// $('#dialog').jqm().show();
-		setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
-      return false;
-    }
-	//more validations
-    if (/[^\w_\-^!]/.exec(nick)) {
-      setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
-      return false;
-    }
+	    if (nick.length > 50) {
+	      	// showConnect();
+		  	// $('#dialog').jqm().show();
+			setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
+	      return false;
+	    }
+		//more validations
+	    if (/[^\w_\-^!]/.exec(nick)) {
+	      setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
+	      return false;
+	    }
 
-	//lock the UI while waiting for a response
-    showLoad();
+		//lock the UI while waiting for a response
+	    showLoad();
 
-	$(".start").click(function () {
-		var msg = "#startsession";
-	    if (!util.isBlank(msg)) send(msg);
-		return false;
-	});
+		$(".start").click(function () {
+			var msg = "#startsession";
+		    if (!util.isBlank(msg)) send(msg);
+			return false;
+		});
 	
-	$(".stop").click(function () {
-		var msg = "#endsession";
-	    if (!util.isBlank(msg)) send(msg);
-		return false;
-	});
+		$(".stop").click(function () {
+			var msg = "#endsession";
+		    if (!util.isBlank(msg)) send(msg);
+			return false;
+		});
 	
-	$("#sendurl").click(function (e) {
-		$('#resources').find('input:checked').each( 
-		    function(index) {
-				var msg = this.value;
-			    if (!util.isBlank(msg)) send(msg);
-				this.checked = false;
-		    } 
-		);
+		$("#sendurl").click(function (e) {
+			$('#resources').find('input:checked').each( 
+			    function(index) {
+					var msg = this.value;
+				    if (!util.isBlank(msg)) send(msg);
+					this.checked = false;
+			    } 
+			);
 
-		return false;
-	});
+			return false;
+		});
 	
-	$("#sendviewer").click(function (e) {
-		$('#resources').find('input:checked').each( 
-		    function(index) {
-				var msg = this.value;
-				// alert('click sendviewer ' + msg);
-			    if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
-				this.checked = false;
-		    } 
-		);
+		$("#sendviewer").click(function (e) {
+			$('#resources').find('input:checked').each( 
+			    function(index) {
+					var msg = this.value;
+					// alert('click sendviewer ' + msg);
+				    if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+					this.checked = false;
+			    } 
+			);
 
-		return false;
-	});
+			return false;
+		});
 	
-	$("#endviewer").click(function (e) {
-		var msg = "#endviewer";
-		if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
-		return false;
-	});
+		$("#endviewer").click(function (e) {
+			var msg = "#endviewer";
+			if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
+			return false;
+		});
 	
-	$("#sendlocal").click(function (e) {
-		$('#resources').find('input:checked').each( 
-		    function(index) {
-				var msg = this.value;
-				// alert('click sendviewer local ' + msg);
-			    if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
-				this.checked = false;
-		    } 
-		);
+		$("#sendlocal").click(function (e) {
+			$('#resources').find('input:checked').each( 
+			    function(index) {
+					var msg = this.value;
+					// alert('click sendviewer local ' + msg);
+				    if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
+					this.checked = false;
+			    } 
+			);
 
-		return false;
-	});
+			return false;
+		});
 	
     
 
-    //make the actual join request to the server
-    $.ajax({ cache: false
-           , type: "GET" // XXX should be POST
-           , dataType: "json"
-           , url: "/join"
-           , data: { nick: nick, channel: getChannel() }
-           , error: function (xhr, text, err) {
-				var errMsg =  eval("(" + xhr.responseText + ")");
-			 	setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
-             }
-           , success: onConnect
-           });
-    return false;
-
+	    //make the actual join request to the server
+	    $.ajax({ cache: false
+	           , type: "GET" // XXX should be POST
+	           , dataType: "json"
+	           , url: "/join"
+	           , data: { nick: nick, channel: getChannel() }
+	           , error: function (xhr, text, err) {
+					var errMsg =  eval("(" + xhr.responseText + ")");
+				 	setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
+	             }
+	           , success: onConnect
+	           });
+	    return false;
   });
 
   $('#loginform').submit(function() {
 	// XXX Should probably use this instead of the connectButton 
 	// because we need to capture the default submit
-	alert('login submit?');
+	// alert('login submit?');
   	return false;
   });
   // update the daemon uptime every 10 seconds
