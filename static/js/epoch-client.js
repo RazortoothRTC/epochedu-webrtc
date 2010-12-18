@@ -638,12 +638,7 @@ $(document).ready(function() {
     $("#entry").attr("value", ""); // clear the entry field.
   });
 
-  $(".csubmit").click(function() {
-	var msg = $("#entry").attr("value").replace("\n", "");
-    if (!util.isBlank(msg)) send(msg);
-    $("#entry").attr("value", ""); // clear the entry field.
-	return false;
-  });
+  
 
   if ($.mobile) {
 	$("#csubmit").bind('tap', function() {
@@ -653,7 +648,14 @@ $(document).ready(function() {
 	    $("#entry").attr("value", ""); // clear the entry field.
 		return false;
 	});
-  }
+  } else {
+	$(".csubmit").click(function() {
+		var msg = $("#entry").attr("value").replace("\n", "");
+	    if (!util.isBlank(msg)) send(msg);
+	    $("#entry").attr("value", ""); // clear the entry field.
+		return false;
+	  });
+	}
 
   $(".qsubmit").click(function() {
 	var msg = $("#entry").attr("value").replace("\n", "");
@@ -673,7 +675,18 @@ $(document).ready(function() {
 
   $("#usersLink").click(outputUsers); // We won't implement this yet in the UI, but maybe for teacher XXX
 
-  $("#connectButton").click(function () {
+
+  	/* XXX Try without this 
+	$("#connectButton").click(function () {
+	
+  	});
+	*/
+	$('#loginform').submit(function() {
+	// XXX Should probably use this instead of the connectButton 
+	// because we need to capture the default submit
+	// alert('login submit?');
+  	// return false;
+    // });
 		$(this).parents().find('span.error-message').removeClass('error-message').text('');
 		var nick = $("#nickInput").attr("value");
 	
@@ -772,12 +785,7 @@ $(document).ready(function() {
 	    return false;
   });
 
-  $('#loginform').submit(function() {
-	// XXX Should probably use this instead of the connectButton 
-	// because we need to capture the default submit
-	// alert('login submit?');
-  	return false;
-  });
+ 
   // update the daemon uptime every 10 seconds
   setInterval(function () {
     updateUptime();
