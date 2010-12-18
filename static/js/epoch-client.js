@@ -147,12 +147,12 @@ function dateInFutureMilliseconds(aDate, milliseconds) {
 }
 
 function isEpochCookieSet() {
-	alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
+	// alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
 	return $.cookie(EPOCH_COOKIE);
 }
 
 function invalidateEpochCookie() {
-	alert('invalidateEpochCookie');
+	// alert('invalidateEpochCookie');
 	$.cookie(EPOCH_COOKIE, null);
 }
 
@@ -166,7 +166,7 @@ function verifyEpochCookie(sessionid) {
 	           , error: function (xhr, text, err) {
 					// var errMsg =  eval("(" + xhr.responseText + ")");
 				 	// setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
-					alert('Error rejoining session, reason: ' + text);
+					// alert('Error rejoining session, reason: ' + text);
 	             }
 	           , success: function(data) {
 					nick = data;	 		 

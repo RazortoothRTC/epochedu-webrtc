@@ -96,8 +96,9 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces-marvell-v3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 
+var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
 var channels = {};
@@ -328,7 +329,7 @@ fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 //
 
 fu.getterer("/cruzy", function(req, res) {
-	var chan = "default";
+	var chan = DEFAULT_CHANNEL;
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var index_tpl = nTPL("./templates/index.html"); // XXX later, force this over to generic chat page
 	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html");
@@ -454,6 +455,29 @@ fu.get("/join", function (req, res) {
                       , rss: mem.rss
                       , starttime: starttime
                       });
+});
+
+fu.get("/rejoin", function (req, res){
+	var sessionid = qs.parse(url.parse(req.url).query).id;
+	var chan = qs.parse(url.parse(req.url).query).channel;
+	var session;
+	
+	if (!sessionid) {
+		sys.puts('/rejoin Error 400: Missing session id');
+		res.simpleJSON(400, {error: '/rejoin Error 400: Missing session id'});
+	} 
+	
+	if ((!chan) || (chan.length == 0)) {
+		chan = DEFAULT_CHANNEL;
+	}
+	
+	session = channels[chan].sessions[sessionid];
+	if (session == null) {
+		sys.puts('/rejoin Error 400: Session Undefined for id');
+		sys.log(sys.inspect(channels, true, null));
+		res.simpleJSON(400, {error: '/rejoin Error 400: Session Undefined for id'});
+	}
+	res.simpleJSON(200, { nick: session.nick });
 });
 
 fu.get("/part", function (req, res) {
