@@ -675,18 +675,7 @@ $(document).ready(function() {
 
   $("#usersLink").click(outputUsers); // We won't implement this yet in the UI, but maybe for teacher XXX
 
-
-  	/* XXX Try without this 
-	$("#connectButton").click(function () {
-	
-  	});
-	*/
-	$('#loginform').submit(function() {
-	// XXX Should probably use this instead of the connectButton 
-	// because we need to capture the default submit
-	// alert('login submit?');
-  	// return false;
-    // });
+  $('#loginform').submit(function() {
 		$(this).parents().find('span.error-message').removeClass('error-message').text('');
 		var nick = $("#nickInput").attr("value");
 	
