@@ -52,6 +52,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 */
 
+//
 // XXX MOVE this config to a config file
 //
 // HOST - the hostname
@@ -96,15 +97,10 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration";
-var DEFAULT_CHANNEL = 'default';
+VERSION = "ces-marvell-v4-b3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration, using it on server.js now";
+var DEFAULT_CHANNEL = 'default'; // XXX TODO, implement handling of default: https://www.pivotaltracker.com/story/show/7635703
 var mem = process.memoryUsage();
-
-var channels = {}; // XXX Load from DB instead!!!
-/* var channels = fu.db.forEach(function(key, doc) {
-	
-}); */
 
 // 
 // System Status 
@@ -122,8 +118,17 @@ var fu = require("./static/js/fu"),
     nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
-    SESSION_TIMEOUT = 60 * 1000; // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
+    SESSION_TIMEOUT = 60 * 1000, // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
+	SESSION_TIMEOUT_HARVEST_INTERVAL = 1000, 
+	CALLBACK_HARVEST_INTERVAL = 3000, 
+	CALLBACK_AGE = 30*1000;
 
+var channels = {}; 
+fu.initDB(); // Make sure the DB is initialized before proceeding
+// var channels = loadChannels(); // Load a dirty db
+// var sessions = loadSessions(); // load the sessions into a hashtable
+	
+	
 function channelFactory() {
 	var channel = new function () {
 		var messages = [],
@@ -198,15 +203,15 @@ function channelFactory() {
   // they can hang around for at most 30 seconds.
   setInterval(function () {
     var now = new Date();
-    while (callbacks.length > 0 && now - callbacks[0].timestamp > 30*1000) {
+    while (callbacks.length > 0 && now - callbacks[0].timestamp > CALLBACK_AGE) {
       callbacks.shift().callback([]);
     }
-  }, 3000);
+  }, CALLBACK_HARVEST_INTERVAL);
 };
 	return channel;
 } // channelFactory
 	
-function createSession (nick, chan) {
+function createSession (nick, chan, id) {
   if (nick.length > 50) return null;
   if (/[^\w_\-^!]/.exec(nick)) return null;
   
@@ -235,6 +240,7 @@ function createSession (nick, chan) {
     }
   };
 
+  if (id) session.id = id; // If an id is passed in, use it insead of the generated id
   sessions[session.id] = session;
   return session;
 }
@@ -242,6 +248,21 @@ function createSession (nick, chan) {
 // interval to kill off old sessions
 setInterval(function () {
   var now = new Date();
+  /* if (channels) {
+  	channels.forEach(function(key, val) {
+	    // console.log('Found channel: %s, val: %j', key, val);
+		var sessions = channels.get(key);
+		for (var id in sessions) {
+			if ((sessions.length == 0) && (!sessions.hasOwnProperty(id))) continue; // Ninja Move!
+			var session = sessions[id];
+
+			if (now - session.timestamp > SESSION_TIMEOUT) {
+				session.destroy();
+			}
+		}
+	  });
+  } */
+
   for (var chan in channels) {
 	var sessions = channels[chan].sessions; // XXX I may need to guard against null or undefined
 	for (var id in sessions) {
@@ -253,7 +274,7 @@ setInterval(function () {
 		}
 	}
   }
-}, 1000);
+}, SESSION_TIMEOUT_HARVEST_INTERVAL); // XXX Add this interval to config properties
 
 /* 
 	loadChannels()
@@ -473,8 +494,8 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 fu.get("/who", function (req, res) {
   var nicks = [];
   var chan = qs.parse(url.parse(req.url).query).channel;
+  // var sessions = channels.get(chan).sessions;
   var sessions = channels[chan].sessions;
-  	
   for (var id in sessions) {
     if (!sessions.hasOwnProperty(id)) continue;
     var session = sessions[id];
@@ -488,27 +509,33 @@ fu.get("/who", function (req, res) {
 fu.get("/join", function (req, res) {
   var nick = qs.parse(url.parse(req.url).query).nick;
   var chan = qs.parse(url.parse(req.url).query).channel;
-	
+  var achannel = channels[chan];
   if (nick == null || nick.length == 0) {
-	sys.puts('Error 400: bad nock');
+	sys.puts('Error 400: bad nick');
     res.simpleJSON(400, {error: "Bad nick."});
     return;
   }
+  if (! achannel) channels[chan] = channelFactory();
   var session = createSession(nick, chan);
   // XXX Cleanup this error handling!!!!!
+  // XXX dirty if (channels.get(chan) == null) {
   if (channels[chan] == null) {
 	  res.simpleJSON(400, {error: "Unable to create channel for " + chan}); // can I just return this resp?
 	  return;
   } else if (session == null) { // XXX Need to clean up the handling of "nick in use"
-    sys.puts('Error: nick in use');
-    res.simpleJSON(400, {error: "Nick in use", code: 1});
+    sys.puts('Error: nick in use  or could not create session');
+    res.simpleJSON(400, {error: "Nick in use or could not create session", code: 1});
     return;
   } else {
-	  channels[chan].sessions[session.id] = session;
+	  // XXX dirty channels.get(chan).sessions[session.id] = session;
+	// XXX dirty var sessions = channels.get(chan).sessions; // This should be an empty hashtable
+	channels[chan].sessions[session.id] = session;
+	// XXX dirty channels.set(chan, sessions);
   }
 
   sys.puts("connection: " + nick + "@" + res.connection.remoteAddress + " on " + chan);
 
+  // XXX dirty channels.get(chan).appendMessage(session.nick, "join");
   channels[chan].appendMessage(session.nick, "join");
   res.simpleJSON(200, { id: session.id
                       , nick: session.nick
@@ -520,6 +547,7 @@ fu.get("/join", function (req, res) {
 fu.get("/rejoin", function (req, res){
 	var sessionid = qs.parse(url.parse(req.url).query).id;
 	var chan = qs.parse(url.parse(req.url).query).channel;
+	var sessions = channels[chan].sessions;
 	var session;
 	
 	if (!sessionid) {
@@ -531,7 +559,8 @@ fu.get("/rejoin", function (req, res){
 		chan = DEFAULT_CHANNEL;
 	}
 	
-	session = channels[chan].sessions[sessionid];
+	// XXX dirty session = channels.get(chan).sessions[sessionid];
+	session = sessions[sessionid];
 	if (session == null) {
 		sys.puts('/rejoin Error 400: Session Undefined for id');
 		sys.log(sys.inspect(channels, true, null));
@@ -544,6 +573,7 @@ fu.get("/part", function (req, res) {
   var id = qs.parse(url.parse(req.url).query).id;
   var chan = qs.parse(url.parse(req.url).query).channel;
   var sessions = channels[chan].sessions;
+  // XXX dirty var sessions = channels.get(chan).sessions;
   var session;
   if (id && sessions[id]) {
     session = sessions[id];
@@ -556,23 +586,24 @@ fu.get("/recv", function (req, res) {
   var chan = qs.parse(url.parse(req.url).query).channel;
   // XXX Clean up this mess
   if (chan == null) {
-	 sys.puts('channel is null');
+	 // sys.puts('/recv channel is null');
 	 return res.simpleJSON(400, {error: "Must provide a channel"}); // XXX Need to just provide a default channel
   }
+  // XXX dirty var achannel = channels.get(chan);
   var achannel = channels[chan];
   var sessions;
   
-  // sys.puts("channel is " + chan);
+  // sys.puts("/recv channel is " + chan);
   if (achannel == null) {
-	  // sys.puts("Creating new channel for " + chan);
+	  // sys.puts("/recv Creating new channel for " + chan);
 	  achannel = channelFactory();
 	  
 	  if (achannel == null) sys.puts('/recv achannel is null');
-	  channels[chan] = achannel;
+	  // XXX dirty channels.set(chan, achannel);
 	  
   }
-  // sys.puts('/recv channels = ' + channels);
-  achannel = channels[chan];
+
+  // XXX dirty achannel = channels.get(chan);
   // sys.puts('/recv achannel = ' + achannel);
   sessions = achannel.sessions;
   // sys.puts('/recv sessions is = ' + sessions);
@@ -609,6 +640,7 @@ fu.get("/send", function (req, res) {
   var text = qs.parse(url.parse(req.url).query).text;
   var type = qs.parse(url.parse(req.url).query).type;
   var chan = qs.parse(url.parse(req.url).query).channel;
+  // XXX dirty var channel = channels.get(chan);
   var channel = channels[chan];
   var sessions = channel.sessions;
   if (!chan) { // XXX refactor to use default channel

@@ -79,26 +79,33 @@ var regexMap = {};
 // XXX Should I move this up into server so I can register a callback, or should I abstract the db operations
 //
 fu.db = {};
-var channels_db = new dirty('channels.dirty');
-var sessions_db = new dirty('sessions.dirty');
 
-// XXX Refactor into a db setup fucntion
-channels_db.on('load', function() {
-	console.log("channel_db is loaded using dirty");
-});
+//
+// initDB() - pass in options to in the db and a handler to notify when done
+//
+// XXX TODO: implement the options and handler
+fu.initDB = function(options, handler) {
+	var channels_db = new dirty('channels.dirty');
+	var sessions_db = new dirty('sessions.dirty');
 
-channels_db.on('drain', function() {
-	console.log("channel_db records written out using dirty");
-});
-sessions_db.on('load', function() {
-	console.log("session_db is loaded using dirty");
-});
+	// XXX Refactor into a db setup fucntion
+	channels_db.on('load', function() {
+		console.log("channel_db is loaded using dirty");
+	});
 
-sessions_db.on('drain', function() {
-	console.log("session_db records written out using dirty");
-});
-fu.db['channels'] = channels_db;
-fu.db['sessions'] = sessions_db;
+	channels_db.on('drain', function() {
+		console.log("channel_db records written out using dirty");
+	});
+	sessions_db.on('load', function() {
+		console.log("session_db is loaded using dirty");
+	});
+
+	sessions_db.on('drain', function() {
+		console.log("session_db records written out using dirty");
+	});
+	fu.db['channels'] = channels_db;
+	fu.db['sessions'] = sessions_db;
+}
 
 fu.get = function (path, handler) {
   getMap[path] = handler;

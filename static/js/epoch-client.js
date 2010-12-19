@@ -579,9 +579,10 @@ function onConnect (session) {
   rss         = session.rss;
   updateRSS();
   updateUptime();
-  setEpochCookie(CONFIG.id, starttime); // Set the cookie
+  
   //update the UI to show the chat
   if (!teacher) {
+	setEpochCookie(CONFIG.id, starttime); // Set the cookie
 	showWaiting(CONFIG.nick);
   } else {
 	$('#account').show()
