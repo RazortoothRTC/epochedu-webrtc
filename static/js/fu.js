@@ -34,7 +34,7 @@ var url = require("url");
 var assert = require("assert");
 var path = require("path");
 var qs = require("querystring");
-var	dirty = require("./dirty")('epochedu.dirty');
+var	dirty = require("./dirty");
 
 DEBUG = true;
 
@@ -74,7 +74,31 @@ function internalServerError(req, res) { // XXX Add a nicely formatted version!
 var getMap = {};
 var regexMap = {};
 
-fu.db = dirty;
+//
+// DB Setup 
+// XXX Should I move this up into server so I can register a callback, or should I abstract the db operations
+//
+fu.db = {};
+var channels_db = new dirty('channels.dirty');
+var sessions_db = new dirty('sessions.dirty');
+
+// XXX Refactor into a db setup fucntion
+channels_db.on('load', function() {
+	console.log("channel_db is loaded using dirty");
+});
+
+channels_db.on('drain', function() {
+	console.log("channel_db records written out using dirty");
+});
+sessions_db.on('load', function() {
+	console.log("session_db is loaded using dirty");
+});
+
+sessions_db.on('drain', function() {
+	console.log("session_db records written out using dirty");
+});
+fu.db['channels'] = channels_db;
+fu.db['sessions'] = sessions_db;
 
 fu.get = function (path, handler) {
   getMap[path] = handler;
@@ -87,14 +111,10 @@ fu.getterer = function(path, handler) {
 	fu.get(repath, handler);
 }
 
+
 var server = createServer(function (req, res) {
-	dirty.on('load', function() {
-		console.log("db is loaded using dirty");
-	});
 	
-	dirty.on('drain', function() {
-		console.log("db records written out using dirty");
-	});
+	
 	
 	try {
 	  if (req.method === "GET" || req.method === "HEAD") {
@@ -170,7 +190,7 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 	var dircontents = [];
 	
 	try {
-		dircontents = fs.readdirSync(crdbpath + dirpath); // XXX Can we make this more performant async
+		dircontents = fs.readdirSync(crdbpath + dirpath); // XXX Can we make this more performant async, also, use a DB
 	} catch(err) {
 		dircontents = []
 	}
