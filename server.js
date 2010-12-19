@@ -255,6 +255,50 @@ setInterval(function () {
   }
 }, 1000);
 
+/* 
+	loadChannels()
+	XXX Todo: add a callback to handle db load error 
+	Channel Document
+	{
+		sessionkeys: ['key1', 'key2', ... , 'keyN'],
+		createdate: 'Date String'
+	}
+*/
+function loadChannels() {
+	// XXX I was going to load it all into memory, but the framework actually does that 
+	// already.
+	/*
+	var chans = {};
+	fu.db['channels'].forEach(function(key, val) {
+	    console.log('Found key: %s, val: %j', key, val);
+		
+	});
+	*/
+	return fu.db['channels'];
+}
+
+/* 
+	loadSessions()
+	XXX Todo: add a callback to handle db load error 
+	Session Document - see code about where this is defined
+	{ 
+	    nick: nick, 
+	    id: Math.floor(Math.random()*99999999999).toString(),
+	    timestamp: new Date(),
+
+	    poke: function () {
+	      session.timestamp = new Date();
+	    },
+
+	    destroy: function () {
+	      channel.appendMessage(session.nick, "part");
+	      delete sessions[session.id];
+	    }
+	  };
+*/
+function loadSessions() {
+	return fu.db['sessions'];
+}
 
 fu.listen(Number(process.env.PORT || PORT), HOST);
 
