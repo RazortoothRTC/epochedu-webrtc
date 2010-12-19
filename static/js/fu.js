@@ -34,6 +34,7 @@ var url = require("url");
 var assert = require("assert");
 var path = require("path");
 var qs = require("querystring");
+var	dirty = require("./dirty")('epochedu.dirty');
 
 DEBUG = true;
 
@@ -73,6 +74,7 @@ function internalServerError(req, res) { // XXX Add a nicely formatted version!
 var getMap = {};
 var regexMap = {};
 
+fu.db = dirty;
 
 fu.get = function (path, handler) {
   getMap[path] = handler;
@@ -86,6 +88,14 @@ fu.getterer = function(path, handler) {
 }
 
 var server = createServer(function (req, res) {
+	dirty.on('load', function() {
+		console.log("db is loaded using dirty");
+	});
+	
+	dirty.on('drain', function() {
+		console.log("db records written out using dirty");
+	});
+	
 	try {
 	  if (req.method === "GET" || req.method === "HEAD") {
 	    // var handler = getMap[url.parse(req.url).pathname] || notFound; // XXX Test for regex

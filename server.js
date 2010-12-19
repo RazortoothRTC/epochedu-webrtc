@@ -117,7 +117,6 @@ var fu = require("./static/js/fu"),
     url = require("url"),
     qs = require("querystring"),
     nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
-	
 
 var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000; // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
@@ -299,8 +298,12 @@ fu.get("/helloworld", function(req, res) {
 	res.end();
 });
 
-fu.get("/about", function(req, res) {
-	var body = 'EpochEDU version: ' + VERSION;
+
+
+fu.get("/testdirty", function(req, res) {
+	var body = "wrote out 'john', {eyes: 'blue'}";
+	fu.db.set('john', {eyes: 'blue'});
+	
 	res.writeHead(200, {
 	  'Content-Length': body.length,
 	  'Content-Type': 'text/plain'
@@ -308,6 +311,7 @@ fu.get("/about", function(req, res) {
 	res.write(body);
 	res.end();
 });
+
 //
 // STATIC ROUTES
 //
@@ -327,6 +331,15 @@ fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 //
 // APP ROUTES
 //
+fu.get("/about", function(req, res) {
+	var body = 'EpochEDU version: ' + VERSION;
+	res.writeHead(200, {
+	  'Content-Length': body.length,
+	  'Content-Type': 'text/plain'
+	});
+	res.write(body);
+	res.end();
+});
 
 fu.getterer("/cruzy", function(req, res) {
 	var chan = DEFAULT_CHANNEL;
