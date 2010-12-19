@@ -101,7 +101,10 @@ VERSION = "ces-marvell-v3-" + starttime ;  // XXX Can  we instrument this using 
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
-var channels = {};
+var channels = {}; // XXX Load from DB instead!!!
+/* var channels = fu.db.forEach(function(key, doc) {
+	
+}); */
 
 // 
 // System Status 
