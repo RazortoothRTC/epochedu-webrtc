@@ -96,8 +96,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-
+VERSION = "ces-marvell-v4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
@@ -335,7 +335,7 @@ fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 // APP ROUTES
 //
 fu.get("/about", function(req, res) {
-	var body = 'EpochEDU version: ' + VERSION;
+	var body = 'EpochEDU version: ' + VERSION + '\nWork in progress: ' + WIP;
 	res.writeHead(200, {
 	  'Content-Length': body.length,
 	  'Content-Type': 'text/plain'
