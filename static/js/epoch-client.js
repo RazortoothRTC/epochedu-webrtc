@@ -156,6 +156,26 @@ function invalidateEpochCookie() {
 	$.cookie(EPOCH_COOKIE, null);
 }
 
+
+function verifySession(sessionid) {
+	var nick;
+	$.ajax({ cache: false
+	           , type: "GET" // XXX should be POST
+	           , dataType: "json"
+	           , url: "/isalive"
+	           , data: { id: sessionid, channel: getChannel() }
+	           , error: function (xhr, text, err) {
+					// var errMsg =  eval("(" + xhr.responseText + ")");
+				 	// setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
+					addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
+					// alert('Session is not alive: ');
+	             }
+	           , success: function(data) {	 		 
+			 	 } 
+	           });
+	return; 
+}
+
 function verifyEpochCookie(sessionid) {
 	var nick;
 	$.ajax({ cache: false
@@ -166,7 +186,7 @@ function verifyEpochCookie(sessionid) {
 	           , error: function (xhr, text, err) {
 					// var errMsg =  eval("(" + xhr.responseText + ")");
 				 	// setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
-					alert('Error rejoining session, reason: ' + text);
+					// alert('Error rejoining session, reason: ' + text);
 	             }
 	           , success: function(data) {
 					nick = data.nick;	 		 
@@ -242,10 +262,15 @@ function userPart(nick, timestamp) {
 }
 
 // utility functions
+function reloadURL()
+{
+	window.location.reload();
+}
 
 util = {
   urlRE: /https?:\/\/([-\w\.]+)+(:\d+)?(\/([^\s]*(\?\S+)?)?)?/g, 
   contenturlRE: /content?:\/\/([-\w\.]+)+(:\d+)?(\/([^\s]*(\?\S+)?)?)?/g, 
+  cmdRE: /cmd?:\/\/([-\w\.]+)+(:\d+)?(\/([^\s]*(\?\S+)?)?)?/g, 
   //  html sanitizer 
   toStaticHTML: function(inputHtml) {
     inputHtml = inputHtml.toString();
@@ -316,9 +341,14 @@ function addMessage (from, text, time, _class) {
   if (text.match(/http/i)) {
 	var rel = "";
 	var ext = text.substring(text.lastIndexOf('.') + 1);
-	if (ext.match(/png|gif|jpg|html|htm/i)) rel = "shadowbox";
+	if (ext.match(/png|gif|jpg|html|htm/i)) rel = "shadowbox"; // XXX This should be configurable somwhere obvious?
   	text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
-  }  
+  }
+  if (text.match(/cmd/i)) {
+	var cmd = text.substring(text.lastIndexOf('/') + 1);
+	// text = text.replace(util.cmdRE, '<a target="_blank" href="javascript:' + cmd + '()">' + cmd + '</a>');
+	text = text.replace(util.cmdRE, '<a target="_blank" onclick="reloadURL()" href="#">' + cmd + '</a>');
+  }
   text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
   // XXX Remove references to JScrollpane	
   $pane = $('.chatscroll');
@@ -579,7 +609,9 @@ function onConnect (session) {
   rss         = session.rss;
   updateRSS();
   updateUptime();
-  
+  setInterval(function () {
+	verifySession(CONFIG.id);
+  }, 10000);
   //update the UI to show the chat
   if (!teacher) {
 	setEpochCookie(CONFIG.id, starttime); // Set the cookie

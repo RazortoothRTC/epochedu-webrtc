@@ -97,7 +97,7 @@ var starttime = (new Date()).getTime();
 // VERSION - generic version string for support and QA
 //
 VERSION = "ces-marvell-v5-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight ... working on teacher UI";
+WIP = "Dirty database integration in flight ... working on the session state drop ";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
@@ -561,6 +561,17 @@ fu.get("/part", function (req, res) {
   res.simpleJSON(200, { rss: mem.rss });
 });
 
+// XXX Can I acomplish this on /recv ?
+fu.get("/isalive", function (req, res) {
+  var id = qs.parse(url.parse(req.url).query).id;
+  var chan = qs.parse(url.parse(req.url).query).channel;
+  var sessions = channels[chan].sessions;
+  var session;
+  if (!id || !sessions[id]) {
+  	res.simpleJSON(400, { error: "Your session id " + id + " is invalid"});
+  }
+});
+
 fu.get("/recv", function (req, res) {
   var chan = qs.parse(url.parse(req.url).query).channel;
   // XXX Clean up this mess
@@ -570,7 +581,7 @@ fu.get("/recv", function (req, res) {
   }
   var achannel = channels[chan];
   var sessions;
-  
+  var state = 0;
   // sys.puts("channel is " + chan);
   if (achannel == null) {
 	  // sys.puts("Creating new channel for " + chan);
@@ -604,6 +615,8 @@ fu.get("/recv", function (req, res) {
     // sys.puts('/recv setting session for id = ' + id);
     session = sessions[id];
     session.poke();
+  } else {
+	state = -1;
   }
   // sys.puts('/recv setting since');
   
@@ -612,7 +625,7 @@ fu.get("/recv", function (req, res) {
   achannel.query(since, function (messages) { 
     // sys.puts("channel session query");
     if (session) session.poke();
-    res.simpleJSON(200, { messages: messages, rss: mem.rss });
+    res.simpleJSON(200, { messages: messages, rss: mem.rss, state: state });
   });
   // sys.puts("Done with /recv");
 });
