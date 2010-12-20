@@ -96,8 +96,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration";
+VERSION = "ces-marvell-v5-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight ... working on teacher UI";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
@@ -131,6 +131,7 @@ function channelFactory() {
 		var messages = [],
 			callbacks = [];
 		this.sessions = {};
+		this.createdate = new Date();
 		this.appendMessage = function (nick, type, text) {
 		var m = { nick: nick
 		   , type: type // See switch statement below
@@ -208,7 +209,7 @@ function channelFactory() {
 	return channel;
 } // channelFactory
 	
-function createSession (nick, chan) {
+function sessionFactory (nick, chan) {
   if (nick.length > 50) return null;
   if (/[^\w_\-^!]/.exec(nick)) return null;
   
@@ -263,7 +264,7 @@ setInterval(function () {
 	Channel Document
 	{
 		sessionkeys: ['key1', 'key2', ... , 'keyN'],
-		createdate: 'Date String'
+		timestamp: 'Date String'
 	}
 */
 function loadChannels() {
@@ -287,16 +288,7 @@ function loadChannels() {
 	    nick: nick, 
 	    id: Math.floor(Math.random()*99999999999).toString(),
 	    timestamp: new Date(),
-
-	    poke: function () {
-	      session.timestamp = new Date();
-	    },
-
-	    destroy: function () {
-	      channel.appendMessage(session.nick, "part");
-	      delete sessions[session.id];
-	    }
-	  };
+	}
 */
 function loadSessions() {
 	return fu.db['sessions'];
@@ -351,7 +343,7 @@ fu.get("/helloworld", function(req, res) {
 
 fu.get("/testdirty", function(req, res) {
 	var body = "wrote out 'john', {eyes: 'blue'}";
-	fu.db.set('john', {eyes: 'blue'});
+	fu.db['channels'].set('testchannel', {timestamp: new Date(), sessionkeys: []});
 	
 	res.writeHead(200, {
 	  'Content-Length': body.length,
@@ -490,15 +482,20 @@ fu.get("/who", function (req, res) {
 fu.get("/join", function (req, res) {
   var nick = qs.parse(url.parse(req.url).query).nick;
   var chan = qs.parse(url.parse(req.url).query).channel;
-	
+  var achannel = channels[chan];
+
   if (nick == null || nick.length == 0) {
 	sys.puts('Error 400: bad nock');
     res.simpleJSON(400, {error: "Bad nick."});
     return;
   }
-  var session = createSession(nick, chan);
+  var session = sessionFactory(nick, chan);
   // XXX Cleanup this error handling!!!!!
-  if (channels[chan] == null) {
+  if (!channels[chan]) {
+	channels[chan] = channelFactory();
+	fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});
+  }
+  if (!channels[chan]) {
 	  res.simpleJSON(400, {error: "Unable to create channel for " + chan}); // can I just return this resp?
 	  return;
   } else if (session == null) { // XXX Need to clean up the handling of "nick in use"
@@ -507,6 +504,7 @@ fu.get("/join", function (req, res) {
     return;
   } else {
 	  channels[chan].sessions[session.id] = session;
+	  fu.db['sessions'].set(session.id, {id: session.id, nick: session.nick, timestamp: session.timestamp, channel: chan});
   }
 
   sys.puts("connection: " + nick + "@" + res.connection.remoteAddress + " on " + chan);
@@ -522,8 +520,10 @@ fu.get("/join", function (req, res) {
 fu.get("/rejoin", function (req, res){
 	var sessionid = qs.parse(url.parse(req.url).query).id;
 	var chan = qs.parse(url.parse(req.url).query).channel;
-	var session;
-	
+	var session,
+	 	sessions,
+		nick;
+	sys.puts('rejoin called');
 	if (!sessionid) {
 		sys.puts('/rejoin Error 400: Missing session id');
 		res.simpleJSON(400, {error: '/rejoin Error 400: Missing session id'});
@@ -533,13 +533,20 @@ fu.get("/rejoin", function (req, res){
 		chan = DEFAULT_CHANNEL;
 	}
 	
-	session = channels[chan].sessions[sessionid];
+	if (!channels[chan]) channels[chan] = channelFactory();
+	sessions = channels[chan].sessions;
+	if ((!sessions) || !(sessions[sessionid])) {
+		session = fu.db['sessions'].get(sessionid);
+	} else {
+		session = sessions[sessionid];
+	}
+		
 	if (session == null) {
 		sys.puts('/rejoin Error 400: Session Undefined for id');
 		sys.log(sys.inspect(channels, true, null));
 		res.simpleJSON(400, {error: '/rejoin Error 400: Session Undefined for id'});
 	}
-	res.simpleJSON(200, { nick: session.nick });
+	res.simpleJSON(200, { nick: session.nick});
 });
 
 fu.get("/part", function (req, res) {
@@ -569,8 +576,12 @@ fu.get("/recv", function (req, res) {
 	  // sys.puts("Creating new channel for " + chan);
 	  achannel = channelFactory();
 	  
-	  if (achannel == null) sys.puts('/recv achannel is null');
-	  channels[chan] = achannel;
+	  if (achannel != null) {
+	  	channels[chan] = achannel;
+		fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});
+  	  } else {
+		sys.puts('/recv achannel is null');
+	  }
 	  
   }
   // sys.puts('/recv channels = ' + channels);

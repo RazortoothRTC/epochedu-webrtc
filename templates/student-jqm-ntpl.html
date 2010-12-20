@@ -41,9 +41,12 @@
 			$("#loginpanel").find("span#channel").html("<em>{%= channel%}</em>");
 		} else {
 			if (!(nick = verifyEpochCookie(sessionid))) {
-				// alert('couldn not restore session');
+				// alert('could not restore session');
 				invalidateEpochCookie();
 				$.mobile.changePage("loginpanel", "slideup");
+			} else {
+				// alert('restored session with nick = ' + nick);
+				showWaiting(nick);
 			}
 		}
 		
