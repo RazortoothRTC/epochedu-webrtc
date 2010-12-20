@@ -101,7 +101,7 @@ WIP = "Dirty database integration";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
-var channels = {}; // XXX Load from DB instead!!!
+
 /* var channels = fu.db.forEach(function(key, doc) {
 	
 }); */
@@ -124,6 +124,8 @@ var fu = require("./static/js/fu"),
 var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000; // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
 
+fu.initDB();
+var channels = {}; // XXX Load from DB instead!!!
 function channelFactory() {
 	var channel = new function () {
 		var messages = [],
