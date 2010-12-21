@@ -79,6 +79,7 @@ var regexMap = {};
 // XXX Should I move this up into server so I can register a callback, or should I abstract the db operations
 //
 fu.db = {};
+fu.address = 'localhost';
 
 //
 // initDB() - pass in options to in the db and a handler to notify when done
@@ -174,6 +175,17 @@ var server = createServer(function (req, res) {
 
 fu.listen = function (port, host) {
   server.listen(port, host);
+  fu.address = server.address().address;
+  if (fu.address == '0.0.0.0') {
+	getNetworkIP(function (error, ip) {
+	    if (!error) {
+			fu.address = ip;
+			console.log('Started server on IP address: ', fu.address);
+	    } else {
+			console.log('error:', error);
+		}
+	}, false); 
+  }
   sys.puts("Server at http://" + (host || "127.0.0.1") + ":" + port.toString() + "/");
 };
 
@@ -421,3 +433,70 @@ fu.mime = {
           , ".zip"   : "application/zip"
           }
 };
+
+/** 
+	getNetworkIP()
+	
+	XXX Refactor out into a utility class
+	
+	Similar problem and similar answer found on python, drop down to os process and figure it out
+	by sniffing off ifconfig.  May be tricky if you are looking for wireless interface, so probably
+	would need to grab my code from python to remember what I did there that was clever.
+	
+	Code Borrowed from contribution by pumbaa80
+	Thanks Stackoverflow: http://stackoverflow.com/posts/3742915/revisions
+**/
+var getNetworkIP = (function () {
+    var ignoreRE = /^(127\.0\.0\.1|::1|fe80(:1)?::1(%.*)?)$/i;
+
+    var exec = require('child_process').exec;
+    var cached;    
+    var command;
+    var filterRE;
+
+    switch (process.platform) {
+    // TODO: implement for OSs without ifconfig command
+    case 'darwin':
+         command = 'ifconfig';
+         filterRE = /\binet\s+([^\s]+)/g;
+         // filterRE = /\binet6\s+([^\s]+)/g; // IPv6
+         break;
+    default:
+         command = 'ifconfig';
+         filterRE = /\binet\b[^:]+:\s*([^\s]+)/g;
+         // filterRE = /\binet6[^:]+:\s*([^\s]+)/g; // IPv6
+         break;
+    }
+
+    return function (callback, bypassCache) {
+         // get cached value
+        if (cached && !bypassCache) {
+            callback(null, cached);
+            return;
+        }
+        // system call
+        exec(command, function (error, stdout, sterr) {
+            var ips = [];
+            // extract IPs
+            var matches = stdout.match(filterRE);
+            // JS has no lookbehind REs, so we need a trick
+            for (var i = 0; i < matches.length; i++) {
+                ips.push(matches[i].replace(filterRE, '$1'));
+            }
+
+            // filter BS
+            for (var i = 0, l = ips.length; i < l; i++) {
+                if (!ignoreRE.test(ips[i])) {
+                    //if (!error) {
+                        cached = ips[i];
+                    //}
+                    callback(error, ips[i]);
+                    return;
+                }
+            }
+            // nothing found
+            callback(error, null);
+        });
+    };
+})();
+

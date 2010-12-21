@@ -201,6 +201,7 @@ function verifyEpochCookie(sessionid) {
 	           , url: "/rejoin"
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
+					invalidateCookie(sessionid);
 					showLogin(getChannel());
 	             }
 	           , success: onConnect

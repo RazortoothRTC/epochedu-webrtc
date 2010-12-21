@@ -67,8 +67,8 @@ PORT = 5000;
 //
 // CONTENT_REPO_URL - the base URL for hosting all content
 //
-CONTENT_REPO_URL = "http://localhost:5000/content"; // XXX Just figure out the IP address
-
+// CONTENT_REPO_URL = "http://localhost:5000/content"; // XXX Just figure out the IP address
+CONTENT_REPO_URL = null;  // If not set, then default to /content
 //
 // CONTENT_REPO_FILE_PATH - the base path to look into for a directory mapping to classroom
 //
@@ -168,7 +168,8 @@ function channelFactory() {
 				sys.puts(nick + " askquestion");
 				break;
 			case "sendviewerlocal":
-				var local_url = text.replace(CONTENT_REPO_URL, CONTENT_REPO_LOCAL_URL);
+			 	var content_repo = (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content'));
+				var local_url = text.replace(content_repo, CONTENT_REPO_LOCAL_URL);
 			 	sys.puts(nick + " sendviewerlocal, transforming player URL from " + text + 
 				" to " + local_url);
 				m.text = local_url;
@@ -421,7 +422,7 @@ fu.getterer("/class-v1/[\\w\\.\\-]+", function(req, res) {
 
 fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, CONTENT_REPO_URL, chan);
+	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist);
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
@@ -435,7 +436,7 @@ fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 
 fu.getterer("/classmoderator-v1/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, CONTENT_REPO_URL, chan);
+	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist); // V1
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
@@ -455,7 +456,7 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	var contentlist;
 	
 	// Load all of the content from disk
-	contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, CONTENT_REPO_URL, chan);
+	contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
 	if (output != null && output == "json") {
 		res.simpleJSON(200, contentlist)
 	} else {
