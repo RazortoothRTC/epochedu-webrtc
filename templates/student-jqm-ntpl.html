@@ -36,6 +36,13 @@
 		});
 		*/
 		// alert('document ready');
+		if (!isLoggedIn()) {
+			showLogin('{%= channel%}');
+		} else {
+			nick = CONFIG.nick;
+			verifyEpochCookie(sessionid);
+		}
+		/*
 		if (!(sessionid = isEpochCookieSet())) {
 			$.mobile.changePage("loginpanel", "slideup");
 			$("#loginpanel").find("span#channel").html("<em>{%= channel%}</em>");
@@ -49,27 +56,11 @@
 				showWaiting(nick);
 			}
 		}
-		
+		*/
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
 		$('#qadialog').jqm({modal:false, autofire:true}); */
 		var h = $(window).height();
         var w = $(window).width();
-		/* XXX I think we can get rid of this
-        $(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);
-		$(".chatscroll").css('width',(h < 600) ? 680 : 480);
-		$(".msgcon").css('width',(h < 600) ? 600 : 350);
-		$(".cinput").css('width',(h < 600) ? '80%' : '78%');
-		// $(".bg").css('backgroundImage',(h < 600) ? 'url(/static/images/css/student-bg-h.jpg)' : 'url(/static/images/css/student-bg-v.jpg)').css('width',(h < 600) ? 580 : 300);
-		
-		$(window).resize(function(){
-		       	var h = $(window).height();
-		        var w = $(window).width();
-		        $(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);
-				$(".chatscroll").css('width',(h < 600) ? 680 : 480);
-				$(".msgcon").css('width',(h < 600) ? 600 : 350);
-				$(".cinput").css('width',(h < 600) ? '80%' : '78%');
-		   });
-		*/
 	});
 </script>
 <script type="text/javascript">

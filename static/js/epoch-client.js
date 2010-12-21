@@ -37,8 +37,10 @@ var CONFIG = { debug: false
 
 var nicks = [];
 var teacher = false;
+var isInSession = false;
 var EPOCH_COOKIE = "epochedu_cookie";
 var COOKIE_TIMEOUT_IN_MILLIS = 60 * 60 * 1000; // 1 hour 
+var VERIFY_SESSION_INTERVAL_IN_MILLIS = 30000; // 1 hour 
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
 http://github.com/jherdman/javascript-relative-time-helpers/
@@ -156,6 +158,20 @@ function invalidateEpochCookie() {
 	$.cookie(EPOCH_COOKIE, null);
 }
 
+function isLoggedIn() {
+	var sessionid = isEpochCookieSet();
+	var nick = CONFIG.nick;
+	if (!sessionid) {
+		return undefined;
+	} else {
+		return sessionid;
+	}
+}
+
+function showLogin(channel) {
+	$.mobile.changePage("loginpanel", "slideup");
+	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
+}
 
 function verifySession(sessionid) {
 	var nick;
@@ -165,8 +181,6 @@ function verifySession(sessionid) {
 	           , url: "/isalive"
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
-					// var errMsg =  eval("(" + xhr.responseText + ")");
-				 	// setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
 					addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
 					// alert('Session is not alive: ');
 	             }
@@ -184,13 +198,9 @@ function verifyEpochCookie(sessionid) {
 	           , url: "/rejoin"
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
-					// var errMsg =  eval("(" + xhr.responseText + ")");
-				 	// setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
-					// alert('Error rejoining session, reason: ' + text);
+					showLogin(getChannel());
 	             }
-	           , success: function(data) {
-					nick = data.nick;	 		 
-			 	 } 
+	           , success: onConnect
 	           });
 	if (nick) return nick;
 	return undefined; 
@@ -331,11 +341,6 @@ function addMessage (from, text, time, _class) {
   // sanitize
   text = util.toStaticHTML(text);
 
-  // If the current user said this, add a special css class
-  /* var nick_re = new RegExp(CONFIG.nick);
-  if (nick_re.exec(text))
-    messageElement.addClass("personal"); */
-
   // replace URLs with links
   
   if (text.match(/http/i)) {
@@ -458,21 +463,26 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
+			isInSession = true;
 			if (!teacher) {
-				if (document.jqm) {
-					$('#dialog').jqmHide();
-				} else { // XXX We need to do better than this and know what our UI is
-					// $('#loginpanel').
-					$('.ui-dialog').dialog('close'); 
+				if (CONFIG.id) {
+					if (document.jqm) {
+						$('#dialog').jqmHide();
+					} else { // XXX We need to do better than this and know what our UI is
+						// $('#loginpanel').
+						$('.ui-dialog').dialog('close'); 
+					}
 				}
 			}
 			break;
 		
 		case "endsession":
 		 	// alert('ended a class');
+			isInSession = false;
 			if (!teacher) {
 				if ($.mobile) { 
 					$.mobile.changePage("loginpanel", "slideup");
+					showWaiting(CONFIG.nick);
 				} else {	
 					$('#dialog').jqmShow();
 				}
@@ -566,6 +576,18 @@ function showWaiting(nick, channel) {
 	from your teacher on content to view.  Please standby.<br/>');
 }
 
+function checkSession(nick) {
+	if (isInSession) {
+		showStudentChat(nick);
+	} else {
+		showWaiting(nick);
+	}
+}
+
+function showStudentChat(nick) {
+	$('.ui-dialog').dialog('close'); 
+}
+
 //transition the page to the main chat view, putting the cursor in the textfield
 function showChat (nick) {
   $("#toolbar").show();
@@ -611,11 +633,12 @@ function onConnect (session) {
   updateUptime();
   setInterval(function () {
 	verifySession(CONFIG.id);
-  }, 10000);
+  }, VERIFY_SESSION_INTERVAL_IN_MILLIS);
+
   //update the UI to show the chat
   if (!teacher) {
 	setEpochCookie(CONFIG.id, starttime); // Set the cookie
-	showWaiting(CONFIG.nick);
+	checkSession(CONFIG.nick);
   } else {
 	$('#account').show()
   	showChat(CONFIG.nick);

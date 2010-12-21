@@ -91,20 +91,21 @@ CONTENT_REPO_FILE_PATH = "/home/dkords/Pictures"; // XXX This is lame... but bes
 // versions.
 CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"; // XXX This is fixed for android!!!!
 
+//
+// INTERVALS & TIMEOUT VALUES
+//
+// XXX TODO
+
 // when the daemon started
 var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v5-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight ... working on the session state drop ";
+VERSION = "ces-marvell-v5-b2" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight.  Done with general login and reconnect work.";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
-
-/* var channels = fu.db.forEach(function(key, doc) {
-	
-}); */
 
 // 
 // System Status 
@@ -122,16 +123,19 @@ var fu = require("./static/js/fu"),
     nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
-    SESSION_TIMEOUT = 60 * 1000; // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
+    SESSION_TIMEOUT = 60 * 1000 * 2; // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
 
 fu.initDB();
 var channels = {}; // XXX Load from DB instead!!!
+var channelstates = {'NOT_IN_CLASS': 0, 'IN_CLASS': 1};
+
 function channelFactory() {
 	var channel = new function () {
 		var messages = [],
 			callbacks = [];
 		this.sessions = {};
 		this.createdate = new Date();
+		this.state = channelstates['NOT_IN_CLASS'];
 		this.appendMessage = function (nick, type, text) {
 		var m = { nick: nick
 		   , type: type // See switch statement below
@@ -151,9 +155,11 @@ function channelFactory() {
 				break;
 			case "startsession":
 				sys.puts(nick + " startsession");
+				state = channelstates['IN_CLASS'];
 				break;
 			case "endsession":
 				sys.puts(nick + " endsession");
+				state = channelstates['NOT_IN_CLASS'];
 				break;
 			case "sendviewer":
 				sys.puts(nick + " sendviewer");
@@ -546,6 +552,13 @@ fu.get("/rejoin", function (req, res){
 		sys.log(sys.inspect(channels, true, null));
 		res.simpleJSON(400, {error: '/rejoin Error 400: Session Undefined for id'});
 	}
+	channels[chan].appendMessage(session.nick, "join");
+	res.simpleJSON(200, { id: session.id
+	                      , nick: session.nick
+	                      , rss: mem.rss
+	                      , starttime: starttime
+	                      });
+	
 	res.simpleJSON(200, { nick: session.nick});
 });
 
