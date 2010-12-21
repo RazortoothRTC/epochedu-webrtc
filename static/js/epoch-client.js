@@ -169,8 +169,11 @@ function isLoggedIn() {
 }
 
 function showLogin(channel) {
+	var usertype;
+	if (isTeacher()) usertype = "Teacher's"; else usertype = "Student's";
 	$.mobile.changePage("loginpanel", "slideup");
 	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
+	$("#loginpanel").find("span#usertype").html("<em>" + usertype + "</em>");
 }
 
 function verifySession(sessionid) {
