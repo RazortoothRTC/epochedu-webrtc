@@ -101,8 +101,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v5-b2" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  Done with general login and reconnect work.";
+VERSION = "ces-marvell-v5-b3" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight.  Done with general login and reconnect work, change timeout on session";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
@@ -123,7 +123,7 @@ var fu = require("./static/js/fu"),
     nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
-    SESSION_TIMEOUT = 60 * 1000 * 2; // XXX 1000ms = 1 s * 60 = 1 minutethis should be configurable
+    SESSION_TIMEOUT = 60 * 1000 * 5; // XXX 1000ms = 1 s * 60  x 6= 5 minutethis should be configurable
 
 fu.initDB();
 var channels = {}; // XXX Load from DB instead!!!
