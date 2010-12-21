@@ -6,14 +6,40 @@
 {%block 'title' %}Welcome to class: {%= channel%}{%/block %}
 
 {%block 'body-scripts' %}
-<script type="text/javascript" src="/static/js/jqModal.js"></script>
+<!-- <script type="text/javascript" src="/static/js/jqModal.js"></script> -->
 <script type="text/javascript" src="/static/js/jquery.stopwatch.js"></script>
+<link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#dialog').jqm().jqmShow({autofire:true,modal:true});
+		var sessionid;
+		var nick;
+		if (!isLoggedIn()) {
+			showLogin('{%= channel%}');
+		} else {
+			nick = CONFIG.nick;
+			verifyEpochCookie(sessionid);
+		}
+
+		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
+		$('#qadialog').jqm({modal:false, autofire:true}); */
+		var h = $(window).height();
+        var w = $(window).width();
+
+		// $('#dialog').jqm().jqmShow({autofire:true,modal:true});
 		$('#timer').stopwatch();
 	});
 </script>
+<script type="text/javascript">
+	/* XXX Refactor this into epoch-client.js */
+	function getChannel() {
+		return '{%= channel%}';
+	}
+	function isTeacher() {
+		return true;
+	}
+</script>
+<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
 {%/block %}
 {%block 'head' %}
 {%/block %}
@@ -24,7 +50,7 @@
 
 	<div data-role="header" data-id="header" data-position="fixed">
 		<div id="branding">
-			<h1>Title Here</h1>
+			<h1>Room: {%= channel%}</h1>
 		</div>
 		<div id="session">
 			<div id="timer"></div>
@@ -57,32 +83,32 @@
 
 	<div data-role="footer" class="footer" data-position="fixed">
 		<div data-role="fieldcontain" class="chatinput">
-		    <input type="text" name="name" id="name" value=""  />
-			<input type="submit" name="submit" id="submit" role="button" aria-label="submit" data-theme="a" value="Submit" />
+			    <input type="text" name="name" id="entry" value=""  />
+				<div id="csubmit" data-role="button">Send</div>
 		</div>
 		<ul class="footernav">
 			<li class="link1 active"><a href="#">Chat</a></li>
-			<li class="link2"><a href="#lessons">Lessons</a></li>
+			<li class="link2"><a href="#content">Content</a></li>
 			<li class="link3"><a href="#attendance">Attendance</a></li>
 		</ul>
 		<div id="account" class="ui-btn ui-btn-up-a">
 			<span class="ui-btn-inner">
 			<div class="right" style="padding-top:10px;"><a data-icon="gear" data-transition="pop" data-rel="dialog" href="panel" data-theme="a">Options</a></div>
-			<div class="right" style="padding:20px 20px 0px 0px;">Hello, Sharon!</div>
+			<div class="right" style="padding:20px 20px 0px 0px;">Hello, <span id="nick"></span>!</div>
 			</span>
 		</div>
 		<div class="footercopy">
-			<p>Powered by Razortooth Communications</p>
+			<p>Powered by Razortooth Communications, LLC</p>
 		</div>
 	</div><!-- /footer -->
 </div><!-- /page -->
 
 
 <!-- Start of second page -->
-<div data-role="page" id="lessons">
+<div data-role="page" id="content">
 	<form action="#" method="get">
 	<div data-role="header" data-id="header" data-position="fixed">
-		<h1>Lessons</h1>
+		<h1>Content</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">	
@@ -116,7 +142,7 @@
 					</form>
 		<ul class="footernav">
 			<li class="link1"><a href="#chat">Chat</a></li>
-			<li class="link2 active"><a href="#">Lessons</a></li>
+			<li class="link2 active"><a href="#">Content</a></li>
 			<li class="link3"><a href="#attendance">Attendance</a></li>
 		</ul>
 		<div id="account" class="ui-btn ui-btn-up-a">
@@ -146,7 +172,7 @@
 	<div data-role="footer" class="footer" data-position="fixed">
 		<ul class="footernav">
 			<li class="link1"><a href="#chat">Chat</a></li>
-			<li class="link2"><a href="#lessons">Lessons</a></li>
+			<li class="link2"><a href="#content">Content</a></li>
 			<li class="link3 active"><a href="#">Attendance</a></li>
 		</ul>
 		<div id="account" class="ui-btn ui-btn-up-a">

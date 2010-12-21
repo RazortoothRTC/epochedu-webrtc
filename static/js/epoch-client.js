@@ -578,13 +578,13 @@ function showWaiting(nick, channel) {
 
 function checkSession(nick) {
 	if (isInSession) {
-		showStudentChat(nick);
+		showMobileChat(nick);
 	} else {
 		showWaiting(nick);
 	}
 }
 
-function showStudentChat(nick) {
+function showMobileChat(nick) {
 	$('.ui-dialog').dialog('close'); 
 }
 
@@ -619,7 +619,7 @@ var rss;
 //handle the server's response to our nickname and join request
 function onConnect (session) {
   if (session.error) {
-    // alert("error connecting: " + session.error);
+    alert("error connecting: " + session.error);
 	setStatusMessage('#loginform', 'error connecting: ' + session.error, 'status')
     showConnect();
     return;
@@ -640,8 +640,13 @@ function onConnect (session) {
 	setEpochCookie(CONFIG.id, starttime); // Set the cookie
 	checkSession(CONFIG.nick);
   } else {
-	$('#account').show()
-  	showChat(CONFIG.nick);
+	if ($.mobile) {
+		showMobileChat(CONFIG.nick);
+	} else {
+		$('.ui-dialog').dialog('close'); 
+		$('#account').show()
+		showChat(CONFIG.nick);
+	}
   }
   //listen for browser events so we know to update the document title
   $(window).bind("blur", function() {

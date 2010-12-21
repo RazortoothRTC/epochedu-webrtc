@@ -42,21 +42,7 @@
 			nick = CONFIG.nick;
 			verifyEpochCookie(sessionid);
 		}
-		/*
-		if (!(sessionid = isEpochCookieSet())) {
-			$.mobile.changePage("loginpanel", "slideup");
-			$("#loginpanel").find("span#channel").html("<em>{%= channel%}</em>");
-		} else {
-			if (!(nick = verifyEpochCookie(sessionid))) {
-				// alert('could not restore session');
-				invalidateEpochCookie();
-				$.mobile.changePage("loginpanel", "slideup");
-			} else {
-				// alert('restored session with nick = ' + nick);
-				showWaiting(nick);
-			}
-		}
-		*/
+
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
 		$('#qadialog').jqm({modal:false, autofire:true}); */
 		var h = $(window).height();

@@ -101,8 +101,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v5-b3" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  Done with general login and reconnect work, change timeout on session";
+VERSION = "ces-marvell-v6-b1" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight.  working on teacher ui.";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
