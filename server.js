@@ -72,9 +72,9 @@ CONTENT_REPO_URL = "http://localhost:5000/content"; // XXX Just figure out the I
 //
 // CONTENT_REPO_FILE_PATH - the base path to look into for a directory mapping to classroom
 //
-// CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
-// CONTENT_REPO_FILE_PATH = "./contentrepo"; // XXX This is lame... but best effort for now, we
-CONTENT_REPO_FILE_PATH = "/home/dkords/Pictures"; // XXX This is lame... but best effort for now, 
+CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
+// CONTENT_REPO_FILE_PATH = "./contentrepo";// XXX This is lame... but best effort for now, we
+// CONTENT_REPO_FILE_PATH = "/Users/dkords/Pictures"; // XXX This is lame... but best effort for now, 
 // We need to crawl the list of files available on the web server
 // where the content is located.  This is best to have come from a 
 // CMS, but we need something that will give us a nice file list
