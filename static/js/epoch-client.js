@@ -643,7 +643,6 @@ function onConnect (session) {
 	if ($.mobile) {
 		showMobileChat(CONFIG.nick);
 	} else {
-		$('.ui-dialog').dialog('close'); 
 		$('#account').show()
 		showChat(CONFIG.nick);
 	}
