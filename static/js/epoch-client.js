@@ -155,7 +155,7 @@ function isEpochCookieSet() {
 
 function invalidateEpochCookie() {
 	// alert('invalidateEpochCookie');
-	$.cookie(EPOCH_COOKIE, null, {path: '/class'});
+	if ($.cookie) $.cookie(EPOCH_COOKIE, null, {path: '/class'});
 }
 
 function isLoggedIn() {
@@ -401,6 +401,11 @@ function longPoll (data) {
     showConnect();
     return;
   }
+  
+  if (data && (data.state < 0)) {
+		invalidateEpochCookie();
+		if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
+  }
 
   if (data && data.rss) {
     rss = data.rss;
@@ -529,6 +534,7 @@ function longPoll (data) {
            }
          , success: function (data) {
              transmission_errors = 0;
+			 
              //if everything went well, begin another request immediately
              //the server will take a long time to respond
              //how long? well, it will wait until there is another message
@@ -636,9 +642,9 @@ function onConnect (session) {
   rss         = session.rss;
   updateRSS();
   updateUptime();
-  setInterval(function () {
+  /* setInterval(function () {
 	verifySession(CONFIG.id);
-  }, VERIFY_SESSION_INTERVAL_IN_MILLIS);
+  }, VERIFY_SESSION_INTERVAL_IN_MILLIS); */
 
   //update the UI to show the chat
   if (!teacher) {
