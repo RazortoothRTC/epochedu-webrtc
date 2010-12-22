@@ -36,7 +36,7 @@
 		});
 		*/
 		// alert('document ready');
-		if (!isLoggedIn()) {
+		if (!(sessionid = isLoggedIn())) {
 			showLogin('{%= channel%}');
 		} else {
 			nick = CONFIG.nick;

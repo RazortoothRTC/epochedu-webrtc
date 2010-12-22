@@ -155,7 +155,7 @@ function isEpochCookieSet() {
 
 function invalidateEpochCookie() {
 	// alert('invalidateEpochCookie');
-	$.cookie(EPOCH_COOKIE, null);
+	$.cookie(EPOCH_COOKIE, null, {path: '/class'});
 }
 
 function isLoggedIn() {
@@ -184,6 +184,7 @@ function verifySession(sessionid) {
 	           , url: "/isalive"
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
+					invalidateEpochCookie();
 					addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
 					// alert('Session is not alive: ');
 	             }
@@ -201,7 +202,7 @@ function verifyEpochCookie(sessionid) {
 	           , url: "/rejoin"
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
-					invalidateCookie(sessionid);
+					invalidateEpochCookie(sessionid);
 					showLogin(getChannel());
 	             }
 	           , success: onConnect
