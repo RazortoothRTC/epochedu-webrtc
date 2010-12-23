@@ -11,7 +11,7 @@ ul.footernav {
 ul.footernav li {
 	float:left;
 	list-style:none;
-	width:26%;
+	width:25%;
 	height:63px;
 }
 ul.footernav li.link4 {
@@ -52,12 +52,6 @@ li.link4 a.ui-btn-hover-a { border: 1px solid #000; background: #444444; font-we
 #branding h1 {
 	margin:0px;
 	padding:0px;
-}
-
-#account {
-	float:right;
-	height:64px;
-	width:21.9%;
 }
 
 .start {float:right;height:65px;width:80px;border: 1px solid #222; background: #333333; font-weight: bold; color: #fff; cursor: pointer;  text-shadow: 0 -1px 1px #000; text-decoration: none; background-image: -moz-linear-gradient(top, #175fb4, #013d85); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #175fb4),color-stop(1, #013d85));   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#175fb4', EndColorStr='#013d85')"; }

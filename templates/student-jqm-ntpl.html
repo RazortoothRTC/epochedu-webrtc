@@ -35,7 +35,6 @@
 			maintainPosition: false,
 		});
 		*/
-		// alert('document ready');
 		if (!(sessionid = isLoggedIn())) {
 			showLogin('{%= channel%}');
 		} else {
@@ -128,6 +127,12 @@
 				<div class="right"><a data-icon="gear" data-transition="pop" data-rel="dialog" href="panel" data-theme="a">Options</a></div>
 				<div class="right" style="padding:0px;">Hello, <span id="nick"></span>!</div>
 			</div>
+			<ul class="footernav">
+				<li class="link1 active"><a href="#">Chat</a></li>
+				<li class="link2"><a href="#">Apps</a></li>
+				<li class="link3"><a href="#">Sync</a></li>
+				<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
+			</ul>
 			<div class="footercopy">
 				<p>Powered by Razortooth Communications, LLC</p>
 			</div>
@@ -175,13 +180,8 @@
 				<li class="link1"><a href="#chat">Chat</a></li>
 				<li class="link2 active"><a href="#">Lessons</a></li>
 				<li class="link3"><a href="#attendance">Attendance</a></li>
+				<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
 			</ul>
-			<div id="account" class="ui-btn ui-btn-up-a">
-				<span class="ui-btn-inner">
-				<div class="right" style="padding-top:10px;"><a data-icon="gear" data-transition="pop" data-rel="dialog" href="panel" data-theme="a">Options</a></div>
-				<div class="right" style="padding:20px 20px 0px 0px;">Hello, Sharon!</div>
-				</span>
-			</div>
 			<div class="footercopy">
 				<p>Powered by Razortooth Communications</p>
 			</div>
@@ -205,13 +205,8 @@
 				<li class="link1"><a href="#chat">Chat</a></li>
 				<li class="link2"><a href="#lessons">Lessons</a></li>
 				<li class="link3 active"><a href="#">Attendance</a></li>
+				<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
 			</ul>
-			<div id="account" class="ui-btn ui-btn-up-a">
-				<span class="ui-btn-inner">
-				<div class="right" style="padding-top:10px;"><a data-icon="gear" data-transition="pop" data-rel="dialog" href="panel" data-theme="a">Options</a></div>
-				<div class="right" style="padding:20px 20px 0px 0px;">Hello, Sharon!</div>
-				</span>
-			</div>
 			<div class="footercopy">
 				<p>Powered by Razortooth Communications, LLC</p>
 			</div>
@@ -223,7 +218,7 @@
 			<a data-iconpos="notext" data-icon"delete" href="#" title="Close" data-theme="a">Close</a><h1>Account Settings</h1>
 		</div><!-- /header -->
 		<div data-role="content" data-theme="c" role="main">	
-			<p>Logout</p>	
+			<a href="#" data-role="button" data-icon="refresh" data-iconpos="top" class="logout">Logout</a>
 		</div><!-- /content -->
 	</div>
 </body>

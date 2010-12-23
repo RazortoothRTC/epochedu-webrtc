@@ -168,8 +168,22 @@ function isLoggedIn() {
 	}
 }
 
+function partSession() {
+	if (CONFIG.id) {
+		jQuery.get("/part", {id: CONFIG.id, channel: getChannel()}, function (data) { }, "json");
+	} 
+}
+
+function logoutSession() {
+	invalidateEpochCookie();
+	partSession();
+	showLogin();
+}
 function showLogin(channel) {
 	var usertype;
+	setStatusMessage('#loginform', ' ', 'status');
+	$('#waiting').remove();
+	$('#loginform').show();
 	if (isTeacher()) usertype = "Teacher's"; else usertype = "Student's";
 	$.mobile.changePage("loginpanel", "slideup");
 	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
@@ -642,9 +656,6 @@ function onConnect (session) {
   rss         = session.rss;
   updateRSS();
   updateUptime();
-  /* setInterval(function () {
-	verifySession(CONFIG.id);
-  }, VERIFY_SESSION_INTERVAL_IN_MILLIS); */
 
   //update the UI to show the chat
   if (!teacher) {
@@ -745,6 +756,11 @@ $(document).ready(function() {
   });
 
   $("#usersLink").click(outputUsers); // We won't implement this yet in the UI, but maybe for teacher XXX
+
+  $(".logout").click(function() {
+		logoutSession();
+		return false;
+  });
 
   $('#loginform').submit(function() {
 		$(this).parents().find('span.error-message').removeClass('error-message').text('');
@@ -873,5 +889,5 @@ $(document).ready(function() {
 
 //if we can, notify the server that we're going away.
 $(window).unload(function () {
-  jQuery.get("/part", {id: CONFIG.id, channel: getChannel()}, function (data) { }, "json");
+  partSession();
 });
