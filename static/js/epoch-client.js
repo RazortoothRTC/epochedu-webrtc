@@ -337,9 +337,6 @@ util = {
 //used to keep the most recent messages visible
 function scrollDown () {
   window.scrollBy(0, 100000000000000000);
-  $("#entry").focus(function() {
-	$(this).click();
-   });
 }
 
 //inserts an event into the stream for display
@@ -616,17 +613,15 @@ function checkSession(nick) {
 }
 
 function showMobileChat(nick) {
-	$('.ui-dialog').dialog('close'); 
-	$("#entry").focus();
+	$('.ui-dialog').dialog('close');
+	$(":input:text:visible:first").focus(); 
 }
 
 //transition the page to the main chat view, putting the cursor in the textfield
 function showChat (nick) {
   $("#toolbar").show();
-  $("#entry").focus();
+  $(":input:text:visible:first").focus();
   $("#nick").text(nick);
-  // $("#connect").hide();
-  // $("#loading").hide();
   if (teacher) { 
 	$('#dialog').jqmHide();
   	scrollDown();
