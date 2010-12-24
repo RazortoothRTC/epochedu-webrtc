@@ -337,7 +337,9 @@ util = {
 //used to keep the most recent messages visible
 function scrollDown () {
   window.scrollBy(0, 100000000000000000);
-  $("#entry").focus();
+  $("#entry").focus(function() {
+	$(this).click();
+   });
 }
 
 //inserts an event into the stream for display
@@ -492,9 +494,11 @@ function longPoll (data) {
 				if (CONFIG.id) {
 					if (document.jqm) {
 						$('#dialog').jqmHide();
+						$('#waiting').text("");
 					} else { // XXX We need to do better than this and know what our UI is
 						// $('#loginpanel').
 						$('.ui-dialog').dialog('close'); 
+						$('#waiting').text("");
 					}
 				}
 			}
@@ -604,13 +608,16 @@ function showWaiting(nick, channel) {
 function checkSession(nick) {
 	if (isInSession) {
 		showMobileChat(nick);
-	} else {
+	} else if (nick != "#") {
 		showWaiting(nick);
+	} else {
+		showLogin();
 	}
 }
 
 function showMobileChat(nick) {
 	$('.ui-dialog').dialog('close'); 
+	$("#entry").focus();
 }
 
 //transition the page to the main chat view, putting the cursor in the textfield
@@ -719,8 +726,6 @@ $(document).ready(function() {
     if (!util.isBlank(msg)) send(msg);
     $("#entry").attr("value", ""); // clear the entry field.
   });
-
-  
 
   if ($.mobile) {
 	$("#csubmit").bind('tap', function() {
