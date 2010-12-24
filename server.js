@@ -72,9 +72,9 @@ CONTENT_REPO_URL = null;  // If not set, then default to /content
 //
 // CONTENT_REPO_FILE_PATH - the base path to look into for a directory mapping to classroom
 //
-CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
+// CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
 // CONTENT_REPO_FILE_PATH = "./contentrepo";// XXX This is lame... but best effort for now, we
-// CONTENT_REPO_FILE_PATH = "/Users/dkords/Pictures"; // XXX This is lame... but best effort for now, 
+CONTENT_REPO_FILE_PATH = "/Users/dkords/Pictures"; // XXX This is lame... but best effort for now, 
 // We need to crawl the list of files available on the web server
 // where the content is located.  This is best to have come from a 
 // CMS, but we need something that will give us a nice file list
@@ -102,7 +102,7 @@ var starttime = (new Date()).getTime();
 // VERSION - generic version string for support and QA
 //
 VERSION = "ces-marvell-v6-b5" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  working on teacher ui.  Logout done.  Fix focus bugs.";
+WIP = "Dirty database integration in flight.  working on teacher ui.  Working on content list";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
@@ -424,7 +424,7 @@ fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist);
-		
+	sys.puts(chan + ' = ' + roomcl);
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var teacher_tpl = nTPL("./templates/teacher-jqm-ntpl.html");
 	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM

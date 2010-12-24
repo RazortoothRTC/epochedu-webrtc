@@ -1,5 +1,5 @@
 {%set name teacher-jqm %}
-{%set args channel %}
+{%set args channel, roomcl %}
 
 {%extends 'boilerplate-jqm' %}
 
@@ -11,9 +11,40 @@
 <link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 <script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 <script type="text/javascript">
+	Shadowbox.init({
+	    handleOversize: "drag",
+		overlayColor: "#330099",
+		overlayOpacity: "0.75",
+	    modal: true,
+		displayNav:         true,
+		handleUnsupported:  "link",
+		autoplayMovies:     true,
+	});
+</script>
+<script type="text/javascript">
+	
+	
+	
+</script>
+<script type="text/javascript">
 	$(document).ready(function() {
 		var sessionid;
 		var nick;
+		var contents = {%= roomcl %};
+		var listitemdata = '';
+
+		$.each(contents, function(i, content) {
+			var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+
+			itemi = 'item' + (i+1);
+			fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+			mime = fqname.split('.')[1].toLowerCase();
+			filename = fqname.split('.')[0];	
+			// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+			listitemdata += '<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label></div>'
+		});
+		$('#resourceslist').append(listitemdata);
+		// $('#resourceslist').append("foo foo");
 		if (!isLoggedIn()) {
 			showLogin('{%= channel%}');
 		} else {
@@ -88,7 +119,7 @@
 		</div>
 		<ul class="footernav">
 			<li class="link1 active"><a href="#">Chat</a></li>
-			<li class="link2"><a href="#content">Resources</a></li>
+			<li class="link2"><a href="#resources">Resources</a></li>
 			<li class="link3"><a href="#attendance">Attendance</a></li>
 			<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
 		</ul>
@@ -100,7 +131,7 @@
 
 
 <!-- Start of second page -->
-<div data-role="page" id="content">
+<div data-role="page" id="resources">
 	<form action="#" method="get">
 	<div data-role="header" data-id="header" data-position="fixed">
 		<h1>Resources</h1>
@@ -108,7 +139,8 @@
 
 	<div data-role="content">	
 		<div class="ui-grid-A">
-			<div class="ui-block-A">
+			<div class="ui-block-A" id="resourceslist">
+				{*
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1c" name="checkbox-1c"><label for="checkbox-1c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 03</label></div>
@@ -118,6 +150,7 @@
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3a" name="checkbox-3a"><label for="checkbox-3a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 01</label></div>
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3b" name="checkbox-3b"><label for="checkbox-3b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 02</label></div>
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3c" name="checkbox-3c"><label for="checkbox-3c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 03</label></div>
+				*}
 			</div>
 		</div>
 	</div><!-- /content -->
@@ -148,14 +181,24 @@
 </div><!-- /page -->
 
 
-<!-- Start of second page -->
+<!-- Start of third page -->
 <div data-role="page" id="attendance">
 
 	<div data-role="header" data-position="fixed">
 		<h1>Attendance</h1>
 	</div><!-- /header -->
 
-	<div data-role="content">	
+	<div data-role="content">
+		<ul data-role="listview" id="testcl">
+			{*
+					<li>
+
+						<img src="images/album-bb.jpg" />
+						<h3><a href="index.html">Broken Bells</a></h3>
+						<p>Broken Bells</p>
+					</li>
+			*}
+		</ul>	
 		<p>Attendance</p>	
 	</div><!-- /content -->
 
