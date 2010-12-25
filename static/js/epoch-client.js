@@ -716,12 +716,15 @@ function updateTeacherContent(contentlist) {
 	
 	$.each(contents, function(i, content) {
 		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-		itemi = 'item' + (i+1);
+		itemi = 'checkbox-' + (i+1);
 		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
 		mime = fqname.split('.')[1].toLowerCase();
 		filename = fqname.split('.')[0];
 		contentli = $('#ci-template').clone();
 		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
+		contentli.find('.ui-btn').attr('for', itemi);
+		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
+		
 		// .find('#checkbox-1a').each(function() {});
 		
 		// remove('#checkbox-1a').add('id', itemi);
