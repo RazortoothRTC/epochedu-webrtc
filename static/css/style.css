@@ -44,6 +44,10 @@ li.active a { border: 1px solid #000; background: #444444; font-weight: bold; co
 li.link4 a.ui-btn-up-a { border: 1px solid #222; background: #333333; font-weight: bold; color: #fff; cursor: pointer;  text-shadow: 0 -1px 1px #000; text-decoration: none; background-image: -moz-linear-gradient(top, #175fb4, #013d85); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #175fb4),color-stop(1, #013d85));   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#175fb4', EndColorStr='#013d85')"; }
 li.link4 a.ui-btn-hover-a { border: 1px solid #000; background: #444444; font-weight: bold; color: #fff;  text-shadow: 0 -1px 1px #000; text-decoration: none; background-image: -moz-linear-gradient(top, #1b68c2, #01479a); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #1b68c2),color-stop(1, #01479a));   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#1b68c2', EndColorStr='#01479a')";   }
 
+#ci-template {
+	display: none;
+}
+
 #branding {
 	width:200px;
 	float:left;

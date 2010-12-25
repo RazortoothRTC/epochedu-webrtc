@@ -2,3 +2,5 @@
 /static/images/*
 channels.dirty
 sessions.dirty
+/.hg/*
+.hgtags

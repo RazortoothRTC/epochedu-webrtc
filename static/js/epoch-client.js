@@ -710,6 +710,54 @@ function setStatusMessage(selector, message, id) {
 	$(selector).find('span#' + id).addClass('error-message').text(statusMessage); // XXX We can make this more generic
 }
 
+function updateTeacherContent(contentlist) {
+	var contents = contentlist;
+	var listitemdata = '';
+	
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];
+		contentli = $('#ci-template').clone();
+		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
+		// .find('#checkbox-1a').each(function() {});
+		
+		// remove('#checkbox-1a').add('id', itemi);
+		$('#resourceslist').append(contentli);
+		contentli.show();
+	});
+	
+	/* $.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];
+		contentli = $("ci-template").clone();
+		contentli.remove('#ci-template').find('#checkbox-1a').remove('#checkbox-1a').add('id', itemi);
+		$('#resourceslist').append(contentli);
+		contentli.show();
+	});		
+	*/
+		// <div class="ui-checkbox" id="ci-template"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
+	/*
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];	
+		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+		listitemdata += '<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label></div>';
+	});
+	$('#resourceslist').append(listitemdata);
+	*/
+	
+}
+
 $(document).ready(function() {
   teacher = isTeacher();
   $('#account').hide(); // XXX Only for teacher?
