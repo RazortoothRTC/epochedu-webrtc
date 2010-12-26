@@ -716,21 +716,111 @@ function updateTeacherContent(contentlist) {
 	
 	$.each(contents, function(i, content) {
 		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-		itemi = 'checkbox-' + (i+1);
+		itemi = 'item' + (i+1);
 		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
 		mime = fqname.split('.')[1].toLowerCase();
 		filename = fqname.split('.')[0];
-		contentli = $('#ci-template').clone();
+		contentli = $('#ci-template').clone(); // Clone all the events!
 		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
 		contentli.find('.ui-btn').attr('for', itemi);
 		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
-		
-		// .find('#checkbox-1a').each(function() {});
-		
-		// remove('#checkbox-1a').add('id', itemi);
 		$('#resourceslist').append(contentli);
 		contentli.show();
 	});
+	$('#resourceslist input').checkboxradio();
+	
+	/*
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];	
+		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+		listitemdata += '<input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label>';
+	});
+	$('#resourceslist').append(listitemdata);
+	$('#resourceslist input').checkboxradio();
+	*/
+	/*
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];	
+		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+		listitemdata += '<input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label>';
+	});
+	$('#resourceslist').append(listitemdata);
+	$('#resourceslist input').checkboxradio();
+	*/
+	/*
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];
+		contentli = $('#ci-template').clone(); // Clone all the events!
+		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
+		contentli.find('.ui-btn').attr('for', itemi);
+		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
+		$('#resourceslist').append(contentli);
+		contentli.show();
+	});
+	$('#resourceslist input').checkboxradio();
+	*/
+	/*
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];	
+		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+		listitemdata += '<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label></div>';
+	});
+	$('#resourceslist').append(listitemdata);
+	$('#resourceslist input').checkboxradio();
+	$('#resources').page();
+	*/
+	/*
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];
+		contentli = $('#ci-template').clone(); // Clone all the events!
+		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
+		contentli.find('.ui-btn').attr('for', itemi);
+		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
+		$('#resourceslist').append(contentli);
+		contentli.show();
+	});
+	$('#resourceslist input').checkboxradio();
+	$('#resources').page();
+	*/
+	/*
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];
+		contentli = $('#ci-template').clone(); // Clone all the events!
+		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
+		contentli.find('.ui-btn').attr('for', itemi);
+		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
+		$('#resourceslist').append(contentli);
+		contentli.show();
+		contentli.checkboxradio('refresh');
+	});
+	*/
 	
 	/* $.each(contents, function(i, content) {
 		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
@@ -745,8 +835,8 @@ function updateTeacherContent(contentlist) {
 	});		
 	*/
 		// <div class="ui-checkbox" id="ci-template"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
-	/*
-	$.each(contents, function(i, content) {
+	
+	/* $.each(contents, function(i, content) {
 		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
 
 		itemi = 'item' + (i+1);
@@ -758,7 +848,6 @@ function updateTeacherContent(contentlist) {
 	});
 	$('#resourceslist').append(listitemdata);
 	*/
-	
 }
 
 $(document).ready(function() {
@@ -942,3 +1031,18 @@ $(document).ready(function() {
 $(window).unload(function () {
   partSession();
 });
+
+$.fn.listHandlers = function(events, outputFunction) {
+    return this.each(function(i){
+        var elem = this,
+            dEvents = $(this).data('events');
+        if (!dEvents) {return;}
+        $.each(dEvents, function(name, handler){
+            if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
+               $.each(handler, function(i,handler){
+                   outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler );
+               });
+           }
+        });
+    });
+};

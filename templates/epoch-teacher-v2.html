@@ -185,7 +185,7 @@
 				<input type="text" class="modalform"/>
 			</div>
 			<div class="modalrow">
-				<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login"/>
+				<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login jqmClose"/>
 			</div>
 			<span class="modalrow" id="status"></span>
 		</form>
@@ -211,6 +211,7 @@
 		});
 	</script>
 	<script type="text/javascript">
+		/*
 		var contents = {%= roomcl %};
 		var listitemdata = '';
 		
@@ -224,7 +225,7 @@
 			listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
 		});
 		$('#resources').append(listitemdata);
-		
+		*/
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function() {

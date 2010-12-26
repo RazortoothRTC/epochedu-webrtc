@@ -32,6 +32,12 @@
 		var nick;
 		updateTeacherContent({%= roomcl %});
 		// $('#ci-template').toggle();
+		/* $.each($('#checkbox-1b').data('events'), function(i, event){
+		    jQuery.each(event, function(i, handler){
+		        alert( typeof event );
+		    });
+		}); */
+		// alert($('#checkbox-1b').data('events').length);
 		
 		if (!isLoggedIn()) {
 			showLogin('{%= channel%}');
@@ -129,8 +135,8 @@
 		<div class="ui-grid-A">
 			<div class="ui-block-A" id="resourceslist">
 				<div class="ui-checkbox" id="ci-template"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
-				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
 				{*
+				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
 				<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1c" name="checkbox-1c"><label for="checkbox-1c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 03</label></div>
