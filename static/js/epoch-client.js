@@ -453,6 +453,8 @@ function longPoll (data) {
           userPart(message.nick, message.timestamp);
           break;
 		
+		case "sendurl":
+			addMessage(message.nick, message.text, message.timestamp);
 		case "sendviewer":
 		 	// alert('started a viewer');
 			if (!first_poll) {
@@ -523,6 +525,8 @@ function longPoll (data) {
 				// alert('ask a question');
 			}
 			break;
+		default:
+			alert('unknown message type: ' + message.type + ' received');
       }
     }
     //update the document title to include unread message count if blurred
@@ -714,6 +718,7 @@ function updateTeacherContent(contentlist) {
 	var contents = contentlist;
 	var listitemdata = '';
 	
+	// XXX Probably should clear the existing items, in case this is a refresh
 	$.each(contents, function(i, content) {
 		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
 		itemi = 'item' + (i+1);
@@ -723,8 +728,10 @@ function updateTeacherContent(contentlist) {
 		contentli = $('#ci-template').clone(); // Clone all the events!
 		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
 		contentli.find('.ui-btn').attr('for', itemi);
-		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
+		contentli.find('.custom').attr('id', itemi).attr('name', itemi).attr('value', content);
 		$('#resourceslist').append(contentli);
+		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+		
 		contentli.show();
 	});
 	$('#resourceslist input').checkboxradio();
@@ -1029,6 +1036,7 @@ $(document).ready(function() {
 		if ($.mobile) {
 			$('#cpfieldset').find('input:checkbox').click(function() {
 				var numchecked = $('input:checked').length;
+				alert(this.value + " clicked");
 				if (numchecked < 1) {
 					$('#contentdelivery').disabled='disabled';
 				} else if (numchecked == 1) {
