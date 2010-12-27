@@ -437,6 +437,7 @@ function longPoll (data) {
 
       //dispatch new messages to their appropriate handlers
 	  // XXX Add message types here
+	  // alert('received ' + message.type);
       switch (message.type) {
         case "msg":
           if(!CONFIG.focus){
@@ -735,126 +736,44 @@ function updateTeacherContent(contentlist) {
 		contentli.show();
 	});
 	$('#resourceslist input').checkboxradio();
-	
-	/*
-	$.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+}
 
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];	
-		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
-		listitemdata += '<input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label>';
-	});
-	$('#resourceslist').append(listitemdata);
-	$('#resourceslist input').checkboxradio();
-	*/
-	/*
-	$.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];	
-		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
-		listitemdata += '<input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label>';
-	});
-	$('#resourceslist').append(listitemdata);
-	$('#resourceslist input').checkboxradio();
-	*/
-	/*
-	$.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];
-		contentli = $('#ci-template').clone(); // Clone all the events!
-		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
-		contentli.find('.ui-btn').attr('for', itemi);
-		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
-		$('#resourceslist').append(contentli);
-		contentli.show();
-	});
-	$('#resourceslist input').checkboxradio();
-	*/
-	/*
-	$.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];	
-		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
-		listitemdata += '<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label></div>';
-	});
-	$('#resourceslist').append(listitemdata);
-	$('#resourceslist input').checkboxradio();
-	$('#resources').page();
-	*/
-	/*
-	$.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];
-		contentli = $('#ci-template').clone(); // Clone all the events!
-		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
-		contentli.find('.ui-btn').attr('for', itemi);
-		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
-		$('#resourceslist').append(contentli);
-		contentli.show();
-	});
-	$('#resourceslist input').checkboxradio();
-	$('#resources').page();
-	*/
-	/*
-	$.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];
-		contentli = $('#ci-template').clone(); // Clone all the events!
-		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
-		contentli.find('.ui-btn').attr('for', itemi);
-		contentli.find('.custom').attr('id', itemi).attr('name', itemi);
-		$('#resourceslist').append(contentli);
-		contentli.show();
-		contentli.checkboxradio('refresh');
-	});
-	*/
-	
-	/* $.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];
-		contentli = $("ci-template").clone();
-		contentli.remove('#ci-template').find('#checkbox-1a').remove('#checkbox-1a').add('id', itemi);
-		$('#resourceslist').append(contentli);
-		contentli.show();
-	});		
-	*/
-		// <div class="ui-checkbox" id="ci-template"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
-	
-	/* $.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];	
-		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
-		listitemdata += '<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-' + itemi + '" name="checkbox-' + itemi + '"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">' + filename +'</label></div>';
-	});
-	$('#resourceslist').append(listitemdata);
-	*/
+function messageDispatcher(cmd, data) {
+	// alert('click sendviewer local ' + msg);
+	switch(cmd) {
+		case "msg":
+			if (!util.isBlank(data)) send(data);
+			break;
+		case "sendurl": 
+			if (!util.isBlank(data)) send(data);
+			break;
+		case "sendviewer":
+			if (!util.isBlank(data)) sendviewer(data, cmd);
+			break;
+		case "endviewer":
+			if (!util.isBlank(data)) sendviewer(data, cmd);
+			break;
+		case "preview":
+			alert('TODO: implement preview handler');
+			break;
+		case "sendlocal":
+			if (!util.isBlank(data)) sendviewer(data, cmd);
+			break;
+		case "sync":
+			alert('TODO: implement sync handler');
+			break;
+		case "startmcpmode":
+			alert('TODO: implement startmcpmode handler');
+			break;
+		case "stopmcpmode":
+			alert('TODO: implement stopmcpmode handler');
+			break;
+		case "launch":
+			alert('TODO: implement launch handler');
+			break;
+		default:
+			alert('messageDispatch cannot handle outbound message type: ' + msg.type);
+	}
 }
 
 $(document).ready(function() {
@@ -950,6 +869,7 @@ $(document).ready(function() {
 		
 		
 		if ($.mobile) {
+			// XXX This doesn't work :(
 			$('#sendurl').attr('disabled', 'disabled');
 			$('#sendviewer').attr('disabled', 'disabled');
 			$('#endviewer').attr('disabled', 'disabled');
@@ -958,16 +878,20 @@ $(document).ready(function() {
 			$('#sync').attr('disabled', 'disabled');
 			$("#contentdelivery").change(function (e) {
 				var cmd;
+				var data;
+				// XXX Should only allow one select, make sure this is the case on #contentdelivery
 				$("select option:selected").each(function () {
 					cmd = $(this).val();
 			    });
-			   
+			    // alert('fired a ' + cmd);
+				// There may be mulitple clicked contents
 				$('#cpfieldset').find('input:checked').each( 
 				    function(index) {
-						var msg = this.value;
-						// alert('click sendviewer local ' + msg);
-					    if (!util.isBlank(msg)) sendviewer(msg, cmd);
-						this.checked = false;
+						data = this.value;
+						// alert('checked value is ' + data);
+						messageDispatcher(cmd, data);
+						// this.checked = false;
+						// $(this).attr('checked') = false; // XXX This isn't working
 				    } 
 				);
 
@@ -1036,7 +960,7 @@ $(document).ready(function() {
 		if ($.mobile) {
 			$('#cpfieldset').find('input:checkbox').click(function() {
 				var numchecked = $('input:checked').length;
-				alert(this.value + " clicked");
+				// alert(this.value + " clicked");
 				if (numchecked < 1) {
 					$('#contentdelivery').disabled='disabled';
 				} else if (numchecked == 1) {
@@ -1088,22 +1012,8 @@ $(document).ready(function() {
   showConnect();
 });
 
+
 //if we can, notify the server that we're going away.
 $(window).unload(function () {
   partSession();
 });
-
-$.fn.listHandlers = function(events, outputFunction) {
-    return this.each(function(i){
-        var elem = this,
-            dEvents = $(this).data('events');
-        if (!dEvents) {return;}
-        $.each(dEvents, function(name, handler){
-            if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
-               $.each(handler, function(i,handler){
-                   outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler );
-               });
-           }
-        });
-    });
-};
