@@ -41,6 +41,11 @@ var isInSession = false;
 var EPOCH_COOKIE = "epochedu_cookie";
 var COOKIE_TIMEOUT_IN_MILLIS = 60 * 60 * 1000; // 1 hour 
 var VERIFY_SESSION_INTERVAL_IN_MILLIS = 30000; // 1 hour 
+var SHADOWBOX_CONFIG_TITLE = 'Media Player';
+var SHADOWBOX_CONFIG_PLAYER = 'iframe';
+var SHADOWBOX_CONFIG_WIDTH = 800;
+var SHADOWBOX_CONFIG_HEIGHT = 600;
+
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
 http://github.com/jherdman/javascript-relative-time-helpers/
@@ -738,6 +743,16 @@ function updateTeacherContent(contentlist) {
 	$('#resourceslist input').checkboxradio();
 }
 
+function launchShadowboxPreview(contenturl) {
+	Shadowbox.open({
+		title:      SHADOWBOX_CONFIG_TITLE,
+		player: SHADOWBOX_CONFIG_PLAYER,
+		content: contenturl,
+		width: SHADOWBOX_CONFIG_WIDTH,
+		height: SHADOWBOX_CONFIG_HEIGHT
+	});
+}
+
 function messageDispatcher(cmd, data) {
 	// alert('click sendviewer local ' + msg);
 	switch(cmd) {
@@ -754,7 +769,8 @@ function messageDispatcher(cmd, data) {
 			if (!util.isBlank(data)) sendviewer(data, cmd);
 			break;
 		case "preview":
-			alert('TODO: implement preview handler');
+			alert('TODO: implement preview handler - busted right now');
+			launchShadowboxPreview(data);
 			break;
 		case "sendlocal":
 			if (!util.isBlank(data)) sendviewer(data, cmd);
