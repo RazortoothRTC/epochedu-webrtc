@@ -24,6 +24,7 @@ import android
 import webbrowser # XXX Leave this in, it may be useful
 import cherrypy
 import os
+import json
 
 class MCPService(object):
     def __init__(self):
