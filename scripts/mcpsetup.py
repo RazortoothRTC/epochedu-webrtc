@@ -1,6 +1,6 @@
-import android
+#import android
 import urllib
-import zipfile, os
+import zipfile, os, shutil
 
 """File downloading from the web.
 """
@@ -22,7 +22,11 @@ def unzip_file_into_dir(file):
     zfobj = zipfile.ZipFile(file)
     for name in zfobj.namelist():
         if name.endswith('/'):
-            os.mkdir(name)
+	    if os.path.exists(name):
+		shutil.rmtree(name)
+		os.mkdir(name)
+	    else:
+            	os.mkdir(name)
         else:
             outfile = open(name, 'wb')
             outfile.write(zfobj.read(name))
@@ -31,14 +35,13 @@ def unzip_file_into_dir(file):
 def install_apk():
     apk_url = 'http://zxing.googlecode.com/files/BarcodeScanner3.53b1.apk'
     apk_type = 'application/vnd.android.package-archive' # For some reason, this causes a crash, so don't use it
-    droid.view(apk_url)
+    #droid.view(apk_url)
 
 if __name__ == '__main__':
-    droid = android.Android()
-
+    #droid = android.Android()
     try:
-	download(url)
-	unzip_file_into_dir(file)
- 	install_apk()	
+        download(url)
+        unzip_file_into_dir(file)
+        install_apk()	
     except IOError:
 	print 'Error'
