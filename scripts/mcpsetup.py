@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import android
 import urllib
 import zipfile, os
@@ -7,8 +5,8 @@ import zipfile, os
 """File downloading from the web.
 """
 
-file = "perl_r9.zip"
-url = "http://android-scripting.googlecode.com/files/" + file
+file = "cherrypy.zip"
+url = "https://rage.s3.amazonaws.com/" + file
 
 def download(url):
 	"""Copy the contents of a file from a given URL
