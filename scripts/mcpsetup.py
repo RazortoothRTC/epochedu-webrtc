@@ -1,4 +1,4 @@
-#import android
+import android
 import urllib
 import zipfile, os, shutil
 
@@ -35,10 +35,10 @@ def unzip_file_into_dir(file):
 def install_apk():
     apk_url = 'http://zxing.googlecode.com/files/BarcodeScanner3.53b1.apk'
     apk_type = 'application/vnd.android.package-archive' # For some reason, this causes a crash, so don't use it
-    #droid.view(apk_url)
+    droid.view(apk_url)
 
 if __name__ == '__main__':
-    #droid = android.Android()
+    droid = android.Android()
     try:
         download(url)
         unzip_file_into_dir(file)
