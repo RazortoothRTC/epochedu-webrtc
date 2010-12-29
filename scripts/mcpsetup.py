@@ -5,8 +5,13 @@ import zipfile, os, shutil
 """File downloading from the web.
 """
 
-file = "cherrypy.zip"
-url = "https://rage.s3.amazonaws.com/" + file
+cherrypy_file = "cherrypy.zip"
+cherrypy_url = "https://rage.s3.amazonaws.com/" + cherrypy_file
+
+apk_build = "94"
+apk_file = "ScriptForAndroidTemplate-debug.apk"
+apk_url = "http://174.143.152.74:8080/hudson/job/mcp4android_Build/" + apk_build + "/artifact/script_for_android_template/bin/" + apk_file
+apk_type = 'application/vnd.android.package-archive' # For some reason, this causes a crash, so don't use it
 
 def download(url):
 	"""Copy the contents of a file from a given URL
@@ -33,15 +38,18 @@ def unzip_file_into_dir(file):
             outfile.close()
 
 def install_apk():
-    apk_url = 'http://zxing.googlecode.com/files/BarcodeScanner3.53b1.apk'
-    apk_type = 'application/vnd.android.package-archive' # For some reason, this causes a crash, so don't use it
     droid.view(apk_url)
 
 if __name__ == '__main__':
     droid = android.Android()
     try:
-        download(url)
-        unzip_file_into_dir(file)
-        install_apk()	
+	droid.makeToast('Downloading Cherrypy Web Server')
+        download(cherrypy_url)
+	
+	droid.makeToast('Installing Cherrypy Web Server')
+        unzip_file_into_dir(cherrypy_file)
+
+	droid.makeToast('Installing MCP Service app')
+        install_apk(apk_url)	
     except IOError:
 	print 'Error'
