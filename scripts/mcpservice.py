@@ -65,10 +65,14 @@ def check_access(default=False):
 _cp_config = {'tools.sessions.on': True}
 
 class MCPService(object):
+	ANDROID_CONTENT_PATH = '/sdcard/content'
+	DESKTOP_CONTENT_PATH = '/tmp'
+	
 	def __init__(self):
-		# self.droid = android.Android()
-		pass
-
+		try:
+			self.droid = android.Android()
+		except:
+			pass
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
 	def index(self):
@@ -89,7 +93,7 @@ Put services documentation here.
 	def testviewcraigslist(self):
 		aURL = 'http://craigslist.com'
 		aMIME = 'text/html'
-	    # droid.view(aURL, aMIME) 
+	    droid.view(aURL, aMIME) 
 		print "droid view launched"
 	testviewcraigslist.exposed = True
 	
@@ -100,17 +104,17 @@ Put services documentation here.
 		dataLength = int(cherrypy.request.headers.get('Content-Length') or 0)
 		data = cherrypy.request.rfile.read(dataLength)
 		jsonReq = json.dumps(data)
-		jsonResp = {}
+		jsonResp = standardResponse()
 		
 		requestID = o.apdu
 		if requestID is None:
-			jsonResp = errorResponse()
+			jsonResp.status = -1
 		if requestID == 1:
-			jsonResp = launchurl(o.launchurl, None)
+			jsonResp = launchurl(jsonReq.launchurl, None, jsonResp)
 		if requestID == 2:
-			pass
+			sync(jsonReq.sync, jsonResp)
 		if requestID == 3:
-			pass
+			kill(jsonReq.kill, jsonResp)
 		if requestID == 4:
 			pass
 		if requestID == 5:
@@ -133,7 +137,6 @@ Put services documentation here.
 		   ticketid: '<unique ticket ID>'
 		}
 		
-	
 	def standardResponse(self):
 		return {
 		   apduresp: '<unique ticket ID>',
@@ -141,8 +144,12 @@ Put services documentation here.
 		   status: '<status code, negative for error conditions, 0 for success>'
 		}
 			
-	def launchurl(self, aurl, amime):
-		rsp = standardResponse()
+#
+#
+# MCP Handlers
+#
+#
+	def launchurl(self, aurl, amime, rsp):
 		if aurl is None: rsp.status = -1
 		if amime is None:
 			try:
@@ -158,6 +165,24 @@ Put services documentation here.
 			print "droid view launched with mime type + url"
 		rsp.status = 1;
 		return rsp
+		
+	def sync(self, urls, rsp):
+		downloaderrors = []
+		if urls is None: return rsp
+		for contenturl in urls:
+			try:
+				webFile = urllib.urlopen(contenturl)
+				localFile = open(ANDROID_CONTENT_PATH, 'w') # XXX Double check the write bits
+				localFile.write(webFile.read())
+				webFile.close()
+				localFile.close()
+			except IOError, e:
+				downloaderrors.append(contenturl)
+		rsp.downloaderrors = downloaderrors
+		return rsp
+	def kill(self, uri, rsp):
+		if uri is None: return rsp
+		droid.forceStopPackage(uri)
 		
 def run():
     cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
