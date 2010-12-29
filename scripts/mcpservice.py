@@ -27,8 +27,13 @@ except:
 import cherrypy
 import os
 import json
+import datetime
 
-
+# 
+#
+# Setup cherrypy Tools
+#
+#
 def print_path(multiplier=1):
     for i in range(multiplier):
         print cherrypy.request.path_info
@@ -42,6 +47,14 @@ def validate_rpc():
 			else:
 				cherrypy.request.processRequestBody = False
 cherrypy.tools.validate_rpc = cherrypy.Tool('before_request_body', validate_rpc)
+
+encoder = json.JSONEncoder()
+
+def jsonify_tool_callback(*args, **kwargs):
+    response = cherrypy.response
+    response.headers['Content-Type'] = 'application/json'
+    response.body = encoder.iterencode(response.body)
+cherrypy.tools.jsonify = cherrypy.Tool('before_finalize', jsonify_tool_callback, priority=30)
 
 def check_access(default=False):
 	print "check_access"
@@ -82,16 +95,18 @@ Put services documentation here.
 	
 	@cherrypy.expose
 	@cherrypy.tools.validate_rpc()
+	@cherrypy.tools.jsonify()
 	def rpc(self):
 		dataLength = int(cherrypy.request.headers.get('Content-Length') or 0)
 		data = cherrypy.request.rfile.read(dataLength)
-		o = json.dumps(data)
+		jsonReq = json.dumps(data)
+		jsonResp = {}
 		
 		requestID = o.apdu
 		if requestID is None:
-			pass
+			jsonResp = errorResponse()
 		if requestID == 1:
-			launchurl(o.launchurl, None)
+			jsonResp = launchurl(o.launchurl, None)
 		if requestID == 2:
 			pass
 		if requestID == 3:
@@ -102,18 +117,38 @@ Put services documentation here.
 			pass
 		if requestID == 6:
 			pass
+		jsonResp = prepareResponse(jsonReq, jsonResp)
+		return jsonResp
 		
-		# Set the response header
-		# set the data body
-		# send response
+	def prepareResponse(self, req, res):
+		res.ticketid = req.ticketid;
+		res.timestamp = datetime.datetime.now().isoformat()
+		return res
 		
+	def standardRequest(self):
+		return {
+		   apdu: '<ID>',
+		   to: '<recipeint URI>',
+		   requestoruri: '<URL>',
+		   ticketid: '<unique ticket ID>'
+		}
+		
+	
+	def standardResponse(self):
+		return {
+		   apduresp: '<unique ticket ID>',
+		   sender: '<sender URI>',
+		   status: '<status code, negative for error conditions, 0 for success>'
+		}
+			
 	def launchurl(self, aurl, amime):
-		if aurl is None: return
+		rsp = standardResponse()
+		if aurl is None: rsp.status = -1
 		if amime is None:
 			try:
 				droid.view(aurl)
 			except:
-				webbrowser.open(aurl)  
+				webbrowser.open(aurl)
 			print "droid view launched with url"
 		else:
 			try:
@@ -121,6 +156,8 @@ Put services documentation here.
 			except:
 				webbrowser.open(aurl)  
 			print "droid view launched with mime type + url"
+		rsp.status = 1;
+		return rsp
 		
 def run():
     cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
