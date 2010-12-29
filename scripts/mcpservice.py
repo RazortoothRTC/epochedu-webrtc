@@ -92,7 +92,7 @@ Put services documentation here.
 Todo ...
 <h1>About</h1>
 <UL>Version: %s
-</body></html>"""%(this.VERSIONTAG)
+</body></html>"""%(self.VERSION_TAG)
 
 	def exit(self):
 		raise SystemExit(0)
