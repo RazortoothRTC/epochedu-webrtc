@@ -72,6 +72,9 @@ class MCPService(object):
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
 	VERSION_TAG = 'ces2011-r1-b1' + datetime.datetime.now().isoformat()
+	MCP_SERVER_URI = ['http://192.168.1.148:5000/student'] # XXX This should be a list
+	PACKAGE_BLACKLIST = ['com.android.launcher2', # The Dock Launcher
+						]
 	def __init__(self):
 		try:
 			self.droid = android.Android()
@@ -125,13 +128,13 @@ Todo ...
 		if apdu == 1:
 			jsonResp = launchurl(jsonReq['launchurl'], None, jsonResp)
 		if apdu == 2:
-			sync(jsonReq.sync, jsonResp)
+			jsonResp = sync(jsonReq.sync, jsonResp)
 		if apdu == 3:
-			kill(jsonReq.kill, jsonResp)
+			jsonResp = kill(jsonReq.kill, jsonResp)
 		if apdu == 4:
-			pass
+			jsonResp = mcpmodestart(jsonResp)
 		if apdu == 5:
-			pass
+			jsonResp = mcpmodestop(jsonResp)
 		if apdu == 6:
 			pass
 		jsonResp = prepareResponse(jsonReq, jsonResp)
@@ -160,7 +163,7 @@ Todo ...
 			
 #
 #
-# MCP Handlers
+# MCP apdu Handlers
 #
 #
 	def launchurl(self, aurl, amime, rsp):
@@ -198,16 +201,36 @@ Todo ...
 		else:
 			rsp['status'] = 0;
 		return rsp
+		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
 		droid.forceStopPackage(uri) # Does this have return value?
+		droid.makeToast('Killed ' + uri)
+		rsp['status'] = 0;
+	
+	def mcpmodestart(self, rsp):
+		# XXX Put in list of packages to kill
+		# check if we can get a list of running activities
+		# Also, is there a way to disable the system softkeys (HOME, MENU, Back)
+		# 
+		for packagename in self.PACKAGE_BLACKLIST:
+			kill(packagename, rsp)
+		rsp['status'] = 0;
+	
+	def mcpmodestop(self, rsp):
+		# XXX Add code to relaunch killed apps
 		rsp['status'] = 0;
 		
 def run():
-    cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
-    cherrypy.config.update({'server.socket_host':'127.0.0.1'})
-    cherrypy.quickstart(MCPService(), '/')
-    cherrypy.engine.block()
+	svc = MCPService()
+	cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
+	cherrypy.config.update({'server.socket_host':'127.0.0.1'})
+	cherrypy.quickstart(svc, '/')
+	try:
+		svc.droid.view(svc.MCP_SERVER_URI[0])
+	except:
+		pass
+	cherrypy.engine.block()
 
 if __name__ == '__main__':
     run()
