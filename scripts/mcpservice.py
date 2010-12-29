@@ -65,9 +65,13 @@ def check_access(default=False):
 _cp_config = {'tools.sessions.on': True}
 
 class MCPService(object):
+	#
+	# CONFIG
+	# 
+	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	
+	VERSION_TAG = 'ces2011-r1-b1' + datetime.datetime.now().isoformat()
 	def __init__(self):
 		try:
 			self.droid = android.Android()
@@ -84,7 +88,11 @@ Put services documentation here.
 <h1>Administration</h1>
 <a href="/dumpqueue">Queue Dump</a>
 <a href="/exit">Shutdown</a>
-</body></html>"""
+<h1>Status</h1>
+Todo ...
+<h1>About</h1>
+<UL>Version: %s
+</body></html>"""%(this.VERSIONTAG)
 
 	def exit(self):
 		raise SystemExit(0)
@@ -93,7 +101,7 @@ Put services documentation here.
 	def testviewcraigslist(self):
 		aURL = 'http://craigslist.com'
 		aMIME = 'text/html'
-	    droid.view(aURL, aMIME) 
+		droid.view(aURL, aMIME) 
 		print "droid view launched"
 	testviewcraigslist.exposed = True
 	
