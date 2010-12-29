@@ -103,45 +103,51 @@ Put services documentation here.
 	def rpc(self):
 		dataLength = int(cherrypy.request.headers.get('Content-Length') or 0)
 		data = cherrypy.request.rfile.read(dataLength)
-		jsonReq = json.dumps(data)
+		jsonReq = {}
+		
+		try:
+			jsonReq = json.load(json.dumps(data))
+		except:
+			pass
 		jsonResp = standardResponse()
 		
-		requestID = o.apdu
-		if requestID is None:
-			jsonResp.status = -1
-		if requestID == 1:
-			jsonResp = launchurl(jsonReq.launchurl, None, jsonResp)
-		if requestID == 2:
+		apdu = jsonReq['apdu']
+		if apdu is None:
+			jsonResp['status'] = -1
+		if apdu == 1:
+			jsonResp = launchurl(jsonReq['launchurl'], None, jsonResp)
+		if apdu == 2:
 			sync(jsonReq.sync, jsonResp)
-		if requestID == 3:
+		if apdu == 3:
 			kill(jsonReq.kill, jsonResp)
-		if requestID == 4:
+		if apdu == 4:
 			pass
-		if requestID == 5:
+		if apdu == 5:
 			pass
-		if requestID == 6:
+		if apdu == 6:
 			pass
 		jsonResp = prepareResponse(jsonReq, jsonResp)
 		return jsonResp
 		
 	def prepareResponse(self, req, res):
-		res.ticketid = req.ticketid;
-		res.timestamp = datetime.datetime.now().isoformat()
+		res['ticketid'] = req['ticketid'];
+		res['timestamp'] = datetime.datetime.now().isoformat()
+		# return json.dumps(res) # JSONinfy
 		return res
 		
 	def standardRequest(self):
 		return {
-		   apdu: '<ID>',
-		   to: '<recipeint URI>',
-		   requestoruri: '<URL>',
-		   ticketid: '<unique ticket ID>'
+		   'apdu': '<ID>',
+		   'to': '<recipeint URI>',
+		   'requestoruri': '<URL>',
+		   'ticketid': '<unique ticket ID>'
 		}
 		
 	def standardResponse(self):
 		return {
-		   apduresp: '<unique ticket ID>',
-		   sender: '<sender URI>',
-		   status: '<status code, negative for error conditions, 0 for success>'
+		   'apduresp': '<unique ticket ID>',
+		   'sender': '<sender URI>',
+		   'status': '<status code, negative for error conditions, 0 for success>'
 		}
 			
 #
@@ -163,7 +169,7 @@ Put services documentation here.
 			except:
 				webbrowser.open(aurl)  
 			print "droid view launched with mime type + url"
-		rsp.status = 1;
+		rsp['status'] = 0;
 		return rsp
 		
 	def sync(self, urls, rsp):
@@ -178,18 +184,22 @@ Put services documentation here.
 				localFile.close()
 			except IOError, e:
 				downloaderrors.append(contenturl)
-		rsp.downloaderrors = downloaderrors
+		rsp['downloaderrors'] = downloaderrors
+		if len(downloaderrors) > 0:
+			rsp['status'] = -1;
+		else:
+			rsp['status'] = 0;
 		return rsp
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
-		droid.forceStopPackage(uri)
+		droid.forceStopPackage(uri) # Does this have return value?
+		rsp['status'] = 0;
 		
 def run():
     cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
     cherrypy.config.update({'server.socket_host':'127.0.0.1'})
     cherrypy.quickstart(MCPService(), '/')
     cherrypy.engine.block()
-    #os.system('python script.py')
 
 if __name__ == '__main__':
     run()
