@@ -18,8 +18,8 @@ def download(url, file, dest):
 	"""Copy the contents of a file from a given URL
 	to a local file.
 	"""
-	webFile = urllib.urlopen(url + file)
-	localFile = open(dest + file, 'w')
+	webFile = urllib.urlopen(os.path.join(url, file))
+	localFile = open(os.path.join(dest, file), 'w')
 	localFile.write(webFile.read())
 	webFile.close()
 	localFile.close()
