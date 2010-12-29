@@ -7,6 +7,7 @@ import zipfile, os, shutil
 
 cherrypy_file = "cherrypy.zip"
 cherrypy_url = "https://rage.s3.amazonaws.com/" + cherrypy_file
+cherrypy_path = "/sdcard/sl4a/scripts/"
 
 apk_build = "94"
 apk_file = "ScriptForAndroidTemplate-debug.apk"
@@ -18,27 +19,30 @@ def download(url):
 	to a local file.
 	"""
 	webFile = urllib.urlopen(url)
-	localFile = open(url.split('/')[-1], 'w')
+	localFile = open(cherrypy_path + cherrypy_file, 'w')
+	#localFile = open(url.split('/')[-1], 'w')
 	localFile.write(webFile.read())
 	webFile.close()
 	localFile.close()
 
-def unzip_file_into_dir(file):
-    zfobj = zipfile.ZipFile(file)
+def unzip_file_into_dir(path, file):
+    file_fullpath = os.path.join(path, file)
+    zfobj = zipfile.ZipFile(file_fullpath)
+
+    os.chdir(cherrypy_path)
     for name in zfobj.namelist():
-        if name.endswith('/'):
+	if name.endswith('/'):
 	    if os.path.exists(name):
 		shutil.rmtree(name)
-		os.mkdir(name)
-	    else:
-            	os.mkdir(name)
-        else:
+
+	    os.mkdir(name)
+	else:
             outfile = open(name, 'wb')
             outfile.write(zfobj.read(name))
             outfile.close()
 
-def install_apk():
-    droid.view(apk_url)
+def install_apk(url):
+    droid.view(url)
 
 if __name__ == '__main__':
     droid = android.Android()
@@ -47,9 +51,9 @@ if __name__ == '__main__':
         download(cherrypy_url)
 	
 	droid.makeToast('Installing Cherrypy Web Server')
-        unzip_file_into_dir(cherrypy_file)
+        unzip_file_into_dir(cherrypy_path, cherrypy_file)
 
 	droid.makeToast('Installing MCP Service app')
         install_apk(apk_url)	
-    except IOError:
-	print 'Error'
+    except IOError, e:
+	print e
