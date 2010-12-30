@@ -51,13 +51,28 @@ def install_apk(url):
 if __name__ == '__main__':
     droid = android.Android()
     try:
+	print 'Downloading Cherrypy Web Server'
+	print 'Source = ' + cherrypy_url + cherrypy_file
+	print 'Destination = ' + cherrypy_path + cherrypy_file
 	droid.makeToast('Downloading Cherrypy Web Server')
         download(cherrypy_url, cherrypy_file, cherrypy_path)
-	
+
+	print
+
+	print 'Installing Cherrypy Web Server'
+	print 'Source = ' + cherrypy_path + cherrypy_file
+	print 'Destination  = ' +  cherrypy_path 	
 	droid.makeToast('Installing Cherrypy Web Server')
         unzip_file_into_dir(cherrypy_path, cherrypy_file)
 
+	print
+
+	print 'Downloading MCP Service app'
+	print 'Source = ' + py_url
+	print 'Note: Click on the zip file to unpack it, default Destination = /sdcard/download/'
 	droid.makeToast('Downloading MCP Service app')
-        install_apk(py_url)	
+        install_apk(py_url)
+
+	print
     except IOError, e:
 	print e
