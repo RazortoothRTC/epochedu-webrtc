@@ -406,7 +406,7 @@ function mcpDispatcher(mcpRequest) {
 		// Performan any special handling
 		// For now, all we do is dispatch
 		// MSGDEF - Student MCP Dispatcher
-		alert('Student incoming MCP apdu ' + mcpRequest.apdu);
+		// alert('Student incoming MCP apdu ' + mcpRequest.apdu);
 		switch(mcpRequest.apdu) {
 			case "1":
 				break;
@@ -427,7 +427,8 @@ function mcpDispatcher(mcpRequest) {
 		$.getJSON('http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT,
 		  mcpRequest,
 		  function(data) {
-		    alert('sent MCP request type:' + mcpRequest.apdu);
+		    // alert('sent MCP request type:' + mcpRequest.apdu);
+			// XXX Should report back some status here
 		  });
 	} else {
 		alert('No readable MCP apdu received');
@@ -568,7 +569,7 @@ function longPoll (data) {
 		
 		case "mcprequest":
 			if (($.mobile) && (!teacher)) {
-				alert('mcprequest');
+				// alert('mcprequest');
 				mcpDispatcher(message.payload);
 			}
 			break;
@@ -639,10 +640,14 @@ function sendviewer(msg, type) {
   }
 }
 
+//
+// This is used to send from teacher to MCP clients
+//
 function sendmcprequest(msg, type, apdu) {
 	if (CONFIG.debug === false) {
 		var payload;
 		if ((type) && (apdu)) {
+			alert('sendmcprequest with data: ' + msg);
 			// The message format is simple.  The message data is contained in an identifier = APDU name
 			// payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + msg + '"}';
 	    	// payload = {apdu: apdu};
@@ -651,7 +656,7 @@ function sendmcprequest(msg, type, apdu) {
 			// payload = {apdu: apdu, to: '*', requesturi: CONFIG.nick + '@' + CONFIG.id, ticketid: '<unique ticket ID>', eval("(" + type + ")"): msg};
 			// payload = "{" + type + ": 'xyx' }"; WORKS
 			payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + msg + '"}';
-			alert('sending payload' + payload);
+			// alert('sending payload' + payload);
 			// XXX should be POST
 	    	jQuery.get("/send", {id: CONFIG.id, text: msg, type: 'mcprequest', channel: getChannel(), payload: eval("(" + payload + ")")}, function (data) { }, "json");
 		}
@@ -846,7 +851,7 @@ function messageDispatcher(cmd, data) {
 			if (!util.isBlank(data)) sendviewer(data, cmd);
 			break;
 		case "sync":
-			alert('TODO: implement sync handler');
+			if (!util.isBlank(data)) sendmcprequest(data, cmd, 2); // XXX HARDCODED APDU
 			break;
 		case "mcpmodestart":
 			alert('TODO: implement mcpmodestart handler');
@@ -989,6 +994,7 @@ $(document).ready(function() {
 				$('#cpfieldset').find('input:checked').each( 
 				    function(index) {
 						data = this.value;
+						// data.push(this.value);
 						// alert('checked value is ' + data);
 						messageDispatcher(cmd, data);
 						// this.checked = false;
