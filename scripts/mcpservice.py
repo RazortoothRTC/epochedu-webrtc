@@ -28,7 +28,7 @@ import cherrypy
 import os
 import json
 import datetime
-
+import time
 #
 #
 # MISC Globals
@@ -71,17 +71,44 @@ def check_access(default=False):
 _cp_config = {'tools.sessions.on': True}
 
 class MCPService(object):
+	droid = None
 	#
 	# CONFIG
 	# 
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r1-b2' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r1-b3' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	<P>Current work is getting initial MCP connector activated.  Next up is to test connection from /student 
 	back to JSON services running in MCP.</P>
 	"""
+	ASCII_LOGO = """
+	@#@#++@@@@@@@@@@##@@@@@@@@@##@@@@#@@@@#@@@@;;+@@@'@@@@+#@@@;;+@@'';@@@@@@@@
+	@+++++++#@@+@@@@@#+@@@@#@@@##@@@@@#@@@++@@@;:;@@##'@@@::@@@';'@@+@;@@@@@@@@
+	@++++@@#+@@,+@@@@#+@@@@#@@@##@@@#@+@@@++@@@;:;@@+#:@@@::@@@+;'@@+@;@@@@@@@@
+	@#++@;,::;+,:@@@@##@@@#+@@@@+@@@#@+@@@++@@@@:@@@'#:@@@;:@@@@;@@@+#;@@@@@@@@
+	@#++@@@@@#',,:+@@##@@@#+@@@@+@@@#@+@@@++@@@@:@@@'#:@@@;:@@@@;@@@+@;@@@@@@@@
+	@@++@@@@@@@,;@:@@#+@@@++@@@@##@@#@#@@@++@@@@:@@@+#:@@@::@@@@;@@@+@;@@@@@@@@
+	@@#+#@@@@@@,'@@@@#+@@@+#@@@#@#@@@@#@@@++#@@@:@@@#+'@@@::@@@@;@@@+@;@@@@@@@@
+	@@@++@@@@@+,@@@@@##@@@###@@@#@@@@#@@@@#@@@@#+@@@@+@@@@##@@@#+@@@+++@@@@@@@@
+	@@@@+@@@@@,;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	@@@@@+@@@#:@@@@@##@##@#@+@';@+'@;'@'@'+@'@#+@+@##@;+@'#@@@@'@@'@@+#@@@@@@@@
+	@@@@@@#@@:@@@@@@+@@+@@#;+@+'@+'@+'@'@'@@+#@+@+@+@@''@#+@@@@'@@'@@@@@@@@@@@@
+	@@@@@@@##@@@@@@@@+@#+@@@#@#+@''@+'@'@+'@@'@+@'@#+@''@'+#@@@'+@'+@'+@@@@@@@@
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	"""
+	ASCII_LOGO2 = """
+	|~) _ _  _ .__|_ _  _ _|_|_ 
+	|~\(_|/_(_)|  | (_)(_) | | |
+
+	|~ _ ._ _ ._ _    ._ o _ _ _|_o _ ._  _   
+	|_(_)| | || | ||_|| ||(_(_| | |(_)| |_\)  
+
+	| | |~
+	|_|_|_
+	"""
+	COPYRIGHT = 'Copyright 2011 Razortooth Communications, LLC'
 	MCP_SERVER_URI = ['http://192.168.1.148:5000/student'] # XXX This should be a list
 	PACKAGE_BLACKLIST = ['com.android.launcher2', # The Dock Launcher
 						]
@@ -90,6 +117,8 @@ class MCPService(object):
 			self.droid = android.Android()
 		except:
 			pass
+		print 'MCPService init completed'
+		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
 	def index(self):
@@ -234,13 +263,19 @@ Todo ...
 
 def mcpServiceConnector():
 	svc = MCPService()
+	droid = svc.droid
 	try:
-		svc.droid.makeToast('Launcing MCP service connector: ' + svc.MCP_SERVER_URI[0])
-		svc.droid.view(SVC.MCP_SERVER_URI[0])
+		print "opening " + svc.MCP_SERVER_URI[0]
+		droid.makeToast('Launcing MCP service connector: ' + svc.MCP_SERVER_URI[0])	
+		droid.view('http://192.168.1.148:5000/student', 'text/html')
 	except:
 		print "opening " + svc.MCP_SERVER_URI[0]
 		webbrowser.open(svc.MCP_SERVER_URI[0])
+		pass
 		
+	print svc.ASCII_LOGO2
+	print svc.COPYRIGHT
+	
 def run():
 	
 	cherrypy.config.update({'cherrypy.server.socket_port':'8080'})

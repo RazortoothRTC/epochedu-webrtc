@@ -6,7 +6,7 @@ import zipfile, os, shutil
 """
 
 cherrypy_file = "cherrypy.zip"
-cherrypy_url = "https://rage.s3.amazonaws.com/" 
+cherrypy_url = "https://rage.s3.amazonaws.com/" # 72.21.203.149
 cherrypy_path = "/sdcard/sl4a/scripts/"
 
 apk_build = "110"
