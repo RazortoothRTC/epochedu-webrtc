@@ -29,6 +29,12 @@ import os
 import json
 import datetime
 
+#
+#
+# MISC Globals
+#
+#
+
 # 
 #
 # Setup cherrypy Tools
@@ -71,7 +77,11 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r1-b1' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r1-b2' + datetime.datetime.now().isoformat()
+	VERSION_DESC = """
+	<P>Current work is getting initial MCP connector activated.  Next up is to test connection from /student 
+	back to JSON services running in MCP.</P>
+	"""
 	MCP_SERVER_URI = ['http://192.168.1.148:5000/student'] # XXX This should be a list
 	PACKAGE_BLACKLIST = ['com.android.launcher2', # The Dock Launcher
 						]
@@ -94,7 +104,8 @@ Put services documentation here.
 <h1>Status</h1>
 Todo ...
 <h1>About</h1>
-<UL>Version: %s
+<UL>Version: %s</UL>
+<UL>Description: %s</UL>
 </body></html>"""%(self.VERSION_TAG)
 
 	def exit(self):
@@ -220,16 +231,22 @@ Todo ...
 	def mcpmodestop(self, rsp):
 		# XXX Add code to relaunch killed apps
 		rsp['status'] = 0;
+
+def mcpServiceConnector():
+	svc = MCPService()
+	try:
+		svc.droid.makeToast('Launcing MCP service connector: ' + svc.MCP_SERVER_URI[0])
+		svc.droid.view(SVC.MCP_SERVER_URI[0])
+	except:
+		print "opening " + svc.MCP_SERVER_URI[0]
+		webbrowser.open(svc.MCP_SERVER_URI[0])
 		
 def run():
-	svc = MCPService()
+	
 	cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
 	cherrypy.config.update({'server.socket_host':'127.0.0.1'})
-	cherrypy.quickstart(svc, '/')
-	try:
-		svc.droid.view(svc.MCP_SERVER_URI[0])
-	except:
-		pass
+	cherrypy.engine.subscribe('start', mcpServiceConnector, priority=90)
+	cherrypy.quickstart(MCPService(), '/')
 	cherrypy.engine.block()
 
 if __name__ == '__main__':
