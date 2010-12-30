@@ -101,8 +101,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v8-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  MCP work in progress on launchurl.";
+VERSION = "ces2011-marvell-v9-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight.  MCP sync works on device and android.  In progress on send-local.";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 

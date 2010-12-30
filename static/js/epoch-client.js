@@ -533,6 +533,7 @@ function longPoll (data) {
 		case "sendviewerlocal":
 			if (!first_poll) {
 		 		var contenturl = message.text;
+				// alert('received sendviewerlocal ' + contenturl + ' teacher is ' + teacher + ' firstpoll is ' + first_poll);
 				if (!teacher) window.open(contenturl);
 			}
 			break;
@@ -647,7 +648,7 @@ function sendmcprequest(msg, type, apdu) {
 	if (CONFIG.debug === false) {
 		var payload;
 		if ((type) && (apdu)) {
-			alert('sendmcprequest with data: ' + msg);
+			// alert('sendmcprequest with data: ' + msg);
 			// The message format is simple.  The message data is contained in an identifier = APDU name
 			// payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + msg + '"}';
 	    	// payload = {apdu: apdu};
@@ -847,7 +848,7 @@ function messageDispatcher(cmd, data) {
 		case "preview":
 			launchShadowboxPreview(data);
 			break;
-		case "sendlocal":
+		case "sendviewerlocal":
 			if (!util.isBlank(data)) sendviewer(data, cmd);
 			break;
 		case "sync":
