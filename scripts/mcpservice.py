@@ -82,24 +82,24 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r2-b2' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r3-b2' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>Current work is getting initial MCP connector activated.  Launchurl apdu works.  Work on sync</P>
+	<P>Current work is getting initial MCP connector activated.  sync works on device and creates directory</P>
 	"""
 	ASCII_LOGO = """
-	@#@#++@@@@@@@@@@##@@@@@@@@@##@@@@#@@@@#@@@@;;+@@@'@@@@+#@@@;;+@@'';@@@@@@@@
-	@+++++++#@@+@@@@@#+@@@@#@@@##@@@@@#@@@++@@@;:;@@##'@@@::@@@';'@@+@;@@@@@@@@
-	@++++@@#+@@,+@@@@#+@@@@#@@@##@@@#@+@@@++@@@;:;@@+#:@@@::@@@+;'@@+@;@@@@@@@@
-	@#++@;,::;+,:@@@@##@@@#+@@@@+@@@#@+@@@++@@@@:@@@'#:@@@;:@@@@;@@@+#;@@@@@@@@
-	@#++@@@@@#',,:+@@##@@@#+@@@@+@@@#@+@@@++@@@@:@@@'#:@@@;:@@@@;@@@+@;@@@@@@@@
-	@@++@@@@@@@,;@:@@#+@@@++@@@@##@@#@#@@@++@@@@:@@@+#:@@@::@@@@;@@@+@;@@@@@@@@
-	@@#+#@@@@@@,'@@@@#+@@@+#@@@#@#@@@@#@@@++#@@@:@@@#+'@@@::@@@@;@@@+@;@@@@@@@@
-	@@@++@@@@@+,@@@@@##@@@###@@@#@@@@#@@@@#@@@@#+@@@@+@@@@##@@@#+@@@+++@@@@@@@@
-	@@@@+@@@@@,;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	@@@@@+@@@#:@@@@@##@##@#@+@';@+'@;'@'@'+@'@#+@+@##@;+@'#@@@@'@@'@@+#@@@@@@@@
-	@@@@@@#@@:@@@@@@+@@+@@#;+@+'@+'@+'@'@'@@+#@+@+@+@@''@#+@@@@'@@'@@@@@@@@@@@@
-	@@@@@@@##@@@@@@@@+@#+@@@#@#+@''@+'@'@+'@@'@+@'@#+@''@'+#@@@'+@'+@'+@@@@@@@@
-	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	@#@#++@@@@@@@@@@@
+	@+++++++#@@+@@@@@
+	@++++@@#+@@,+@@@@
+	@#++@;,::;+,:@@@@
+	@#++@@@@@#',,:+@@
+	@@++@@@@@@@,;@:@@
+	@@#+#@@@@@@,'@@@@
+	@@@++@@@@@+,@@@@@
+	@@@@+@@@@@,;@@@@@
+	@@@@@+@@@#:@@@@@#
+	@@@@@@#@@:@@@@@@@
+	@@@@@@@##@@@@@@@@
+	@@@@@@@@@@@@@@@@@
 	"""
 	ASCII_LOGO2 = """
 	|~) _ _  _ .__|_ _  _ _|_|_ 
@@ -253,49 +253,44 @@ Todo ...
 	def syncContent(self, urls, rsp):
 		downloaderrors = []
 		print "syncing content to device"
+		# 
+		# XXX We need to get the path off and create directory if needed
+		#
 		if urls is None: 
 			print 'urls are empty'
 			return rsp
-		if type(urls) == types.ListType:
-			print "syncing content from list of URLs"
-			for contenturl in urls:
+
+		print 'singuar sync'
+		
+		try:
+			print "syncing single url: " + urls
+			webFile = urllib.urlopen(urls)
+			filename = urls.split('/')[-1]
+			apath = self.ANDROID_CONTENT_PATH + '/' + urls.split('/')[-2] 
+			dpath = self.DESKTOP_CONTENT_PATH + '/' + urls.split('/')[-2]
+			if not os.path.exists(apath):
 				try:
-					print "syncing url: " + contenturl
-					webFile = urllib.urlopen(contenturl)
-					filename = contenturl.split('/')[-1]
-					try:
-						
-						localFile = open(self.ANDROID_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
-						print "storing url on " + self.ANDROID_CONTENT_PATH + '/' + filename
-					except IOError, e:
-						localFile = open(self.DESKTOP_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
-						print "storing url on " + self.DESKTOP_CONTENT_PATH + '/' + filename
-					localFile.write(webFile.read())
-					webFile.close()
-					localFile.close()
-				except IOError, e:
-					downloaderrors.append(contenturl)
-					print "errors syncing " + contenturl
-					print e
-		else: # XXX Put this into a function
-			print 'singuar sync'
+					os.makedirs(apath)
+				except OSError, e:
+					if not os.path.exists(dpath):
+						try:
+							os.makedirs(dpath)
+						except OSError, e:
+							print 'could not create a valid path at' + apath + ' or ' + dpath
+							return
 			try:
-				print "syncing single url: " + urls
-				webFile = urllib.urlopen(urls)
-				filename = urls.split('/')[-1]
-				try:
-					localFile = open(self.ANDROID_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
-					print "storing url on " + self.ANDROID_CONTENT_PATH
-				except IOError, e:
-					localFile = open(self.DESKTOP_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
-					print "storing url on " + self.DESKTOP_CONTENT_PATH + '/' + filename
-				localFile.write(webFile.read())
-				webFile.close()
-				localFile.close()
+				localFile = open(apath + '/' + filename, 'wa') # XXX Double check the write bits
+				print 'storing url on ' + apath + '/'  + filename
 			except IOError, e:
-				downloaderrors.append(urls)
-				print "errors syncing " + urls
-				print e
+				localFile = open(dpath + '/' + filename, 'wa') # XXX Double check the write bits
+				print 'storing url on ' + dpath + '/' + filename
+			localFile.write(webFile.read())
+			webFile.close()
+			localFile.close()
+		except IOError, e:
+			downloaderrors.append(urls)
+			print "errors syncing " + urls
+			print e
 		rsp['downloaderrors'] = downloaderrors
 		if len(downloaderrors) > 0:
 			rsp['status'] = -1;
@@ -330,8 +325,8 @@ def mcpServiceConnector():
 	droid = svc.droid
 	mcpconnectorurl = svc.MCP_SERVER_URI[0]
 	try:
-		self.droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
-		self.droid.view(mcpconnectorurl, 'text/html')
+		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
+		droid.view(mcpconnectorurl, 'text/html')
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
