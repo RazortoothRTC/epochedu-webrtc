@@ -79,9 +79,9 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r2-b1' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r2-b2' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>Current work is getting initial MCP connector activated.  Handle POST or GET, implement a working APDU.</P>
+	<P>Current work is getting initial MCP connector activated.  Launchurl apdu works.  Work on sync</P>
 	"""
 	ASCII_LOGO = """
 	@#@#++@@@@@@@@@@##@@@@@@@@@##@@@@#@@@@#@@@@;;+@@@'@@@@+#@@@;;+@@'';@@@@@@@@
@@ -151,7 +151,7 @@ Todo ...
 	# 	@cherrypy.tools.validate_rpc()
 	@cherrypy.expose
 	@cherrypy.tools.jsonify()
-	def rpc(self, apdu, ticketid, to, requestoruri, launchurl=None, sync=None):
+	def rpc(self, apdu, ticketid, to, requestoruri, launchurl=None, sync=None, kill=None):
 		dataLength = int(cherrypy.request.headers.get('Content-Length') or 0)
 		data = {}
 		# apdu = None
@@ -182,9 +182,9 @@ Todo ...
 		if apdu == '1':
 			jsonResp = self.launchurl(launchurl, None, jsonResp)
 		if apdu == '2':
-			jsonResp = self.sync(jsonReq.sync, jsonResp)
+			jsonResp = self.sync(sync, jsonResp)
 		if apdu == '3':
-			jsonResp = self.kill(jsonReq.kill, jsonResp)
+			jsonResp = self.kill(kill, jsonResp)
 		if apdu == '4':
 			jsonResp = self.mcpmodestart(jsonResp)
 		if apdu == '5':
@@ -230,13 +230,13 @@ Todo ...
 		if aurl is None: rsp.status = -1
 		if amime is None:
 			try:
-				droid.view(aurl)
+				self.droid.view(aurl)
 			except:
 				webbrowser.open(aurl)
 			print "droid view launched with url"
 		else:
 			try:
-				droid.view(aurl, amime)
+				self.droid.view(aurl, amime)
 			except:
 				webbrowser.open(aurl)  
 			print "droid view launched with mime type + url"
@@ -264,8 +264,8 @@ Todo ...
 		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
-		droid.forceStopPackage(uri) # Does this have return value?
-		droid.makeToast('Killed ' + uri)
+		self.droid.forceStopPackage(uri) # Does this have return value?
+		self.droid.makeToast('Killed ' + uri)
 		rsp['status'] = 0;
 	
 	def mcpmodestart(self, rsp):
@@ -288,8 +288,8 @@ def mcpServiceConnector():
 	droid = svc.droid
 	mcpconnectorurl = svc.MCP_SERVER_URI[0]
 	try:
-		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
-		droid.view(mcpconnectorurl, 'text/html')
+		self.droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
+		self.droid.view(mcpconnectorurl, 'text/html')
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
