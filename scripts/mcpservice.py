@@ -48,7 +48,8 @@ cherrypy.tools.print_path = cherrypy.Tool('on_start_resource', print_path)
 def validate_rpc():
 		if cherrypy.request.path_info == '/rpc':
 			if not 'Content-Length' in cherrypy.request.headers or \
-				(cherrypy.request.method != 'POST'):
+				(cherrypy.request.method != 'POST') or \
+				(cherrypy.request.method != 'GET'):
 				raise cherrypy.HTTPRedirect('/')
 			else:
 				cherrypy.request.processRequestBody = False
@@ -78,10 +79,9 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r1-b3' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r2-b1' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>Current work is getting initial MCP connector activated.  Next up is to test connection from /student 
-	back to JSON services running in MCP.</P>
+	<P>Current work is getting initial MCP connector activated.  Handle POST or GET, implement a working APDU.</P>
 	"""
 	ASCII_LOGO = """
 	@#@#++@@@@@@@@@@##@@@@@@@@@##@@@@#@@@@#@@@@;;+@@@'@@@@+#@@@;;+@@'';@@@@@@@@
@@ -116,7 +116,7 @@ class MCPService(object):
 		try:
 			self.droid = android.Android()
 		except:
-			pass
+			print 'Exception initializing Android'
 		print 'MCPService init completed'
 		
 	""" Basic MCP Service - need to add auth """
@@ -135,7 +135,7 @@ Todo ...
 <h1>About</h1>
 <UL>Version: %s</UL>
 <UL>Description: %s</UL>
-</body></html>"""%(self.VERSION_TAG)
+</body></html>"""%(self.VERSION_TAG, self.VERSION_DESC)
 
 	def exit(self):
 		raise SystemExit(0)
@@ -148,41 +148,61 @@ Todo ...
 		print "droid view launched"
 	testviewcraigslist.exposed = True
 	
+	# 	@cherrypy.tools.validate_rpc()
 	@cherrypy.expose
-	@cherrypy.tools.validate_rpc()
 	@cherrypy.tools.jsonify()
-	def rpc(self):
+	def rpc(self, apdu, ticketid, to, requestoruri, launchurl=None, sync=None):
 		dataLength = int(cherrypy.request.headers.get('Content-Length') or 0)
-		data = cherrypy.request.rfile.read(dataLength)
+		data = {}
+		# apdu = None
+		if (cherrypy.request.method == 'POST'):
+			print "rpc: POST method"
+			data = cherrypy.request.rfile.read(dataLength)
+		else:
+			print "rpc: GET method"
+			data = cherrypy.request.params;
 		jsonReq = {}
 		
 		try:
 			jsonReq = json.load(json.dumps(data))
+			print jsonReq
 		except:
-			pass
-		jsonResp = standardResponse()
+			print 'couldn not get json data'
+		jsonResp = self.standardResponse()
 		
-		apdu = jsonReq['apdu']
+		# try:
+		#	apdu = jsonReq['apdu']
+		#	print 'apdu received: ' + apdu
+		#except KeyError, e:
+		#	print "Can't get apdu from request" 
+
 		if apdu is None:
 			jsonResp['status'] = -1
-		if apdu == 1:
-			jsonResp = launchurl(jsonReq['launchurl'], None, jsonResp)
-		if apdu == 2:
-			jsonResp = sync(jsonReq.sync, jsonResp)
-		if apdu == 3:
-			jsonResp = kill(jsonReq.kill, jsonResp)
-		if apdu == 4:
-			jsonResp = mcpmodestart(jsonResp)
-		if apdu == 5:
-			jsonResp = mcpmodestop(jsonResp)
-		if apdu == 6:
+		print 'apdu received: ' + apdu
+		if apdu == '1':
+			jsonResp = self.launchurl(launchurl, None, jsonResp)
+		if apdu == '2':
+			jsonResp = self.sync(jsonReq.sync, jsonResp)
+		if apdu == '3':
+			jsonResp = self.kill(jsonReq.kill, jsonResp)
+		if apdu == '4':
+			jsonResp = self.mcpmodestart(jsonResp)
+		if apdu == '5':
+			jsonResp = self.mcpmodestop(jsonResp)
+		if apdu == '6':
 			pass
-		jsonResp = prepareResponse(jsonReq, jsonResp)
+		jsonResp = self.prepareResponse(jsonReq, jsonResp)
 		return jsonResp
 		
 	def prepareResponse(self, req, res):
-		res['ticketid'] = req['ticketid'];
+		try:
+			res['ticketid'] = req['ticketid'];
+		except KeyError, e:
+			res['ticketid'] = 'unknown'
+			
 		res['timestamp'] = datetime.datetime.now().isoformat()
+
+			
 		# return json.dumps(res) # JSONinfy
 		return res
 		
@@ -262,17 +282,17 @@ Todo ...
 		rsp['status'] = 0;
 
 def mcpServiceConnector():
+	print "here 1"
 	svc = MCPService()
+	print "here 2"
 	droid = svc.droid
+	mcpconnectorurl = svc.MCP_SERVER_URI[0]
 	try:
-		print "opening " + svc.MCP_SERVER_URI[0]
-		droid.makeToast('Launcing MCP service connector: ' + svc.MCP_SERVER_URI[0])	
-		droid.view('http://192.168.1.148:5000/student', 'text/html')
+		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
+		droid.view(mcpconnectorurl, 'text/html')
 	except:
-		print "opening " + svc.MCP_SERVER_URI[0]
-		webbrowser.open(svc.MCP_SERVER_URI[0])
-		pass
-		
+		print "opening " + mcpconnectorurl
+		webbrowser.open(mcpconnectorurl)
 	print svc.ASCII_LOGO2
 	print svc.COPYRIGHT
 	
