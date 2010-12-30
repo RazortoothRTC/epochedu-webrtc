@@ -1,0 +1,28 @@
+<project name="mcp4android" default="dist" basedir=".">
+
+  <!-- set global properties for this build -->
+  <property name="dist.name" value="mcp4android"/>
+  <property name="dist" location="dist"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+
+    <property environment="env" />
+    <echo message="BUILD_ID = ${env.BUILD_NUMBER}-${DSTAMP}"/>
+  </target>
+
+  <target name="dist" depends="clean,init" description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}"/>
+
+    <zip destfile="${dist}/${dist.name}-${env.BUILD_NUMBER}-${DSTAMP}.zip" basedir="scripts" includes="mcpservice.py"/>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <!-- Delete the ${dist} directory trees -->
+    <delete dir="${dist}"/>
+  </target>
+
+</project>
+
