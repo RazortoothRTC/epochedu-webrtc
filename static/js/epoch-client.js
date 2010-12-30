@@ -744,6 +744,7 @@ function updateTeacherContent(contentlist) {
 }
 
 function launchShadowboxPreview(contenturl) {
+	// alert('opening shadowbox to ' + contenturl);
 	Shadowbox.open({
 		title:      SHADOWBOX_CONFIG_TITLE,
 		player: SHADOWBOX_CONFIG_PLAYER,
@@ -778,11 +779,11 @@ function messageDispatcher(cmd, data) {
 		case "sync":
 			alert('TODO: implement sync handler');
 			break;
-		case "startmcpmode":
-			alert('TODO: implement startmcpmode handler');
+		case "mcpmodestart":
+			alert('TODO: implement mcpmodestart handler');
 			break;
-		case "stopmcpmode":
-			alert('TODO: implement stopmcpmode handler');
+		case "mcpmodestop":
+			alert('TODO: implement mcpmodestop handler');
 			break;
 		case "launch":
 			alert('TODO: implement launch handler');

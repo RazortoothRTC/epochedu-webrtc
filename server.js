@@ -101,8 +101,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v6-b8" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  working on teacher ui.  Send is working.  Need to implement enabled/disabled.";
+VERSION = "ces-marvell-v7-b1" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight.  Teacher UI in progress.  Working on landing page.";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
@@ -365,9 +365,8 @@ fu.get("/testdirty", function(req, res) {
 //
 // STATIC ROUTES
 //
-fu.get("/student", fu.staticHandler("templates/epoch-student-landing.html"));
-fu.get("/teacher", fu.staticHandler("templates/epoch-teacher-landing.html"));
-fu.get("/cruzy", fu.staticHandler("templates/chat.html"));
+// XXX Need a default / route, maybe a splash page
+fu.get("/cruzy", fu.staticHandler("templates/chat.html")); // XXX TODO: Add a default chat room
 fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
@@ -447,6 +446,17 @@ fu.getterer("/classmoderator-v1/[\\w\\.\\-]+", function(req, res) {
 	  res.end(teacher_tpl({
 	      channel: chan,
 		  roomcl: roomcl,
+	    }));
+});
+
+fu.getterer("(/student|/teacher)", function(req, res) { // Match either student or teacher URL
+	var path = url.parse(req.url).pathname.split("/")[1];
+	sys.puts('landing page path: ' + path);
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var landing_tpl = nTPL("./templates/epoch-landing.html");
+	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // V1
+	  res.end(landing_tpl({
+	      who: path,
 	    }));
 });
 

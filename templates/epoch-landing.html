@@ -1,0 +1,95 @@
+{%set name landing-jqm %}
+{%set args who %}
+
+{%extends 'boilerplate-jqm' %}
+
+{%block 'title' %}Welcome to EpochEDU : {%= who%}{%/block %}
+
+{%block 'body-scripts' %}
+<script type="text/javascript" src="/static/js/jqModal.js"></script>
+<link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+<script type="text/javascript">
+		Shadowbox.init({
+	    handleOversize: "drag",
+		overlayColor: "#330099",
+		overlayOpacity: "0.75",
+	    modal: true,
+		displayNav:         true,
+		handleUnsupported:  "link",
+		autoplayMovies:     true,
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		// Change all the href links for classrooms if this is a teacher
+		if (isTeacher()) {
+			$('#openchannels').find('a[href]').each(function() {
+				$(this).attr('href', $(this).attr('href').replace('class', 'classmoderator')); // XXX Hardcode route
+			});
+		}
+		
+		// add any existing channels into the list and refresh the list
+		$('#openchannels').listview();
+	});
+</script>
+<script type="text/javascript">
+	/* XXX Refactor this into epoch-client.js */
+	function getChannel() {
+		return 'landing';
+	}
+	function isTeacher() {
+		return ('{%= who%}' == 'student'? false : true);
+	}
+</script>
+<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
+{%/block %}
+{%block 'head' %}
+{%/block %}
+
+{%block 'container' %}
+	<!-- Start of first page -->
+	<div data-role="page" id="chat">
+
+		<div data-role="header" data-id="header" data-position="fixed">
+			<div id="branding">
+				<h1>Welcome, {%= who%}</h1>
+			</div>
+		</div><!-- /header -->
+
+		<div data-role="content">	
+			<div class="ui-grid-A">
+				<div class="ui-block-A">
+					<ul data-role="listview" data-inset="true" data-dividertheme="b" id='openchannels'>
+						<li data-role="list-divider">Open Classrooms<span id='count'></span></li>
+						<li><a rel="external" href="/class/multimedia">Multimedia<span id='studentcount'></span><span id='contentcount'></span></a></li>
+						<li><a rel="external" href="/class/history">History</a><span id='studentcount'></span><span id='contentcount'></span></li>
+						<li><a rel="external" href="/class/spanish">Spanish</a><span id='studentcount'></span><span id='contentcount'></span></li>
+						<li><a rel="external" href="/class/science">Science</a><span id='studentcount'></span><span id='contentcount'></span></li>
+					</ul>
+				</div>
+				<div class="ui-block-B"></div>	   
+			</div>
+		</div><!-- /content -->
+
+		<div data-role="footer" class="footer" data-position="fixed">
+			{* <div data-role="fieldcontain" class="chatinput">
+			    <input type="text" name="name" id="entry" value=""  />
+				<div id="csubmit" data-role="button">Send</div>
+				<div class="right"><a data-icon="gear" data-transition="pop" data-rel="dialog" href="panel" data-theme="a">Options</a></div>
+				<div class="right" style="padding:0px;">Hello, <span id="nick"></span>!</div>
+			</div> 
+			*}
+			<ul class="footernav">
+				<li class="link1 active"><a href="#">Welcome</a></li>
+				<li class="link2"><a href="#">About</a></li>
+				<li class="link3"><a href="#">Sync</a></li>
+				<li class="link5"><a href="/class/Setup" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Setup</a></li>
+			</ul>
+			<div class="footercopy">
+				<p>Powered by Razortooth Communications, LLC</p>
+			</div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+</body>
+{%/block%}
