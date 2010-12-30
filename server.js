@@ -101,8 +101,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces-marvell-v7-b1" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  Teacher UI in progress.  Working on landing page.";
+VERSION = "ces2011-marvell-v8-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight.  MCP work in progress on launchurl.";
 var DEFAULT_CHANNEL = 'default';
 var mem = process.memoryUsage();
 
@@ -136,13 +136,31 @@ function channelFactory() {
 		this.sessions = {};
 		this.createdate = new Date();
 		this.state = channelstates['NOT_IN_CLASS'];
-		this.appendMessage = function (nick, type, text) {
-		var m = { nick: nick
-		   , type: type // See switch statement below
-		   , text: text
-		   , timestamp: (new Date()).getTime()
-		};
+		this.appendMessage = function (nick, type, text, payload) {
+		var m;
+		
+		// 
+		// XXX OK, this is extremely double effort if we already have this nice case statement below
+		// Work this out what is the right thing to do ... I think move this into some kind of standard handler
+		if (type != "mcprequest") {
+			m = { nick: nick
+			   , type: type // See switch statement below
+			   , text: text
+			   , timestamp: (new Date()).getTime()
+			};
+		} else {
+			sys.puts('Received mcprequest with payload - ' + payload);
+			m = { nick: nick
+			   , type: type
+			   , text: text
+			   , payload: payload
+			   , timestamp: (new Date()).getTime()
+			};
+		}
 
+		// MSGDEF
+		// XXX This switch statement seems completely redundant unless we do error checking and preprocessing
+		// XXX I only see a few cases where this is a bit useful
 		switch (type) {
 			case "msg":
 				sys.puts("<" + nick + "> " + text);
@@ -163,6 +181,9 @@ function channelFactory() {
 				break;
 			case "sendviewer":
 				sys.puts(nick + " sendviewer");
+				break;
+			case "mcprequest":
+				sys.puts(nick + " mcprequest");
 				break;
 			case "askquestion":
 				sys.puts(nick + " askquestion");
@@ -661,6 +682,7 @@ fu.get("/send", function (req, res) {
   var text = qs.parse(url.parse(req.url).query).text;
   var type = qs.parse(url.parse(req.url).query).type;
   var chan = qs.parse(url.parse(req.url).query).channel;
+  var payload = qs.parse(url.parse(req.url).query).payload;
   var channel = channels[chan];
   var sessions = channel.sessions;
   if (!chan) { // XXX refactor to use default channel
@@ -696,12 +718,12 @@ fu.get("/send", function (req, res) {
 
   session.poke();
   // sys.puts("/send testing for text value");
-  if (text && text.match(/#startsession/i)) {
-	channel.appendMessage(session.nick, "startsession", text);
+  if (text && text.match(/#startsession/i)) { // XXX Change this, use message type instead
+	channel.appendMessage(session.nick, "startsession", text); 
   } else if (text && text.match(/#endsession/i)) {
-	channel.appendMessage(session.nick, "endsession", text);
-  } else {
-  	channel.appendMessage(session.nick, type, text);
+	channel.appendMessage(session.nick, "endsession", text); // XXX Change this, use message type instead
+  } else { // XXX Catch all
+  	channel.appendMessage(session.nick, type, text, payload);
   }
   res.simpleJSON(200, { rss: mem.rss });
 });

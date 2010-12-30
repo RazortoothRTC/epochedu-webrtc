@@ -152,19 +152,30 @@
 	<div data-role="footer" class="footer" data-position="fixed">
 		<div style="padding-left:15px;">
 						<fieldset>
-							<div data-role="fieldcontain" style="width:250px;">
+							<div data-role="fieldcontain">
 								<select name="contentdelivery" id="contentdelivery" tabindex="-1">
+									<option id="nada" value="-1">Content Commands</option>
 									<option id="preview" value="preview">Preview</option>
 									<option id="sendviewer" value="sendviewer">Send Player</option>
-									<option id="endviewer" value="endviewer" disabled="disabled">End Player</option>
+									<option id="endviewer" value="endviewer">End Player</option>
 									<option id="sendurl" value="sendurl">Send URL</option>
 									<option id="sendlocal" value="sendlocal">Send Local</option>
 									<option id="sync" value="sync">Sync Content</option>
-									<option id="mcpmodestart" value="sync">Start Teacher Control</option>
-									<option id="mcpmodestop" value="sync">Stop Teacher Control</option>
-									<option id="launch" value="sync">Launch Remote App</option>
+									<option id="launchurl" value="launchurl">Launch Remote URL</option>
+									<option id="remoteinstall" value="remoteinstall">Remote Install</option>
 								</select>
-								<button type="submit" data-theme="a" tabindex="-1">Submit</button>
+							</div>
+							<div data-role="fieldcontain" style="width:550px;">
+								<select name="mcpcommands" id="mcpcommands" tabindex="-1">
+									<option id="nada" value="-1">MCP Commands</option>
+									<option id="mcpmodestart" value="mcpmodestart">Control:On</option>
+									<option id="mcpmodestop" value="mcpmodestop">Control:Off</option>
+									<option id="launch" value="launch">Launch Remote App</option>
+									<option id="logoutall" value="logoutall">Logout All in Session</option>
+									<option id="killall" value="killall">Killall non-essential User Apps</option>
+									<option id="logoutall" value="logoutall">Logout All in Session</option>
+									<option id="status" value="status">Get Device Status</option>
+								</select>
 							</div>
 						</fieldset>
 		</div>

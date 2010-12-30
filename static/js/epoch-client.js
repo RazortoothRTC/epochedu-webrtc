@@ -45,6 +45,9 @@ var SHADOWBOX_CONFIG_TITLE = 'Media Player';
 var SHADOWBOX_CONFIG_PLAYER = 'iframe';
 var SHADOWBOX_CONFIG_WIDTH = 800;
 var SHADOWBOX_CONFIG_HEIGHT = 600;
+var MCP_RPC_PORT = '8080';  // Assume MCP runs on localhost
+var MCP_RPC_ENDPOINT = '/rpc';
+
 
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
@@ -391,6 +394,46 @@ function addMessage (from, text, time, _class) {
   Shadowbox.setup(); // XXX Make sure I still need this
 }
 
+function mcpDispatcher(mcpRequest) {
+	if (mcpRequest.apdu) {
+		var mcpResponse = {
+		   apduresp: mcpRequest.ticketid,
+		   sender: CONFIG.id,
+		   status: '<status code, negative for error conditions, 0 for success>',
+		   timestamp: '<isoformat DATETIME>'
+		};
+		
+		// Performan any special handling
+		// For now, all we do is dispatch
+		// MSGDEF - Student MCP Dispatcher
+		alert('Student incoming MCP apdu ' + mcpRequest.apdu);
+		switch(mcpRequest.apdu) {
+			case "1":
+				break;
+			case "2":
+				break;
+			case "3":
+				break;
+			case "4":
+				break;
+			case "5":
+				break;
+			case "6":
+				break;
+			default:
+				alert('Unhandled MCP apdu type:' + mcpRequest.apdu);
+				return false;
+		} 
+		$.getJSON('http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT,
+		  mcpRequest,
+		  function(data) {
+		    alert('sent MCP request type:' + mcpRequest.apdu);
+		  });
+	} else {
+		alert('No readable MCP apdu received');
+	}
+}
+
 function updateRSS () {
   var bytes = parseInt(rss);
   if (bytes) {
@@ -443,6 +486,7 @@ function longPoll (data) {
       //dispatch new messages to their appropriate handlers
 	  // XXX Add message types here
 	  // alert('received ' + message.type);
+	  // MSGDEF - longPoll loop
       switch (message.type) {
         case "msg":
           if(!CONFIG.focus){
@@ -521,7 +565,14 @@ function longPoll (data) {
 				}
 			}
 			break;
-			
+		
+		case "mcprequest":
+			if (($.mobile) && (!teacher)) {
+				alert('mcprequest');
+				mcpDispatcher(message.payload);
+			}
+			break;
+
 		case "askquestion":
 			if ((!first_poll ) && (message.nick != CONFIG.nick)){
 				var question = message.text;
@@ -579,13 +630,32 @@ function send(msg, type) {
   }
 }
 
-//push a viewer out to clients
+//push a viewer out to clients XXX This is identical to send :( 
 function sendviewer(msg, type) {
   if (CONFIG.debug === false) {
     // XXX should be POST
     // XXX should add to messages immediately
     jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
   }
+}
+
+function sendmcprequest(msg, type, apdu) {
+	if (CONFIG.debug === false) {
+		var payload;
+		if ((type) && (apdu)) {
+			// The message format is simple.  The message data is contained in an identifier = APDU name
+			// payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + msg + '"}';
+	    	// payload = {apdu: apdu};
+			// payload = {apdu: apdu, to: '*', requesturi: ' + CONFIG.nick + '@' + CONFIG.id + ', ticketid: '<unique ticket ID>', eval(type): msg};
+			// paylod = { eval(type) : msg};
+			// payload = {apdu: apdu, to: '*', requesturi: CONFIG.nick + '@' + CONFIG.id, ticketid: '<unique ticket ID>', eval("(" + type + ")"): msg};
+			// payload = "{" + type + ": 'xyx' }"; WORKS
+			payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + msg + '"}';
+			alert('sending payload' + payload);
+			// XXX should be POST
+	    	jQuery.get("/send", {id: CONFIG.id, text: msg, type: 'mcprequest', channel: getChannel(), payload: eval("(" + payload + ")")}, function (data) { }, "json");
+		}
+	}
 }
 
 // XXX Can I modify these to continue to work for this demo?
@@ -755,7 +825,7 @@ function launchShadowboxPreview(contenturl) {
 }
 
 function messageDispatcher(cmd, data) {
-	// alert('click sendviewer local ' + msg);
+	// MSGDEF - Teacher MCP UI
 	switch(cmd) {
 		case "msg":
 			if (!util.isBlank(data)) send(data);
@@ -770,7 +840,6 @@ function messageDispatcher(cmd, data) {
 			if (!util.isBlank(data)) sendviewer(data, cmd);
 			break;
 		case "preview":
-			alert('TODO: implement preview handler - busted right now');
 			launchShadowboxPreview(data);
 			break;
 		case "sendlocal":
@@ -788,8 +857,20 @@ function messageDispatcher(cmd, data) {
 		case "launch":
 			alert('TODO: implement launch handler');
 			break;
+		case "launchurl":
+			if (!util.isBlank(data)) sendmcprequest(data, cmd, 1); // XXX HARDCODED APDU
+			break;
+		case "remoteinstall":
+			alert('TODO: implement remoteinstall handler');
+			break;
+		case "killall":
+			alert('TODO: implement killall handler');
+			break;
+		case "logoutall":
+			alert('TODO: implement logoutall handler');
+			break;
 		default:
-			alert('messageDispatch cannot handle outbound message type: ' + msg.type);
+			alert('messageDispatch cannot handle outbound message type: ' + cmd);
 	}
 }
 
@@ -893,12 +974,15 @@ $(document).ready(function() {
 			$('#preview').attr('disabled', 'disabled');
 			$('#sendlocal').attr('disabled', 'disabled');
 			$('#sync').attr('disabled', 'disabled');
-			$("#contentdelivery").change(function (e) {
+			$("#contentdelivery").change(function (e) { // XXX Make sure when this is fixed, fix it for #mcpcommands
 				var cmd;
 				var data;
 				// XXX Should only allow one select, make sure this is the case on #contentdelivery
-				$("select option:selected").each(function () {
-					cmd = $(this).val();
+				// Oddly, the -1 also gets selected, which we don't want.  Use a more refined selector
+				$("select option:selected").each(function () { 
+					if ($(this).val() != '-1') {
+						cmd = $(this).val();
+					}
 			    });
 			    // alert('fired a ' + cmd);
 				// There may be mulitple clicked contents
@@ -927,6 +1011,27 @@ $(document).ready(function() {
 				);
 				*/
 				return false;
+			});
+			$("#mcpcommands").change(function (e) {
+				var cmd;
+				var data;
+				// XXX Should only allow one select, make sure this is the case on #contentdelivery
+				$("select option:selected").each(function () {
+					if ($(this).val() != '-1') {
+						cmd = $(this).val();
+					}
+			    });
+			    // alert('fired a ' + cmd);
+				// There may be mulitple clicked contents
+				$('#cpfieldset').find('input:checked').each( 
+				    function(index) {
+						data = this.value;
+						// alert('checked value is ' + data);
+						messageDispatcher(cmd, data);
+						// this.checked = false;
+						// $(this).attr('checked') = false; // XXX This isn't working
+				    } 
+				);
 			});
 		} else {
 			$("#sendurl").click(function (e) {
