@@ -29,6 +29,9 @@ import os
 import json
 import datetime
 import time
+import urllib
+import types
+
 #
 #
 # MISC Globals
@@ -151,7 +154,8 @@ Todo ...
 	# 	@cherrypy.tools.validate_rpc()
 	@cherrypy.expose
 	@cherrypy.tools.jsonify()
-	def rpc(self, apdu, ticketid, to, requestoruri, launchurl=None, sync=None, kill=None):
+	# def rpc(self, apdu, ticketid, to, requestoruri, launchurl="None", sync="None", kill="None"):
+	def rpc(self, **params):
 		dataLength = int(cherrypy.request.headers.get('Content-Length') or 0)
 		data = {}
 		# apdu = None
@@ -161,13 +165,14 @@ Todo ...
 		else:
 			print "rpc: GET method"
 			data = cherrypy.request.params;
+			# print data
 		jsonReq = {}
 		
-		try:
-			jsonReq = json.load(json.dumps(data))
-			print jsonReq
-		except:
-			print 'couldn not get json data'
+		#try:
+		#	jsonReq = json.load(json.dumps(data))
+		#	print jsonReq
+		# except:
+		#	print 'couldn not get json data'
 		jsonResp = self.standardResponse()
 		
 		# try:
@@ -175,14 +180,16 @@ Todo ...
 		#	print 'apdu received: ' + apdu
 		#except KeyError, e:
 		#	print "Can't get apdu from request" 
-
+		print params
+		apdu = params['apdu']
 		if apdu is None:
 			jsonResp['status'] = -1
 		print 'apdu received: ' + apdu
 		if apdu == '1':
-			jsonResp = self.launchurl(launchurl, None, jsonResp)
+			jsonResp = self.launchurl(params['launchurl'], None, jsonResp)
 		if apdu == '2':
-			jsonResp = self.sync(sync, jsonResp)
+			print 'sync value is ' + params['sync']
+			jsonResp = self.syncContent(params['sync'], jsonResp)
 		if apdu == '3':
 			jsonResp = self.kill(kill, jsonResp)
 		if apdu == '4':
@@ -243,23 +250,58 @@ Todo ...
 		rsp['status'] = 0;
 		return rsp
 		
-	def sync(self, urls, rsp):
+	def syncContent(self, urls, rsp):
 		downloaderrors = []
-		if urls is None: return rsp
-		for contenturl in urls:
+		print "syncing content to device"
+		if urls is None: 
+			print 'urls are empty'
+			return rsp
+		if type(urls) == types.ListType:
+			print "syncing content from list of URLs"
+			for contenturl in urls:
+				try:
+					print "syncing url: " + contenturl
+					webFile = urllib.urlopen(contenturl)
+					filename = contenturl.split('/')[-1]
+					try:
+						
+						localFile = open(self.ANDROID_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
+						print "storing url on " + self.ANDROID_CONTENT_PATH + '/' + filename
+					except IOError, e:
+						localFile = open(self.DESKTOP_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
+						print "storing url on " + self.DESKTOP_CONTENT_PATH + '/' + filename
+					localFile.write(webFile.read())
+					webFile.close()
+					localFile.close()
+				except IOError, e:
+					downloaderrors.append(contenturl)
+					print "errors syncing " + contenturl
+					print e
+		else: # XXX Put this into a function
+			print 'singuar sync'
 			try:
-				webFile = urllib.urlopen(contenturl)
-				localFile = open(ANDROID_CONTENT_PATH, 'w') # XXX Double check the write bits
+				print "syncing single url: " + urls
+				webFile = urllib.urlopen(urls)
+				filename = urls.split('/')[-1]
+				try:
+					localFile = open(self.ANDROID_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
+					print "storing url on " + self.ANDROID_CONTENT_PATH
+				except IOError, e:
+					localFile = open(self.DESKTOP_CONTENT_PATH + '/' + filename, 'w') # XXX Double check the write bits
+					print "storing url on " + self.DESKTOP_CONTENT_PATH + '/' + filename
 				localFile.write(webFile.read())
 				webFile.close()
 				localFile.close()
 			except IOError, e:
-				downloaderrors.append(contenturl)
+				downloaderrors.append(urls)
+				print "errors syncing " + urls
+				print e
 		rsp['downloaderrors'] = downloaderrors
 		if len(downloaderrors) > 0:
 			rsp['status'] = -1;
 		else:
 			rsp['status'] = 0;
+		print "returning from sync"
 		return rsp
 		
 	def kill(self, uri, rsp):
