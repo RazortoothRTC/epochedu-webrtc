@@ -9,13 +9,15 @@ cherrypy_file = "cherrypy.zip"
 cherrypy_url = "https://rage.s3.amazonaws.com/" 
 cherrypy_path = "/sdcard/sl4a/scripts/"
 
-apk_build = "106"
+apk_build = "110"
 apk_file = "ScriptForAndroidTemplate-debug.apk"
 apk_url = "http://174.143.152.74:8080/hudson/job/mcp4android_Build/" + apk_build + "/artifact/script_for_android_template/bin/" + apk_file
 apk_type = 'application/vnd.android.package-archive' # For some reason, this causes a crash, so don't use it
 
-py_file = "mcpservice.py"
-py_url = "http://174.143.152.74:8080/hudson/job/mcp4android_Build/" + apk_build + "/artifact/scripts/" + py_file
+py_build = "110"
+py_pkg_number = py_build + "-20101229"
+py_file = "mcp4android-" + py_pkg_number + ".zip"
+py_url = "http://174.143.152.74:8080/hudson/job/mcp4android_Build/" + py_build + "/artifact/dist/" + py_file
 
 def download(url, file, dest):
 	"""Copy the contents of a file from a given URL
@@ -56,6 +58,6 @@ if __name__ == '__main__':
         unzip_file_into_dir(cherrypy_path, cherrypy_file)
 
 	droid.makeToast('Downloading MCP Service app')
-        install_apk(apk_url)	
+        install_apk(py_url)	
     except IOError, e:
 	print e
