@@ -190,7 +190,7 @@ function logoutSession() {
 function showLogin(channel) {
 	var usertype;
 	setStatusMessage('#loginform', ' ', 'status');
-	$('#waiting').remove();
+	$('#dialog').find('#waiting').remove();
 	$('#loginform').show();
 	if (isTeacher()) usertype = "Teacher's"; else usertype = "Student's";
 	$.mobile.changePage("loginpanel", "slideup");
@@ -534,6 +534,7 @@ function longPoll (data) {
 			if (!first_poll) {
 		 		var contenturl = message.text;
 				// alert('received sendviewerlocal ' + contenturl + ' teacher is ' + teacher + ' firstpoll is ' + first_poll);
+				// XXX Can we catch the exception?
 				if (!teacher) window.open(contenturl);
 			}
 			break;
@@ -545,11 +546,13 @@ function longPoll (data) {
 				if (CONFIG.id) {
 					if (document.jqm) {
 						$('#dialog').jqmHide();
-						$('#waiting').text("");
+						// $('#waiting').text("");
+						$('#dialog').find('#waiting').remove();
 					} else { // XXX We need to do better than this and know what our UI is
 						// $('#loginpanel').
 						$('.ui-dialog').dialog('close'); 
-						$('#waiting').text("");
+						// $('#waiting').text("");
+						$('#dialog').find('#waiting').remove();
 					}
 				}
 			}
@@ -685,7 +688,7 @@ function showWaiting(nick, channel) {
 	$('#loginform').hide();
 	$('#dialog').append('<div id="waiting" class="modalrow"><H2>Hello ' + nick + ' , Waiting for class session: ' 
 	+ getChannel() + ' to begin ...</H2><br><p>When class begins, you will receive instructions \
-	from your teacher on content to view.  Please standby.<br/>');
+	from your teacher on content to view.  Please standby.<br/></div>');
 }
 
 function checkSession(nick) {
@@ -699,6 +702,8 @@ function checkSession(nick) {
 }
 
 function showMobileChat(nick) {
+	$('#dialog').find('#waiting').remove();
+	// $('#waiting').remove();
 	$('.ui-dialog').dialog('close');
 	$(":input:text:visible:first").focus(); 
 }
