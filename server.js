@@ -101,9 +101,12 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v9-b3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  MCP sync works on device and android.  Fix sendviewerlocal.  Fix for duplicate login welcome messages.";
+VERSION = "ces2011-marvell-v9-b4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "Dirty database integration in flight.  MCP sync works on device and android.  \
+	Fix sendviewerlocal.  Should have login fixed, also, did work on longpoll error max \
+	retry which was set too low on android, and added working botMessage sent on server restart.";
 var DEFAULT_CHANNEL = 'default';
+var BOTNICK = "robot"
 var mem = process.memoryUsage();
 
 
@@ -125,9 +128,11 @@ var fu = require("./static/js/fu"),
 var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000 * 5; // XXX 1000ms = 1 s * 60  x 6= 5 minutethis should be configurable
 
-fu.initDB();
+
 var channels = {}; // XXX Load from DB instead!!!
 var channelstates = {'NOT_IN_CLASS': 0, 'IN_CLASS': 1};
+fu.initDB([], broadcastRestart); // XXX empty options, handler
+
 
 function channelFactory() {
 	var channel = new function () {
@@ -227,6 +232,11 @@ function channelFactory() {
     }
   };
 
+  // A Simple wrapper message to broadcast something important from the server
+  this.botMessage = function (text) {
+      this.appendMessage(BOTNICK, 'msg', text); // XXX Until we come up with a new message type, use basic 'msg'
+  }
+
   // clear old callbacks
   // they can hang around for at most 30 seconds.
   setInterval(function () {
@@ -324,7 +334,18 @@ function loadSessions() {
 	return fu.db['sessions'];
 }
 
+function broadcastRestart() {
+	sys.puts('broadcastRestart');
+	fu.db['channels'].forEach(function(key, val) {
+	    console.log('broadcastRestart: Found key: %s, val: %j', key, val);
+		var chan = channels[key];
+		if (chan) {
+			chan.botMessage('Restarted Server');
+		}
+	});
+}
 fu.listen(Number(process.env.PORT || PORT), HOST);
+
 
 //
 // ===============================================
@@ -533,6 +554,7 @@ fu.get("/join", function (req, res) {
   // XXX Cleanup this error handling!!!!!
   if (!channels[chan]) {
 	channels[chan] = channelFactory();
+	sys.puts('channelFactory invoked for @' + chan);
 	fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});
   }
   if (!channels[chan]) {
@@ -574,6 +596,7 @@ fu.get("/rejoin", function (req, res){
 	}
 	
 	if (!channels[chan]) channels[chan] = channelFactory();
+	sys.puts('channelFactory invoked for @' + chan);
 	sessions = channels[chan].sessions;
 	if ((!sessions) || !(sessions[sessionid])) {
 		session = fu.db['sessions'].get(sessionid);
@@ -633,7 +656,7 @@ fu.get("/recv", function (req, res) {
   if (achannel == null) {
 	  // sys.puts("Creating new channel for " + chan);
 	  achannel = channelFactory();
-	  
+	  sys.puts('channelFactory invoked for @' + chan);
 	  if (achannel != null) {
 	  	channels[chan] = achannel;
 		fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});

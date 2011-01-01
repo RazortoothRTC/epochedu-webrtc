@@ -40,7 +40,8 @@ var teacher = false;
 var isInSession = false;
 var EPOCH_COOKIE = "epochedu_cookie";
 var COOKIE_TIMEOUT_IN_MILLIS = 60 * 60 * 1000; // 1 hour 
-var VERIFY_SESSION_INTERVAL_IN_MILLIS = 30000; // 1 hour 
+var VERIFY_SESSION_INTERVAL_IN_MILLIS = 30000; // 1hour 
+var LONG_POLL_ERROR_MAX_RETRY = 10; // 10 retries before logout of session
 var SHADOWBOX_CONFIG_TITLE = 'Media Player';
 var SHADOWBOX_CONFIG_PLAYER = 'iframe';
 var SHADOWBOX_CONFIG_WIDTH = 800;
@@ -459,8 +460,9 @@ var first_poll = true;
 // is being made from the response handler, and not at some point during the
 // function's execution.
 function longPoll (data) {
-  if (transmission_errors > 2) { // XXX Make this more robust and reconnect opportunistically
-    showConnect();
+  if (transmission_errors > LONG_POLL_ERROR_MAX_RETRY) { // XXX Make this more robust and reconnect opportunistically
+    addMessage("", "Too many long poll errors, exceeded " + LONG_POLL_ERROR_MAX_RETRY + ', logout', new Date(), "error");
+	setTimeout(logoutSession, 5000); // If we fail to reconnect, show message and then go to login
     return;
   }
   
@@ -608,10 +610,11 @@ function longPoll (data) {
          , dataType: "json"
          , data: { since: CONFIG.last_message_time, id: CONFIG.id, channel: getChannel() }
          , error: function () {
-             addMessage("", "long poll error. trying again...", new Date(), "error");
+		   	 var retryDuration = transmission_errors * 10*1000;
+             addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
              transmission_errors += 1;
              //don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
-             setTimeout(longPoll, transmission_errors * 10*1000);
+             setTimeout(longPoll, retryDuration);
            }
          , success: function (data) {
              transmission_errors = 0;

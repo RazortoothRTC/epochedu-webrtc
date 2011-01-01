@@ -47,7 +47,7 @@ var fu = exports;
 // XXX Localize these strings?
 var NOT_FOUND = "Not Found\n";
 var INTERNAL_SERVER_ERROR = 'Internal Server Error!  Oh pshaw\n';
-
+var SERVER_RESTART_TIMEOUT = 20000; // 20 Seconds before notification
 function notFound(req, res) {
 	console.log("404 Error - ");
 	fu.staticHandler("templates/learn-simplified-german.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
@@ -90,6 +90,7 @@ fu.initDB = function(options, handler) {
 	var sessions_db = new dirty('sessions.dirty');
 
 	// XXX Refactor into a db setup fucntion
+	// channels_db.on('load', handler);
 	channels_db.on('load', function() {
 		console.log("channel_db is loaded using dirty");
 	});
@@ -106,6 +107,7 @@ fu.initDB = function(options, handler) {
 	});
 	fu.db['channels'] = channels_db;
 	fu.db['sessions'] = sessions_db;
+	setTimeout(handler, SERVER_RESTART_TIMEOUT); // Give the existing channels time to be recreated
 }
 
 fu.get = function (path, handler) {
