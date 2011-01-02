@@ -101,10 +101,10 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v9-b4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "Dirty database integration in flight.  MCP sync works on device and android.  \
-	Fix sendviewerlocal.  Should have login fixed, also, did work on longpoll error max \
-	retry which was set too low on android, and added working botMessage sent on server restart.";
+VERSION = "ces2011-marvell-v10-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = "MCP command work in progress.  MCPmodestart/stop is in progress. \
+		Verify if nick requested == BOTNICK (don't allow). \
+";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
 var mem = process.memoryUsage();
@@ -250,7 +250,7 @@ function channelFactory() {
 } // channelFactory
 	
 function sessionFactory (nick, chan) {
-  if (nick.length > 50) return null;
+  if ((nick.length > 50) || (nick == BOTNICK)) return null;
   if (/[^\w_\-^!]/.exec(nick)) return null;
   
   var channel = channels[chan];
@@ -733,7 +733,7 @@ fu.get("/send", function (req, res) {
     return;
   }
   
-  if (!text) {
+  if ((type == "msg") && (!text)) {
 	sys.puts('Error 400: empty message not allowed');
     res.simpleJSON(400, { error: "empty message not allowed" });
     return;

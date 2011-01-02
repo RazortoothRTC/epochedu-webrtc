@@ -404,7 +404,7 @@ function mcpDispatcher(mcpRequest) {
 		   timestamp: '<isoformat DATETIME>'
 		};
 		
-		// Performan any special handling
+		// Perform any special handling
 		// For now, all we do is dispatch
 		// MSGDEF - Student MCP Dispatcher
 		// alert('Student incoming MCP apdu ' + mcpRequest.apdu);
@@ -662,9 +662,12 @@ function sendmcprequest(msg, type, apdu) {
 			// paylod = { eval(type) : msg};
 			// payload = {apdu: apdu, to: '*', requesturi: CONFIG.nick + '@' + CONFIG.id, ticketid: '<unique ticket ID>', eval("(" + type + ")"): msg};
 			// payload = "{" + type + ": 'xyx' }"; WORKS
-			payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + msg + '"}';
+			var mcpdata = msg;
+			if (!mcpdata) mcpdata = [];
+			payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + mcpdata + '"}';
 			// alert('sending payload' + payload);
 			// XXX should be POST
+			// XXX transmitting via send may not be the right idea ... or, don't put any data into text other than chat 
 	    	jQuery.get("/send", {id: CONFIG.id, text: msg, type: 'mcprequest', channel: getChannel(), payload: eval("(" + payload + ")")}, function (data) { }, "json");
 		}
 	}
@@ -863,10 +866,12 @@ function messageDispatcher(cmd, data) {
 			if (!util.isBlank(data)) sendmcprequest(data, cmd, 2); // XXX HARDCODED APDU
 			break;
 		case "mcpmodestart":
-			alert('TODO: implement mcpmodestart handler');
+			// alert('mcpmodestart');
+			sendmcprequest(data, cmd, 4); // XXX HARDCODED APDU
 			break;
 		case "mcpmodestop":
-			alert('TODO: implement mcpmodestop handler');
+			// alert('mcpmodestop');
+			sendmcprequest(data, cmd, 5); // XXX HARDCODED APDU
 			break;
 		case "launch":
 			alert('TODO: implement launch handler');
@@ -993,7 +998,7 @@ $(document).ready(function() {
 				var data;
 				// XXX Should only allow one select, make sure this is the case on #contentdelivery
 				// Oddly, the -1 also gets selected, which we don't want.  Use a more refined selector
-				$("select option:selected").each(function () { 
+				$("#contentdelivery option:selected").each(function () { 
 					if ($(this).val() != '-1') {
 						cmd = $(this).val();
 					}
@@ -1005,48 +1010,38 @@ $(document).ready(function() {
 						data = this.value;
 						// data.push(this.value);
 						// alert('checked value is ' + data);
-						messageDispatcher(cmd, data);
+						
 						// this.checked = false;
 						// $(this).attr('checked') = false; // XXX This isn't working
 				    } 
 				);
-
-				return false;
-				
-			 
-				// alert($(this).find('input:selected').val()
-				/*
-				$('#resources').find('input:checked').each( 
-				    function(index) {
-						var msg = this.value;
-						// alert('click sendviewer local ' + msg);
-					    if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
-						this.checked = false;
-				    } 
-				);
-				*/
+				// XXX Handle multiple content selects
+				messageDispatcher(cmd, data); // XXX These commands only work with content
+		
 				return false;
 			});
 			$("#mcpcommands").change(function (e) {
 				var cmd;
 				var data;
 				// XXX Should only allow one select, make sure this is the case on #contentdelivery
-				$("select option:selected").each(function () {
+				$("#mcpcommands option:selected").each(function() {
+					// alert('selected ' + $(this).val());
 					if ($(this).val() != '-1') {
 						cmd = $(this).val();
 					}
 			    });
 			    // alert('fired a ' + cmd);
 				// There may be mulitple clicked contents
+				// XXX Do we need this for MCP commands?
 				$('#cpfieldset').find('input:checked').each( 
 				    function(index) {
 						data = this.value;
 						// alert('checked value is ' + data);
-						messageDispatcher(cmd, data);
 						// this.checked = false;
 						// $(this).attr('checked') = false; // XXX This isn't working
 				    } 
 				);
+				messageDispatcher(cmd, data);
 			});
 		} else {
 			$("#sendurl").click(function (e) {
