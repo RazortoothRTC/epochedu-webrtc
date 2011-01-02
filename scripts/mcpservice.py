@@ -82,9 +82,9 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r4-b1' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r4-b2' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress.  mcpmodestart, mcpmodestop are the items in progress.</P>
+	<P>MCP Work in progress.  mcpmodestart, mcpmodestop are the items in progress.  Fix missing self reference on kill.</P>
 	"""
 	ASCII_LOGO = """
 	@#@#++@@@@@@@@@@@
@@ -316,7 +316,7 @@ Todo ...
 		# 
 		print "mcpmodestart invoked"
 		for packagename in self.PACKAGE_BLACKLIST:
-			kill(packagename, rsp)
+			self.kill(packagename, rsp)
 			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
 		rsp['status'] = 0;
 		return rsp
