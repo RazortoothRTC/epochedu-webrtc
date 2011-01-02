@@ -265,8 +265,9 @@ function updateUserStatus(nick, timestamp) {
 }
 
 function isUserInSession() {
+	// alert('checking if user is in session');
 	for (var i = 0; i < nicks.length; i++) // XXX Put this data into a DB so lookup is quick
-	    if (nicks[i] == nick) return true;
+	    if (nicks[i] == CONFIG.nick) return true;
 	return false;
 }
 //handles another person joining chat
@@ -545,7 +546,7 @@ function longPoll (data) {
 			// alert('started a class');
 			isInSession = true;
 			if (!teacher) {
-				if (CONFIG.id) {
+				if (isUserInSession()) {
 					if (document.jqm) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
@@ -557,6 +558,8 @@ function longPoll (data) {
 						$('#dialog').find('#waiting').remove();
 					}
 				}
+			} else {
+				// DO something in case there are two teachers
 			}
 			break;
 		
@@ -973,6 +976,7 @@ $(document).ready(function() {
 
 		$(".start").click(function () {
 			var msg = "#startsession";
+			// alert('go startsession click');
 		    if (!util.isBlank(msg)) send(msg);
 			return false;
 		});

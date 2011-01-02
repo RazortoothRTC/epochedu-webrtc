@@ -101,9 +101,9 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v10-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v10-b3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.  MCPmodestart/stop is in progress. \
-		Verify if nick requested == BOTNICK (don't allow). \
+		Fix for broken startsession is in and tested. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
