@@ -82,9 +82,9 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r3-b2' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r4-b1' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>Current work is getting initial MCP connector activated.  sync works on device and creates directory</P>
+	<P>MCP Work in progress.  mcpmodestart, mcpmodestop are the items in progress.</P>
 	"""
 	ASCII_LOGO = """
 	@#@#++@@@@@@@@@@@
@@ -112,9 +112,12 @@ class MCPService(object):
 	|_|_|_
 	"""
 	COPYRIGHT = 'Copyright 2011 Razortooth Communications, LLC'
-	MCP_SERVER_URI = ['http://192.168.1.148:5000/student'] # XXX This should be a list
-	PACKAGE_BLACKLIST = ['com.android.launcher2', # The Dock Launcher
+	MCP_SERVER_URI = ['http://192.168.1.148:5000/student'] # XXX This should be a list, DEMOSETTING
+	PACKAGE_BLACKLIST = ['com.android.browser', # Android Browser
+						'com.android.launcher2', # The Dock Launcher
 						]
+	PACKAGE_RESTORELIST = []
+	
 	def __init__(self):
 		try:
 			self.droid = android.Android()
@@ -304,19 +307,27 @@ Todo ...
 		self.droid.forceStopPackage(uri) # Does this have return value?
 		self.droid.makeToast('Killed ' + uri)
 		rsp['status'] = 0;
+		return rsp
 	
 	def mcpmodestart(self, rsp):
 		# XXX Put in list of packages to kill
 		# check if we can get a list of running activities
 		# Also, is there a way to disable the system softkeys (HOME, MENU, Back)
 		# 
+		print "mcpmodestart invoked"
 		for packagename in self.PACKAGE_BLACKLIST:
 			kill(packagename, rsp)
+			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
 		rsp['status'] = 0;
+		return rsp
 	
 	def mcpmodestop(self, rsp):
 		# XXX Add code to relaunch killed apps
+		print "mcpmodestop invoked"
+		for packagename in self.PACKAGE_RESTORELIST:
+			print "attempting to restore " + packagename
 		rsp['status'] = 0;
+		return rsp
 
 def mcpServiceConnector():
 	print "here 1"
@@ -330,6 +341,7 @@ def mcpServiceConnector():
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
+	# print svc.ASCII_LOGO
 	print svc.ASCII_LOGO2
 	print svc.COPYRIGHT
 	
