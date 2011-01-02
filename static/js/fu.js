@@ -315,6 +315,7 @@ fu.mime = {
           , ".f77"   : "text/x-fortran"
           , ".f90"   : "text/x-fortran"
           , ".flv"   : "video/x-flv"
+		  , ".apk"	 : "application/vnd.android.package-archive"
           , ".for"   : "text/x-fortran"
           , ".gem"   : "application/octet-stream"
           , ".gemspec" : "text/x-script.ruby"
