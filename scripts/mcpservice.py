@@ -31,12 +31,14 @@ import datetime
 import time
 import urllib
 import types
+import threading
 
 #
 #
 # MISC Globals
 #
 #
+ismcpmodeon = False # Stupid global for testing whether we got an mcpmodestart
 
 # 
 #
@@ -72,19 +74,55 @@ def check_access(default=False):
 		raise cherrypy.HTTPError(401)
 	newauthtools.check_access = cherrypy.Tool('before_request_body', check_access)
 
+#
+# Global config
+#
 _cp_config = {'tools.sessions.on': True}
+MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
+			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'],
+			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
+			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
+			'ASCII_LOGO' : """
+			@#@#++@@@@@@@@@@@
+			@+++++++#@@+@@@@@
+			@++++@@#+@@,+@@@@
+			@#++@;,::;+,:@@@@
+			@#++@@@@@#',,:+@@
+			@@++@@@@@@@,;@:@@
+			@@#+#@@@@@@,'@@@@
+			@@@++@@@@@+,@@@@@
+			@@@@+@@@@@,;@@@@@
+			@@@@@+@@@#:@@@@@#
+			@@@@@@#@@:@@@@@@@
+			@@@@@@@##@@@@@@@@
+			@@@@@@@@@@@@@@@@@
+			""",
+			'ASCII_LOGO2' : """
+			|~) _ _  _ .__|_ _  _ _|_|_ 
+			|~\(_|/_(_)|  | (_)(_) | | |
+
+			|~ _ ._ _ ._ _    ._ o _ _ _|_o _ ._  _   
+			|_(_)| | || | ||_|| ||(_(_| | |(_)| |_\)  
+
+			| | |~
+			|_|_|_
+			""",
+			'COPYRIGHT' : 'Copyright 2011 Razortooth Communications, LLC'
+			  }
 
 class MCPService(object):
 	droid = None
+	mcpmodeison = False
+	
 	#
 	# CONFIG
 	# 
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r4-b4' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r4-b6' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress.  Notify user works</P>
+	<P>MCP Work in progress.  Working on mcp student watchdog, putting it all together into one service</P>
 	"""
 	ASCII_LOGO = """
 	@#@#++@@@@@@@@@@@
@@ -125,6 +163,10 @@ class MCPService(object):
 		except:
 			print 'Exception initializing Android'
 		print 'MCPService init completed'
+		self.function = mcploop
+		self.delay = 10 # seconds
+		self.next_run = time.time() + self.delay
+		self.t = threading.Timer(10.0, mcploop).start()
 		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
@@ -321,6 +363,7 @@ Todo ...
 		# Also, is there a way to disable the system softkeys (HOME, MENU, Back)
 		# 
 		print "mcpmodestart invoked"
+		ismcpmodeon = True
 		for packagename in self.PACKAGE_BLACKLIST:
 			self.kill(packagename, rsp)
 			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
@@ -331,6 +374,7 @@ Todo ...
 	def mcpmodestop(self, rsp):
 		# XXX Add code to relaunch killed apps
 		print "mcpmodestop invoked"
+		ismcpmodeon = False
 		for packagename in self.PACKAGE_RESTORELIST:
 			print "attempting to restore " + packagename
 		rsp['status'] = 0;
@@ -348,29 +392,76 @@ Todo ...
 		if title is not None:
 			self.droid.notify(title, message)
 
+def mcploop():
+	print "mcploop"
+	loopcount = 0
+	droid = None
+	tickinterval = MCP_CONFIG['MCP_TICK_INTERVAL']
+	try:
+		droid = android.Android()
+	except:
+		pass
 		
+	while True:
+		time.sleep(0.3)
+		print "MCP Teachers Assistant is waking up to check on you, heartbeat #%d"%(loopcount)
+		# XXX We may want to put some housekeeping work here
+		if ismcpmodeon:
+			if droid is not None:
+				pkgs = droid.getRunningPackages()[1] # XXX ugly ... 
+				if 'com.android.launcher' in pkgs:
+					droid.makeToast("Teacher's Assistant sending user back to class")
+					droid.ttsSpeak("Please return to class")
+					droid.forceStopPackage('com.android.launcher')
+					# droid.view(MCP_CONFIG['MCP_SERVER_URI'][0], "text/html") # XXX These calls block :(, so page better load
+					droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], None, None, False)
+		loopcount = loopcount + 1
+		time.sleep(tickinterval)
+			
 def mcpServiceConnector():
 	print "here 1"
-	svc = MCPService()
+	# svc = MCPService()
 	print "here 2"
-	droid = svc.droid
-	mcpconnectorurl = svc.MCP_SERVER_URI[0]
+	# droid = svc.droid
+	droid = None
+	try:
+		droid = android.Android()
+	except:
+		print "running in desktop mode"
+	# mcpconnectorurl = svc.MCP_SERVER_URI[0]
+	mcpconnectorurl = MCP_CONFIG['MCP_SERVER_URI'][0]
+	
 	try:
 		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
-		droid.view(mcpconnectorurl, 'text/html')
+		# droid.view(mcpconnectorurl, 'text/html')
+		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], None, None, False)
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
 	# print svc.ASCII_LOGO
-	print svc.ASCII_LOGO2
-	print svc.COPYRIGHT
+	# print svc.ASCII_LOGO2
+	# print svc.COPYRIGHT
+	print MCP_CONFIG['ASCII_LOGO2']
+	print MCP_CONFIG['COPYRIGHT']
+	# t = threading.Timer(10.0, mcploop)
+	# t.daemon = True
+	# t.start()
 	
 def run():
-	
+	cherrypy.tree.mount(MCPService())
 	cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
 	cherrypy.config.update({'server.socket_host':'127.0.0.1'})
+	if hasattr(cherrypy.engine, "signal_handler"):
+	    cherrypy.engine.signal_handler.subscribe()
+	if hasattr(cherrypy.engine, "console_control_handler"):
+	    cherrypy.engine.console_control_handler.subscribe()
+	
+	# cherrypy.engine.start(blocking=False)
+	# cherrypy.quickstart()
 	cherrypy.engine.subscribe('start', mcpServiceConnector, priority=90)
-	cherrypy.quickstart(MCPService(), '/')
+	# cherrypy.quickstart(MCPService(), '/')
+	cherrypy.engine.start()
+	# threading.Timer(10.0, mcploop).start()
 	cherrypy.engine.block()
 
 if __name__ == '__main__':
