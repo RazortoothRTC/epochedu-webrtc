@@ -82,9 +82,9 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r4-b2' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r4-b4' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress.  mcpmodestart, mcpmodestop are the items in progress.  Fix missing self reference on kill.</P>
+	<P>MCP Work in progress.  Notify user works</P>
 	"""
 	ASCII_LOGO = """
 	@#@#++@@@@@@@@@@@
@@ -114,7 +114,8 @@ class MCPService(object):
 	COPYRIGHT = 'Copyright 2011 Razortooth Communications, LLC'
 	MCP_SERVER_URI = ['http://192.168.1.148:5000/student'] # XXX This should be a list, DEMOSETTING
 	PACKAGE_BLACKLIST = ['com.android.browser', # Android Browser
-						'com.android.launcher2', # The Dock Launcher
+						'com.android.launcher', # The Dock Launcher
+						'com.android.settings', # Settings
 						]
 	PACKAGE_RESTORELIST = []
 	
@@ -203,7 +204,10 @@ Todo ...
 			pass
 		jsonResp = self.prepareResponse(jsonReq, jsonResp)
 		return jsonResp
-		
+
+	#
+	# MCP messsage factories
+	# 
 	def prepareResponse(self, req, res):
 		try:
 			res['ticketid'] = req['ticketid'];
@@ -231,11 +235,9 @@ Todo ...
 		   'status': '<status code, negative for error conditions, 0 for success>'
 		}
 			
-#
-#
-# MCP apdu Handlers
-#
-#
+	#
+	# MCP apdu Handlers
+	#
 	def launchurl(self, aurl, amime, rsp):
 		if aurl is None: rsp.status = -1
 		if amime is None:
@@ -287,7 +289,11 @@ Todo ...
 			except IOError, e:
 				localFile = open(dpath + '/' + filename, 'wa') # XXX Double check the write bits
 				print 'storing url on ' + dpath + '/' + filename
-			localFile.write(webFile.read())
+			try:
+				localFile.write(webFile.read())
+				self.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Sync'd")
+			except IOError, e:
+				print 'error storing to ' + apath
 			webFile.close()
 			localFile.close()
 		except IOError, e:
@@ -319,6 +325,7 @@ Todo ...
 			self.kill(packagename, rsp)
 			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
 		rsp['status'] = 0;
+		self.notifyUser("Starting Teacher Control Mode")
 		return rsp
 	
 	def mcpmodestop(self, rsp):
@@ -327,8 +334,21 @@ Todo ...
 		for packagename in self.PACKAGE_RESTORELIST:
 			print "attempting to restore " + packagename
 		rsp['status'] = 0;
+		self.notifyUser("Ending Teacher Control Mode")
 		return rsp
+	
+	#
+	# MCP Utility Methods
+	# 
+	def notifyUser(self, message, title=None):
+		print message
+		self.droid.makeToast(message)
+		self.droid.ttsSpeak(message)
+		
+		if title is not None:
+			self.droid.notify(title, message)
 
+		
 def mcpServiceConnector():
 	print "here 1"
 	svc = MCPService()
