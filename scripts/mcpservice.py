@@ -83,6 +83,7 @@ MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content',
 			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider/sdcard/content", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
+			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'], 
 			'ASCII_LOGO' : """
 			@#@#++@@@@@@@@@@@
 			@+++++++#@@+@@@@@
@@ -121,9 +122,9 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r5-b1-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r5-b2-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress. Added first rev of contentpullsync.  RPC needs to still fix handling of JSON call.</P>
+	<P>MCP Work in progress. Added functional contentpullsync for DT and droid. RPC needs to still fix handling of JSON call.</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
 	ASCII_LOGO = """
@@ -204,13 +205,28 @@ Todo ...
 		print params
 		channel = params['channel']
 		jsoncallback = params['jsoncallback']
+		results = []
+		fileExtList = MCP_CONFIG['VALID_FILE_EXTENSIONS']
+		channelpath = None
+		contentrepourl = None
+		# XXX Need a better way to test droidness
+		try:
+			droid = android.Android()
+			channelpath = MCP_CONFIG['ANDROID_CONTENT_PATH'] + '/' + channel
+			contentrepourl = MCP_CONFIG['CONTENT_REPO_LOCAL_URL']
+		except:
+			channelpath = MCP_CONFIG['DESKTOP_CONTENT_PATH'] + '/' + channel
+			contentrepourl = 'file://'
 		
+			 
 		if channel is not None:
 			print "/contentsyncpull received request for channel " + channel
+			print "using path " + channelpath + " to find content with these extensions: " + json.dumps(fileExtList)
+			results = self.getlocalcontentsyncurl(channelpath, contentrepourl, fileExtList)
 		else:
-			print "/contentsyncpull didn't receive channel parameter"
+			print "/contentsyncpull didn't receive channel parameter, no content to return"
 		# Dummy fixture
-		results = ["http://192.168.1.148:5000/content/foo/1.jpg","http://192.168.1.148:5000/content/foo/108942.jpg","http://192.168.1.148:5000/content/foo/116136642_1a928c013a.jpg","http://192.168.1.148:5000/content/foo/2.jpg","http://192.168.1.148:5000/content/foo/2010-09-29%2016.58.08.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-1.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-2.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan.jpg","http://192.168.1.148:5000/content/foo/25938_PE103626_S4.jpg","http://192.168.1.148:5000/content/foo/310.jpg","http://192.168.1.148:5000/content/foo/3946055_f67b05180b_o.jpg","http://192.168.1.148:5000/content/foo/6a4a64a35510f0e8.jpg","http://192.168.1.148:5000/content/foo/72970129_fa08a7a531.jpg","http://192.168.1.148:5000/content/foo/98993461_593c72d2dc_o.jpg"]
+		# results = ["http://192.168.1.148:5000/content/foo/1.jpg","http://192.168.1.148:5000/content/foo/108942.jpg","http://192.168.1.148:5000/content/foo/116136642_1a928c013a.jpg","http://192.168.1.148:5000/content/foo/2.jpg","http://192.168.1.148:5000/content/foo/2010-09-29%2016.58.08.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-1.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-2.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan.jpg","http://192.168.1.148:5000/content/foo/25938_PE103626_S4.jpg","http://192.168.1.148:5000/content/foo/310.jpg","http://192.168.1.148:5000/content/foo/3946055_f67b05180b_o.jpg","http://192.168.1.148:5000/content/foo/6a4a64a35510f0e8.jpg","http://192.168.1.148:5000/content/foo/72970129_fa08a7a531.jpg","http://192.168.1.148:5000/content/foo/98993461_593c72d2dc_o.jpg"]
 		jsonResp = json.dumps({'resultsCount' : len(results), 'results': results})
 		return jsoncallback + '(' + jsonResp + ');'
 		
@@ -408,6 +424,15 @@ Todo ...
 		
 		if title is not None:
 			self.droid.notify(title, message)
+	
+	def getlocalcontentsyncurl(self, channelpath, contentrepourl, fileExtList):
+		filelist = os.listdir(channelpath)
+		urllist = []
+		
+		for f in filelist:
+			if os.path.isfile(os.path.join(channelpath, f)) and os.path.splitext(f)[1] in fileExtList:
+				urllist.append(contentrepourl + channelpath + "/" + f)
+		return urllist
 
 def mcploop():
 	print "mcploop"
