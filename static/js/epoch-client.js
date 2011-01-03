@@ -48,7 +48,7 @@ var SHADOWBOX_CONFIG_WIDTH = 800;
 var SHADOWBOX_CONFIG_HEIGHT = 600;
 var MCP_RPC_PORT = '8080';  // Assume MCP runs on localhost
 var MCP_RPC_ENDPOINT = '/rpc';
-
+var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
 
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
@@ -426,9 +426,9 @@ function mcpDispatcher(mcpRequest) {
 				alert('Unhandled MCP apdu type:' + mcpRequest.apdu);
 				return false;
 		} 
-		$.getJSON('http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT,
+		$.getJSON('http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT + '?jsoncallback=?',
 		  mcpRequest,
-		  function(data) {
+		  function(data, textStatus) {
 		    // alert('sent MCP request type:' + mcpRequest.apdu);
 			// XXX Should report back some status here
 		  });
@@ -1047,6 +1047,37 @@ $(document).ready(function() {
 				);
 				messageDispatcher(cmd, data);
 			});
+			$('#sync').live('pageshow',function(event, ui){
+				// Get the sync content list
+				var $thispage = $(this);
+				$.getJSON('http://localhost:' + MCP_RPC_PORT  + SYNC_FOLDER_ENDPOINT + '?jsoncallback=?',
+				  { 
+					channel: getChannel(),
+				  },
+				  function(data, textStatus) {
+					if ((data.resultsCount) && (data.resultsCount > 0)) {
+						alert('got syncfolder');
+						var $ul = $("<ul>");
+						$thispage.find("div[data-role=content] ul").detach();  // remove the existing ul
+						$thispage.find("div[data-role=content]").append($ul);  // attach the new ul
+						// var $contentarea = $('#nocontent').hide().parent();
+						var contentlist = data.results;
+						// $contentarea.append('<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">');
+				    	for (var i = 0; i < contentlist.length; i++) {
+							var tmp = contentlist[i].split('/');
+							var filename = tmp[tmp.length-1];
+							$ul.append('<li><a rel="external" href="javascript:void(0);" onclick="window.open(\''+ contentlist[i] + '\');">' + filename + '</a></li>');
+							// $contentarea.append('<li><a rel="external" href="' + contentlist[i] + '">' + filename + '</a></li>');
+						}
+						$ul.listview({
+						       "inset": true
+						});
+						// $contentarea.append('</ul>');
+						// $contentarea.listview();
+					} // XXX Should give some feedback if no content available
+				  });
+			});
+			
 		} else {
 			$("#sendurl").click(function (e) {
 				$('#resources').find('input:checked').each( 

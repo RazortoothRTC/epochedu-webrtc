@@ -130,7 +130,7 @@
 			<ul class="footernav">
 				<li class="link1 active"><a href="#">Chat</a></li>
 				<li class="link2"><a href="#">Apps</a></li>
-				<li class="link3"><a href="#">Sync</a></li>
+				<li class="link3"><a href="#sync">Sync</a></li>
 				<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
 			</ul>
 			<div class="footercopy">
@@ -139,8 +139,7 @@
 		</div><!-- /footer -->
 	</div><!-- /page -->
 
-	<!-- XXX What is the point of this Page 2 code???? Really? Remove it... -->
-	<!-- Start of second page -->
+	<!-- Start of second page - APPS -  -->
 	<div data-role="page" id="lessons">
 		<form action="#" method="get">
 		<div data-role="header" data-id="header" data-position="fixed">
@@ -189,15 +188,19 @@
 	</div><!-- /page -->
 	
 	
-	<!-- Start of second page -->
-	<div data-role="page" id="attendance">
+	<!-- Start of Third  page - SYNC -->
+	<div data-role="page" id="sync">
 
 		<div data-role="header" data-position="fixed">
-			<h1>Attendance</h1>
+			<h1>Content Sync Folder</h1>
 		</div><!-- /header -->
 
-		<div data-role="content">	
-			<p>Attendance</p>	
+		<div data-role="content">
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" id="contentsyncfolder">
+				<li data-role="list-divider">Contents in folder for classroom: {%= channel%}</li>
+				<li>No Content Available</li>
+			</ul>
+
 		</div><!-- /content -->
 
 		<div data-role="footer" class="footer" data-position="fixed">
