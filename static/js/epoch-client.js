@@ -1056,14 +1056,13 @@ $(document).ready(function() {
 				  },
 				  function(data, textStatus) {
 					if ((data.resultsCount) && (data.resultsCount > 0)) {
-						alert('got syncfolder');
 						var $ul = $("<ul>");
 						$thispage.find("div[data-role=content] ul").detach();  // remove the existing ul
 						$thispage.find("div[data-role=content]").append($ul);  // attach the new ul
-						// var $contentarea = $('#nocontent').hide().parent();
+
 						var contentlist = data.results;
-						// $contentarea.append('<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">');
-				    	for (var i = 0; i < contentlist.length; i++) {
+						$ul.append('<li data-role="list-divider">Contents in folder for classroom: ' + getChannel() + '</li>');
+						for (var i = 0; i < contentlist.length; i++) {
 							var tmp = contentlist[i].split('/');
 							var filename = tmp[tmp.length-1];
 							$ul.append('<li><a rel="external" href="javascript:void(0);" onclick="window.open(\''+ contentlist[i] + '\');">' + filename + '</a></li>');
