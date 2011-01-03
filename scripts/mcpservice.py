@@ -81,6 +81,7 @@ _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
 			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'],
 			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
+			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider/sdcard/content", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			'ASCII_LOGO' : """
 			@#@#++@@@@@@@@@@@
@@ -120,10 +121,11 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r4-b6' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r5-b1-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress.  Working on mcp student watchdog, putting it all together into one service</P>
+	<P>MCP Work in progress. Added first rev of contentpullsync.  RPC needs to still fix handling of JSON call.</P>
 	"""
+	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
 	ASCII_LOGO = """
 	@#@#++@@@@@@@@@@@
 	@+++++++#@@+@@@@@
@@ -163,10 +165,9 @@ class MCPService(object):
 		except:
 			print 'Exception initializing Android'
 		print 'MCPService init completed'
-		self.function = mcploop
-		self.delay = 10 # seconds
-		self.next_run = time.time() + self.delay
-		self.t = threading.Timer(10.0, mcploop).start()
+		# XXX Put t into a shutdown hook so it gets stopped or canceled
+		# XXX Uncomment after we are done developing UI
+		# self.t = threading.Timer(10.0, mcploop).start()
 		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
@@ -190,13 +191,29 @@ Todo ...
 		raise SystemExit(0)
 	exit.exposed = True
 
-	def testviewcraigslist(self):
-		aURL = 'http://craigslist.com'
-		aMIME = 'text/html'
-		droid.view(aURL, aMIME) 
-		print "droid view launched"
-	testviewcraigslist.exposed = True
-	
+	# XXX Test Route, remove
+	@cherrypy.expose
+	@cherrypy.tools.jsonify()
+	def testjson1(self):
+		jsonResp = {'foo': 1, 'bar': 'b'}
+		return jsonResp
+		
+	@cherrypy.expose
+	# @cherrypy.tools.jsonify()
+	def contentsyncpull(self, **params):
+		print params
+		channel = params['channel']
+		jsoncallback = params['jsoncallback']
+		
+		if channel is not None:
+			print "/contentsyncpull received request for channel " + channel
+		else:
+			print "/contentsyncpull didn't receive channel parameter"
+		# Dummy fixture
+		results = ["http://192.168.1.148:5000/content/foo/1.jpg","http://192.168.1.148:5000/content/foo/108942.jpg","http://192.168.1.148:5000/content/foo/116136642_1a928c013a.jpg","http://192.168.1.148:5000/content/foo/2.jpg","http://192.168.1.148:5000/content/foo/2010-09-29%2016.58.08.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-1.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-2.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan.jpg","http://192.168.1.148:5000/content/foo/25938_PE103626_S4.jpg","http://192.168.1.148:5000/content/foo/310.jpg","http://192.168.1.148:5000/content/foo/3946055_f67b05180b_o.jpg","http://192.168.1.148:5000/content/foo/6a4a64a35510f0e8.jpg","http://192.168.1.148:5000/content/foo/72970129_fa08a7a531.jpg","http://192.168.1.148:5000/content/foo/98993461_593c72d2dc_o.jpg"]
+		jsonResp = json.dumps({'resultsCount' : len(results), 'results': results})
+		return jsoncallback + '(' + jsonResp + ');'
+		
 	# 	@cherrypy.tools.validate_rpc()
 	@cherrypy.expose
 	@cherrypy.tools.jsonify()
@@ -428,7 +445,6 @@ def mcpServiceConnector():
 		droid = android.Android()
 	except:
 		print "running in desktop mode"
-	# mcpconnectorurl = svc.MCP_SERVER_URI[0]
 	mcpconnectorurl = MCP_CONFIG['MCP_SERVER_URI'][0]
 	
 	try:
@@ -438,14 +454,9 @@ def mcpServiceConnector():
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
-	# print svc.ASCII_LOGO
-	# print svc.ASCII_LOGO2
-	# print svc.COPYRIGHT
 	print MCP_CONFIG['ASCII_LOGO2']
 	print MCP_CONFIG['COPYRIGHT']
-	# t = threading.Timer(10.0, mcploop)
-	# t.daemon = True
-	# t.start()
+
 	
 def run():
 	cherrypy.tree.mount(MCPService())
