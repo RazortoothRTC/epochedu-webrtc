@@ -284,6 +284,10 @@ function userJoin(nick, timestamp) {
   updateUserStatus(nick, timestamp);
 }
 
+function openNewWindow(url, options) {
+	window.open(url);
+	return false;
+}
 //handles someone leaving
 function userPart(nick, timestamp) {
   //put it in the stream
@@ -1065,11 +1069,18 @@ $(document).ready(function() {
 						for (var i = 0; i < contentlist.length; i++) {
 							var tmp = contentlist[i].split('/');
 							var filename = tmp[tmp.length-1];
-							$ul.append('<li><a rel="external" href="javascript:void(0);" onclick="window.open(\''+ contentlist[i] + '\');">' + filename + '</a></li>');
-							// $contentarea.append('<li><a rel="external" href="' + contentlist[i] + '">' + filename + '</a></li>');
+							// $ul.append('<li><a rel="external" href="javascript:void(0);" target="_blank" name="'+ contentlist[i] + '" class="syncurl">' + filename + '</a></li>');
+							$ul.append('<li><a rel="external" href="' + contentlist[i] + '" target="_blank" name="'+ contentlist[i] + '" class="syncurl">' + filename + '</a></li>');
 						}
 						$ul.listview({
 						       "inset": true
+						});
+						
+						// XXX I think this will only work on android unless you change your CAPS file
+						$(".syncurl").click(function(e) {
+							var syncurl = $(this).attr('name');
+							// alert('syncurl clicked ' + syncurl);
+							openNewWindow(syncurl);
 						});
 						// $contentarea.append('</ul>');
 						// $contentarea.listview();

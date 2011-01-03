@@ -101,10 +101,10 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v10-b4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v10-b5-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress. \
 		Added student sync folder.  Fixed JSONP calls.  Student can view local sync content. \
-		Work in progress. \
+		Working on student syncurl handling. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
