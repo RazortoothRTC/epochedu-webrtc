@@ -24,7 +24,7 @@
 	$(document).ready(function() {
 		var sessionid;
 		var nick;
-		updateTeacherContent({%= roomcl %});
+		updateTeacherContent2({%= roomcl %});
 		// $('#ci-template').toggle();
 		/* $.each($('#checkbox-1b').data('events'), function(i, event){
 		    jQuery.each(event, function(i, handler){
@@ -125,7 +125,7 @@
 		<h1>Resources</h1>
 	</div><!-- /header -->
 
-	<div data-role="content">	
+	<div data-role="content">
 		<div class="ui-grid-A">
 			<div data-role="fieldcontain">
 				<fieldset data-role="controlgroup" data-role="fieldcontain" id="cpfieldset">
@@ -182,7 +182,7 @@
 					</form>
 		<ul class="footernav">
 			<li class="link1"><a href="#chat">Chat</a></li>
-			<li class="link2 active"><a href="#">Content</a></li>
+			<li class="link2 active"><a href="#">Resources</a></li>
 			<li class="link3"><a href="#attendance">Attendance</a></li>
 			<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
 		</ul>
@@ -210,7 +210,7 @@
 	<div data-role="footer" class="footer" data-position="fixed">
 		<ul class="footernav">
 			<li class="link1"><a href="#chat">Chat</a></li>
-			<li class="link2"><a href="#content">Content</a></li>
+			<li class="link2"><a href="#resources">Resources/a></li>
 			<li class="link3 active"><a href="#">Attendance</a></li>
 			<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
 		</ul>

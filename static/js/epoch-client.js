@@ -862,6 +862,29 @@ function updateTeacherContent(contentlist) {
 	$('#resourceslist input').checkboxradio();
 }
 
+function updateTeacherContent2(contentlist) {
+	var contents = contentlist;
+	var listitemdata = '';
+	
+	// XXX Probably should clear the existing items, in case this is a refresh
+	$.each(contents, function(i, content) {
+		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+		itemi = 'item' + (i+1);
+		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+		mime = fqname.split('.')[1].toLowerCase();
+		filename = fqname.split('.')[0];
+		contentli = $('#ci-template').clone(); // Clone all the events!
+		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').html(filename + '- <em>' + mime + '</em>');
+		contentli.find('.ui-btn').attr('for', itemi);
+		contentli.find('.ui-btn-inner').attr('id', mime);
+		contentli.find('.custom').attr('id', itemi).attr('name', itemi).attr('value', content);
+		$('#resourceslist').append(contentli);
+		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
+		
+		contentli.show();
+	});
+	$('#resourceslist input').checkboxradio();
+}
 function launchShadowboxPreview(contenturl) {
 	// alert('opening shadowbox to ' + contenturl);
 	Shadowbox.open({
@@ -1113,6 +1136,9 @@ $(document).ready(function() {
 			});
 			$('#attendance').live('pageshow',function(event, ui){
 				updateAttendanceSheet($(this));
+			});
+			$('#resources').live('pageshow',function(event, ui){
+				// updateTeacherContent(roomcl);
 			});
 		} else {
 			$("#sendurl").click(function (e) {
