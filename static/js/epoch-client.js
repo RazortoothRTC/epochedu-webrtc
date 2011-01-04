@@ -246,21 +246,25 @@ function updateUsersLink ( ) {
 }
 
 function updateUserStatus(nick, timestamp) {
-	if (teacher) {
-		if (timestamp > 0) {
+	if (timestamp > 0) {
+		if ((nick != CONFIG.nick) && (CONFIG.nick != '#')){ // Only update if it's not the teacher
+			$('li#waiting').remove();
 			if ($('#userstatus > li').length > 0) {
-				if ($('li#' + nick).length > 0) {
-					// alert('found a match, do not insert'); 
-					// XXX No op is dumb, fix this later
-				} else {
-					$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+				if ($('li#' + nick).length == 0) { // Only update if nick is not in list
+					$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#oneononechat" data-rel="dialog">' + nick +' in class since ' + new Date(timestamp) + '</a></li>');
 				}
 			} else {
-				$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+				$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#oneononechat" data-rel="dialog">' + nick +' inc class since ' + new Date(timestamp) + '</a></li>');
 			}
-		} else {
-			$('li#' + nick).remove();
 		}
+	} else { // Remove from the list
+		$('li#' + nick).remove();
+		if ($('#userstatus > li').length == 0) {
+			$('#userstatus').append('<li id="waiting">Waiting for students to join</li>');
+		}
+	}
+	if ($.mobile) {
+		$('#userstatus').listview('refresh'); // Refresh the listview
 	}
 }
 
@@ -281,9 +285,30 @@ function userJoin(nick, timestamp) {
   nicks.push(nick);
   //update the UI
   updateUsersLink();
-  updateUserStatus(nick, timestamp);
+  if (teacher) {
+  	updateUserStatus(nick, timestamp);
+  }
 }
 
+function updateAttendanceSheet(page) {
+	// Get the attendance list
+	var $thispage = page;
+	if (nicks.length > 1 ) { // If it is 1, then it's just the teacher :(
+		var $ul = $("<ul id='userstatus'>");
+		$thispage.find("div[data-role=content] ul").detach();  // remove the existing ul
+		$thispage.find("div[data-role=content]").append($ul);  // attach the new ul
+
+		$ul.append('<li data-role="list-divider">Students in classroom: ' + getChannel() + '</li>');
+		for (var i = 0; i < nicks.length; i++) {
+			if (nicks[i] != CONFIG.nick) { // Don't show teacher
+				$ul.append('<li><a href="#oneononechat" data-rel="dialog">'+ nicks[i] + '</a></li>');
+			}
+		}
+		$ul.listview({
+		       "inset": true
+		});
+	}
+}
 function openNewWindow(url, options) {
 	window.open(url);
 	return false;
@@ -1087,24 +1112,7 @@ $(document).ready(function() {
 				  });
 			});
 			$('#attendance').live('pageshow',function(event, ui){
-				// Get the attendance list
-				var $thispage = $(this);
-				if (nicks.length > 1 ) { // If it is 1, then it's just the teacher :(
-					var $ul = $("<ul>");
-					$thispage.find("div[data-role=content] ul").detach();  // remove the existing ul
-					$thispage.find("div[data-role=content]").append($ul);  // attach the new ul
-
-					$ul.append('<li data-role="list-divider">Students in classroom: ' + getChannel() + '</li>');
-					for (var i = 0; i < nicks.length; i++) {
-						if (nicks[i] != CONFIG.nick) { // Don't show teacher
-							$ul.append('<li><a href="#oneononechat" data-rel="dialog">'+ nicks[i] + '</a></li>');
-						}
-					}
-					$ul.listview({
-					       "inset": true
-					});
-				}
-
+				updateAttendanceSheet($(this));
 			});
 		} else {
 			$("#sendurl").click(function (e) {
