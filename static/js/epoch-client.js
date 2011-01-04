@@ -301,7 +301,7 @@ function updateAttendanceSheet(page) {
 		$ul.append('<li data-role="list-divider">Students in classroom: ' + getChannel() + '</li>');
 		for (var i = 0; i < nicks.length; i++) {
 			if (nicks[i] != CONFIG.nick) { // Don't show teacher
-				$ul.append('<li><a href="#oneononechat" data-rel="dialog">'+ nicks[i] + '</a></li>');
+				$ul.append('<li id="'+ nicks[i] + '"><a href="#oneononechat" data-rel="dialog">'+ nicks[i] + ' in class since ' + new Date() + '</a></li>');
 			}
 		}
 		$ul.listview({
