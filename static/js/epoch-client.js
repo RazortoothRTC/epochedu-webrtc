@@ -1082,12 +1082,30 @@ $(document).ready(function() {
 							// alert('syncurl clicked ' + syncurl);
 							openNewWindow(syncurl);
 						});
-						// $contentarea.append('</ul>');
-						// $contentarea.listview();
+
 					} // XXX Should give some feedback if no content available
 				  });
 			});
-			
+			$('#attendance').live('pageshow',function(event, ui){
+				// Get the attendance list
+				var $thispage = $(this);
+				if (nicks.length > 1 ) { // If it is 1, then it's just the teacher :(
+					var $ul = $("<ul>");
+					$thispage.find("div[data-role=content] ul").detach();  // remove the existing ul
+					$thispage.find("div[data-role=content]").append($ul);  // attach the new ul
+
+					$ul.append('<li data-role="list-divider">Students in classroom: ' + getChannel() + '</li>');
+					for (var i = 0; i < nicks.length; i++) {
+						if (nicks[i] != CONFIG.nick) { // Don't show teacher
+							$ul.append('<li><a href="#oneononechat" data-rel="dialog">'+ nicks[i] + '</a></li>');
+						}
+					}
+					$ul.listview({
+					       "inset": true
+					});
+				}
+
+			});
 		} else {
 			$("#sendurl").click(function (e) {
 				$('#resources').find('input:checked').each( 
