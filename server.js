@@ -101,9 +101,10 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v12-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v12-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress. \
 		Fixing UI on content resources page. \
+		Working on floating footer issue. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
