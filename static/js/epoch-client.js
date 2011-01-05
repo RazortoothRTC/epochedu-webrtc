@@ -210,7 +210,7 @@ function verifySession(sessionid) {
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
 					invalidateEpochCookie();
-					addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
+					if (!first_poll) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
 					// alert('Session is not alive: ');
 	             }
 	           , success: function(data) {	 		 
@@ -498,7 +498,7 @@ function longPoll (data) {
     return;
   }
   
-  if (data && (data.state < 0)) {
+  if (data && (data.state < 0)) { // XXX Bug here trying to test if session is invalid
 		invalidateEpochCookie();
 		if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
   }
