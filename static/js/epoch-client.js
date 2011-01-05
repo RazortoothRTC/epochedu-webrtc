@@ -171,8 +171,10 @@ function isLoggedIn() {
 	var sessionid = isEpochCookieSet();
 	var nick = CONFIG.nick;
 	if (!sessionid) {
+		// alert('not isLoggedIn');
 		return undefined;
 	} else {
+		// alert('isLoggedIn');
 		return sessionid;
 	}
 }
@@ -884,6 +886,7 @@ function updateTeacherContent2(contentlist) {
 		contentli.show();
 	});
 	$('#resourceslist input').checkboxradio();
+	$('.ui-footer[data-position="fixed"]').fixHeaderFooter();
 }
 function launchShadowboxPreview(contenturl) {
 	// alert('opening shadowbox to ' + contenturl);

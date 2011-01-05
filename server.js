@@ -468,7 +468,7 @@ fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist);
-	sys.puts(chan + ' = ' + roomcl);
+	// sys.puts(chan + ' = ' + roomcl);
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var teacher_tpl = nTPL("./templates/teacher-jqm-ntpl.html");
 	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM

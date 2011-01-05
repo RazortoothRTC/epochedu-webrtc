@@ -25,13 +25,6 @@
 		var sessionid;
 		var nick;
 		updateTeacherContent2({%= roomcl %});
-		// $('#ci-template').toggle();
-		/* $.each($('#checkbox-1b').data('events'), function(i, event){
-		    jQuery.each(event, function(i, handler){
-		        alert( typeof event );
-		    });
-		}); */
-		// alert($('#checkbox-1b').data('events').length);
 		
 		if (!isLoggedIn()) {
 			showLogin('{%= channel%}');
@@ -42,8 +35,8 @@
 
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
 		$('#qadialog').jqm({modal:false, autofire:true}); */
-		var h = $(window).height();
-        var w = $(window).width();
+		// var h = $(window).height();
+        // var w = $(window).width();
 
 		// $('#dialog').jqm().jqmShow({autofire:true,modal:true});
 		$('#timer').stopwatch();
@@ -120,66 +113,69 @@
 
 <!-- Start of second page -->
 <div data-role="page" id="resources">
-	<form action="#" method="get">
 	<div data-role="header" data-id="header" data-position="fixed">
 		<h1>Resources</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 		<div class="ui-grid-A">
-			<div data-role="fieldcontain">
-				<fieldset data-role="controlgroup" data-role="fieldcontain" id="cpfieldset">
-					<div class="ui-block-A" id="resourceslist">
-						<div class="ui-checkbox" id="ci-template"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
-						{*
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1c" name="checkbox-1c"><label for="checkbox-1c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 03</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2a" name="checkbox-2a"><label for="checkbox-2a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 01</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2b" name="checkbox-2b"><label for="checkbox-2b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 02</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2c" name="checkbox-2c"><label for="checkbox-2c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 03</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3a" name="checkbox-3a"><label for="checkbox-3a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 01</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3b" name="checkbox-3b"><label for="checkbox-3b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 02</label></div>
-						<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3c" name="checkbox-3c"><label for="checkbox-3c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 03</label></div>
+			<div class="ui-block-A">
+				<form action="#" method="get">
+					<div data-role="fieldcontain">
+						<fieldset data-role="controlgroup" data-role="fieldcontain" id="cpfieldset">
+							<div class="ui-block-A" id="resourceslist">
+								<div class="ui-checkbox" id="ci-template"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
+								{*
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1c" name="checkbox-1c"><label for="checkbox-1c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 03</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2a" name="checkbox-2a"><label for="checkbox-2a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 01</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2b" name="checkbox-2b"><label for="checkbox-2b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 02</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2c" name="checkbox-2c"><label for="checkbox-2c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 03</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3a" name="checkbox-3a"><label for="checkbox-3a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 01</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3b" name="checkbox-3b"><label for="checkbox-3b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 02</label></div>
+								<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3c" name="checkbox-3c"><label for="checkbox-3c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 03</label></div>
 						*}
-					</div>
-				</fieldset>
-			</div>
-		</div>
+							</div><!-- /ui-block-A -->
+						</fieldset>
+					</div><!-- /fieldcontain -->
+				</form>
+			</div><!-- /ui-block-A -->
+		</div><!-- /ui-grid-A -->
 	</div><!-- /content -->
 
 	<div data-role="footer" class="footer" data-position="fixed">
 		<div style="padding-left:15px;">
-						<fieldset>
-							<div data-role="fieldcontain">
-								<select name="contentdelivery" id="contentdelivery" tabindex="-1">
-									<option id="nada" value="-1">Content Commands</option>
-									<option id="preview" value="preview">Preview</option>
-									<option id="sendviewer" value="sendviewer">Send Player</option>
-									<option id="endviewer" value="endviewer">End Player</option>
-									<option id="sendurl" value="sendurl">Send URL</option>
-									<option id="sendviewerlocal" value="sendviewerlocal">Send Local</option>
-									<option id="sync" value="sync">Sync Content</option>
-									<option id="launchurl" value="launchurl">Launch Remote URL</option>
-									<option id="remoteinstall" value="remoteinstall">Remote Install</option>
-								</select>
-							</div>
-							<div data-role="fieldcontain" style="width:550px;">
-								<select name="mcpcommands" id="mcpcommands" tabindex="-1">
-									<option id="nada" value="-1">MCP Commands</option>
-									<option id="mcpmodestart" value="mcpmodestart">Control:On</option>
-									<option id="mcpmodestop" value="mcpmodestop">Control:Off</option>
-									<option id="launch" value="launch">Launch Remote App</option>
-									<option id="logoutall" value="logoutall">Logout All in Session</option>
-									<option id="killall" value="killall">Killall non-essential User Apps</option>
-									<option id="logoutall" value="logoutall">Logout All in Session</option>
-									<option id="status" value="status">Get Device Status</option>
-								</select>
-							</div>
-						</fieldset>
+			<fieldset>
+				<div data-role="fieldcontain">
+					<select name="contentdelivery" id="contentdelivery" tabindex="-1">
+						<option id="nada" value="-1">Content Commands</option>
+						<option id="preview" value="preview">Preview</option>
+						<option id="sendviewer" value="sendviewer">Send Player</option>
+						<option id="endviewer" value="endviewer">End Player</option>
+						<option id="sendurl" value="sendurl">Send URL</option>
+						<option id="sendviewerlocal" value="sendviewerlocal">Send Local</option>
+						<option id="sync" value="sync">Sync Content</option>
+						<option id="launchurl" value="launchurl">Launch Remote URL</option>
+						<option id="remoteinstall" value="remoteinstall">Remote Install</option>
+					</select>
+				</div>
+				<div data-role="fieldcontain" style="width:550px;">
+					<select name="mcpcommands" id="mcpcommands" tabindex="-1">
+						<option id="nada" value="-1">MCP Commands</option>
+						<option id="mcpmodestart" value="mcpmodestart">Control:On</option>
+						<option id="mcpmodestop" value="mcpmodestop">Control:Off</option>
+						<option id="launch" value="launch">Launch Remote App</option>
+						<option id="logoutall" value="logoutall">Logout All in Session</option>
+						<option id="killall" value="killall">Killall non-essential User Apps</option>
+						<option id="logoutall" value="logoutall">Logout All in Session</option>
+						<option id="status" value="status">Get Device Status</option>
+					</select>
+				</div>
+			</fieldset>
 		</div>
-					</form>
+					
 		<ul class="footernav">
 			<li class="link1"><a href="#chat">Chat</a></li>
 			<li class="link2 active"><a href="#">Resources</a></li>
@@ -210,7 +206,7 @@
 	<div data-role="footer" class="footer" data-position="fixed">
 		<ul class="footernav">
 			<li class="link1"><a href="#chat">Chat</a></li>
-			<li class="link2"><a href="#resources">Resources/a></li>
+			<li class="link2"><a href="#resources">Resources</a></li>
 			<li class="link3 active"><a href="#">Attendance</a></li>
 			<li class="link5"><a href="panel" data-icon="gear" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Options</a></li>
 		</ul>
