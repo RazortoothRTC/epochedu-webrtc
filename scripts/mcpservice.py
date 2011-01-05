@@ -79,7 +79,7 @@ def check_access(default=False):
 #
 _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
-			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'], # DEMOSETUP
+			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'], # DEMOSETUP
 			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider/sdcard/content", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
@@ -122,11 +122,12 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r6-b7-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r6-b8-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	<P>MCP Work in progress. Prep for CES.  Reactivate MCPloop.  Bugfixing, put 148 back in temporarily. 
 	 and fixed a problem with global ismcpmodeon never getting set.  Also, fixed a few bugs in sync and kill with
-	regard to android vs. desktop mode.
+	regard to android vs. desktop mode.  Cleared up a few more issues with sync.  Now works on dev server.
+	Need to test on demo plug.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -295,7 +296,7 @@ Todo ...
 				self.droid.view(aurl)
 			except:
 				webbrowser.open(aurl)
-			print "droid view launched with url"
+			print "droid view launched with url" + arul
 		else:
 			try:
 				self.droid.view(aurl, amime)
@@ -343,7 +344,7 @@ Todo ...
 			try:
 				localFile.write(webFile.read())
 				try:
-					self.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Sync'd")
+					self.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
 				except:
 					print "Completed sync of " + filename + " to sd card."
 			except IOError, e:
@@ -405,6 +406,7 @@ Todo ...
 		self.droid.ttsSpeak(message)
 		
 		if title is not None:
+			print "notify android " + title
 			self.droid.notify(title, message)
 	
 	def getlocalcontentsyncurl(self, channelpath, contentrepourl, fileExtList):
