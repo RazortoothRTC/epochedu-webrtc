@@ -578,7 +578,7 @@ function longPoll (data) {
 			isInSession = true;
 			if (!teacher) {
 				if (isUserInSession()) {
-					if (document.jqm) {
+					if (!$.mobile) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
 						$('#dialog').find('#waiting').remove();
