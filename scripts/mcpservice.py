@@ -79,7 +79,7 @@ def check_access(default=False):
 #
 _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
-			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'],
+			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'],
 			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider/sdcard/content", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
@@ -122,9 +122,9 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r5-b2-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r6-b2-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress. Added functional contentpullsync for DT and droid. RPC needs to still fix handling of JSON call.</P>
+	<P>MCP Work in progress. Prep for CES.  Reactivate MCPloop.  Fix wrong URL.</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
 	ASCII_LOGO = """
@@ -153,7 +153,7 @@ class MCPService(object):
 	|_|_|_
 	"""
 	COPYRIGHT = 'Copyright 2011 Razortooth Communications, LLC'
-	MCP_SERVER_URI = ['http://192.168.1.148:5000/student'] # XXX This should be a list, DEMOSETTING
+	MCP_SERVER_URI = ['http://192.168.1.16:5000/student'] # XXX This should be a list, DEMOSETTING
 	PACKAGE_BLACKLIST = ['com.android.browser', # Android Browser
 						'com.android.launcher', # The Dock Launcher
 						'com.android.settings', # Settings
@@ -167,8 +167,7 @@ class MCPService(object):
 			print 'Exception initializing Android'
 		print 'MCPService init completed'
 		# XXX Put t into a shutdown hook so it gets stopped or canceled
-		# XXX Uncomment after we are done developing UI
-		# self.t = threading.Timer(10.0, mcploop).start()
+		self.t = threading.Timer(10.0, mcploop).start()
 		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
@@ -426,7 +425,11 @@ Todo ...
 			self.droid.notify(title, message)
 	
 	def getlocalcontentsyncurl(self, channelpath, contentrepourl, fileExtList):
-		filelist = os.listdir(channelpath)
+		filelist = [] 
+		try 
+			filelist = os.listdir(channelpath)
+		except:
+			print "path " + channelpath + "does not exist.  No synced content"
 		urllist = []
 		
 		for f in filelist:
@@ -497,7 +500,6 @@ def run():
 	cherrypy.engine.subscribe('start', mcpServiceConnector, priority=90)
 	# cherrypy.quickstart(MCPService(), '/')
 	cherrypy.engine.start()
-	# threading.Timer(10.0, mcploop).start()
 	cherrypy.engine.block()
 
 if __name__ == '__main__':
