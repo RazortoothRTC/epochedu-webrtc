@@ -38,7 +38,7 @@ import threading
 # MISC Globals
 #
 #
-ismcpmodeon = False # Stupid global for testing whether we got an mcpmodestart
+mcpmodetoggle = 0 # Stupid global for testing whether we got an mcpmodestart
 
 # 
 #
@@ -79,7 +79,7 @@ def check_access(default=False):
 #
 _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
-			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'],
+			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'], # DEMOSETUP
 			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider/sdcard/content", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
@@ -122,38 +122,14 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r6-b2-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r6-b7-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress. Prep for CES.  Reactivate MCPloop.  Fix wrong URL.</P>
+	<P>MCP Work in progress. Prep for CES.  Reactivate MCPloop.  Bugfixing, put 148 back in temporarily. 
+	 and fixed a problem with global ismcpmodeon never getting set.  Also, fixed a few bugs in sync and kill with
+	regard to android vs. desktop mode.
+	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
-	ASCII_LOGO = """
-	@#@#++@@@@@@@@@@@
-	@+++++++#@@+@@@@@
-	@++++@@#+@@,+@@@@
-	@#++@;,::;+,:@@@@
-	@#++@@@@@#',,:+@@
-	@@++@@@@@@@,;@:@@
-	@@#+#@@@@@@,'@@@@
-	@@@++@@@@@+,@@@@@
-	@@@@+@@@@@,;@@@@@
-	@@@@@+@@@#:@@@@@#
-	@@@@@@#@@:@@@@@@@
-	@@@@@@@##@@@@@@@@
-	@@@@@@@@@@@@@@@@@
-	"""
-	ASCII_LOGO2 = """
-	|~) _ _  _ .__|_ _  _ _|_|_ 
-	|~\(_|/_(_)|  | (_)(_) | | |
-
-	|~ _ ._ _ ._ _    ._ o _ _ _|_o _ ._  _   
-	|_(_)| | || | ||_|| ||(_(_| | |(_)| |_\)  
-
-	| | |~
-	|_|_|_
-	"""
-	COPYRIGHT = 'Copyright 2011 Razortooth Communications, LLC'
-	MCP_SERVER_URI = ['http://192.168.1.16:5000/student'] # XXX This should be a list, DEMOSETTING
 	PACKAGE_BLACKLIST = ['com.android.browser', # Android Browser
 						'com.android.launcher', # The Dock Launcher
 						'com.android.settings', # Settings
@@ -351,6 +327,7 @@ Todo ...
 				try:
 					os.makedirs(apath)
 				except OSError, e:
+					print "not on android, trying local path"
 					if not os.path.exists(dpath):
 						try:
 							os.makedirs(dpath)
@@ -365,7 +342,10 @@ Todo ...
 				print 'storing url on ' + dpath + '/' + filename
 			try:
 				localFile.write(webFile.read())
-				self.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Sync'd")
+				try:
+					self.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Sync'd")
+				except:
+					print "Completed sync of " + filename + " to sd card."
 			except IOError, e:
 				print 'error storing to ' + apath
 			webFile.close()
@@ -384,8 +364,11 @@ Todo ...
 		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
-		self.droid.forceStopPackage(uri) # Does this have return value?
-		self.droid.makeToast('Killed ' + uri)
+		try:
+			self.droid.forceStopPackage(uri) # Does this have return value?
+			self.droid.makeToast('Killed ' + uri)
+		except:
+			print "pretending to kill " + uri
 		rsp['status'] = 0;
 		return rsp
 	
@@ -426,7 +409,7 @@ Todo ...
 	
 	def getlocalcontentsyncurl(self, channelpath, contentrepourl, fileExtList):
 		filelist = [] 
-		try 
+		try: 
 			filelist = os.listdir(channelpath)
 		except:
 			print "path " + channelpath + "does not exist.  No synced content"
@@ -436,6 +419,19 @@ Todo ...
 			if os.path.isfile(os.path.join(channelpath, f)) and os.path.splitext(f)[1] in fileExtList:
 				urllist.append(contentrepourl + channelpath + "/" + f)
 		return urllist
+
+def togglemdpmode():
+	if mcpmodetoggle == 0:
+		mcpmodetoggle = 1
+		return True
+	else:
+		mcpmodetoggle = 0
+		return False
+def ismcpmodeon():
+	if mcpmodetoggle == 0:
+		return False
+	else:
+		return True
 
 def mcploop():
 	print "mcploop"
@@ -451,8 +447,11 @@ def mcploop():
 		time.sleep(0.3)
 		print "MCP Teachers Assistant is waking up to check on you, heartbeat #%d"%(loopcount)
 		# XXX We may want to put some housekeeping work here
+		print ismcpmodeon
 		if ismcpmodeon:
+			print "mcpmode is on"
 			if droid is not None:
+				print "checking if launcher is running"
 				pkgs = droid.getRunningPackages()[1] # XXX ugly ... 
 				if 'com.android.launcher' in pkgs:
 					droid.makeToast("Teacher's Assistant sending user back to class")
@@ -460,6 +459,8 @@ def mcploop():
 					droid.forceStopPackage('com.android.launcher')
 					# droid.view(MCP_CONFIG['MCP_SERVER_URI'][0], "text/html") # XXX These calls block :(, so page better load
 					droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], None, None, False)
+			else:
+				print "ta says get back to class"
 		loopcount = loopcount + 1
 		time.sleep(tickinterval)
 			
