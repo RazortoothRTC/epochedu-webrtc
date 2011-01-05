@@ -107,7 +107,7 @@ WIP = "MCP command work in progress.\n \
 		Prep for CES setup.\n \
 	 	Removed dumping of messages on endsession.\n\
 		Added about text onto landing link. \n \
-		Bug fix attempt 1 for startsession issue . \n \
+		Bug fix attempt 2 for startsession issue . \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
