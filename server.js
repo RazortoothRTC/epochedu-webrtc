@@ -101,11 +101,11 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress. \
 		Doing some fixes with regards to messages + session. \
 		Prep for CES setup. \
-		Working on bugfix for startsession on tablet. \
+	 	Adding back in dumping of messages on endsession.\
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -222,7 +222,7 @@ function channelFactory() {
 	    while (messages.length > MESSAGE_BACKLOG)
 	      messages.shift();
 	
-		if (type == "dumpsession") { // Dump old messages in backlog
+		if (type == "endsession") { // Dump old messages in backlog
 			messages = [];
 		}
   };
