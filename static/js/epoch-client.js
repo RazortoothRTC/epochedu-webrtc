@@ -577,7 +577,7 @@ function longPoll (data) {
 			// alert('started a class');
 			isInSession = true;
 			if (!teacher) {
-				alert('started a class - checking if user is in session: ' + isUserInSession());
+				// alert('started a class - checking if user is in session: ' + isUserInSession());
 				if (isUserInSession()) { // XXX ? why
 					if (!$.mobile) {
 						$('#dialog').jqmHide();
@@ -1032,14 +1032,14 @@ $(document).ready(function() {
 
 		$(".start").click(function () {
 			var msg = "#startsession";
-			alert('got startsession click');
+			// alert('got startsession click');
 		    if (!util.isBlank(msg)) send(msg);
 			return false;
 		});
 	
 		$(".stop").click(function () {
 			var msg = "#endsession";
-			alert('got stopsession click');
+			// alert('got stopsession click');
 		    if (!util.isBlank(msg)) send(msg);
 			return false;
 		});
