@@ -101,11 +101,11 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b5-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress. \
 		Doing some fixes with regards to messages + session. \
 		Prep for CES setup. \
-	 	Adding back in dumping of messages on endsession.\
+	 	Removed dumping of messages on endsession.\
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
