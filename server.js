@@ -101,13 +101,12 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b6-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b8-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
 	 	Removed dumping of messages on endsession.\n\
-		Added about text onto landing link. \n \
-		Bug fix attempt 3 for startsession issue . \n \
+		Working on sync issues.  Fixed mcpmodestart/stop. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -158,7 +157,7 @@ function channelFactory() {
 			   , timestamp: (new Date()).getTime()
 			};
 		} else {
-			sys.puts('Received mcprequest with payload - ' + payload);
+			sys.puts('Received mcprequest with payload - ' + JSON.stringify(payload));
 			m = { nick: nick
 			   , type: type
 			   , text: text

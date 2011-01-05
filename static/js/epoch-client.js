@@ -578,7 +578,7 @@ function longPoll (data) {
 			isInSession = true;
 			if (!teacher) {
 				// alert('started a class - checking if user is in session: ' + isUserInSession());
-				if (isUserInSession()) { // XXX ? why
+				if (verifySession(CONFIG.id)) { // XXX ? why
 					if (!$.mobile) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
@@ -589,6 +589,9 @@ function longPoll (data) {
 						// $('#waiting').text("");
 						$('#dialog').find('#waiting').remove();
 					}
+				} else {
+					// If you aren't logged in, bump back to login screen
+					showLogin();
 				}
 			} else {
 				// DO something in case there are two teachers
