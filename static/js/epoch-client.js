@@ -577,7 +577,8 @@ function longPoll (data) {
 			// alert('started a class');
 			isInSession = true;
 			if (!teacher) {
-				if (isUserInSession()) {
+				alert('started a class - checking if user is in session: ' + isUserInSession());
+				if (isUserInSession()) { // XXX ? why
 					if (!$.mobile) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
