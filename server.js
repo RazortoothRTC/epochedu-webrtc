@@ -101,10 +101,9 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v12-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress. \
-		Fixing UI on content resources page. \
-		Working on floating footer issue. \
+		Doing some fixes with regards to messages + session. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -216,6 +215,13 @@ function channelFactory() {
 
 	    while (messages.length > MESSAGE_BACKLOG)
 	      messages.shift();
+	
+		if (type == "endsession") { // Dump old messages in backlog
+			/* for (int i = 0; i < messages.length; i++) {
+				messages.pop();
+			} */
+			messages = [];
+		}
   };
 
   this.query = function (since, callback) {
