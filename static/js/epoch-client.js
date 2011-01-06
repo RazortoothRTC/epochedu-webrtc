@@ -505,7 +505,7 @@ function longPoll (data) {
   
   if (data && (data.state < 0)) { // XXX Bug here trying to test if session is invalid
 		invalidateEpochCookie();
-		if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
+		// XXX DEBUGON if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
   }
 
   if (data && data.rss) {
