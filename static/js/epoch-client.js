@@ -1039,14 +1039,16 @@ $(document).ready(function() {
 		$(".start").click(function () {
 			var msg = "#startsession";
 			alert('got startsession click');
-		    if (!util.isBlank(msg)) send(msg);
+		    // if (!util.isBlank(msg)) send(msg);
+			send(msg, "startsession");
 			return false;
 		});
 	
 		$(".stop").click(function () {
 			var msg = "#endsession";
 			alert('got stopsession click');
-		    if (!util.isBlank(msg)) send(msg);
+		    // if (!util.isBlank(msg)) send(msg);
+			send(msg, "endsession");
 			return false;
 		});
 		
