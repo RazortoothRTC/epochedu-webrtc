@@ -3,8 +3,9 @@
 # Add any npm dependencies here
 # We can make this efficient later.
 #
-npm install nTPL
-npm install nodemon
-export NODE_PATH=$HOME/root
-cd $HOME/deploy
+# prereqs
+# npm install nTPL
+# npm install nodemon
+export NODE_PATH=/home/epoched/root
+cd /home/epoched/epochedu-work
 node server.js
