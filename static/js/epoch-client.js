@@ -213,7 +213,7 @@ function partSession() {
 function logoutSession() {
 	invalidateEpochCookie();
 	partSession();
-	showLogin();
+	showLogin(getChannel());
 }
 function showLogin(channel) {
 	var usertype;
@@ -751,7 +751,7 @@ function checkSession(nick) {
 	} else if (nick != "#") {
 		showWaiting(nick);
 	} else {
-		showLogin();
+		showLogin(getChannel());
 	}
 }
 
@@ -807,13 +807,22 @@ function onConnect (session) {
 
   //update the UI to show the chat
   if (!teacher) {
-	setEpochCookie(CONFIG.id, starttime); 
+	setEpochCookie(CONFIG.id, starttime);
+	checkSession(CONFIG.nick);
+	/* if (isInSession) {
+		if (verifyEpochEduCookie(CONFIG.id)) {
+			checkSession(CONFIG.nick);
+		} else {
+			showLogin();
+		}
+	} */
+	
 	/* if (!isEpochCookieSet()) {
 		setEpochCookie(CONFIG.id, starttime); // Set the cookie
 	} *//* else {
 		verifyEpochEduCookie(CONFIG.id);
 	} */
-	checkSession(CONFIG.nick);
+	
   } else {
 	setEpochCookie(CONFIG.id, starttime); // Set the cookie
 	if ($.mobile) {
