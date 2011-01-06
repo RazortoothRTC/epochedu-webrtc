@@ -158,7 +158,7 @@ function dateInFutureMilliseconds(aDate, milliseconds) {
 }
 
 function isEpochCookieSet() {
-	// alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
+	alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
 	return $.cookie(EPOCH_COOKIE);
 }
 
@@ -167,14 +167,39 @@ function invalidateEpochCookie() {
 	if ($.cookie) $.cookie(EPOCH_COOKIE, null, {path: '/class'});
 }
 
+
+function verifyEpochCookie(sessionid) {
+	var nick;
+	$.ajax({ cache: false
+	           , type: "GET" // XXX should be POST
+	           , dataType: "json"
+	           , url: "/rejoin"
+	           , data: { id: sessionid, channel: getChannel() }
+	           , error: function (xhr, text, err) {
+					alert('cannot rejoin');
+					invalidateEpochCookie(sessionid);
+					showLogin(getChannel());
+	             }
+	           , success: onConnect
+	           });
+	if (nick) return nick;
+	return undefined; 
+}
+
+function setEpochCookie(sessionid, startdate) {
+	// $.cookie(EPOCH_COOKIE, sessionid, { path: '/class', expires: dateInFutureMilliseconds(startdate, COOKIE_TIMEOUT_IN_MILLIS) }); // XXX We may want to make the path configurable as an arg
+	$.cookie(EPOCH_COOKIE, sessionid);
+	alert('setting epochedu cookie = ' + $.cookie(EPOCH_COOKIE));
+}
+
 function isLoggedIn() {
 	var sessionid = isEpochCookieSet();
 	var nick = CONFIG.nick;
 	if (!sessionid) {
-		// alert('not isLoggedIn');
+		alert('not isLoggedIn');
 		return undefined;
 	} else {
-		// alert('isLoggedIn');
+		alert('isLoggedIn');
 		return sessionid;
 	}
 }
@@ -219,26 +244,6 @@ function verifySession(sessionid) {
 	return; 
 }
 
-function verifyEpochCookie(sessionid) {
-	var nick;
-	$.ajax({ cache: false
-	           , type: "GET" // XXX should be POST
-	           , dataType: "json"
-	           , url: "/rejoin"
-	           , data: { id: sessionid, channel: getChannel() }
-	           , error: function (xhr, text, err) {
-					invalidateEpochCookie(sessionid);
-					showLogin(getChannel());
-	             }
-	           , success: onConnect
-	           });
-	if (nick) return nick;
-	return undefined; 
-}
-
-function setEpochCookie(sessionid, startdate) {
-	$.cookie(EPOCH_COOKIE, sessionid, { path: '/class', expires: dateInFutureMilliseconds(startdate, COOKIE_TIMEOUT_IN_MILLIS) }); // XXX We may want to make the path configurable as an arg
-}
 
 //updates the users link to reflect the number of active users
 function updateUsersLink ( ) {
@@ -754,13 +759,13 @@ function showMobileChat(nick) {
 	$('#dialog').find('#waiting').remove();
 	// $('#waiting').remove();
 	$('.ui-dialog').dialog('close');
-	$(":input:text:visible:first").focus(); 
+	// $(":input:text:visible:first").focus(); 
 }
 
 //transition the page to the main chat view, putting the cursor in the textfield
 function showChat (nick) {
   $("#toolbar").show();
-  $(":input:text:visible:first").focus();
+  // $(":input:text:visible:first").focus();
   $("#nick").text(nick);
   if (teacher) { 
 	$('#dialog').jqmHide();
@@ -801,9 +806,15 @@ function onConnect (session) {
 
   //update the UI to show the chat
   if (!teacher) {
-	setEpochCookie(CONFIG.id, starttime); // Set the cookie
+	setEpochCookie(CONFIG.id, starttime); 
+	/* if (!isEpochCookieSet()) {
+		setEpochCookie(CONFIG.id, starttime); // Set the cookie
+	} *//* else {
+		verifyEpochEduCookie(CONFIG.id);
+	} */
 	checkSession(CONFIG.nick);
   } else {
+	setEpochCookie(CONFIG.id, starttime); // Set the cookie
 	if ($.mobile) {
 		showMobileChat(CONFIG.nick);
 	} else {
@@ -1277,6 +1288,6 @@ $(document).ready(function() {
 
 
 //if we can, notify the server that we're going away.
-$(window).unload(function () {
-  partSession();
-});
+/* $(window).unload(function () {
+  setTimeout(partSession(), 60000);  // XXX Give the user a minute to return
+}); */

@@ -101,13 +101,15 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b14-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b15-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
 	 	Removed dumping of messages on endsession.\n\
 		Working on sync issues. Trying to re-fix mcpmodestart \n \
-		Have what appears to be working fix for crappy start/stop session bug. Try on plug. \n \
+		Have what appears to be working fix for crappy start/stop session bug. worked. \n \
+		Remove focus hooks for chat, but can't really fix for android, just turn tablet vertical \n \
+		Fixed the stupid session rejoin \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -272,7 +274,8 @@ function sessionFactory (nick, chan) {
 	  
   for (var i in sessions) {
     var session = sessions[i];
-    if (session && session.nick === nick) return null; // XXX Why do we not simply rejoin?  We should at least respond with an affirmative
+	if (session && session.nick === nick) return session; // Just rejoin!!! 
+    // if (session && session.nick === nick) return null; // XXX Why do we not simply rejoin?  We should at least respond with an affirmative
   }
 
   var session = { 
@@ -572,11 +575,15 @@ fu.get("/join", function (req, res) {
   if (!channels[chan]) {
 	  res.simpleJSON(400, {error: "Unable to create channel for " + chan}); // can I just return this resp?
 	  return;
-  } else if (session == null) { // XXX Need to clean up the handling of "nick in use"
+  } else if (session == null){
+	sys.puts('Error: cannot create session');
+    res.simpleJSON(400, {error: "cannot create session for some reason", code: 1});
+    return;
+	/* else if (session == null) { // XXX Need to clean up the handling of "nick in use"
     sys.puts('Error: nick in use');
     res.simpleJSON(400, {error: "Nick in use", code: 1});
     return;
-  } else {
+   */ }  else {
 	  channels[chan].sessions[session.id] = session;
 	  fu.db['sessions'].set(session.id, {id: session.id, nick: session.nick, timestamp: session.timestamp, channel: chan});
   }
@@ -611,7 +618,8 @@ fu.get("/rejoin", function (req, res){
 	sys.puts('channelFactory invoked for @' + chan);
 	sessions = channels[chan].sessions;
 	if ((!sessions) || !(sessions[sessionid])) {
-		session = fu.db['sessions'].get(sessionid);
+		// XXX this doesn't properly work ... so don't use it session = fu.db['sessions'].get(sessionid);
+		session = null;
 	} else {
 		session = sessions[sessionid];
 	}

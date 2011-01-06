@@ -35,13 +35,14 @@
 			maintainPosition: false,
 		});
 		*/
-		if (!(sessionid = isLoggedIn())) {
+
+		if (!isLoggedIn()) {
 			showLogin('{%= channel%}');
 		} else {
 			nick = CONFIG.nick;
-			verifyEpochCookie(sessionid);
+			verifyEpochCookie(isEpochCookieSet());
 		}
-
+		
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
 		$('#qadialog').jqm({modal:false, autofire:true}); */
 		var h = $(window).height();

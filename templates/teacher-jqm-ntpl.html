@@ -30,7 +30,7 @@
 			showLogin('{%= channel%}');
 		} else {
 			nick = CONFIG.nick;
-			verifyEpochCookie(sessionid);
+			verifyEpochCookie(isEpochCookieSet());
 		}
 
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
