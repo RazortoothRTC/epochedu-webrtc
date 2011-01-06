@@ -1058,9 +1058,13 @@ $(document).ready(function() {
 				var msg;
 				
 				if (isInSession) {
+					isInSession = false;
 					msg = "#endsession";
 					$('#sessionstate').text('State: [Stopped]');
+					alert('Class has ended');
+					logoutSession();
 				} else {
+					isInSession = true;
 					msg = "#startsession";
 					$('#sessionstate').text('State: [Started]');
 				}
