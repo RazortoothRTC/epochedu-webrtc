@@ -101,19 +101,11 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b22-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b23-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
-	 	Removed dumping of messages on endsession.\n\
-		Working on sync issues. Trying to re-fix mcpmodestart \n \
-		Have what appears to be working fix for crappy start/stop session bug. worked. \n \
-		Remove focus hooks for chat, but can't really fix for android, just turn tablet vertical \n \
-		Fixed the stupid session rejoin, removed debug, still a problem on plug \n \
-		Logout done. \n \
-		Fixing some UI considerations \n \
-		Fixing broken epochedud + cleanup additional error \n \
-		Added a bugfix for messed up student rejoin ... still minor issue, but just hit logout. \n \
+	 	Undo session management. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

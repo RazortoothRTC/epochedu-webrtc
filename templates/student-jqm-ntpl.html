@@ -24,32 +24,8 @@
 	$(document).ready(function() {
 		var sessionid;
 		var nick;
-		/* XXX Not sure we need this anymore
-		$('body').addClass('bg');
-		$('.chatscroll').jScrollPane({
-			showArrows:true,
-			scrollbarWidth:30,
-			dragMinHeight:50,
-			dragMaxHeight:100,
-			animateTo: true, 
-			maintainPosition: false,
-		});
-		*/
 
-		if (!isLoggedIn()) {
-			showLogin('{%= channel%}');
-			// alert('showing login');
-		} else {
-			nick = CONFIG.nick;
-			if (verifyEpochCookie(isEpochCookieSet())) {
-				// alert('verified cookie');
-				checkSession(CONFIG.nick);
-				// alert('done checking session');
-			} else {
-				// alert('did not verify cookie');
-				logoutSession();
-			}
-		}
+		displayLogin();
 		
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
 		$('#qadialog').jqm({modal:false, autofire:true}); */

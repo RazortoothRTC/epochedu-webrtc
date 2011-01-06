@@ -210,6 +210,16 @@ function partSession() {
 	} 
 }
 
+function displayLogin() {
+	var channel = getChannel();
+	$.mobile.changePage("loginpanel", "fade");
+}
+
+function doLogout() {
+	partSession();
+	displayLogin();
+}
+
 function logoutSession() {
 	invalidateEpochCookie();
 	partSession();
@@ -751,7 +761,7 @@ function checkSession(nick) {
 		// alert('show chat');
 		showMobileChat(nick);
 	} else if (nick != "#") {
-		showWaiting(nick);
+		showWaiting(nick, getChannel());
 	} else {
 		// alert('showLogin');
 		showLogin(getChannel());
@@ -809,6 +819,17 @@ function onConnect (session) {
   updateUptime();
 
   //update the UI to show the chat
+  if (teacher) {
+	showMobileChat(CONFIG.nick);
+  } else {
+	// alert('is student');
+	if (!isInSession) {
+		showWaiting(CONFIG.nick, getChannel());
+	} else {
+		showMobileChat(CONFIG.nick);
+	}
+}
+  /*
   if (!teacher) {
 	setEpochCookie(CONFIG.id, starttime);
 	checkSession(CONFIG.nick);
@@ -821,6 +842,7 @@ function onConnect (session) {
 		showChat(CONFIG.nick);
 	}
   }
+  */
   //listen for browser events so we know to update the document title
   $(window).bind("blur", function() {
     CONFIG.focus = false;
@@ -1025,21 +1047,22 @@ $(document).ready(function() {
 		//lock the UI while waiting for a response
 	    showLoad();
 
+/*
 		$(".start").click(function () {
 			var msg = "#startsession";
-			// alert('got startsession click');
-		    // if (!util.isBlank(msg)) send(msg);
-			send(msg, "startsession");
+		    if (!util.isBlank(msg)) send(msg);
+
 			return false;
 		});
 	
 		$(".stop").click(function () {
 			var msg = "#endsession";
-			// alert('got stopsession click');
+
 		    if (!util.isBlank(msg)) send(msg);
-			// send(msg, "endsession");
+
 			return false;
 		});
+*/
 		
 		if ($.mobile) {
 			// XXX This doesn't work :(
