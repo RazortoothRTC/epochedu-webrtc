@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b15-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b16-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
@@ -109,7 +109,7 @@ WIP = "MCP command work in progress.\n \
 		Working on sync issues. Trying to re-fix mcpmodestart \n \
 		Have what appears to be working fix for crappy start/stop session bug. worked. \n \
 		Remove focus hooks for chat, but can't really fix for android, just turn tablet vertical \n \
-		Fixed the stupid session rejoin \n \
+		Fixed the stupid session rejoin, removed debug.  \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

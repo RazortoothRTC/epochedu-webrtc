@@ -158,7 +158,7 @@ function dateInFutureMilliseconds(aDate, milliseconds) {
 }
 
 function isEpochCookieSet() {
-	alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
+	// alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
 	return $.cookie(EPOCH_COOKIE);
 }
 
@@ -189,17 +189,17 @@ function verifyEpochCookie(sessionid) {
 function setEpochCookie(sessionid, startdate) {
 	// $.cookie(EPOCH_COOKIE, sessionid, { path: '/class', expires: dateInFutureMilliseconds(startdate, COOKIE_TIMEOUT_IN_MILLIS) }); // XXX We may want to make the path configurable as an arg
 	$.cookie(EPOCH_COOKIE, sessionid);
-	alert('setting epochedu cookie = ' + $.cookie(EPOCH_COOKIE));
+	// alert('setting epochedu cookie = ' + $.cookie(EPOCH_COOKIE));
 }
 
 function isLoggedIn() {
 	var sessionid = isEpochCookieSet();
 	var nick = CONFIG.nick;
 	if (!sessionid) {
-		alert('not isLoggedIn');
+		// alert('not isLoggedIn');
 		return undefined;
 	} else {
-		alert('isLoggedIn');
+		// alert('isLoggedIn');
 		return sessionid;
 	}
 }
