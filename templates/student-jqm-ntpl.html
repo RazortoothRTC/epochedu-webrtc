@@ -37,16 +37,13 @@
 		*/
 
 		if (!isLoggedIn()) {
-			alert('here');
+
 			showLogin('{%= channel%}');
 		} else {
-			alert('or here');
 			nick = CONFIG.nick;
 			if (verifyEpochCookie(isEpochCookieSet())) {
 				checkSession(CONFIG.nick);
-			} else {
-				alert('darn?');
-			}
+			} 
 		}
 		
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
