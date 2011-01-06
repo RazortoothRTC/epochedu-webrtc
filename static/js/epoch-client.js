@@ -672,6 +672,7 @@ function longPoll (data) {
 
 //submit a new message to the server
 function send(msg, type) {
+  // alert('send called');
   if (CONFIG.debug === false) {
     // XXX should be POST
     // XXX should add to messages immediately
@@ -1036,6 +1037,7 @@ $(document).ready(function() {
 		//lock the UI while waiting for a response
 	    showLoad();
 
+		/*
 		$(".start").click(function () {
 			var msg = "#startsession";
 			alert('got startsession click');
@@ -1051,7 +1053,7 @@ $(document).ready(function() {
 			send(msg, "endsession");
 			return false;
 		});
-		
+		*/
 		
 		
 		if ($.mobile) {
@@ -1112,6 +1114,23 @@ $(document).ready(function() {
 				);
 				messageDispatcher(cmd, data);
 			});
+			$('#chat').live('pageshow',function(event, ui){
+				$(".start").click(function () {
+					var msg = "#startsession";
+					alert('got startsession click');
+				    // if (!util.isBlank(msg)) send(msg);
+					send(msg, "startsession");
+					return false;
+				});
+
+				$(".stop").click(function () {
+					var msg = "#endsession";
+					alert('got stopsession click');
+				    // if (!util.isBlank(msg)) send(msg);
+					send(msg, "endsession");
+					return false;
+				});
+			}
 			$('#sync').live('pageshow',function(event, ui){
 				// Get the sync content list
 				var $thispage = $(this);
