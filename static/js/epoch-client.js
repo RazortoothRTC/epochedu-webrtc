@@ -602,7 +602,7 @@ function longPoll (data) {
 			break;
 		
 		case "endsession":
-		 	alert('ended a class');
+		 	// alert('ended a class');
 			isInSession = false;
 			if (!teacher) {
 				if ($.mobile) { 
@@ -672,7 +672,7 @@ function longPoll (data) {
 
 //submit a new message to the server
 function send(msg, type) {
-  alert('send called');
+  // alert('send called');
   jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
   // if (CONFIG.debug === false) {
     // XXX should be POST
@@ -1040,7 +1040,7 @@ $(document).ready(function() {
 
 		$(".start").click(function () {
 			var msg = "#startsession";
-			alert('got startsession click');
+			// alert('got startsession click');
 		    // if (!util.isBlank(msg)) send(msg);
 			send(msg, "startsession");
 			return false;
@@ -1048,7 +1048,7 @@ $(document).ready(function() {
 	
 		$(".stop").click(function () {
 			var msg = "#endsession";
-			alert('got stopsession click');
+			// alert('got stopsession click');
 		    if (!util.isBlank(msg)) send(msg);
 			// send(msg, "endsession");
 			return false;
