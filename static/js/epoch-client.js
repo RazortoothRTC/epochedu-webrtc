@@ -578,12 +578,14 @@ function longPoll (data) {
 			isInSession = true;
 			if (!teacher) {
 				// alert('started a class - checking if user is in session: ' + isUserInSession());
-				if (verifySession(CONFIG.id)) { // XXX ? why
+				// if (verifySession(CONFIG.id)) { // XXX ? why
+				if (isUserInSession()) { // XXX ? why
 					if (!$.mobile) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
 						$('#dialog').find('#waiting').remove();
 					} else { // XXX We need to do better than this and know what our UI is
+						alert('Starting the class');
 						// $('#loginpanel').
 						$('.ui-dialog').dialog('close'); 
 						// $('#waiting').text("");
