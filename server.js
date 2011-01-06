@@ -223,7 +223,7 @@ function channelFactory() {
 	    while (messages.length > MESSAGE_BACKLOG)
 	      messages.shift();
 	
-		if (type == "dumpsession") { // Dump old messages in backlog
+		if (type == "endsession") { // Dump old messages in backlog
 			messages = [];
 		}
   };
