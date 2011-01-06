@@ -1061,8 +1061,6 @@ $(document).ready(function() {
 					isInSession = false;
 					msg = "#endsession";
 					$('#sessionstate').text('State: [Stopped]');
-					alert('Class has ended');
-					logoutSession();
 				} else {
 					isInSession = true;
 					msg = "#startsession";
