@@ -577,10 +577,10 @@ function longPoll (data) {
 			// alert('started a class');
 			isInSession = true;
 			if (!teacher) {
-				// alert('started a class - checking if user is in session: ' + isUserInSession());
+				alert('started a class - checking if user is in session: ' + isUserInSession());
 				// if (verifySession(CONFIG.id)) { // XXX ? why
 				// if (isUserInSession()) { // XXX ? why
-				if ($CONFIG.id) {
+				// if (isUserInSession()) {
 					if (!$.mobile) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
@@ -592,10 +592,10 @@ function longPoll (data) {
 						// $('#waiting').text("");
 						$('#dialog').find('#waiting').remove();
 					}
-				} else {
+				// } /* else {
 					// If you aren't logged in, bump back to login screen
 					showLogin();
-				}
+				} */
 			} else {
 				// DO something in case there are two teachers
 			}
