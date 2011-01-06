@@ -176,7 +176,7 @@ function verifyEpochCookie(sessionid) {
 	           , url: "/rejoin"
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
-					alert('cannot rejoin');
+					// alert('cannot rejoin');
 					invalidateEpochCookie(sessionid);
 					showLogin(getChannel());
 	             }
