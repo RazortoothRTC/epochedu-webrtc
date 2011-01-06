@@ -592,10 +592,10 @@ function longPoll (data) {
 						// $('#waiting').text("");
 						$('#dialog').find('#waiting').remove();
 					}
-				// } /* else {
+				/* } else {
 					// If you aren't logged in, bump back to login screen
 					showLogin();
-				} */
+				}  */
 			} else {
 				// DO something in case there are two teachers
 			}
