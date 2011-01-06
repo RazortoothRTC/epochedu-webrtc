@@ -101,12 +101,13 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b13-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b14-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
 	 	Removed dumping of messages on endsession.\n\
 		Working on sync issues. Trying to re-fix mcpmodestart \n \
+		Have what appears to be working fix for crappy start/stop session bug. Try on plug. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

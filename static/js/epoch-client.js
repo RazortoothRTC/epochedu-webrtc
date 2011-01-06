@@ -1054,16 +1054,35 @@ $(document).ready(function() {
 			return false;
 		});
 		
-		
-		
 		if ($.mobile) {
 			// XXX This doesn't work :(
+			/*
 			$('#sendurl').attr('disabled', 'disabled');
 			$('#sendviewer').attr('disabled', 'disabled');
 			$('#endviewer').attr('disabled', 'disabled');
 			$('#preview').attr('disabled', 'disabled');
 			$('#sendlocal').attr('disabled', 'disabled');
 			$('#sync').attr('disabled', 'disabled');
+			*/
+			$('.stop').hide();
+			$('.start').hide();
+			$('.reset').hide();
+			$("#stopstartsubmit").click(function () {
+				var msg;
+				
+				if (isInSession) {
+					msg = "#endsession";
+					$('#sessionstate').text('State: [Stopped]');
+				} else {
+					msg = "#startsession";
+					$('#sessionstate').text('State: [Started]');
+				}
+				// alert('got a ' + msg + ' click');
+			    // if (!util.isBlank(msg)) send(msg);
+				// send(msg, "endsession");
+				send(msg);
+				return false;
+			});
 			$("#contentdelivery").change(function (e) { // XXX Make sure when this is fixed, fix it for #mcpcommands
 				var cmd;
 				var data;

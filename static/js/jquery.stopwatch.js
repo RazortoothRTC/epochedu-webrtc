@@ -1,3 +1,4 @@
+/* Modifed by RT to fix some problem with event bubbling/android/jqery/jqm messup */
 (function($) {
 	jQuery.fn.stopwatch = function() {
 		var clock = $(this);
@@ -17,10 +18,22 @@
 		var s = clock.find('.sec');
 		var start = clock.find('.start');
 		var stop = clock.find('.stop');
-		var reset = clock.find('.reset')
-		
+		var reset = clock.find('.reset');
+		var stopstart = $('#stopstartsubmit');
+		var state = 0; // 0 = stopped , 1 = running
 		stop.hide();
-
+		
+		stopstart.bind('click', function() {
+			if (state == 0) {
+				state = 1;
+				timer = setInterval(do_time, 1000);
+			} else {
+				state = 0;
+				clearInterval(timer);
+			}
+		
+		});
+		
 		start.bind('click', function() {
 			timer = setInterval(do_time, 1000);
 			stop.show();
@@ -43,6 +56,14 @@
 			stop.hide();
 			start.show();
 		});
+		
+		this.startTimer = function() {
+			timer = setInterval(do_time, 1000);
+		}
+		
+		this.stopTimer = function() {
+			clearInterval(timer);
+		}
 		
 		function do_time() {
 			// parseInt() doesn't work here...
