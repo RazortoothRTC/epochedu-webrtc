@@ -260,7 +260,7 @@ function channelFactory() {
   setInterval(function () {
     var now = new Date();
     while (callbacks.length > 0 && now - callbacks[0].timestamp > 30*1000) {
-	  sys.puts('clearing old callbacks');
+	  sys.puts('clearing old callbacks for date: ' + new Date(callbacks[0].timestamp));
       callbacks.shift().callback([]);
     }
   }, 3000);
