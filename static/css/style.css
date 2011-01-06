@@ -45,51 +45,55 @@ li.link4 a.ui-btn-up-a { border: 1px solid #222; background: #333333; font-weigh
 li.link4 a.ui-btn-hover-a { border: 1px solid #000; background: #444444; font-weight: bold; color: #fff;  text-shadow: 0 -1px 1px #000; text-decoration: none; background-image: -moz-linear-gradient(top, #1b68c2, #01479a); background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #1b68c2),color-stop(1, #01479a));   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#1b68c2', EndColorStr='#01479a')";   }
 
 span#html {
-	background:url('../images/css/html-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/html.png') no-repeat;
 }
 
 span#htm {
-	background:url('../images/css/html-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/html.png') no-repeat;
 }
 
 span#txt {
-	background:url('../images/css/TXT-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/txt.png') no-repeat;
 }
 
 span#pdf {
-	background:url('../images/css/pdf-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/pdf.png') no-repeat;
 }
 
 span#ppt {
-	background:url('../images/css/ppt-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/pps.png') no-repeat;
 }
 
 span#jpg {
-	background:url('../images/css/jpg-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/image2.png') no-repeat;
 }
 
 span#mp4 {
-	background:url('../images/css/MP4-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/video.png') no-repeat;
 }
 
 span#mp3 {
-	background:url('../images/css/WAV-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/sound.png') no-repeat;
 }
 
 span#flv {
-	background:url('../images/css/FLV-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/video.png') no-repeat;
 }
 
 span#3gp {
-	background:url('../images/css/3GP-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/video.png') no-repeat;
 }
 
 span#wav {
-	background:url('../images/css/WAV-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/sound.png') no-repeat;
 }
 
 span#apk {
-	background:url('../images/css/WAV-icon.png') no-repeat;
+	background:url('../images/css/mimetypes/apk.png') no-repeat;
+}
+
+span#py {
+	background:url('../images/css/mimetypes/source_py.png') no-repeat;
 }
 
 #ci-template {

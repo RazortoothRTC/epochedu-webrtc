@@ -235,7 +235,7 @@ function verifySession(sessionid) {
 	           , data: { id: sessionid, channel: getChannel() }
 	           , error: function (xhr, text, err) {
 					invalidateEpochCookie();
-					if (!first_poll) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
+					// XXX DEBUGON if (!first_poll) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
 					// alert('Session is not alive: ');
 	             }
 	           , success: function(data) {	 		 
@@ -759,6 +759,7 @@ function showMobileChat(nick) {
 	$('#dialog').find('#waiting').remove();
 	// $('#waiting').remove();
 	$('.ui-dialog').dialog('close');
+	$('#nickname').text(nick);
 	// $(":input:text:visible:first").focus(); 
 }
 
@@ -766,7 +767,7 @@ function showMobileChat(nick) {
 function showChat (nick) {
   $("#toolbar").show();
   // $(":input:text:visible:first").focus();
-  $("#nick").text(nick);
+  $("#nickname").text(nick);
   if (teacher) { 
 	$('#dialog').jqmHide();
   	scrollDown();
@@ -861,29 +862,6 @@ function setStatusMessage(selector, message, id) {
 	$(selector).find('span#' + id).addClass('error-message').text(statusMessage); // XXX We can make this more generic
 }
 
-function updateTeacherContent(contentlist) {
-	var contents = contentlist;
-	var listitemdata = '';
-	
-	// XXX Probably should clear the existing items, in case this is a refresh
-	$.each(contents, function(i, content) {
-		var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-		itemi = 'item' + (i+1);
-		fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-		mime = fqname.split('.')[1].toLowerCase();
-		filename = fqname.split('.')[0];
-		contentli = $('#ci-template').clone(); // Clone all the events!
-		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').text(filename);
-		contentli.find('.ui-btn').attr('for', itemi);
-		contentli.find('.custom').attr('id', itemi).attr('name', itemi).attr('value', content);
-		$('#resourceslist').append(contentli);
-		// listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><label for="'+ itemi +'">' + filename + '</label></li>';
-		
-		contentli.show();
-	});
-	$('#resourceslist input').checkboxradio();
-}
-
 function updateTeacherContent2(contentlist) {
 	var contents = contentlist;
 	var listitemdata = '';
@@ -896,7 +874,7 @@ function updateTeacherContent2(contentlist) {
 		mime = fqname.split('.')[1].toLowerCase();
 		filename = fqname.split('.')[0];
 		contentli = $('#ci-template').clone(); // Clone all the events!
-		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').html(filename + '- <em>' + mime + '</em>');
+		contentli.removeAttr('id', '#ci-template').find('span.ui-btn-text').html(filename + '- <em>['+ mime + ']</em>');
 		contentli.find('.ui-btn').attr('for', itemi);
 		contentli.find('.ui-btn-inner').attr('id', mime);
 		contentli.find('.custom').attr('id', itemi).attr('name', itemi).attr('value', content);
