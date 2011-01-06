@@ -579,7 +579,8 @@ function longPoll (data) {
 			if (!teacher) {
 				// alert('started a class - checking if user is in session: ' + isUserInSession());
 				// if (verifySession(CONFIG.id)) { // XXX ? why
-				if (isUserInSession()) { // XXX ? why
+				// if (isUserInSession()) { // XXX ? why
+				if ($CONFIG.id) {
 					if (!$.mobile) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
