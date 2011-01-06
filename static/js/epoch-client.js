@@ -215,6 +215,7 @@ function logoutSession() {
 	partSession();
 	showLogin(getChannel());
 }
+
 function showLogin(channel) {
 	var usertype;
 	setStatusMessage('#loginform', ' ', 'status');
@@ -747,10 +748,12 @@ function showWaiting(nick, channel) {
 
 function checkSession(nick) {
 	if (isInSession) {
+		alert('show chat');
 		showMobileChat(nick);
 	} else if (nick != "#") {
 		showWaiting(nick);
 	} else {
+		alert('showLogin');
 		showLogin(getChannel());
 	}
 }
@@ -809,20 +812,6 @@ function onConnect (session) {
   if (!teacher) {
 	setEpochCookie(CONFIG.id, starttime);
 	checkSession(CONFIG.nick);
-	/* if (isInSession) {
-		if (verifyEpochEduCookie(CONFIG.id)) {
-			checkSession(CONFIG.nick);
-		} else {
-			showLogin();
-		}
-	} */
-	
-	/* if (!isEpochCookieSet()) {
-		setEpochCookie(CONFIG.id, starttime); // Set the cookie
-	} *//* else {
-		verifyEpochEduCookie(CONFIG.id);
-	} */
-	
   } else {
 	setEpochCookie(CONFIG.id, starttime); // Set the cookie
 	if ($.mobile) {

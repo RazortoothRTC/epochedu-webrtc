@@ -37,19 +37,24 @@
 		*/
 
 		if (!isLoggedIn()) {
-
 			showLogin('{%= channel%}');
+			// alert('showing login');
 		} else {
 			nick = CONFIG.nick;
 			if (verifyEpochCookie(isEpochCookieSet())) {
+				// alert('verified cookie');
 				checkSession(CONFIG.nick);
-			} 
+				// alert('done checking session');
+			} else {
+				// alert('did not verify cookie');
+				logoutSession();
+			}
 		}
 		
 		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
 		$('#qadialog').jqm({modal:false, autofire:true}); */
-		var h = $(window).height();
-        var w = $(window).width();
+		/* var h = $(window).height();
+        var w = $(window).width(); */
 	});
 </script>
 <script type="text/javascript">
