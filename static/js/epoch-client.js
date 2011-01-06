@@ -602,7 +602,7 @@ function longPoll (data) {
 			break;
 		
 		case "endsession":
-		 	// alert('ended a class');
+		 	alert('ended a class');
 			isInSession = false;
 			if (!teacher) {
 				if ($.mobile) { 
