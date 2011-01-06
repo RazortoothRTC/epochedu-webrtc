@@ -748,12 +748,12 @@ function showWaiting(nick, channel) {
 
 function checkSession(nick) {
 	if (isInSession) {
-		alert('show chat');
+		// alert('show chat');
 		showMobileChat(nick);
 	} else if (nick != "#") {
 		showWaiting(nick);
 	} else {
-		alert('showLogin');
+		// alert('showLogin');
 		showLogin(getChannel());
 	}
 }
