@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b19-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b20-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
@@ -113,6 +113,7 @@ WIP = "MCP command work in progress.\n \
 		Logout done. \n \
 		Fixing some UI considerations \n \
 		Fixing broken epochedud + cleanup additional error \n \
+		Added a bugfix for messed up student rejoin. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
