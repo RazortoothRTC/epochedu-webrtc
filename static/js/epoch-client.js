@@ -1038,14 +1038,14 @@ $(document).ready(function() {
 
 		$(".start").click(function () {
 			var msg = "#startsession";
-			// alert('got startsession click');
+			alert('got startsession click');
 		    if (!util.isBlank(msg)) send(msg);
 			return false;
 		});
 	
 		$(".stop").click(function () {
 			var msg = "#endsession";
-			// alert('got stopsession click');
+			alert('got stopsession click');
 		    if (!util.isBlank(msg)) send(msg);
 			return false;
 		});
