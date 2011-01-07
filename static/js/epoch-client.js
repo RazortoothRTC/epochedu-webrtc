@@ -1029,7 +1029,7 @@ $(document).ready(function() {
 			isClassInSession = false;
 			msg = "#endsession";
 			$("#entry").attr("value", msg);
-			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 			// send(msg, msg);
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
