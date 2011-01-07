@@ -622,11 +622,13 @@ function longPoll (data) {
 		 	// alert('ended a class');
 			isInSession = false;
 			if (!teacher) {
-				if ($.mobile) { 
-					$.mobile.changePage("loginpanel", "slideup");
-					showWaiting(CONFIG.nick);
-				} else {	
-					$('#dialog').jqmShow();
+				if (isUserInSession()) {
+					if ($.mobile) { 
+						$.mobile.changePage("loginpanel", "slideup");
+						showWaiting(CONFIG.nick);
+					} else {	
+						$('#dialog').jqmShow();
+					}
 				}
 			}
 			break;
