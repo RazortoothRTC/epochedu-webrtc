@@ -1085,7 +1085,7 @@ $(document).ready(function() {
 				
 				if (isClassInSession) {
 					isClassInSession = false;
-					msg = "#endsession";
+					msg = "farty";
 					$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 				} else {
 					isClassInSession = true;
