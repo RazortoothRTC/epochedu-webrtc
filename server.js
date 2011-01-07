@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b26-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b27-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
@@ -723,7 +723,6 @@ fu.get("/recv", function (req, res) {
 });
 
 fu.get("/send", function (req, res) {
-  sys.puts("send received message type = " + type);
   var id = qs.parse(url.parse(req.url).query).id;
   var text = qs.parse(url.parse(req.url).query).text;
   var type = qs.parse(url.parse(req.url).query).type;
@@ -731,6 +730,7 @@ fu.get("/send", function (req, res) {
   var payload = qs.parse(url.parse(req.url).query).payload;
   var channel = channels[chan];
   var sessions = channel.sessions;
+  sys.puts("send received message type = " + type);
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
 	  res.simpleJSON(400, { error: "Channel required"});
