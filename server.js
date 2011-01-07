@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b35-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b36-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
@@ -114,6 +114,7 @@ WIP = "MCP command work in progress.\n \
 		don't do any UI updates ?  \
 		Add a start/stop session message onto addMessage.  Fix for logout showing waiting page. \
 		Try a different approach, append the message to the text field. \
+		Issue with login stuck in waiting if user joins after session is started .\
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -189,15 +190,15 @@ function channelFactory() {
 				break;
 			case "startsession":
 				sys.puts(nick + " startsession");
-				state = channelstates['IN_CLASS'];
+				this.state = channelstates['IN_CLASS'];
 				break;
 			case "endsession":
 				sys.puts(nick + " endsession");
-				state = channelstates['NOT_IN_CLASS'];
+				this.state = channelstates['NOT_IN_CLASS'];
 				break;
 			case "dumpsession":
 				sys.puts(nick + " dumpsession");
-				state = channelstates['NOT_IN_CLASS'];
+				this.state = channelstates['NOT_IN_CLASS'];
 				break;
 			case "sendviewer":
 				sys.puts(nick + " sendviewer");
