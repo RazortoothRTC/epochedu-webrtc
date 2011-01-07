@@ -1020,16 +1020,16 @@ $(document).ready(function() {
 			isClassInSession = false;
 			msg = "endsession";
 			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
-			send(msg, msg);
+			// send(msg, msg);
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
 			isClassInSession = true;
 			msg = "startsession";
 			// $('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
-			send(msg, msg);
+			
 			// addMessage("", "Class Session has started.", new Date(), "error");
 		}
-		
+		send(msg, msg);
 		return false;
 	});
   } else {
