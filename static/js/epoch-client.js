@@ -1030,6 +1030,7 @@ $(document).ready(function() {
 			msg = "#endsession";
 			$("#entry").attr("value", msg);
 			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+			$('.chatscroll').children().remove();
 			// send(msg, msg);
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
