@@ -226,7 +226,7 @@ function channelFactory() {
 	    while (messages.length > MESSAGE_BACKLOG)
 	      messages.shift();
 	
-		if (type == "endsession") { // Dump old messages in backlog
+		if (type == "dumpsession") { // Dump old messages in backlog
 			messages = [];
 		}
   };
@@ -723,6 +723,7 @@ fu.get("/recv", function (req, res) {
 });
 
 fu.get("/send", function (req, res) {
+  sys.puts("send received message type = " + type);
   var id = qs.parse(url.parse(req.url).query).id;
   var text = qs.parse(url.parse(req.url).query).text;
   var type = qs.parse(url.parse(req.url).query).type;
@@ -740,7 +741,7 @@ fu.get("/send", function (req, res) {
 	  return;
   }
   if (!type) type = "msg"; // XXX Are there any side effects to this?
-  sys.puts("send received message type = " + type);
+  
   var session = sessions[id];
   if (!session) {
 	sys.puts('Error 400: no such session for id');
