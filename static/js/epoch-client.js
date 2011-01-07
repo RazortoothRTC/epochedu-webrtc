@@ -691,7 +691,7 @@ function longPoll (data) {
 
 //submit a new message to the server
 function send(msg, type) {
-  // alert('send called');
+  alert('send called' + msg);
   jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
   // if (CONFIG.debug === false) {
     // XXX should be POST
