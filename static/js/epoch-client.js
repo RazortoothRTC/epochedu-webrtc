@@ -691,7 +691,7 @@ function longPoll (data) {
 
 //submit a new message to the server
 function send(msg, type) {
-  alert('send called' + msg);
+  // alert('send called' + msg);
   // jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) {}, "json");
 
   if (CONFIG.debug === false) {
@@ -699,10 +699,10 @@ function send(msg, type) {
 		url: "/send",
 		data: {id: CONFIG.id, text: msg, type: type, channel: getChannel()},
 		success: function(data, textStatus, XMLHttpRequest){
-			alert('Success send');
+			// alert('Success send');
 		},
 		complete: function complete(XMLHttpRequest, textStatus){
-			alert('done');
+			// alert('done');
 		},
 		error: handleError
 	});
@@ -1019,11 +1019,11 @@ $(document).ready(function() {
 		if (isClassInSession) {
 			isClassInSession = false;
 			msg = "endsession";
-			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 		} else {
 			isClassInSession = true;
 			msg = "startsession";
-			$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
+			// $('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
 		}
 		send(msg, msg);
 		return false;
