@@ -692,21 +692,39 @@ function longPoll (data) {
 //submit a new message to the server
 function send(msg, type) {
   alert('send called' + msg);
-  jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { alert('result ' + data); }, "json");
-  alert('done with send');
-  // if (CONFIG.debug === false) {
+  // jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) {}, "json");
+
+  if (CONFIG.debug === false) {
+	$.ajax({
+		url: "/send",
+		success: function(data, textStatus, XMLHttpRequest){
+			alert('Success send');
+		},
+		complete: function complete(XMLHttpRequest, textStatus){
+			alert('done');
+		},
+		error: handleError
+	});
     // XXX should be POST
     // XXX should add to messages immediately
   //   jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
-  // }
+  }
 }
 
+function handleError(myReqObj,textStatus,errorThrown) {
+	alert("Error: "+myReqObj.number
+		+"\nType: "+textStatus.name
+		+"\nDescription: "+errorThrown.description
+		+"\nSource Object Id: "+myReqObj.id
+	);
+}
 //push a viewer out to clients XXX This is identical to send :( 
 function sendviewer(msg, type) {
   if (CONFIG.debug === false) {
     // XXX should be POST
     // XXX should add to messages immediately
     jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
+	
   }
 }
 
@@ -994,6 +1012,21 @@ $(document).ready(function() {
 	    $("#entry").attr("value", ""); // clear the entry field.
 		return false;
 	});
+	$("#stopstartsubmit").bind('tap', function() {
+		var msg;
+		
+		if (isClassInSession) {
+			isClassInSession = false;
+			msg = "endsession";
+			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+		} else {
+			isClassInSession = true;
+			msg = "startsession";
+			$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
+		}
+		send(msg, msg);
+		return false;
+	});
   } else {
 	$(".csubmit").click(function() {
 		var msg = $("#entry").attr("value").replace("\n", "");
@@ -1051,23 +1084,6 @@ $(document).ready(function() {
 
 		//lock the UI while waiting for a response
 	    showLoad();
-
-/*
-		$(".start").click(function () {
-			var msg = "#startsession";
-		    if (!util.isBlank(msg)) send(msg);
-
-			return false;
-		});
-	
-		$(".stop").click(function () {
-			var msg = "#endsession";
-
-		    if (!util.isBlank(msg)) send(msg);
-
-			return false;
-		});
-*/
 		
 		if ($.mobile) {
 			// XXX This doesn't work :(
@@ -1080,21 +1096,7 @@ $(document).ready(function() {
 			$('#sync').attr('disabled', 'disabled');
 			*/
 
-			$("#stopstartsubmit").bind('tap', function() {
-				var msg;
-				
-				if (isClassInSession) {
-					isClassInSession = false;
-					msg = "endsession";
-					$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
-				} else {
-					isClassInSession = true;
-					msg = "startsession";
-					$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
-				}
-				send(msg, msg);
-				return false;
-			});
+			
 			$("#contentdelivery").change(function (e) { // XXX Make sure when this is fixed, fix it for #mcpcommands
 				var cmd;
 				var data;
