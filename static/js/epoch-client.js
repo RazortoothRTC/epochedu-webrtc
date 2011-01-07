@@ -1018,7 +1018,7 @@ $(document).ready(function() {
 		
 		if (isClassInSession) {
 			isClassInSession = false;
-			msg = "endsession";
+			msg = "startsession";
 			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
