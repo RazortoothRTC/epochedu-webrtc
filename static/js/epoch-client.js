@@ -218,6 +218,7 @@ function displayLogin() {
 	setStatusMessage('#loginform', ' ', 'status');
 	$('#dialog').find('#waiting').remove();
 	$.mobile.changePage("loginpanel", "fade");
+	$('#loginform').show();
 	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
 	$("#loginpanel").find("span#usertype").html("<em>" + usertype + "</em>");
 }
@@ -615,6 +616,7 @@ function longPoll (data) {
 				}
 			} else {
 				// DO something in case there are two teachers
+				addMessage("", "Class Session has started", new Date(), "error");
 			}
 			break;
 		
@@ -630,6 +632,8 @@ function longPoll (data) {
 						$('#dialog').jqmShow();
 					}
 				}
+			} else {
+				addMessage("", "Class Session has ended!", new Date(), "error");
 			}
 			break;
 		

@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b32-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b33-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
@@ -112,6 +112,7 @@ WIP = "MCP command work in progress.\n \
 		Fix bug with user on login screen, and stopsession is received, user is pushed to waiting screen. \
 		Some kind of problem updating UI text near button, seems to kill our request? \
 		don't do any UI updates ?  \
+		Add a start/stop session message onto addMessage.  Fix for logout showing waiting page. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
