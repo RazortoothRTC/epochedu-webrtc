@@ -84,6 +84,10 @@ span#3gp {
 	background:url('../images/css/mimetypes/video.png') no-repeat;
 }
 
+span#3gpp {
+	background:url('../images/css/mimetypes/video.png') no-repeat;
+}
+
 span#wav {
 	background:url('../images/css/mimetypes/sound.png') no-repeat;
 }
@@ -94,6 +98,16 @@ span#apk {
 
 span#py {
 	background:url('../images/css/mimetypes/source_py.png') no-repeat;
+}
+
+span.inclass {
+	width: 24; height: 24;
+	background:url('../images/css/agt_runit.png') no-repeat;
+}
+
+span.notinclass {
+	width: 24; height: 24;
+	background:url('../images/css/agt_action_fail.png') no-repeat;
 }
 
 #ci-template {

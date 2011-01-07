@@ -37,7 +37,7 @@ var CONFIG = { debug: false
 
 var nicks = [];
 var teacher = false;
-var isInSession = false;
+var isClassInSession = false;
 var EPOCH_COOKIE = "epochedu_cookie";
 var COOKIE_TIMEOUT_IN_MILLIS = 60 * 60 * 1000; // 1 hour 
 var VERIFY_SESSION_INTERVAL_IN_MILLIS = 30000; // 1hour 
@@ -598,7 +598,7 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
-			isInSession = true;
+			isClassInSession = true;
 			if (!teacher) {
 				if (isUserInSession()) {
 					if (!$.mobile) {
@@ -620,7 +620,7 @@ function longPoll (data) {
 		
 		case "endsession":
 		 	// alert('ended a class');
-			isInSession = false;
+			isClassInSession = false;
 			if (!teacher) {
 				if (isUserInSession()) {
 					if ($.mobile) { 
@@ -760,7 +760,7 @@ function showWaiting(nick, channel) {
 }
 
 function checkSession(nick) {
-	if (isInSession) {
+	if (isClassInSession) {
 		// alert('show chat');
 		showMobileChat(nick);
 	} else if (nick != "#") {
@@ -818,7 +818,7 @@ function onConnect (session) {
   CONFIG.id   = session.id;
   starttime   = new Date(session.starttime);
   rss         = session.rss;
-  isInSession = session.channelstate;
+  isClassInSession = session.channelstate;
   updateRSS();
   updateUptime();
 
@@ -827,7 +827,7 @@ function onConnect (session) {
 	showMobileChat(CONFIG.nick);
   } else {
 	// alert('is student');
-	if (!isInSession) {
+	if (!isClassInSession) {
 		showWaiting(CONFIG.nick, getChannel());
 	} else {
 		showMobileChat(CONFIG.nick);
@@ -1082,34 +1082,18 @@ $(document).ready(function() {
 			$("#stopstartsubmit").bind('tap', function() {
 				var msg;
 				
-				if (isInSession) {
-					isInSession = false;
+				if (isClassInSession) {
+					isClassInSession = false;
 					msg = "#endsession";
-					$('#sessionstate').text('State: [Stopped]');
+					$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 				} else {
-					isInSession = true;
+					isClassInSession = true;
 					msg = "#startsession";
-					$('#sessionstate').text('State: [Started]');
+					$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
 				}
 				send(msg);
 				return false;
 			});
-			/* $("#stopstartsubmit").click(function () {
-				var msg;
-				
-				if (isInSession) {
-					isInSession = false;
-					msg = "#endsession";
-					$('#sessionstate').text('State: [Stopped]');
-				} else {
-					isInSession = true;
-					msg = "#startsession";
-					$('#sessionstate').text('State: [Started]');
-				}
-				send(msg);
-				return false;
-			});
-			*/
 			$("#contentdelivery").change(function (e) { // XXX Make sure when this is fixed, fix it for #mcpcommands
 				var cmd;
 				var data;
