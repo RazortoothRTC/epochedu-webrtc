@@ -1085,14 +1085,14 @@ $(document).ready(function() {
 				
 				if (isClassInSession) {
 					isClassInSession = false;
-					msg = "farty";
+					msg = "endsession";
 					$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 				} else {
 					isClassInSession = true;
-					msg = "#startsession";
+					msg = "startsession";
 					$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
 				}
-				send(msg);
+				send(msg, msg);
 				return false;
 			});
 			$("#contentdelivery").change(function (e) { // XXX Make sure when this is fixed, fix it for #mcpcommands
