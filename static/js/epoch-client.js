@@ -212,7 +212,14 @@ function partSession() {
 
 function displayLogin() {
 	var channel = getChannel();
+	var usertype;
+	if (isTeacher()) usertype = "Teacher's"; else usertype = "Student's";
+	
+	setStatusMessage('#loginform', ' ', 'status');
+	$('#dialog').find('#waiting').remove();
 	$.mobile.changePage("loginpanel", "fade");
+	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
+	$("#loginpanel").find("span#usertype").html("<em>" + usertype + "</em>");
 }
 
 function doLogout() {
@@ -593,10 +600,7 @@ function longPoll (data) {
 			// alert('started a class');
 			isInSession = true;
 			if (!teacher) {
-				// alert('started a class - checking if user is in session: ' + isUserInSession());
-				// if (verifySession(CONFIG.id)) { // XXX ? why
-				// if (isUserInSession()) { // XXX ? why
-				// if (isUserInSession()) {
+				if (isUserInSession()) {
 					if (!$.mobile) {
 						$('#dialog').jqmHide();
 						// $('#waiting').text("");
@@ -608,10 +612,7 @@ function longPoll (data) {
 						// $('#waiting').text("");
 						$('#dialog').find('#waiting').remove();
 					}
-				/* } else {
-					// If you aren't logged in, bump back to login screen
-					showLogin();
-				}  */
+				}
 			} else {
 				// DO something in case there are two teachers
 			}
@@ -815,6 +816,7 @@ function onConnect (session) {
   CONFIG.id   = session.id;
   starttime   = new Date(session.starttime);
   rss         = session.rss;
+  isInSession = session.channelstate;
   updateRSS();
   updateUptime();
 
@@ -1074,10 +1076,8 @@ $(document).ready(function() {
 			$('#sendlocal').attr('disabled', 'disabled');
 			$('#sync').attr('disabled', 'disabled');
 			*/
-			$('.stop').hide();
-			$('.start').hide();
-			$('.reset').hide();
-			$("#stopstartsubmit").click(function () {
+
+			$("#stopstartsubmit").bind('tap', function() {
 				var msg;
 				
 				if (isInSession) {
@@ -1089,12 +1089,25 @@ $(document).ready(function() {
 					msg = "#startsession";
 					$('#sessionstate').text('State: [Started]');
 				}
-				// alert('got a ' + msg + ' click');
-			    // if (!util.isBlank(msg)) send(msg);
-				// send(msg, "endsession");
 				send(msg);
 				return false;
 			});
+			/* $("#stopstartsubmit").click(function () {
+				var msg;
+				
+				if (isInSession) {
+					isInSession = false;
+					msg = "#endsession";
+					$('#sessionstate').text('State: [Stopped]');
+				} else {
+					isInSession = true;
+					msg = "#startsession";
+					$('#sessionstate').text('State: [Started]');
+				}
+				send(msg);
+				return false;
+			});
+			*/
 			$("#contentdelivery").change(function (e) { // XXX Make sure when this is fixed, fix it for #mcpcommands
 				var cmd;
 				var data;

@@ -101,12 +101,14 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b24-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b25-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
 	 	Undo session management. \
 		Add fixed inline footer. \
+		Moved location of #stopstart button down to send button.  \
+		Fix bug with user on login screen, and if startsession is received, user enters automatically \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -253,7 +255,7 @@ function channelFactory() {
   setInterval(function () {
     var now = new Date();
     while (callbacks.length > 0 && now - callbacks[0].timestamp > 30*1000) {
-	  sys.puts('clearing old callbacks for date: ' + new Date(callbacks[0].timestamp));
+	  // sys.puts('clearing old callbacks for date: ' + new Date(callbacks[0].timestamp));
       callbacks.shift().callback([]);
     }
   }, 3000);
@@ -593,6 +595,7 @@ fu.get("/join", function (req, res) {
                       , nick: session.nick
                       , rss: mem.rss
                       , starttime: starttime
+					  , channelstate: channels[chan].state
                       });
 });
 

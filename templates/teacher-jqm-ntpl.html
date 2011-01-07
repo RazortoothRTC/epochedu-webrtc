@@ -6,7 +6,7 @@
 {%block 'title' %}Welcome to class: {%= channel%}{%/block %}
 
 {%block 'body-scripts' %}
-<script type="text/javascript" src="/static/js/jquery.stopwatch.js"></script>
+{* <script type="text/javascript" src="/static/js/jquery.stopwatch.js"></script> *}
 <link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 <script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 <script type="text/javascript">
@@ -28,7 +28,7 @@
 		
 		displayLogin();
 		
-		$('#timer').stopwatch();
+		// $('#timer').stopwatch();
 	});
 </script>
 <script type="text/javascript">
@@ -50,7 +50,6 @@
 <div data-role="page" id="chat">
 
 	<div data-role="header" data-id="header" data-position="fixed">
-		<div id="stopstartsubmit" data-role="button">Start/Stop</div><span id="sessionstate"></span>
 		<div id="branding">
 			<h1>Classroom: {%= channel%}</h1>
 		</div>
@@ -88,6 +87,7 @@
 		<div data-role="fieldcontain" class="chatinput">
 			    <input type="text" name="name" id="entry" value=""  />
 				<div id="csubmit" data-role="button">Send</div>
+				<div id="stopstartsubmit" data-role="button">Start/Stop</div><span id="sessionstate"></span>
 		</div>
 		<ul class="footernav">
 			<li class="link1 active"><a href="#">Chat</a></li>
