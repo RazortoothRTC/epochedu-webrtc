@@ -697,6 +697,7 @@ function send(msg, type) {
   if (CONFIG.debug === false) {
 	$.ajax({
 		url: "/send",
+		data: {id: CONFIG.id, text: msg, type: type, channel: getChannel()},
 		success: function(data, textStatus, XMLHttpRequest){
 			alert('Success send');
 		},
