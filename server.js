@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b27-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v13-b28-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Doing some fixes with regards to messages + session.\n \
 		Prep for CES setup.\n \
@@ -110,6 +110,7 @@ WIP = "MCP command work in progress.\n \
 		Moved location of #stopstart button down to send button.  \
 		Fix bug with user on login screen, and if startsession is received, user enters automatically \
 		Fix bug with user on login screen, and stopsession is received, user is pushed to waiting screen. \
+		Some kind of problem updating UI text near button, seems to kill our request? \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -226,7 +227,7 @@ function channelFactory() {
 	    while (messages.length > MESSAGE_BACKLOG)
 	      messages.shift();
 	
-		if (type == "dumpsession") { // Dump old messages in backlog
+		if (type == "endsession") { // Dump old messages in backlog
 			messages = [];
 		}
   };
