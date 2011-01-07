@@ -111,7 +111,7 @@ WIP = "MCP command work in progress.\n \
 		Fix bug with user on login screen, and if startsession is received, user enters automatically \
 		Fix bug with user on login screen, and stopsession is received, user is pushed to waiting screen. \
 		Some kind of problem updating UI text near button, seems to kill our request? \
-		Don't dump the messages in the session.
+		Don't dump the messages in the session. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
