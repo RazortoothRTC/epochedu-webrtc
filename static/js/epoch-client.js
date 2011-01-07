@@ -1018,15 +1018,18 @@ $(document).ready(function() {
 		
 		if (isClassInSession) {
 			isClassInSession = false;
-			msg = "startsession";
-			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+			msg = "endsession";
+			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+			send(msg, msg);
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
 			isClassInSession = true;
 			msg = "startsession";
+			$('#sessionstate').html("<img src='/static/images/css/agt_r.png' />");
+			send(msg, msg);
 			// addMessage("", "Class Session has started.", new Date(), "error");
 		}
-		send(msg, msg);
+		
 		return false;
 	});
   } else {
