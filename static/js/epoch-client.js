@@ -842,7 +842,12 @@ function onConnect (session) {
   CONFIG.id   = session.id;
   starttime   = new Date(session.starttime);
   rss         = session.rss;
-  isClassInSession = session.channelstate;
+  if (session.channelstate == 1) { 
+	isClassInSession = true;
+  } else {
+	isClassInSession = false;
+  }
+
   updateRSS();
   updateUptime();
 
@@ -1022,18 +1027,18 @@ $(document).ready(function() {
 		
 		if (isClassInSession) {
 			isClassInSession = false;
-			msg = "endsession";
-			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+			msg = "#endsession";
+			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 			// send(msg, msg);
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
 			isClassInSession = true;
-			msg = "startsession";
-			// $('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
-			
+			msg = "#startsession";
+			$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
 			// addMessage("", "Class Session has started.", new Date(), "error");
 		}
-		send(msg, msg);
+		$("#entry").attr("value", msg);
+		// send(msg, msg);
 		return false;
 	});
   } else {
