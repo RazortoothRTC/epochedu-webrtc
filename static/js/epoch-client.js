@@ -624,6 +624,7 @@ function longPoll (data) {
 		 	// alert('ended a class');
 			isClassInSession = false;
 			if (!teacher) {
+				$('.chatscroll').children().remove();
 				if (isUserInSession()) {
 					if ($.mobile) { 
 						$.mobile.changePage("loginpanel", "slideup");
@@ -633,8 +634,10 @@ function longPoll (data) {
 					}
 				}
 			} else {
+				$('.chatscroll').children().remove();
 				addMessage("", "Class Session has ended!", new Date(), "error");
 			}
+			
 			break;
 		
 		case "mcprequest":
@@ -1029,17 +1032,17 @@ $(document).ready(function() {
 		if (isClassInSession) {
 			isClassInSession = false;
 			msg = "#endsession";
-			$("#entry").attr("value", msg);
+			// $("#entry").attr("value", msg);
 			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
-			$('.chatscroll').children().remove();
-			// send(msg, msg);
+			
+			send(msg, "endsession");
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
 			isClassInSession = true;
 			msg = "#startsession";
 			$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
 			// addMessage("", "Class Session has started.", new Date(), "error");
-			send(msg, msg);
+			send(msg, "startsession");
 		}
 		
 		
