@@ -702,11 +702,12 @@ function send(msg, type) {
 	$.ajax({
 		url: "/send",
 		data: {id: CONFIG.id, text: msg, type: type, channel: getChannel()},
+		dataType: "text",
 		success: function(data, textStatus, XMLHttpRequest){
-			// alert('Success send');
+			// alert('Success send data ' + data + ' textStatus ' + ' resp: ' + XMLHttpRequest.responseText);
 		},
 		complete: function complete(XMLHttpRequest, textStatus){
-			// alert('done');
+			// alert('/send done');
 		},
 		error: handleError
 	});
