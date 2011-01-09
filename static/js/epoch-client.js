@@ -1026,21 +1026,21 @@ $(document).ready(function() {
 	    $("#entry").attr("value", ""); // clear the entry field.
 		return false;
 	});
-	$("#stopstartsubmit").bind('tap', function() {
+	$("#stopstartsubmit").live('tap', function() {
 		var msg;
 		
 		if (isClassInSession) {
 			isClassInSession = false;
 			msg = "#endsession";
 			// $("#entry").attr("value", msg);
-			$('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
+			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 			
 			send(msg, "endsession");
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
 			isClassInSession = true;
 			msg = "#startsession";
-			$('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
+			// $('#sessionstate').html("<img src='/static/images/css/agt_runit.png' />");
 			// addMessage("", "Class Session has started.", new Date(), "error");
 			send(msg, "startsession");
 		}
