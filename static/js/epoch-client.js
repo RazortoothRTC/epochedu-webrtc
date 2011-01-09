@@ -272,6 +272,25 @@ function updateUsersLink ( ) {
 }
 
 function updateUserStatus(nick, timestamp) {
+        if (teacher) {
+                if (timestamp > 0) {
+                        if ($('#userstatus > li').length > 0) {
+                                if ($('li#' + nick).length > 0) {
+                                        // alert('found a match, do not insert');
+                                        // XXX No op is dumb, fix this later
+                                } else {
+                                        $('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+                                }
+                        } else {
+                                $('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+                        }
+                } else {
+                        $('li#' + nick).remove();
+                }
+        }
+}
+
+function updateUserStatus2(nick, timestamp) {
 	if (timestamp > 0) {
 		if ((nick != CONFIG.nick) && (CONFIG.nick != '#')){ // Only update if it's not the teacher
 			$('li#waiting').remove();
@@ -312,7 +331,11 @@ function userJoin(nick, timestamp) {
   //update the UI
   updateUsersLink();
   if (teacher) {
-  	updateUserStatus(nick, timestamp);
+	if (!$.mobile) {
+		updateUserStatus(nick, timestamp);
+	} else {
+  		updateUserStatus2(nick, timestamp);
+	}
   }
 }
 
@@ -352,7 +375,11 @@ function userPart(nick, timestamp) {
   }
   //update the UI
   updateUsersLink();
-  updateUserStatus(nick, -1);
+	if (!$.mobile) {
+		updateUserStatus(nick, -1);
+	} else {
+  		updateUserStatus2(nick, -1);
+	}
 }
 
 // utility functions
@@ -409,9 +436,8 @@ function scrollDown () {
 //from is the user, text is the body and time is the timestamp, defaulting to now
 //_class is a css class to apply to the message, usefull for system events
 function addMessage (from, text, time, _class) {
-  
-  if (text === null)
-    return;
+  // alert('addMessage');
+  if (text === null) return;
 
   if (time == null) {
     // if the time is null or undefined, use the current time.
@@ -438,16 +464,18 @@ function addMessage (from, text, time, _class) {
 	text = text.replace(util.cmdRE, '<a target="_blank" onclick="reloadURL()" href="#">' + cmd + '</a>');
   }
   text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
-  // XXX Remove references to JScrollpane	
   $pane = $('.chatscroll');
-  // var autoScroll = $pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'); 
-  if (document.jScrollPane) {
+  var autoScroll = ($pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'));
+
+  if (!$.mobile) {
+	// alert('appending message');
   	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
   } else {
+	// alert('appending mobile message');
 	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>'));
   } 
   // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
-  // if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
+  if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
   Shadowbox.setup(); // XXX Make sure I still need this
 }
 
@@ -456,7 +484,8 @@ function mcpDispatcher(mcpRequest) {
 		var mcpResponse = {
 		   apduresp: mcpRequest.ticketid,
 		   sender: CONFIG.id,
-		   status: '<status code, negative for error conditions, 0 for success>',
+		   status: 
+		'<status code, negative for error conditions, 0 for success>',
 		   timestamp: '<isoformat DATETIME>'
 		};
 		
@@ -551,6 +580,7 @@ function longPoll (data) {
           if(!CONFIG.focus){
             CONFIG.unread++;
           }
+		  // alert('addMsg = ' + message.text);
           addMessage(message.nick, message.text, message.timestamp);
           break;
 
@@ -842,28 +872,37 @@ function onConnect (session) {
     return;
   }
 
-  CONFIG.nick = session.nick;
-  CONFIG.id   = session.id;
-  starttime   = new Date(session.starttime);
-  rss         = session.rss;
+  	CONFIG.nick = session.nick;
+  	CONFIG.id   = session.id;
+  	starttime   = new Date(session.starttime);
+  	rss         = session.rss;
+	updateRSS();
+  	updateUptime();
   if (session.channelstate == 1) { 
 	isClassInSession = true;
   } else {
 	isClassInSession = false;
   }
 
-  updateRSS();
-  updateUptime();
+  
 
   //update the UI to show the chat
   if (teacher) {
-	showMobileChat(CONFIG.nick);
+	if (!$.mobile) {
+		showChat(CONFIG.nick);
+	} else {
+		showMobileChat(CONFIG.nick);
+	}
   } else {
 	// alert('is student');
 	if (!isClassInSession) {
 		showWaiting(CONFIG.nick, getChannel());
 	} else {
-		showMobileChat(CONFIG.nick);
+		if (!$.mobile) {
+			showChat(CONFIG.nick);
+		} else {
+			showMobileChat(CONFIG.nick);
+		}
 	}
 }
   /*
@@ -1074,6 +1113,88 @@ $(document).ready(function() {
   });
 
   $("#usersLink").click(outputUsers); // We won't implement this yet in the UI, but maybe for teacher XXX
+  $("#connectButton").click(function () {
+        $(this).parents().find('span.error-message').removeClass('error-message').text('');
+        var nick = $("#nickInput").attr("value");
+
+        //dont bother the backend if we fail easy validations
+
+        if (!nick || nick.length < 1) {
+                setStatusMessage('#loginform', "Login name is required.", 'status');
+            return false;
+        }
+
+    if (nick.length > 50) {
+        // showConnect();
+                // $('#dialog').jqm().show();
+                setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
+      return false;
+    }
+        //more validations
+    if (/[^\w_\-^!]/.exec(nick)) {
+	      setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
+	      return false;
+	    }
+
+	        //lock the UI while waiting for a response
+	    showLoad();
+
+	        $(".start").click(function () {
+	                var msg = "#startsession";
+	            if (!util.isBlank(msg)) send(msg);
+	                return false;
+	        });
+
+	        $(".stop").click(function () {
+	                var msg = "#endsession";
+	            if (!util.isBlank(msg)) send(msg);
+	                return false;
+	        });
+
+	        $("#sendurl").click(function (e) {
+               $('#resources').find('input:checked').each(
+                   function(index) {
+					// alert('click sendviewer ' + msg);
+					if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+						this.checked = false;
+					}
+				);
+				return false;
+			});
+
+			$("#endviewer").click(function (e) {
+				var msg = "#endviewer";
+				if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
+				return false;
+			});
+
+			$("#sendlocal").click(function (e) {
+				$('#resources').find('input:checked').each(
+                    function(index) {
+                                var msg = this.value;
+                                // alert('click sendviewer local ' + msg);
+                            if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
+                                this.checked = false;
+                    }
+                );
+
+                return false;
+			});
+
+		    //make the actual join request to the server
+		    $.ajax({ cache: false
+		           , type: "GET" // XXX should be POST
+		           , dataType: "json"
+		           , url: "/join"
+		           , data: { nick: nick, channel: getChannel() }
+		           , error: function (xhr, text, err) {
+		                                var errMsg =  eval("(" + xhr.responseText + ")");
+		                                setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
+		             }
+		           , success: onConnect
+		           });
+			return false;
+		});
 
   $(".logout").click(function() {
 		logoutSession();
@@ -1108,16 +1229,6 @@ $(document).ready(function() {
 		
 		if ($.mobile) {
 			// XXX This doesn't work :(
-			/*
-			$('#sendurl').attr('disabled', 'disabled');
-			$('#sendviewer').attr('disabled', 'disabled');
-			$('#endviewer').attr('disabled', 'disabled');
-			$('#preview').attr('disabled', 'disabled');
-			$('#sendlocal').attr('disabled', 'disabled');
-			$('#sync').attr('disabled', 'disabled');
-			*/
-
-			
 			$("#contentdelivery").change(function (e) { // XXX Make sure when this is fixed, fix it for #mcpcommands
 				var cmd;
 				var data;
@@ -1142,7 +1253,7 @@ $(document).ready(function() {
 				);
 				// XXX Handle multiple content selects
 				messageDispatcher(cmd, data); // XXX These commands only work with content
-		
+				$()
 				return false;
 			});
 			$("#mcpcommands").change(function (e) {

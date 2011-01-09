@@ -101,20 +101,9 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "ces2011-marvell-v13-b39-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "ces2011-marvell-v14-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
-		Doing some fixes with regards to messages + session.\n \
-		Prep for CES setup.\n \
-	 	Undo session management. \
-		Add fixed inline footer. \
-		Moved location of #stopstart button down to send button.  \
-		Fix bug with user on login screen, and if startsession is received, user enters automatically \
-		Fix bug with user on login screen, and stopsession is received, user is pushed to waiting screen. \
-		Some kind of problem updating UI text near button, seems to kill our request? \
-		don't do any UI updates ?  \
-		Add a start/stop session message onto addMessage.  Fix for logout showing waiting page. \
-		Try a different approach, append the message to the text field. \
-		Issue with login stuck in waiting if user joins after session is started .\
+		Post CES work to fix the v2 UI.  We're dumping v3. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -475,7 +464,7 @@ fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("/class-v1/[\\w\\.\\-]+", function(req, res) {
+fu.getterer("/class-v2/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var student_tpl = nTPL("./templates/epoch-student-v2.html");
@@ -499,7 +488,7 @@ fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("/classmoderator-v1/[\\w\\.\\-]+", function(req, res) {
+fu.getterer("/classmoderator-v2/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist); // V1
