@@ -101,11 +101,12 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v1-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v1-b3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Post CES work to fix the v2 UI.  We're dumping v3. \
 		Change the tag name. \
 		Fix for sendurl. \
+		Added typeface.js and scribble font to client. \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -728,7 +729,7 @@ fu.get("/send", function (req, res) {
   var payload = qs.parse(url.parse(req.url).query).payload;
   var channel = channels[chan];
   var sessions = channel.sessions;
-  sys.puts("send received message type = " + type);
+
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
 	  res.simpleJSON(400, { error: "Channel required"});
