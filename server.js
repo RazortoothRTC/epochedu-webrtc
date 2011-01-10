@@ -348,7 +348,7 @@ function loadSessions() {
 function broadcastRestart() {
 	sys.puts('broadcastRestart');
 	fu.db['channels'].forEach(function(key, val) {
-	    console.log('broadcastRestart: Found key: %s, val: %j', key, val);
+	    // console.log('broadcastRestart: Found key: %s, val: %j', key, val);
 		var chan = channels[key];
 		if (chan) {
 			chan.botMessage('Restarted Server');
