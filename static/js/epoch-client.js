@@ -1155,7 +1155,8 @@ $(document).ready(function() {
                $('#resources').find('input:checked').each(
                    function(index) {
 					// alert('click sendviewer ' + msg);
-					if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+					var msg = this.value;
+					if (!util.isBlank(msg)) send(msg, "sendurl");
 						this.checked = false;
 					}
 				);
