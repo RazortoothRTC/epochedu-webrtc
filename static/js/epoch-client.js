@@ -469,7 +469,8 @@ function addMessage (from, text, time, _class) {
 
   if (!$.mobile) {
 	// alert('appending message');
-  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon"><div class="typeface-js" style="font-family: Fh_Scribble; font-size: 98; font-weight: normal;">' + text + '</div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="almontewoodgrain_regular"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  	Cufon.refresh();
   } else {
 	// alert('appending mobile message');
 	
