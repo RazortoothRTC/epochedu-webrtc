@@ -8,6 +8,7 @@
 # npm install nodemon
 # 
 # uncommment for autoupdates
+# hg pull
 # hg update
 # hg merge
 export NODE_PATH=/home/epoched/root
