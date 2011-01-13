@@ -6,6 +6,12 @@
 # prereqs
 # npm install nTPL
 # npm install nodemon
+# 
+# uncommment for autoupdates
+# hg update
+# hg merge
 export NODE_PATH=/home/epoched/root
 cd /home/epoched/epochedu-work
+# uncomment for development mode
+# nodemon server.js 
 node server.js
