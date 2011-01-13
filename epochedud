@@ -8,9 +8,9 @@
 # npm install nodemon
 # 
 # uncommment for autoupdates
-# hg pull
-# hg update
-# hg merge
+# sudo -u epoched hg pull
+# sudo -u epoched hg update
+# sudo -u epoched hg merge
 export NODE_PATH=/home/epoched/root
 cd /home/epoched/epochedu-work
 # uncomment for development mode
