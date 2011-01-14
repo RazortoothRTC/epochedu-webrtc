@@ -816,9 +816,7 @@ function showWaiting(nick, channel) {
 	$('#loginform').hide();
 	$('#dialog').append('<div id="waiting" class="modalrow"><H2>Hello ' + nick + ' , Waiting for class session: ' 
 	+ getChannel() + ' to begin ...</H2><br><p>When class begins, you will receive instructions \
-	from your teacher on content to view.  Please standby.<br/><div class="modalrow"> \
-		<input id="logoutButton" type="image" src="/static/images/logout-btn-short.png" class="logout"/> \
-	</div></div>');
+	from your teacher on content to view.  Please standby.<br/></div>');
 }
 
 function checkSession(nick) {
