@@ -225,6 +225,8 @@ function displayLogin() {
 
 function doLogout() {
 	partSession();
+	$('#account').hide();
+	$('#nickname').text('');
 	displayLogin();
 }
 
