@@ -650,7 +650,7 @@ function longPoll (data) {
 				}
 			} else {
 				// DO something in case there are two teachers
-				addMessage("", "Class Session has started", new Date(), "error");
+				// addMessage("", "Class Session has started", new Date(), "error");
 			}
 			break;
 		
