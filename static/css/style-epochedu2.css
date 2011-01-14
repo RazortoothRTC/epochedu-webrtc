@@ -332,6 +332,16 @@ li.wav {
 	border:none;
 }
 
+.logout-big {
+	width:184px;
+	height:42px;
+	background:url('../images/logout-big.png');
+	display:block;
+	text-indent:-10000px;
+	float:right;
+	border:none;
+}
+
 .stopwatch {
 	width:350px;
 }

@@ -16,8 +16,7 @@
   <meta name="author" content="">
 
   <!--  Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width; initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>  
   <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
   <link rel="shortcut icon" href="/static/images/favicon.ico">
   <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
@@ -35,9 +34,17 @@
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="/static/js/modernizr-1.5.min.js"></script>
   <script src="/static/js/cufon-yui.js" type="text/javascript"></script>
+  <!-- Common Fonts -->
+  <!-- Chalkboard: http://www.dafont.com/chalkboard.font -->
+  <!-- fh Scribble: http://www.dafont.com/fh-scribble.font-->
+  <!-- AlmonteWoodgrain: http://www.urbanfonts.com/fonts/Almonte_Woodgrain.htm -->
   <script src="/static/fonts/almonte-snow.cufonfonts.js" type="text/javascript"></script>
+  <script src="/static/fonts/chalkboard_400.font.js" type="text/javascript"></script>
+  <script src="/static/fonts/fh_scribble_regular.typeface.js" type="text/javascript"></script>
   <script type="text/javascript">
-	Cufon.replace('body', { fontFamily: 'AlmonteWoodgrain-Regular', hover: true }); 
+	Cufon.replace('.almontewoodgrain_regular', { fontFamily: 'AlmonteWoodgrain-Regular', hover: true }); 
+	Cufon.replace('.fh_scribble_regular', { fontFamily: 'Fh_Scribble', hover: true }); 
+	Cufon.replace('.chalkboard_400', { fontFamily: 'chalkboard', hover: true }); 
   </script>
   {*
 		add Additional CSS or META tags here

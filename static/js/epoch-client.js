@@ -469,7 +469,7 @@ function addMessage (from, text, time, _class) {
 
   if (!$.mobile) {
 	// alert('appending message');
-  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="almontewoodgrain_regular"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="chalkboard_400"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
   	Cufon.refresh();
   } else {
 	// alert('appending mobile message');
@@ -816,7 +816,9 @@ function showWaiting(nick, channel) {
 	$('#loginform').hide();
 	$('#dialog').append('<div id="waiting" class="modalrow"><H2>Hello ' + nick + ' , Waiting for class session: ' 
 	+ getChannel() + ' to begin ...</H2><br><p>When class begins, you will receive instructions \
-	from your teacher on content to view.  Please standby.<br/></div>');
+	from your teacher on content to view.  Please standby.<br/><div class="modalrow"> \
+		<input id="logoutButton" type="image" src="/static/images/logout-btn-short.png" class="logout"/> \
+	</div></div>');
 }
 
 function checkSession(nick) {
@@ -842,6 +844,7 @@ function showMobileChat(nick) {
 //transition the page to the main chat view, putting the cursor in the textfield
 function showChat (nick) {
   $("#toolbar").show();
+  $('#account').show();
   // $(":input:text:visible:first").focus();
   $("#nickname").text(nick);
   if (teacher) { 
@@ -1114,7 +1117,7 @@ $(document).ready(function() {
 	return false;
   });
 
-  $("#usersLink").click(outputUsers); // We won't implement this yet in the UI, but maybe for teacher XXX
+  $("#usersLink").click(outputUsers); // Only for teacher UI
   $("#connectButton").click(function () {
         $(this).parents().find('span.error-message').removeClass('error-message').text('');
         var nick = $("#nickInput").attr("value");
