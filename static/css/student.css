@@ -248,3 +248,52 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 .error-message {
 	color: #cc3300;
 }
+
+/* PingImmedia tab */
+#notificationTab { 
+	position: fixed; 
+	z-index: 5;
+	right: 0; 
+	top: 130px; 
+	width: 24px; 
+	height: 112px; 
+	padding: 5px; 
+	background: transparent; 
+	overflow: hidden; 
+	border: 3px solid #fff; 
+	border-right: none; 
+	border-radius: 
+	10px 0 0 10px; 
+	-moz-border-radius: 
+	10px 0 0 10px; 
+	-webkit-border-radius: 10px 0 0 10px; 
+	box-shadow: 0 0 .5em rgba(0, 0, 0, .6); 
+	-moz-box-shadow: 0 0 .6em rgba(0, 0, 0, .6); 
+	-webkit-box-shadow: 0 0 .6em rgba(0, 0, 0, .6); 
+	list-style: none; 
+}
+#notificationTabInner { 
+	position: fixed; 
+	z-index: 4; 
+	right: 0; top: 133px; 
+	width: 34px; 
+	height: 122px; 
+	padding: 0; 
+	background: #ef5b0a url("/res/Image/v4/follow-tab/follow-tab-bg.png") repeat-x 0 0; 
+	overflow: hidden; 
+	display: block; 
+	list-style: none; 
+	margin: 0; 
+	pacity: .75; 
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)"; 
+}
+
+#notificationTab li { margin: 4px 0; padding: 10px; }
+#notificationTab a { display: inline-block; width: 24px; background-position: 0 0; }
+#notificationTab a span { display: none; }
+#notificationTab a.wifistatus1 { height: 24px; background-image: url("../images/wifi-blue.png"); }
+#notificationTab a.wifistatus2 { height: 24px; background-image: url("../images/wifi-red.png"); }
+#notificationTab a.wifistatus:hover { background-position: 0 -24px; }
+#notificationTab a.sessionstatus1 { height: 24px; background-image: url("../images/blue-dot.png"); }
+#notificationTab a.sessionstatus2 { height: 24px; background-image: url("../images/red-dot.png"); }
+#notificationTab a.sessionstatus:hover { background-position: 0 -24px; }

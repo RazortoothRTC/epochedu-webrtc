@@ -227,6 +227,7 @@ function doLogout() {
 	partSession();
 	$('#account').hide();
 	$('#nickname').text('');
+	$('#notificationTabInner').find('a.sessionstatus1').removeClass('sessionstatus1').addClass('sessionstatus2');
 	displayLogin();
 }
 
@@ -471,7 +472,7 @@ function addMessage (from, text, time, _class) {
 
   if (!$.mobile) {
 	// alert('appending message');
-  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="chalkboard_400"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="fh_scribble_regular"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
   	Cufon.refresh();
   } else {
 	// alert('appending mobile message');
@@ -714,10 +715,12 @@ function longPoll (data) {
 		   	 var retryDuration = transmission_errors * 10*1000;
              addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
              transmission_errors += 1;
+			 $('#notificationTabInner').find('a.wifistatus1').removeClass('wifistatus1').addClass('wifistatus2');
              //don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
              setTimeout(longPoll, retryDuration);
            }
          , success: function (data) {
+			 if (transmission_errors > 0) $('#notificationTabInner').find('a.wifistatus2').removeClass('wifistatus2').addClass('wifistatus1');
              transmission_errors = 0;
 			 
              //if everything went well, begin another request immediately
@@ -883,6 +886,7 @@ function onConnect (session) {
   	rss         = session.rss;
 	updateRSS();
   	updateUptime();
+	$('#notificationTabInner').find('a.sessionstatus2').removeClass('sessionstatus2').addClass('sessionstatus1');
   if (session.channelstate == 1) { 
 	isClassInSession = true;
   } else {
