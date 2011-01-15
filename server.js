@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v1-b11-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v1-b12-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Post CES work to fix the v2 UI.  We're dumping v3.\n \
 		Change the tag name.\n \
@@ -113,6 +113,7 @@ WIP = "MCP command work in progress.\n \
 		Make teacher logout functional.\n \
 		Figured out bug in Fh_scribble.\n  \
 		Working on status icons in sidebar. \n \
+		Change routes ... use now default to old UI not v3 UI. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -461,13 +462,12 @@ fu.getterer("/cruzy", function(req, res) {
 	      channel: chan,
 	    }));
 });
-// fu.get("/class/[\\w\\.\\-]+", fu.staticHandler("templates/epoch-teacher-landing.html"));
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var student_tpl = nTPL("./templates/student-jqm-ntpl.html");
-	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM
+	  var student_tpl = nTPL("./templates/epoch-student-v2.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
 	  res.end(student_tpl({
 	      channel: chan,
 	    }));
@@ -483,14 +483,26 @@ fu.getterer("/class-v2/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
+fu.getterer("/class-v3/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var student_tpl = nTPL("./templates/student-jqm-ntpl.html");
+	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM
+	  res.end(student_tpl({
+	      channel: chan,
+	    }));
+});
+
+
+
 fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
-	var roomcl = JSON.stringify(contentlist);
-	// sys.puts(chan + ' = ' + roomcl);
+	var roomcl = JSON.stringify(contentlist); // V1
+		
 	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var teacher_tpl = nTPL("./templates/teacher-jqm-ntpl.html");
-	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM
+	  var teacher_tpl = nTPL("./templates/epoch-teacher-v2.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html");
 	  res.end(teacher_tpl({
 	      channel: chan,
 		  roomcl: roomcl,
@@ -522,6 +534,19 @@ fu.getterer("(/student|/teacher)", function(req, res) { // Match either student 
 	    }));
 });
 
+fu.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
+	var roomcl = JSON.stringify(contentlist);
+	// sys.puts(chan + ' = ' + roomcl);
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var teacher_tpl = nTPL("./templates/teacher-jqm-ntpl.html");
+	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // JQM
+	  res.end(teacher_tpl({
+	      channel: chan,
+		  roomcl: roomcl,
+	    }));
+});
 fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	var requrlobj = url.parse(req.url);
 	var chan = requrlobj.pathname.split("/")[2];
