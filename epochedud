@@ -10,9 +10,9 @@
 export NODE_PATH=/home/epoched/root
 cd /home/epoched/epochedu-work
 # uncommment for autoupdates
-# sudo -u epoched hg pull
+sudo -u epoched hg pull
+sudo -u epoched hg update
 # sudo -u epoched hg merge
-# sudo -u epoched hg update
 # uncomment for development mode
 # nodemon server.js 
 node server.js
