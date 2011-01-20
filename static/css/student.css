@@ -18,6 +18,8 @@ outline:0;
 #chat {
 	float:left;
 	margin:50px 30px 30px 30px;
+	/* margin:10% 1% 1% 5%; */
+	/* margin:90px 30px 30px 30px; */
 }
 
 #chat .cinput {
@@ -29,6 +31,7 @@ outline:0;
 	padding:0px 5px;
 	height:33px;
 	float:left;
+	/* margin: 0 0 0 20px; */
 }
 
 #chat .csubmit {
@@ -40,6 +43,19 @@ outline:0;
 	float:right;
 	margin-right:0px;
 }
+
+/*
+#chat .chatgui {
+	overflow: hidden;
+	height: 30px;
+	background: gray;
+	bottom: 0;
+	position: fixed;
+	width:80%;
+	padding:20px 0px 20px 0px;
+	position: fixed;
+}
+*/
 
 .msg {
 	clear:both;
@@ -249,7 +265,8 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 	color: #cc3300;
 }
 
-/* PingImmedia tab */
+/* notification tab */
+/*
 #notificationTab { 
 	position: fixed; 
 	z-index: 5;
@@ -297,3 +314,4 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 #notificationTab a.sessionstatus1 { height: 24px; background-image: url("../images/blue-dot.png"); }
 #notificationTab a.sessionstatus2 { height: 24px; background-image: url("../images/red-dot.png"); }
 #notificationTab a.sessionstatus:hover { background-position: 0 -24px; }
+*/

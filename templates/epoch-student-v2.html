@@ -58,9 +58,11 @@
 					</div>
 				</div>
 			</div>
-			<input id="entry" type="text" class="cinput"/>
-			<input type="image" src="/static/images/ask-btn-short2.png" class="qsubmit"/>
-			<input type="image" src="/static/images/submit.png" class="csubmit"/>
+			<div class="chatgui">
+				<input id="entry" type="text" class="cinput"/>
+				<input type="image" src="/static/images/ask-btn-short2.png" class="qsubmit"/>
+				<input type="image" src="/static/images/submit.png" class="csubmit"/>
+			</div>
 		</form>
 	</div>
 </div>
@@ -131,6 +133,8 @@
 		});
 	</script>
 	<script type="text/javascript">
+		// Android 10" Tablet screen dimensions 1024 x 521 PORTRAIT
+		// Android 10" Tablet screen dimensions 600 x 945 PORTRAIT
 		$(document).ready(function() {
 			$('body').addClass('bg');
 			$('.chatscroll').jScrollPane({
@@ -145,20 +149,25 @@
 			$('#qadialog').jqm({modal:false, autofire:true});
 			var h = $(window).height();
 	        var w = $(window).width();
+			// alert('width = ' + w + ' height = ' + h);
+			// $(".jScrollPaneContainer").css('height',(h < 600) ? 450 : 910).css('width',(w < 700) ? 500 : 845);
 	        $(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);
+			// $(".chatscroll").css('width',(w < 700) ? 500 : 845);
 			$(".chatscroll").css('width',(h < 600) ? 680 : 480);
+			// $(".msgcon").css('width',(h < 600) ? 600 : 350);
 			$(".msgcon").css('width',(h < 600) ? 600 : 350);
+			// $(".cinput").css('width',(h < 600) ? '80%' : '78%');
 			$(".cinput").css('width',(h < 600) ? '80%' : '78%');
 			// $(".bg").css('backgroundImage',(h < 600) ? 'url(/static/images/css/student-bg-h.jpg)' : 'url(/static/images/css/student-bg-v.jpg)').css('width',(h < 600) ? 580 : 300);
 			
 			$(window).resize(function(){
-			       	var h = $(window).height();
-			        var w = $(window).width();
+			       	var h = $(window).height(); // XXX Don't redeclare these
+			        var w = $(window).width();  // XXX Don't redeclare these
 			        $(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);
 					$(".chatscroll").css('width',(h < 600) ? 680 : 480);
 					$(".msgcon").css('width',(h < 600) ? 600 : 350);
 					$(".cinput").css('width',(h < 600) ? '80%' : '78%');
-			   });
+			});
 		});
 	</script>
 	<script type="text/javascript">

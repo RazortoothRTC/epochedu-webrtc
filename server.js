@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v1-b15-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v1-b18-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Post CES work to fix the v2 UI.  We're dumping v3.\n \
 		Change the tag name.\n \
@@ -115,6 +115,8 @@ WIP = "MCP command work in progress.\n \
 		Working on status icons in sidebar. \n \
 		Change routes ... use now default to old UI not v3 UI. \n \
 		Fix for epochedud. Testing so change the version. \n \
+		Working on CSS for student \n \
+		Had to fix this dumb bug with the GUI on student login https://www.pivotaltracker.com/story/show/9000725 \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

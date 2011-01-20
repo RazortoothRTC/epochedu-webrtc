@@ -210,6 +210,7 @@ function partSession() {
 	} 
 }
 
+/* JQM Depricate */
 function displayLogin() {
 	var channel = getChannel();
 	var usertype;
@@ -223,6 +224,7 @@ function displayLogin() {
 	$("#loginpanel").find("span#usertype").html("<em>" + usertype + "</em>");
 }
 
+/* JQM Depricate */
 function doLogout() {
 	partSession();
 	$('#account').hide();
@@ -242,6 +244,7 @@ function showLogin(channel) {
 	setStatusMessage('#loginform', ' ', 'status');
 	$('#dialog').find('#waiting').remove();
 	$('#loginform').show();
+	$('.chatgui').hide(); // XXX Hide this so it doesn't bounce around ... for some reason it fights for focus
 	if (isTeacher()) usertype = "Teacher's"; else usertype = "Student's";
 	$.mobile.changePage("loginpanel", "slideup");
 	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
@@ -431,7 +434,9 @@ util = {
 
 //used to keep the most recent messages visible
 function scrollDown () {
+  alert('scrollDown');
   window.scrollBy(0, 100000000000000000);
+  $("#entry").focus();
 }
 
 //inserts an event into the stream for display
@@ -472,7 +477,7 @@ function addMessage (from, text, time, _class) {
 
   if (!$.mobile) {
 	// alert('appending message');
-  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="fh_scribble_regular"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="chalkboard_400"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
   	Cufon.refresh();
   } else {
 	// alert('appending mobile message');
@@ -638,8 +643,9 @@ function longPoll (data) {
 			if (!teacher) {
 				if (isUserInSession()) {
 					if (!$.mobile) {
-						$('#dialog').jqmHide();
+						// $('#dialog').jqmHide();
 						// $('#waiting').text("");
+						showChat();
 						$('#dialog').find('#waiting').remove();
 					} else { // XXX We need to do better than this and know what our UI is
 						// alert('Starting the class');
@@ -848,12 +854,14 @@ function showMobileChat(nick) {
 function showChat (nick) {
   $("#toolbar").show();
   $('#account').show();
+  $("#entry").focus();
+  $('.chatgui').show();
   // $(":input:text:visible:first").focus();
   $("#nickname").text(nick);
-  if (teacher) { 
+  // if (teacher) { 
 	$('#dialog').jqmHide();
   	scrollDown();
-  }
+  // }
 }
 
 // XXX Change this to show title updates properly
@@ -1210,6 +1218,8 @@ $(document).ready(function() {
 		logoutSession();
 		return false;
   });
+
+  $('.chatgui').hide(); // XXX Hide this so it doesn't bounce around ... for some reason it fights for focus
 
   $('#loginform').submit(function() {
 		$(this).parents().find('span.error-message').removeClass('error-message').text('');

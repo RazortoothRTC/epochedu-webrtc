@@ -556,6 +556,7 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 }
 
 /* notification tab */
+/*
 #notificationTab { 
 	position: fixed; 
 	z-index: 5;
@@ -603,3 +604,4 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 #notificationTab a.sessionstatus1 { height: 24px; background-image: url("../images/blue-dot.png"); }
 #notificationTab a.sessionstatus2 { height: 24px; background-image: url("../images/red-dot.png"); }
 #notificationTab a.sessionstatus:hover { background-position: 0 -24px; }
+*/
