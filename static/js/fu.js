@@ -128,7 +128,6 @@ var server = createServer(function (req, res) {
 	
 	try {
 	  if (req.method === "GET" || req.method === "HEAD") {
-	    // var handler = getMap[url.parse(req.url).pathname] || notFound; // XXX Test for regex
 		var handler = false;
 		// XXX Do a quick lookup.  If there is no match
 		// Walk the regex object in a loop
