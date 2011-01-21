@@ -50,6 +50,16 @@ h1 {
 	left:40%;
 }
 
+.sync {
+	width:47px;
+	height:21px;
+	text-indent:-10000px;
+	background:url('../images/css/sync-button.gif');
+	display:block;
+	float:left;
+	margin-right:1px;
+}
+
 .local {
 	width:114px;
 	height:21px;
@@ -61,10 +71,10 @@ h1 {
 }
 
 .runviewer {
-	width:114px;
+	width:47px;
 	height:21px;
 	text-indent:-10000px;
-	background:url('../images/css/send-runviewer.gif');
+	background:url('../images/css/send-button.gif');
 	display:block;
 	float:left;
 	margin-right:1px;
@@ -84,11 +94,12 @@ h1 {
 }
 
 .endviewer {
-	width:30px;
+	width:47px;
 	height:21px;
 	text-indent:-10000px;
-	background:url('../images/css/stopx-sm.png');
+	background:url('../images/css/send-button.gif');
 	display:block;
+	background-position:left -21px;
 	float:left;
 }
 

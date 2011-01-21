@@ -1181,6 +1181,19 @@ $(document).ready(function() {
 				return false;
 			});
 
+			$("#sendviewer").click(function (e) {
+				$('#resources').find('input:checked').each( 
+				    function(index) {
+						var msg = this.value;
+						// alert('click sendviewer ' + msg);
+					    if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+						this.checked = false;
+				    } 
+				);
+
+				return false;
+			});
+			
 			$("#endviewer").click(function (e) {
 				var msg = "#endviewer";
 				if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
