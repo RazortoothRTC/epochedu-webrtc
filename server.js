@@ -107,7 +107,7 @@ WIP = "MCP command work in progress.\n \
 		MInor change in fu.js removed comments \n \
 		Missing eraser font added in \n \
 		Fix jumpy soft keyboard on teacher UI \n \
-		Fix missing message on waiting page after stopsession is clicked.
+		Fix missing message on waiting page after stopsession is clicked. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
