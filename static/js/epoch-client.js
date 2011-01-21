@@ -669,9 +669,10 @@ function longPoll (data) {
 				if (isUserInSession()) {
 					if ($.mobile) { 
 						$.mobile.changePage("loginpanel", "slideup");
-						showWaiting(CONFIG.nick);
+						showWaiting(CONFIG.nick, getChannel());
 					} else {	
 						$('#dialog').jqmShow();
+						showWaiting(CONFIG.nick, getChannel());
 					}
 				}
 			} else {

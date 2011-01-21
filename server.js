@@ -101,12 +101,13 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v2-b4-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v2-b5-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Post CES work to fix the v2 UI.  Updating to new (old) v3 UI. \n \
 		MInor change in fu.js removed comments \n \
 		Missing eraser font added in \n \
 		Fix jumpy soft keyboard on teacher UI \n \
+		Fix missing message on waiting page after stopsession is clicked.
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
