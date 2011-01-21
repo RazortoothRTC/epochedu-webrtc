@@ -101,22 +101,9 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v1-b18-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v2-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
-		Post CES work to fix the v2 UI.  We're dumping v3.\n \
-		Change the tag name.\n \
-		Fix for sendurl.\n \
-		Removed typeface and added cufon. Works on tablet.\n \
-		Fixed cufon added to fonts.\n \
-		Added logout button.\n \
-		Removed logout button from student.\n \
-		Make teacher logout functional.\n \
-		Figured out bug in Fh_scribble.\n  \
-		Working on status icons in sidebar. \n \
-		Change routes ... use now default to old UI not v3 UI. \n \
-		Fix for epochedud. Testing so change the version. \n \
-		Working on CSS for student \n \
-		Had to fix this dumb bug with the GUI on student login https://www.pivotaltracker.com/story/show/9000725 \n \
+		Post CES work to fix the v2 UI.  Updating to new (old) v3 UI. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -469,7 +456,7 @@ fu.getterer("/cruzy", function(req, res) {
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var student_tpl = nTPL("./templates/epoch-student-v2.html");
+	  var student_tpl = nTPL("./templates/epoch-student-v3.html");
 	  var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
 	  res.end(student_tpl({
 	      channel: chan,
@@ -504,7 +491,7 @@ fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var roomcl = JSON.stringify(contentlist); // V1
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var teacher_tpl = nTPL("./templates/epoch-teacher-v2.html");
+	  var teacher_tpl = nTPL("./templates/epoch-teacher-v3.html");
 	  var base = nTPL("./templates/boilerplate-ntpl.html");
 	  res.end(teacher_tpl({
 	      channel: chan,

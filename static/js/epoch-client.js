@@ -434,7 +434,7 @@ util = {
 
 //used to keep the most recent messages visible
 function scrollDown () {
-  alert('scrollDown');
+  // alert('scrollDown');
   window.scrollBy(0, 100000000000000000);
   $("#entry").focus();
 }
@@ -477,7 +477,7 @@ function addMessage (from, text, time, _class) {
 
   if (!$.mobile) {
 	// alert('appending message');
-  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="chalkboard_400"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
   	Cufon.refresh();
   } else {
 	// alert('appending mobile message');
