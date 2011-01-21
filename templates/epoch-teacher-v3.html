@@ -206,7 +206,7 @@
 		    handleOversize: "drag",
 			overlayColor: "#330099",
 			overlayOpacity: "0.75",
-		    modal: true,
+		    modal: false,
 			displayNav:         true,
 			handleUnsupported:  "link",
 			autoplayMovies:     true,
@@ -237,7 +237,7 @@
 				animateTo: true,
 			});
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
-			$('#dialog').jqm({modal:true}).jqmShow();
+			$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
 			$('#timer').stopwatch();
 		});
 	</script>

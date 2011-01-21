@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v2-b7-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v2-b8-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Post CES work to fix the v2 UI.  Updating to new (old) v3 UI. \n \
 		MInor change in fu.js removed comments \n \
@@ -110,6 +110,7 @@ WIP = "MCP command work in progress.\n \
 		Fix missing message on waiting page after stopsession is clicked. \n \
 		Fix for buttons ... send end sync is all we need.  Send and end are working for shadowbox content. \n \
 		Missing image buttons added back in. \n \
+		Fix shadowbox on teacher to not be modal. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
