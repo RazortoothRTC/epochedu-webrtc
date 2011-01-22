@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v2-b8-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v2-b9-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Post CES work to fix the v2 UI.  Updating to new (old) v3 UI. \n \
 		MInor change in fu.js removed comments \n \
@@ -111,6 +111,7 @@ WIP = "MCP command work in progress.\n \
 		Fix for buttons ... send end sync is all we need.  Send and end are working for shadowbox content. \n \
 		Missing image buttons added back in. \n \
 		Fix shadowbox on teacher to not be modal. \n \
+		Still working on fix for teacher interface. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -544,6 +545,21 @@ fu.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
 		  roomcl: roomcl,
 	    }));
 });
+
+fu.getterer("/epochtester/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
+	var roomcl = JSON.stringify(contentlist);
+	// sys.puts(chan + ' = ' + roomcl);
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var teacher_tpl = nTPL("./templates/epochtester.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html"); // JQM
+	  res.end(teacher_tpl({
+	      channel: chan,
+		  roomcl: roomcl,
+	    }));
+});
+
 fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	var requrlobj = url.parse(req.url);
 	var chan = requrlobj.pathname.split("/")[2];
