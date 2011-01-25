@@ -101,17 +101,10 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v2-b9-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
-		Post CES work to fix the v2 UI.  Updating to new (old) v3 UI. \n \
-		MInor change in fu.js removed comments \n \
-		Missing eraser font added in \n \
-		Fix jumpy soft keyboard on teacher UI \n \
-		Fix missing message on waiting page after stopsession is clicked. \n \
-		Fix for buttons ... send end sync is all we need.  Send and end are working for shadowbox content. \n \
-		Missing image buttons added back in. \n \
-		Fix shadowbox on teacher to not be modal. \n \
-		Still working on fix for teacher interface. \n \
+		Incorporating feedback for crayola demo from customer \n \
+		Remove Cufon \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
