@@ -81,7 +81,7 @@ _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
 			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'], # DEMOSETUP
 			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
-			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider/sdcard/content", 
+			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'], 
 			'ASCII_LOGO' : """
@@ -122,12 +122,15 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r6-b8-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b1-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	<P>MCP Work in progress. Prep for CES.  Reactivate MCPloop.  Bugfixing, put 148 back in temporarily. 
 	 and fixed a problem with global ismcpmodeon never getting set.  Also, fixed a few bugs in sync and kill with
 	regard to android vs. desktop mode.  Cleared up a few more issues with sync.  Now works on dev server.
 	Need to test on demo plug.
+	
+	Bug fixes for CES:
+	* contentrepourl is wrong .... has ANDROID_CONTENT_PATH on there twice TODO
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
