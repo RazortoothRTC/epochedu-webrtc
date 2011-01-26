@@ -683,8 +683,8 @@ function longPoll (data) {
 			break;
 		
 		case "mcprequest":
-			if (($.mobile) && (!teacher)) {
-				// alert('mcprequest');
+			if (!teacher) {
+				alert('mcprequest');
 				mcpDispatcher(message.payload);
 			}
 			break;
@@ -1213,6 +1213,17 @@ $(document).ready(function() {
                 return false;
 			});
 
+			$("#sync").click(function (e) {
+				$('#resources').find('input:checked').each( 
+				    function(index) {
+						var msg = this.value;
+						alert('click sync ' + msg);
+						messageDispatcher("sync", msg);
+						this.checked = false;
+				    } 
+				);
+				return false;
+			});
 		    //make the actual join request to the server
 		    $.ajax({ cache: false
 		           , type: "GET" // XXX should be POST
@@ -1287,7 +1298,6 @@ $(document).ready(function() {
 				);
 				// XXX Handle multiple content selects
 				messageDispatcher(cmd, data); // XXX These commands only work with content
-				$()
 				return false;
 			});
 			$("#mcpcommands").change(function (e) {
@@ -1355,6 +1365,8 @@ $(document).ready(function() {
 				// updateTeacherContent(roomcl);
 			});
 		} else {
+			// XXX IS THERE ANY REASON FOR THIS HERE?????
+			/*
 			$("#sendurl").click(function (e) {
 				$('#resources').find('input:checked').each( 
 				    function(index) {
@@ -1385,7 +1397,9 @@ $(document).ready(function() {
 				if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
 				return false;
 			});
-
+			
+			
+			
 			$("#sendlocal").click(function (e) {
 				$('#resources').find('input:checked').each( 
 				    function(index) {
@@ -1398,6 +1412,7 @@ $(document).ready(function() {
 
 				return false;
 			});
+			*/
 		}
 
 		if ($.mobile) {

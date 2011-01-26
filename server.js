@@ -101,10 +101,12 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b1-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b2-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Incorporating feedback for crayola demo from customer \n \
 		Remove Cufon \n \
+		Trying to fix url bar area to make it go away \n \
+		Fix broken mcprequests \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -421,6 +423,7 @@ fu.get("/testdirty", function(req, res) {
 //
 // XXX Need a default / route, maybe a splash page
 fu.get("/cruzy", fu.staticHandler("templates/chat.html")); // XXX TODO: Add a default chat room
+fu.get("/tester", fu.staticHandler("templates/tester.html")); // XXX TODO: Add a default chat room
 fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
@@ -444,15 +447,6 @@ fu.get("/about", function(req, res) {
 	res.end();
 });
 
-fu.getterer("/cruzy", function(req, res) {
-	var chan = DEFAULT_CHANNEL;
-	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var index_tpl = nTPL("./templates/index.html"); // XXX later, force this over to generic chat page
-	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html");
-	  res.end(index_tpl({
-	      channel: chan,
-	    }));
-});
 
 fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
@@ -575,6 +569,7 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 		res.end();
 	}
 });
+
 
 fu.get("/who", function (req, res) {
   var nicks = [];
