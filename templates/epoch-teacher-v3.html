@@ -4,6 +4,7 @@
 {%block 'title' %}Teachers: Welcome to class: {%= channel %}{%/block %}
 {%block 'css-styles' %}
 	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v3.css" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
 {%/block %}
 {%block 'head' %}
 	
@@ -70,6 +71,7 @@
 					<div class="userhistory">
 						<div class="userscroll">
 							<ul id="userstatus">
+								{*
 								<li class="online">Brian Langer</li>
 								<li class="offline">Collin Campbell</li>
 								<li class="online">Kristi Rooney</li>
@@ -90,6 +92,7 @@
 								<li class="online">Jon Scott</li>
 								<li class="online">Brianne LeMoigne</li>
 								<li class="online">Julie Goodman</li>
+								*}
 							</ul>
 						</div>
 					</div>
@@ -151,7 +154,7 @@
 		<!-- end media -->
 		<!-- media control -->
 		<div id="mediacontrol">
-			<a id="sendviewer" class="runviewer" href="#">Send Remote Viewer</a><a id="endviewer" class="endviewer" href="#">End Viewer</a><a id="sync" class="sync" href="#">Sync</a>
+			<span id="send"></span><span id="end"></span><span id="preview"></span><span id="sync"></span>
 		</div>
 		<!-- end media control -->
 		
@@ -239,6 +242,71 @@
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
 			$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
 			$('#timer').stopwatch();
+			$('#send').ninjaButtonCreate({
+			  icon:'mail', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				/* XXX Put this back into epoch-client.js once design is final */
+			    $('#resources').find('input:checked').each(
+			    function(index) {
+			        var msg = this.value;
+			        if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+			        this.checked = false;	
+					toggleNinjaButton('#mediacontrol', false);
+			    }
+			    );
+			  },
+			  state:'disabled',
+			  title:'Send' 
+			});
+			$('#preview').ninjaButtonCreate({
+			  icon:'video',
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				$('#resources').find('input:checked').each(
+			    	function(index) {
+				        var msg = this.value;
+				        if (!util.isBlank(msg)) openNewWindow(msg);
+				        this.checked = false;
+						toggleNinjaButton('#mediacontrol', false);
+				    }
+				);
+			  },
+			  state:'disabled',
+			  title:'Preview' 
+			});
+			$('#sync').ninjaButtonCreate({
+			  icon:'upload', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				/* XXX Put this back into epoch-client.js once design is final */
+				$('#resources').find('input:checked').each(
+			    	function(index) {
+				        var msg = this.value;
+				        messageDispatcher("sync", msg);
+				        this.checked = false;
+						toggleNinjaButton('#mediacontrol', false);
+				    }
+			    );
+			  },
+			  state:'disabled',
+			  title:'Sync' 
+			});
+			$('#end').ninjaButtonCreate({
+			  icon:'remove', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				/* XXX Put this back into epoch-client.js once design is final */
+				var msg = "#endviewer";
+			    if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
+				toggleNinjaButton('#mediacontrol', false);
+			    return false;
+			  },
+			  state:'disabled',
+			  title:'End' // text that is optional when there is an icon
+			});
+
+			
 		});
 	</script>
 	<script type="text/javascript">

@@ -368,6 +368,19 @@ function openNewWindow(url, options) {
 	window.open(url);
 	return false;
 }
+
+function toggleNinjaButton(selector, isEnabled) {
+	$(selector).children().each(
+		function(index){
+			
+			if (isEnabled) {
+				$(this).ninjaButtonEnable();
+			} else {
+				$(this).ninjaButtonDisable();
+			}
+		}
+	);
+}
 //handles someone leaving
 function userPart(nick, timestamp) {
   //put it in the stream
@@ -478,7 +491,7 @@ function addMessage (from, text, time, _class) {
   if (!$.mobile) {
 	// alert('appending message');
   	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-  	Cufon.refresh();
+  	// XXX Remove for customer Cufon.refresh();
   } else {
 	// alert('appending mobile message');
 	
@@ -1075,7 +1088,7 @@ $(document).ready(function() {
     $("#entry").attr("value", ""); // clear the entry field.
   });
 
-  if ($.mobile) {
+  if ($.mobile) { // JQM
 	$("#csubmit").bind('tap', function() {
 		// alert('tap event');
 		var msg = $("#entry").attr("value").replace("\n", "");
@@ -1105,7 +1118,7 @@ $(document).ready(function() {
 		
 		return false;
 	});
-  } else {
+  } else { // JQUERY
 	$(".csubmit").click(function() {
 		var msg = $("#entry").attr("value").replace("\n", "");
 	    if (!util.isBlank(msg)) send(msg);
@@ -1114,24 +1127,24 @@ $(document).ready(function() {
 	  });
 	}
 
-  $(".qsubmit").click(function() {
-	var msg = $("#entry").attr("value").replace("\n", "");
-    if (!util.isBlank(msg)) send(msg, "askquestion");
-    $("#entry").attr("value", ""); // clear the entry field.
-	return false;
-  });
+  	$(".qsubmit").click(function() {
+		var msg = $("#entry").attr("value").replace("\n", "");
+	    if (!util.isBlank(msg)) send(msg, "askquestion");
+	    $("#entry").attr("value", ""); // clear the entry field.
+		return false;
+	  });
 
-  $(".asubmit").click(function() {
+	$(".asubmit").click(function() {
 	// var msg = $("#answerform #entry").attr("value").replace("\n", "");
 	var msg = "Q: " + $('#question').text() + " : A:" + $("#answerform #entry").attr("value").replace("\n", "");
 	if (!util.isBlank(msg)) send(msg);
-    $("#entry").attr("value", ""); // clear the entry field.
-    $('#qadialog').jqmHide();
+	  $("#entry").attr("value", ""); // clear the entry field.
+	  $('#qadialog').jqmHide();
 	return false;
-  });
+	});
 
-  $("#usersLink").click(outputUsers); // Only for teacher UI
-  $("#connectButton").click(function () {
+  	$("#usersLink").click(outputUsers); // Only for teacher UI
+	$("#connectButton").click(function () {
         $(this).parents().find('span.error-message').removeClass('error-message').text('');
         var nick = $("#nickInput").attr("value");
 
@@ -1140,104 +1153,138 @@ $(document).ready(function() {
         if (!nick || nick.length < 1) {
                 setStatusMessage('#loginform', "Login name is required.", 'status');
             return false;
-        }
+	}
 
     if (nick.length > 50) {
         // showConnect();
-                // $('#dialog').jqm().show();
-                setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
+		// $('#dialog').jqm().show();
+		setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
       return false;
     }
         //more validations
     if (/[^\w_\-^!]/.exec(nick)) {
-	      setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
-	      return false;
-	    }
+		setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
+		return false;
+	}
 
-	        //lock the UI while waiting for a response
-	    showLoad();
+	//lock the UI while waiting for a response
+	showLoad();
 
-	        $(".start").click(function () {
-	                var msg = "#startsession";
-	            if (!util.isBlank(msg)) send(msg);
-	                return false;
-	        });
+	$(".start").click(function() {
+	    var msg = "#startsession";
+	    if (!util.isBlank(msg)) send(msg);
+	    return false;
+	});
 
-	        $(".stop").click(function () {
-	                var msg = "#endsession";
-	            if (!util.isBlank(msg)) send(msg);
-	                return false;
-	        });
+	$(".stop").click(function() {
+	    var msg = "#endsession";
+	    if (!util.isBlank(msg)) send(msg);
+	    return false;
+	});
 
-	        $("#sendurl").click(function (e) {
-               $('#resources').find('input:checked').each(
-                   function(index) {
-					// alert('click sendviewer ' + msg);
-					var msg = this.value;
-					if (!util.isBlank(msg)) send(msg, "sendurl");
-						this.checked = false;
+
+	$('#resources > li').click(function(e) {
+			var $cb = $(this).children('input[type="checkbox"]');
+			if ($cb.attr('checked')) {
+				$('#mediacontrol').children().each(
+					function(index){
+						$(this).ninjaButtonEnable();
 					}
 				);
-				return false;
-			});
-
-			$("#sendviewer").click(function (e) {
-				$('#resources').find('input:checked').each( 
-				    function(index) {
-						var msg = this.value;
-						// alert('click sendviewer ' + msg);
-					    if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
-						this.checked = false;
-				    } 
+			} else {
+				$('#mediacontrol').children().each(
+					function(index){
+						$(this).ninjaButtonDisable();
+					}
 				);
+			}
+	    }
+    );
 
-				return false;
-			});
-			
-			$("#endviewer").click(function (e) {
-				var msg = "#endviewer";
-				if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
-				return false;
-			});
 
-			$("#sendlocal").click(function (e) {
-				$('#resources').find('input:checked').each(
-                    function(index) {
-                                var msg = this.value;
-                                // alert('click sendviewer local ' + msg);
-                            if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
-                                this.checked = false;
-                    }
-                );
+	$("#sendurl").click(function(e) {
+	    $('#resources').find('input:checked').each(
+	    	function(index) {
+		        // alert('click sendviewer ' + msg);
+		        var msg = this.value;
+		        if (!util.isBlank(msg)) send(msg, "sendurl");
+		        this.checked = false;
+		    }
+	    );
+	    return false;
+	});
+	/* XXX DEPRICATED, NOW LIVES IN HTML TEMPLATE */
+	$("#sendviewer").click(function(e) {
+	    $('#resources').find('input:checked').each(
+	    function(index) {
+	        var msg = this.value;
+	        // alert('click sendviewer ' + msg);
+	        if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+	        this.checked = false;
+	    }
+	    );
 
-                return false;
-			});
+	    return false;
+	});
 
-			$("#sync").click(function (e) {
-				$('#resources').find('input:checked').each( 
-				    function(index) {
-						var msg = this.value;
-						alert('click sync ' + msg);
-						messageDispatcher("sync", msg);
-						this.checked = false;
-				    } 
-				);
-				return false;
-			});
-		    //make the actual join request to the server
-		    $.ajax({ cache: false
-		           , type: "GET" // XXX should be POST
-		           , dataType: "json"
-		           , url: "/join"
-		           , data: { nick: nick, channel: getChannel() }
-		           , error: function (xhr, text, err) {
-		                                var errMsg =  eval("(" + xhr.responseText + ")");
-		                                setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
-		             }
-		           , success: onConnect
-		           });
-			return false;
-		});
+	/* XXX DEPRICATED, NOW LIVES IN HTML TEMPLATE */
+	$("#endviewer").click(function(e) {
+	    var msg = "#endviewer";
+	    if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
+	    return false;
+	});
+
+	/* XXX DEPRICATED, NOW LIVES IN HTML TEMPLATE */
+	$("#sendlocal").click(function(e) {
+	    $('#resources').find('input:checked').each(
+	    function(index) {
+	        var msg = this.value;
+	        // alert('click sendviewer local ' + msg);
+	        if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
+	        this.checked = false;
+	    }
+	    );
+
+	    return false;
+	});
+	
+	/* XXX DEPRICATED, NOW LIVES IN HTML TEMPLATE */
+	$("#sync").click(function(e) {
+	    $('#resources').find('input:checked').each(
+	    function(index) {
+	        var msg = this.value;
+	        alert('click sync ' + msg);
+	        messageDispatcher("sync", msg);
+	        this.checked = false;
+	    }
+	    );
+	    return false;
+	});
+	//make the actual join request to the server
+	$.ajax({
+	    cache: false
+	    ,
+	    type: "GET"
+	    // XXX should be POST
+	    ,
+	    dataType: "json"
+	    ,
+	    url: "/join"
+	    ,
+	    data: {
+	        nick: nick,
+	        channel: getChannel()
+	    }
+	    ,
+	    error: function(xhr, text, err) {
+	        var errMsg = eval("(" + xhr.responseText + ")");
+	        setStatusMessage('#loginform', "Error logging in, reason: Error Code " + xhr.status + " " + errMsg.error, 'status');
+	    }
+	    ,
+	    success: onConnect
+	});
+	return false;
+	});
 
   $(".logout").click(function() {
 		logoutSession();
