@@ -79,7 +79,7 @@ def check_access(default=False):
 #
 _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
-			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'], # DEMOSETUP
+			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'], # DEMOSETUP
 			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
@@ -147,7 +147,7 @@ class MCPService(object):
 			print 'Exception initializing Android'
 		print 'MCPService init completed'
 		# XXX Put t into a shutdown hook so it gets stopped or canceled
-		self.t = threading.Timer(10.0, mcploop).start()
+		# self.t = threading.Timer(10.0, mcploop).start()
 		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
@@ -382,7 +382,7 @@ Todo ...
 		# Also, is there a way to disable the system softkeys (HOME, MENU, Back)
 		# 
 		print "mcpmodestart invoked"
-		ismcpmodeon = True
+		mcpmodetoggle = 1
 		for packagename in self.PACKAGE_BLACKLIST:
 			self.kill(packagename, rsp)
 			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
@@ -393,7 +393,7 @@ Todo ...
 	def mcpmodestop(self, rsp):
 		# XXX Add code to relaunch killed apps
 		print "mcpmodestop invoked"
-		ismcpmodeon = False
+		mcpmodetoggle = False
 		for packagename in self.PACKAGE_RESTORELIST:
 			print "attempting to restore " + packagename
 		rsp['status'] = 0;
@@ -425,13 +425,13 @@ Todo ...
 				urllist.append(contentrepourl + channelpath + "/" + f)
 		return urllist
 
-def togglemdpmode():
-	if mcpmodetoggle == 0:
-		mcpmodetoggle = 1
-		return True
-	else:
-		mcpmodetoggle = 0
-		return False
+# def togglemcpmode():
+#	if mcpmodetoggle == 0:
+#		mcpmodetoggle = 1
+#		return True
+#	else:
+#		mcpmodetoggle = 0
+#		return False
 def ismcpmodeon():
 	if mcpmodetoggle == 0:
 		return False
