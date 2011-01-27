@@ -101,13 +101,14 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b3-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b5-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Incorporating feedback for crayola demo from customer \n \
 		Remove Cufon \n \
 		Trying to fix url bar area to make it go away \n \
 		Fix broken mcprequests \n \
 		Added new #mediacontrol buttons w/ ninjaui buttons. \n \
+		Fixing media carousel \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
