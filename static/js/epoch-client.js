@@ -218,7 +218,9 @@ function displayLogin() {
 	
 	setStatusMessage('#loginform', ' ', 'status');
 	$('#dialog').find('#waiting').remove();
-	$.mobile.changePage("loginpanel", "fade");
+	if ($.mobile) {
+		$.mobile.changePage("loginpanel", "fade");
+	}
 	$('#loginform').show();
 	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
 	$("#loginpanel").find("span#usertype").html("<em>" + usertype + "</em>");
@@ -246,7 +248,7 @@ function showLogin(channel) {
 	$('#loginform').show();
 	$('.chatgui').hide(); // XXX Hide this so it doesn't bounce around ... for some reason it fights for focus
 	if (isTeacher()) usertype = "Teacher's"; else usertype = "Student's";
-	$.mobile.changePage("loginpanel", "slideup");
+	if ($.mobile) $.mobile.changePage("loginpanel", "slideup");
 	$("#loginpanel").find("span#channel").html("<em>" + channel + "</em>");
 	$("#loginpanel").find("span#usertype").html("<em>" + usertype + "</em>");
 }
@@ -529,6 +531,8 @@ function mcpDispatcher(mcpRequest) {
 				break;
 			case "6":
 				break;
+			case "7":
+				break;
 			default:
 				alert('Unhandled MCP apdu type:' + mcpRequest.apdu);
 				return false;
@@ -536,11 +540,127 @@ function mcpDispatcher(mcpRequest) {
 		$.getJSON('http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT + '?jsoncallback=?',
 		  mcpRequest,
 		  function(data, textStatus) {
+			var mcpResponse;
+			
+			if ((data.resultsCount) && (data.resultsCount > 0)) {
+				mcpResponse = data.results;
+			}
+			
 		    // alert('sent MCP request type:' + mcpRequest.apdu);
 			// XXX Should report back some status here
+			return mcpResponse;
 		  });
 	} else {
 		alert('No readable MCP apdu received');
+	}
+}
+
+function mcpDispatcher2(mcpRequest) {
+	var mcpResponse;
+	if (mcpRequest.apdu) {
+		var mcpResponse = {
+		   apduresp: mcpRequest.ticketid,
+		   sender: CONFIG.id,
+		   status: 
+		'<status code, negative for error conditions, 0 for success>',
+		   timestamp: '<isoformat DATETIME>'
+		};
+		
+		if (mcpRequest.apdu.constructor.name == 'Number') mcpRequest.apdu = eval('"' + mcpRequest.apdu + '"');
+		// Perform any special handling
+		// For now, all we do is dispatch
+		// MSGDEF - Student MCP Dispatcher
+		// alert('Student incoming MCP apdu ' + mcpRequest.apdu);
+		switch(mcpRequest.apdu) {
+			case "1":
+				break;
+			case "2":
+				break;
+			case "3":
+				break;
+			case "4":
+				break;
+			case "5":
+				break;
+			case "6":
+				break;
+			case "7":
+				break;
+			default:
+				return false;
+		} 
+		alert('mcpDispatcher2 jsonp');
+		$.jsonp({
+			"url": 'http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT + '?jsoncallback=?',
+			"data": mcpRequest,
+			"success": function(json, textStatus) {
+				
+
+				/* if ((data.resultsCount) && (data.resultsCount > 0)) {
+					alert('received some data from MCP');
+					mcpResponse = data.results;
+				} */
+				if (json.status == '0') {
+					// alert('received some data from MCP' + eval('"' + json + '"'));
+					mcpResponse = json;
+				}
+				alert('Got mcpResponse status = ' + mcpResponse.status);
+				// XXX Should report back some status here
+			  },
+			"error": function(d,msg) {
+			    alert("MCP Service is not running d = " + d + " msg= " + msg);
+				return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+			}
+		});
+	} else {
+		alert('mcpDispatcher2: No readable MCP apdu received');
+	}
+	alert('done');
+	return mcpResponse
+}
+
+function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
+	var mcpResponse = {
+	   apduresp: mcpRequest.ticketid,
+	   sender: CONFIG.id,
+	   status: 
+	'<status code, negative for error conditions, 0 for success>',
+	   timestamp: '<isoformat DATETIME>'
+	};
+	if (mcpRequest.apdu) {
+		
+		
+		if (mcpRequest.apdu.constructor.name == 'Number') mcpRequest.apdu = eval('"' + mcpRequest.apdu + '"');
+		// Perform any special handling
+		// For now, all we do is dispatch
+		// MSGDEF - Student MCP Dispatcher
+		// alert('Student incoming MCP apdu ' + mcpRequest.apdu);
+		switch(mcpRequest.apdu) {
+			case "1":
+				break;
+			case "2":
+				break;
+			case "3":
+				break;
+			case "4":
+				break;
+			case "5":
+				break;
+			case "6":
+				break;
+			case "7":
+				break;
+			default:
+				return false;
+		} 
+		$.jsonp({
+			"url": 'http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT + '?jsoncallback=?',
+			"data": mcpRequest,
+			"success": jcallback,
+			"error": ecallback,
+		});
+	} else {
+		alert('mcpDispatcher3: No readable MCP apdu received');
 	}
 }
 
@@ -632,7 +752,45 @@ function longPoll (data) {
 	            });
 			}
 			break;
-		
+		case "universalsend":
+			if (!first_poll) {
+				var contenturl = message.text;
+				if (!teacher) {
+					// First Try to ping the MCP
+					mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
+						var mcpResp;
+						if (json.status == '0') {
+							alert('pingheartbeat received');
+							mcpResp = json;
+						} else {
+							alert(json.status);
+						}
+						
+						// XXX Should report back some status here
+						if (mcpResp && mcpResp.status == '0') { 
+							// alert('Got mcpResponse status = ' + mcpResp.status);
+							// Then check if content is synced
+							// XXX Need a new APDU for this
+							// If it is run local
+							// If it is not, do a view
+							alert('universalsend - running android.View of url ' + contenturl);
+						} else { // XXX Why would this ever happen ?
+							// Just open it in the browser
+							alert('universalsend - pop open a new window');
+							openNewWindow(message.text);
+						}
+					}, function(d,msg) {
+						    alert("MCP Service is not running, please notify your teacher");
+							// Just open it in the browser
+							openNewWindow(message.text);
+					});
+					
+				} else {
+					// Just open it in the browser
+					openNewWindow(message.text);
+				}
+			}
+			break;		
 		case "endviewer":
 		 	// alert('ended a viewer');
 			if (!first_poll) {
@@ -698,7 +856,16 @@ function longPoll (data) {
 		case "mcprequest":
 			if (!teacher) {
 				alert('mcprequest');
-				mcpDispatcher(message.payload);
+				mcpDispatcher3(message.payload, function(json, textStatus) {
+					if (json.status == '0') {
+						// alert('received some data from MCP' + eval('"' + json + '"'));
+						mcpResponse = json;
+					}
+					alert('Got mcpResponse status = ' + mcpResponse.status + ' send response back to teacher');
+					// XXX Should report back some status here
+				  }, function(d,msg) {
+				    alert("MCP Service is not running, please notify your teacher");
+				});
 			}
 			break;
 
@@ -784,6 +951,7 @@ function handleError(myReqObj,textStatus,errorThrown) {
 		+"\nSource Object Id: "+myReqObj.id
 	);
 }
+
 //push a viewer out to clients XXX This is identical to send :( 
 function sendviewer(msg, type) {
   if (CONFIG.debug === false) {
@@ -809,15 +977,22 @@ function sendmcprequest(msg, type, apdu) {
 			// paylod = { eval(type) : msg};
 			// payload = {apdu: apdu, to: '*', requesturi: CONFIG.nick + '@' + CONFIG.id, ticketid: '<unique ticket ID>', eval("(" + type + ")"): msg};
 			// payload = "{" + type + ": 'xyx' }"; WORKS
-			var mcpdata = msg;
-			if (!mcpdata) mcpdata = [];
-			payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + mcpdata + '"}';
 			// alert('sending payload' + payload);
 			// XXX should be POST
 			// XXX transmitting via send may not be the right idea ... or, don't put any data into text other than chat 
-	    	jQuery.get("/send", {id: CONFIG.id, text: msg, type: 'mcprequest', channel: getChannel(), payload: eval("(" + payload + ")")}, function (data) { }, "json");
+	    	payload = mcpPayloadFactory(msg, type, apdu);
+			// XXX We don't do anything with the response!!!
+			jQuery.get("/send", {id: CONFIG.id, text: msg, type: 'mcprequest', channel: getChannel(), payload: eval("(" + payload + ")")}, function (data) { }, "json");
 		}
 	}
+}
+
+function mcpPayloadFactory(msg, type, apdu) {
+	var payload;
+	var mcpdata = msg;
+	if (!mcpdata) mcpdata = [];
+	payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + mcpdata + '"}';
+	return payload;
 }
 
 // XXX Can I modify these to continue to work for this demo?
@@ -1205,7 +1380,6 @@ $(document).ready(function() {
 	$("#sendurl").click(function(e) {
 	    $('#resources').find('input:checked').each(
 	    	function(index) {
-		        // alert('click sendviewer ' + msg);
 		        var msg = this.value;
 		        if (!util.isBlank(msg)) send(msg, "sendurl");
 		        this.checked = false;
@@ -1239,7 +1413,6 @@ $(document).ready(function() {
 	    $('#resources').find('input:checked').each(
 	    function(index) {
 	        var msg = this.value;
-	        // alert('click sendviewer local ' + msg);
 	        if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
 	        this.checked = false;
 	    }
@@ -1411,56 +1584,7 @@ $(document).ready(function() {
 			$('#resources').live('pageshow',function(event, ui){
 				// updateTeacherContent(roomcl);
 			});
-		} else {
-			// XXX IS THERE ANY REASON FOR THIS HERE?????
-			/*
-			$("#sendurl").click(function (e) {
-				$('#resources').find('input:checked').each( 
-				    function(index) {
-						var msg = this.value;
-					    if (!util.isBlank(msg)) send(msg);
-						this.checked = false;
-				    } 
-				);
-
-				return false;
-			});
-
-			$("#sendviewer").click(function (e) {
-				$('#resources').find('input:checked').each( 
-				    function(index) {
-						var msg = this.value;
-						// alert('click sendviewer ' + msg);
-					    if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
-						this.checked = false;
-				    } 
-				);
-
-				return false;
-			});
-
-			$("#endviewer").click(function (e) {
-				var msg = "#endviewer";
-				if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
-				return false;
-			});
-			
-			
-			
-			$("#sendlocal").click(function (e) {
-				$('#resources').find('input:checked').each( 
-				    function(index) {
-						var msg = this.value;
-						// alert('click sendviewer local ' + msg);
-					    if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
-						this.checked = false;
-				    } 
-				);
-
-				return false;
-			});
-			*/
-		}
+		} 
 
 		if ($.mobile) {
 			$('#cpfieldset').find('input:checkbox').click(function() {
