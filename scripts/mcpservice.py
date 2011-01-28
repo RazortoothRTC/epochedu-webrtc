@@ -80,7 +80,7 @@ def check_access(default=False):
 _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
 			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'], # DEMOSETUP
-			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks
+			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'], 
@@ -122,15 +122,10 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b1-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b2-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
-	<P>MCP Work in progress. Prep for CES.  Reactivate MCPloop.  Bugfixing, put 148 back in temporarily. 
-	 and fixed a problem with global ismcpmodeon never getting set.  Also, fixed a few bugs in sync and kill with
-	regard to android vs. desktop mode.  Cleared up a few more issues with sync.  Now works on dev server.
-	Need to test on demo plug.
-	
-	Bug fixes for CES:
-	* contentrepourl is wrong .... has ANDROID_CONTENT_PATH on there twice TODO
+	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
+	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -177,9 +172,20 @@ Todo ...
 	def testjson1(self):
 		jsonResp = {'foo': 1, 'bar': 'b'}
 		return jsonResp
-		
+	
 	@cherrypy.expose
-	# @cherrypy.tools.jsonify()
+	def testjson2(self):
+		cherrypy.response.headers['Content-Type']= 'applications/json'
+		jsonResp = {'foo': 1, 'bar': 'b'}
+		return json.dumps(jsonResp)
+
+	@cherrypy.tools.jsonify()
+	def getrange(self, limit=4):
+	    return range(int(limit))
+	getrange.exposed = True
+	
+	@cherrypy.expose
+	# Testi in a browser : http://localhost:8080/contentsyncpull?channel=foo3&jsoncallback=?
 	def contentsyncpull(self, **params):
 		print params
 		channel = params['channel']
@@ -211,11 +217,13 @@ Todo ...
 		
 	# 	@cherrypy.tools.validate_rpc()
 	@cherrypy.expose
-	@cherrypy.tools.jsonify()
+	# @cherrypy.tools.jsonify()
 	# def rpc(self, apdu, ticketid, to, requestoruri, launchurl="None", sync="None", kill="None"):
 	def rpc(self, **params):
 		dataLength = int(cherrypy.request.headers.get('Content-Length') or 0)
 		data = {}
+		cherrypy.response.headers['Content-Type']= 'applications/json'
+		jsoncallback = params['jsoncallback']
 		# apdu = None
 		if (cherrypy.request.method == 'POST'):
 			print "rpc: POST method"
@@ -256,9 +264,12 @@ Todo ...
 			jsonResp = self.mcpmodestop(jsonResp)
 		if apdu == '6':
 			pass
+		if apdu == '7': # Heartbeat
+			jsonResp = self.pingHeartbeat(jsonResp)
 		jsonResp = self.prepareResponse(jsonReq, jsonResp)
-		return jsonResp
-
+		print json.dumps(jsonResp)
+		# return json.dumps(jsonResp);
+		return jsoncallback + '(' + json.dumps(jsonResp) + ')'
 	#
 	# MCP messsage factories
 	# 
@@ -376,6 +387,12 @@ Todo ...
 		rsp['status'] = 0;
 		return rsp
 	
+	def pingHeartbeat(self, rsp):
+		print "received pingHeartbeat"
+		rsp['status'] = 0;
+		rsp['version'] = self.VERSION_TAG
+		return rsp
+		
 	def mcpmodestart(self, rsp):
 		# XXX Put in list of packages to kill
 		# check if we can get a list of running activities
