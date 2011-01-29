@@ -173,6 +173,11 @@ li.mp4 {
 	background:url('../images/css/MP4-icon.png') no-repeat;
 }
 
+li.mov {
+	background:url('../images/css/MOV-icon.png') no-repeat;
+}
+
+
 li.mp3 {
 	background:url('../images/css/WAV-icon.png') no-repeat;
 }

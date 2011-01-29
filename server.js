@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b10-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b11-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Incorporating feedback for crayola demo from customer \n \
 		Remove Cufon \n \
@@ -114,6 +114,7 @@ WIP = "MCP command work in progress.\n \
 		Added callbacks for mcpDispatcher3 for success and error \n \
 		Implement universalsend with optmization of url for checking locally synched content. \n \
 		Fix bug with double MCP request on device \n \
+		Fix for missing MOV icon.
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

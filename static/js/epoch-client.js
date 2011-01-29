@@ -660,12 +660,12 @@ function longPoll (data) {
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
 								if (json && json.status == 0) alert('successful call to launchurl');
 							}, function(d, msg) {
-								// alert('error on launchurl - couldn not reach MCP universalsend - pop open a new window');
+								alert('error on launchurl - couldn not reach MCP universalsend - pop open a new window');
 								openNewWindow(message.text);
 							});
 						} else { // XXX Why would this ever happen ?
 							// Just open it in the browser
-							// alert("MCP Service is not running, please notify your teacher");
+							alert("MCP Service is not running, please notify your teacher");
 							openNewWindow(message.text);
 						}
 					}, function(d,msg) {
@@ -744,7 +744,7 @@ function longPoll (data) {
 		
 		case "mcprequest":
 			if (!teacher) {
-				alert('mcprequest');
+				// alert('mcprequest');
 				mcpDispatcher3(message.payload, function(json, textStatus) {
 					if (json.status == '0') {
 						// alert('received some data from MCP' + eval('"' + json + '"'));
