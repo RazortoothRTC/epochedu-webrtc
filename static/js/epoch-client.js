@@ -760,23 +760,26 @@ function longPoll (data) {
 					mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
 						var mcpResp;
 						if (json.status == '0') {
-							alert('pingheartbeat received');
 							mcpResp = json;
-						} else {
-							alert(json.status);
-						}
+						} 
 						
 						// XXX Should report back some status here
 						if (mcpResp && mcpResp.status == '0') { 
 							// alert('Got mcpResponse status = ' + mcpResp.status);
 							// Then check if content is synced
-							// XXX Need a new APDU for this
 							// If it is run local
 							// If it is not, do a view
 							alert('universalsend - running android.View of url ' + contenturl);
+							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
+							
+							}, function(d, msg) {
+								// alert('couldn't reach MCP universalsend - pop open a new window');
+								alert('');
+								openNewWindow(message.text);
+							});
 						} else { // XXX Why would this ever happen ?
 							// Just open it in the browser
-							alert('universalsend - pop open a new window');
+							alert("MCP Service is not running, please notify your teacher");
 							openNewWindow(message.text);
 						}
 					}, function(d,msg) {
