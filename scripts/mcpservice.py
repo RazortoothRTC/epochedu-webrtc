@@ -122,10 +122,11 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b2-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b3-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
+	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -185,7 +186,7 @@ Todo ...
 	getrange.exposed = True
 	
 	@cherrypy.expose
-	# Testi in a browser : http://localhost:8080/contentsyncpull?channel=foo3&jsoncallback=?
+	# Test in a browser : http://localhost:8080/contentsyncpull?channel=foo3&jsoncallback=?
 	def contentsyncpull(self, **params):
 		print params
 		channel = params['channel']
@@ -196,7 +197,7 @@ Todo ...
 		contentrepourl = None
 		# XXX Need a better way to test droidness
 		try:
-			droid = android.Android()
+			self.droid = android.Android()
 			channelpath = MCP_CONFIG['ANDROID_CONTENT_PATH'] + '/' + channel
 			contentrepourl = MCP_CONFIG['CONTENT_REPO_LOCAL_URL']
 		except:
@@ -305,12 +306,16 @@ Todo ...
 	#
 	def launchurl(self, aurl, amime, rsp):
 		if aurl is None: rsp.status = -1
+		
+		# Get the best url path
+		aurl = self.getbesturlpath(aurl)
+		print 'launchurl is opening best url path ' + aurl
 		if amime is None:
 			try:
 				self.droid.view(aurl)
 			except:
 				webbrowser.open(aurl)
-			print "droid view launched with url" + arul
+			print "droid view launched with url" + aurl
 		else:
 			try:
 				self.droid.view(aurl, amime)
@@ -428,7 +433,41 @@ Todo ...
 		if title is not None:
 			print "notify android " + title
 			self.droid.notify(title, message)
-	
+
+	def getbesturlpath(self, uri):
+		besturi = None
+		channel = uri.split('/')[-2]
+		fileExtList = MCP_CONFIG['VALID_FILE_EXTENSIONS']
+		
+		if channel is not None:
+			try:
+				channelpath = MCP_CONFIG['ANDROID_CONTENT_PATH'] + '/' + channel
+				contentrepourl = MCP_CONFIG['CONTENT_REPO_LOCAL_URL']
+			except:
+				channelpath = MCP_CONFIG['DESKTOP_CONTENT_PATH'] + '/' + channel
+				contentrepourl = 'file://'
+			print "/contentsyncpull received request for channel " + channel
+			print "using path " + channelpath + " to find a content with these extensions: " + json.dumps(fileExtList)
+			
+			# Check to see if the filename matches anything in the ext list, if so, it is a valid file
+			filename = uri[uri.rindex('/') + 1:]
+			isafile = False
+			for ext in fileExtList:
+				if filename.endswith(ext):
+					isafile = True
+			if isafile:
+				besturi = uri
+				# Get the list of files for this channel
+				results = self.getlocalcontentsyncurl(channelpath, contentrepourl, fileExtList)
+				for f in results:
+					if (f[f.rindex('/') + 1:] == filename):
+						besturi = f
+		else:
+			print "/contentsyncpull didn't receive channel parameter, just use URL as is"
+			besturi = uri
+		return besturi	
+			
+			
 	def getlocalcontentsyncurl(self, channelpath, contentrepourl, fileExtList):
 		filelist = [] 
 		try: 
