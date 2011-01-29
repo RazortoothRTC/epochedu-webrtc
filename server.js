@@ -114,7 +114,7 @@ WIP = "MCP command work in progress.\n \
 		Added callbacks for mcpDispatcher3 for success and error \n \
 		Implement universalsend with optmization of url for checking locally synched content. \n \
 		Fix bug with double MCP request on device \n \
-		Fix for missing MOV icon.
+		Fix for missing MOV icon.\n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
