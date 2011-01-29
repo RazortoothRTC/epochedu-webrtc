@@ -116,7 +116,7 @@ WIP = "MCP command work in progress.\n \
 		Fix bug with double MCP request on device \n \
 		Fix for missing MOV icon.\n \
 		Fix missing PDF ... it was on the filter list in fu.js \n \
-		Adding in test frameworks for MCP Service.
+		Adding in test frameworks for MCP Service. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
