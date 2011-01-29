@@ -504,121 +504,6 @@ function addMessage (from, text, time, _class) {
   Shadowbox.setup(); // XXX Make sure I still need this
 }
 
-function mcpDispatcher(mcpRequest) {
-	if (mcpRequest.apdu) {
-		var mcpResponse = {
-		   apduresp: mcpRequest.ticketid,
-		   sender: CONFIG.id,
-		   status: 
-		'<status code, negative for error conditions, 0 for success>',
-		   timestamp: '<isoformat DATETIME>'
-		};
-		
-		// Perform any special handling
-		// For now, all we do is dispatch
-		// MSGDEF - Student MCP Dispatcher
-		// alert('Student incoming MCP apdu ' + mcpRequest.apdu);
-		switch(mcpRequest.apdu) {
-			case "1":
-				break;
-			case "2":
-				break;
-			case "3":
-				break;
-			case "4":
-				break;
-			case "5":
-				break;
-			case "6":
-				break;
-			case "7":
-				break;
-			default:
-				alert('Unhandled MCP apdu type:' + mcpRequest.apdu);
-				return false;
-		} 
-		$.getJSON('http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT + '?jsoncallback=?',
-		  mcpRequest,
-		  function(data, textStatus) {
-			var mcpResponse;
-			
-			if ((data.resultsCount) && (data.resultsCount > 0)) {
-				mcpResponse = data.results;
-			}
-			
-		    // alert('sent MCP request type:' + mcpRequest.apdu);
-			// XXX Should report back some status here
-			return mcpResponse;
-		  });
-	} else {
-		alert('No readable MCP apdu received');
-	}
-}
-
-function mcpDispatcher2(mcpRequest) {
-	var mcpResponse;
-	if (mcpRequest.apdu) {
-		var mcpResponse = {
-		   apduresp: mcpRequest.ticketid,
-		   sender: CONFIG.id,
-		   status: 
-		'<status code, negative for error conditions, 0 for success>',
-		   timestamp: '<isoformat DATETIME>'
-		};
-		
-		if (mcpRequest.apdu.constructor.name == 'Number') mcpRequest.apdu = eval('"' + mcpRequest.apdu + '"');
-		// Perform any special handling
-		// For now, all we do is dispatch
-		// MSGDEF - Student MCP Dispatcher
-		// alert('Student incoming MCP apdu ' + mcpRequest.apdu);
-		switch(mcpRequest.apdu) {
-			case "1":
-				break;
-			case "2":
-				break;
-			case "3":
-				break;
-			case "4":
-				break;
-			case "5":
-				break;
-			case "6":
-				break;
-			case "7":
-				break;
-			default:
-				return false;
-		} 
-		alert('mcpDispatcher2 jsonp');
-		$.jsonp({
-			"url": 'http://localhost:' + MCP_RPC_PORT  + MCP_RPC_ENDPOINT + '?jsoncallback=?',
-			"data": mcpRequest,
-			"success": function(json, textStatus) {
-				
-
-				/* if ((data.resultsCount) && (data.resultsCount > 0)) {
-					alert('received some data from MCP');
-					mcpResponse = data.results;
-				} */
-				if (json.status == '0') {
-					// alert('received some data from MCP' + eval('"' + json + '"'));
-					mcpResponse = json;
-				}
-				alert('Got mcpResponse status = ' + mcpResponse.status);
-				// XXX Should report back some status here
-			  },
-			"error": function(d,msg) {
-			    alert("MCP Service is not running d = " + d + " msg= " + msg);
-				return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
-			}
-		});
-	} else {
-		alert('mcpDispatcher2: No readable MCP apdu received');
-	}
-	alert('done');
-	return mcpResponse
-}
-
 function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 	var mcpResponse = {
 	   apduresp: mcpRequest.ticketid,
@@ -759,8 +644,10 @@ function longPoll (data) {
 					// First Try to ping the MCP
 					mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
 						var mcpResp;
-						if (json.status == '0') {
+						
+						if (json) {
 							mcpResp = json;
+
 						} 
 						
 						// XXX Should report back some status here
@@ -769,21 +656,20 @@ function longPoll (data) {
 							// Then check if content is synced
 							// If it is run local
 							// If it is not, do a view
-							alert('universalsend - running android.View of url ' + contenturl);
+							// alert('universalsend - running android.View of url ' + contenturl);
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
-							
+								if (json && json.status == 0) alert('successful call to launchurl');
 							}, function(d, msg) {
-								// alert('couldn't reach MCP universalsend - pop open a new window');
-								alert('');
+								// alert('error on launchurl - couldn not reach MCP universalsend - pop open a new window');
 								openNewWindow(message.text);
 							});
 						} else { // XXX Why would this ever happen ?
 							// Just open it in the browser
-							alert("MCP Service is not running, please notify your teacher");
+							// alert("MCP Service is not running, please notify your teacher");
 							openNewWindow(message.text);
 						}
 					}, function(d,msg) {
-						    alert("MCP Service is not running, please notify your teacher");
+						    // alert("MCP Service is not running, please notify your teacher");
 							// Just open it in the browser
 							openNewWindow(message.text);
 					});
