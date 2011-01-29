@@ -202,7 +202,7 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 
 	var dirpath = "";
 	var contentlist = [ ];
-	var filter = /pdf|^\./i;
+	var filter = /xml|^\./i; // XXX DEMOSETTING put this somewhere else
 	if (chan) {
 		dirpath = "/" + chan;
 	}
