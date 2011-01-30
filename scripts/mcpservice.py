@@ -122,11 +122,13 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b3-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b4-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
+	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
+	Fix some bad stuff in getbesturlpath.  Added ISANDROID
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -141,6 +143,7 @@ class MCPService(object):
 			self.droid = android.Android()
 		except:
 			print 'Exception initializing Android'
+		self.ISANDROID = os.path.exists('/system/lib/libandroid_runtime.so')
 		print 'MCPService init completed'
 		# XXX Put t into a shutdown hook so it gets stopped or canceled
 		# self.t = threading.Timer(10.0, mcploop).start()
@@ -427,12 +430,17 @@ Todo ...
 	# 
 	def notifyUser(self, message, title=None):
 		print message
-		self.droid.makeToast(message)
-		self.droid.ttsSpeak(message)
+		if self.droid is None:
+			try:
+				self.droid = Android.android()
+				self.droid.makeToast(message)
+				self.droid.ttsSpeak(message)
+				if title is not None:
+					print "notify android " + title
+					self.droid.notify(title, message)
+			except:
+				pass
 		
-		if title is not None:
-			print "notify android " + title
-			self.droid.notify(title, message)
 
 	def getbesturlpath(self, uri):
 		besturi = None
@@ -440,13 +448,13 @@ Todo ...
 		fileExtList = MCP_CONFIG['VALID_FILE_EXTENSIONS']
 		
 		if channel is not None:
-			try:
+			if self.ISANDROID:
 				channelpath = MCP_CONFIG['ANDROID_CONTENT_PATH'] + '/' + channel
 				contentrepourl = MCP_CONFIG['CONTENT_REPO_LOCAL_URL']
-			except:
+			else:
 				channelpath = MCP_CONFIG['DESKTOP_CONTENT_PATH'] + '/' + channel
 				contentrepourl = 'file://'
-			print "/contentsyncpull received request for channel " + channel
+			print "/getbesturlpath received request for channel " + channel
 			print "using path " + channelpath + " to find a content with these extensions: " + json.dumps(fileExtList)
 			
 			# Check to see if the filename matches anything in the ext list, if so, it is a valid file
@@ -463,7 +471,7 @@ Todo ...
 					if (f[f.rindex('/') + 1:] == filename):
 						besturi = f
 		else:
-			print "/contentsyncpull didn't receive channel parameter, just use URL as is"
+			print "/getbesturlpath didn't receive channel parameter, just use URL as is"
 			besturi = uri
 		return besturi	
 			
@@ -473,7 +481,7 @@ Todo ...
 		try: 
 			filelist = os.listdir(channelpath)
 		except:
-			print "path " + channelpath + "does not exist.  No synced content"
+			print "path " + channelpath + " does not exist.  No synced content"
 		urllist = []
 		
 		for f in filelist:
