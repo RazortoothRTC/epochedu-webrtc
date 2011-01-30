@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b12-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b13-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Incorporating feedback for crayola demo from customer \n \
 		Remove Cufon \n \
@@ -117,6 +117,7 @@ WIP = "MCP command work in progress.\n \
 		Fix for missing MOV icon.\n \
 		Fix missing PDF ... it was on the filter list in fu.js \n \
 		Adding in test frameworks for MCP Service. \n \
+		Added a few more test cases to help support a player kill. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
