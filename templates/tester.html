@@ -63,12 +63,16 @@ INSERT YOUR CODE!!!
 	<input id="testapdu6" type="button" value="testapdu6" />
 	<p><label>testapdu7 - pingheartbeat</label>
 	<input id="testapdu7" type="button" value="testapdu7" />
+	<p><label>testapdu8 - killplatformplayer</label>
+	<input id="testapdu8" type="button" value="testapdu8" />
 	<p><label>testpopup1- </label>
 	<input id="testpopup1" type="button" value="testpopup1" />
 	<p><label>testpopup2- </label>
 	<input id="testpopup2" type="button" value="testpopup2" />
 	<p><label>testclosepopup1 - </label>
 	<input id="testclosepopup1" type="button" value="testclosepopup1" />
+	<p><label>testwindowname1 - </label>
+	<input id="testwindowname1" type="button" value="testwindowname1" />
     <footer>
     <footer>
     </footer>
@@ -237,17 +241,40 @@ INSERT YOUR CODE!!!
 					}
 				});
 			});
+			$("#testapdu8").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '7', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", killplatformplayer: "[]"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
 			var playerwindow;
 			$('#testpopup1').click(function() {
 				playerwindow = window.open("http://192.168.1.148:5000/content/foo/2.jpg","player", "location=no, scrollbar=yes,width=430,height=360,toolbar=no");
 			});
 			$('#testpopup2').click(function() {
-				playerwindow =window.open("http://192.168.1.148:5000/content/foo/2.jpg","player", "scrollbar=yes,width=430,height=360,toolbar=no");
+				playerwindow = window.open("http://192.168.1.148:5000/content/foo/2.jpg","player", "scrollbar=yes,width=430,height=360,toolbar=no");
 			});
 			$('#testclosepopup1').click(function() {
 				// netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
 				// window.close("epochplayer");
 				playerwindow.close();
+			});
+			$('#testwindowname1').click(function() {
+				alert(window.screen);
 			});
 		});
 	</script>

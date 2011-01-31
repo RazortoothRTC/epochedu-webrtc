@@ -49,6 +49,9 @@ var SHADOWBOX_CONFIG_HEIGHT = 600;
 var MCP_RPC_PORT = '8080';  // Assume MCP runs on localhost
 var MCP_RPC_ENDPOINT = '/rpc';
 var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
+var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=no";
+var browserplayerwindow;
+var platformplayer = false;
 
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
@@ -367,14 +370,20 @@ function updateAttendanceSheet(page) {
 	}
 }
 function openNewWindow(url, options) {
-	window.open(url);
-	return false;
+	if (options) {
+		return window.open(url, "player", options)
+	} else {
+		return window.open(url);
+	}
+}
+
+function closeBrowserWindow(windowref) {
+	if (windowref.screen) windowref.close(); // XXX Is there a better way to detect?
 }
 
 function toggleNinjaButton(selector, isEnabled) {
 	$(selector).children().each(
 		function(index){
-			
 			if (isEnabled) {
 				$(this).ninjaButtonEnable();
 			} else {
@@ -383,7 +392,8 @@ function toggleNinjaButton(selector, isEnabled) {
 		}
 	);
 }
-//handles someone leaving
+
+// handles someone leaving
 function userPart(nick, timestamp) {
   //put it in the stream
   addMessage(nick, "left", timestamp, "part");
@@ -661,30 +671,67 @@ function longPoll (data) {
 								if (json && json.status == 0) alert('successful call to launchurl');
 							}, function(d, msg) {
 								alert('error on launchurl - couldn not reach MCP universalsend - pop open a new window');
-								openNewWindow(message.text);
+								browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 							});
 						} else { // XXX Why would this ever happen ?
 							// Just open it in the browser
 							alert("MCP Service is not running, please notify your teacher");
-							openNewWindow(message.text);
+							browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 						}
 					}, function(d,msg) {
 						    // alert("MCP Service is not running, please notify your teacher");
 							// Just open it in the browser
-							openNewWindow(message.text);
+							browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 					});
 					
 				} else {
 					// Just open it in the browser
-					openNewWindow(message.text);
+					browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 				}
 			}
 			break;		
 		case "endviewer":
 		 	// alert('ended a viewer');
+			// browserplayerwindow
+			// platformplayer
 			if (!first_poll) {
-				Shadowbox.close();
-				Shadowbox.clearCache();
+				// If there is a browserplayerwindow open, close it
+				var contenturl = message.text; // XXX This can be anything really
+				if (browserplayerwindow) {
+					closeBrowserWindow(browserplayerwindow);
+					browserplayerwindow = undefined;
+				}
+				
+				if (platformplayer) {
+					// Then Try to ping the MCP
+					mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
+						var mcpResp;
+					
+						if (json) {
+							mcpResp = json;
+						} 
+					
+						// XXX Should report back some status here
+						if (mcpResp && mcpResp.status == '0') { 
+							// alert('Got mcpResponse status = ' + mcpResp.status);
+						
+						
+							// If there is a platformplayer running, kill it
+							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
+								if (json && json.status == 0) {
+									alert('successful call to killplatformplayer');
+									platformplayer = false;
+								}
+							}, function(d, msg) {
+								alert('error on killplatformplayer');
+							});
+						} else { // XXX Why would this ever happen ?
+							alert("MCP Service is not running, please notify your teacher");
+						}
+					}, function(d,msg) {
+						    alert("MCP Service is not running, please notify your teacher");
+					});
+				}
 			}
 			break;
 				
@@ -1461,7 +1508,7 @@ $(document).ready(function() {
 						$(".syncurl").click(function(e) {
 							var syncurl = $(this).attr('name');
 							// alert('syncurl clicked ' + syncurl);
-							openNewWindow(syncurl);
+							openNewWindow(syncurl, BROWSERPLAYERWINDOW_OPTIONS);
 						});
 
 					} // XXX Should give some feedback if no content available
