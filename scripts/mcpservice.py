@@ -122,13 +122,14 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b4-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b6-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
-	Fix some bad stuff in getbesturlpath.  Added ISANDROID
+	Fix some bad stuff in getbesturlpath.  Added ISANDROID.  Fix broken notification.  Sync works now.
+	Working on killplatformplayer.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -137,7 +138,9 @@ class MCPService(object):
 						'com.android.settings', # Settings
 						]
 	PACKAGE_RESTORELIST = []
-	
+	PACKAGE_PLAYERLIST = ['com.android.camera', # The Android Camera
+						'com.android.music', # The Android Music Player, NEED PDF VIEWER, Documents 2 Go, Text Viewer
+						]
 	def __init__(self):
 		try:
 			self.droid = android.Android()
@@ -270,6 +273,8 @@ Todo ...
 			pass
 		if apdu == '7': # Heartbeat
 			jsonResp = self.pingHeartbeat(jsonResp)
+		if apdu == '8':
+			jsonResp = self.killplatformplayer(jsonResp)
 		jsonResp = self.prepareResponse(jsonReq, jsonResp)
 		print json.dumps(jsonResp)
 		# return json.dumps(jsonResp);
@@ -350,7 +355,7 @@ Todo ...
 				try:
 					os.makedirs(apath)
 				except OSError, e:
-					print "not on android, trying local path"
+					print "may not be on android, could not create path " + apath + ", trying local path " + dpath
 					if not os.path.exists(dpath):
 						try:
 							os.makedirs(dpath)
@@ -387,14 +392,16 @@ Todo ...
 		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
-		try:
-			self.droid.forceStopPackage(uri) # Does this have return value?
-			self.droid.makeToast('Killed ' + uri)
-		except:
-			print "pretending to kill " + uri
+		killpackage(uri)
 		rsp['status'] = 0;
 		return rsp
-	
+		
+	def killplatformplayer(self, rsp):
+		for pkg in self.PACKAGE_PLAYERLIST:
+			killpackage(pkg)
+		rsp['status'] = 0;
+		return rsp
+		
 	def pingHeartbeat(self, rsp):
 		print "received pingHeartbeat"
 		rsp['status'] = 0;
@@ -428,18 +435,27 @@ Todo ...
 	#
 	# MCP Utility Methods
 	# 
+	def killpackage(self, uri):
+		try:
+			self.droid.forceStopPackage(uri) # Does this have return value?
+			self.droid.makeToast('Killed ' + uri)
+		except:
+			print "pretending to kill " + uri
+
 	def notifyUser(self, message, title=None):
-		print message
-		if self.droid is None:
-			try:
-				self.droid = Android.android()
-				self.droid.makeToast(message)
-				self.droid.ttsSpeak(message)
-				if title is not None:
-					print "notify android " + title
-					self.droid.notify(title, message)
-			except:
-				pass
+		
+		if self.ISANDROID:
+			if self.droid is None:
+				try:
+					self.droid = Android.android()
+				except:
+					return
+			self.droid.makeToast(message)
+			self.droid.ttsSpeak(message)
+			if title is not None:
+				self.droid.notify(title, message)
+		else:
+			print message
 		
 
 	def getbesturlpath(self, uri):
