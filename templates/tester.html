@@ -51,8 +51,12 @@ INSERT YOUR CODE!!!
 -->
 	<p><label>testapdu1 - launchurl</label>
 	<input id="testapdu1" type="button" value="testapdu1" />
+	<p><label>testapdu1b - launchurl</label>
+	<input id="testapdu1b" type="button" value="testapdu1b" />
 	<p><label>testapdu2 - sync</label>
 	<input id="testapdu2" type="button" value="testapdu2" />
+	<p><label>testapdu2b - sync</label>
+	<input id="testapdu2b" type="button" value="testapdu2b" />
 	<p><label>testapdu3 - kill</label>
 	<input id="testapdu3" type="button" value="testapdu3" />
 	<p><label>testapdu4 - mcpmodetsart</label>
@@ -69,6 +73,8 @@ INSERT YOUR CODE!!!
 	<input id="testpopup1" type="button" value="testpopup1" />
 	<p><label>testpopup2- </label>
 	<input id="testpopup2" type="button" value="testpopup2" />
+	<p><label>testpopup3- </label>
+	<input id="testpopup3" type="button" value="testpopup3" />
 	<p><label>testclosepopup1 - </label>
 	<input id="testclosepopup1" type="button" value="testclosepopup1" />
 	<p><label>testwindowname1 - </label>
@@ -121,10 +127,49 @@ INSERT YOUR CODE!!!
 					}
 				});
 			});
+			$("#testapdu1b").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '1', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launchurl: "http://192.168.1.148:5000/content/foo3/MadagascarVideo.mp4"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("ERROR or MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
 			$("#testapdu2").click(function() {
 		    	$.jsonp({
 					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
 					"data": { apdu: '2', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", sync: "http://192.168.1.148:5000/content/foo3/Puppet_Dick_in_a_Box.flv"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu2b").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '2', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", sync: "http://192.168.1.148:5000/content/foo3/MadagascarVideo.mp4"},
 					"success": function(data) {
 						var mcpResponse;
 						alert(eval('"' + data.status + '"'));
@@ -267,6 +312,9 @@ INSERT YOUR CODE!!!
 			});
 			$('#testpopup2').click(function() {
 				playerwindow = window.open("http://192.168.1.148:5000/content/foo/2.jpg","player", "scrollbar=yes,width=430,height=360,toolbar=no");
+			});
+			$('#testpopup3').click(function() {
+				playerwindow = window.open("content://com.android.htmlfileprovider/sdcard/content/foo3/MadagascarVideo.mp4","player", "scrollbar=yes,width=430,height=360,toolbar=no");
 			});
 			$('#testclosepopup1').click(function() {
 				// netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
