@@ -370,11 +370,15 @@ function updateAttendanceSheet(page) {
 	}
 }
 function openNewWindow(url, options) {
+	var awindow;
 	if (options) {
-		return window.open(url, "player", options)
+		awindow = window.open(url, "player", options);
+		awindow.document.write("<title>mediaplayer</title>");
 	} else {
-		return window.open(url);
+		awindow = window.open(url);
+		awindow.document.write("<title>mediaplayer</title>");
 	}
+	return awindow;
 }
 
 function closeBrowserWindow(windowref) {
@@ -668,7 +672,7 @@ function longPoll (data) {
 							// If it is not, do a view
 							// alert('universalsend - running android.View of url ' + contenturl);
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
-								if (json && json.status == 0) alert('successful call to launchurl');
+								if (!json || json.status != 0) browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 							}, function(d, msg) {
 								alert('error on launchurl - couldn not reach MCP universalsend - pop open a new window');
 								browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
@@ -698,6 +702,7 @@ function longPoll (data) {
 				// If there is a browserplayerwindow open, close it
 				var contenturl = message.text; // XXX This can be anything really
 				if (browserplayerwindow) {
+					// alert('browserplayer is true');
 					closeBrowserWindow(browserplayerwindow);
 					browserplayerwindow = undefined;
 				}
@@ -797,10 +802,10 @@ function longPoll (data) {
 						// alert('received some data from MCP' + eval('"' + json + '"'));
 						mcpResponse = json;
 					}
-					alert('Got mcpResponse status = ' + mcpResponse.status + ' send response back to teacher');
+					// alert('Got mcpResponse status = ' + mcpResponse.status + ' send response back to teacher');
 					// XXX Should report back some status here
 				  }, function(d,msg) {
-				    alert("MCP Service is not running, please notify your teacher");
+				    alert("Timeout or MCP Service is not running, please notify your teacher");
 				});
 			}
 			break;

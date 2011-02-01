@@ -138,7 +138,7 @@ var server = createServer(function (req, res) {
 				// if (unid.test && unid.test(req.url)) handler = getMap[unid];
 				// break;
 				if (regexMap[unid].test(url.parse(req.url).pathname)) {
-					console.log("Found matching regex for unid " + unid);
+					// console.log("Found matching regex for unid " + unid);
 					handler = getMap[regexMap[unid].toString()];
 					break;
 				} else {
@@ -234,7 +234,7 @@ fu.staticHandler = function (filename) {
       return;
     }
 
-    sys.puts("loading " + filename + "...");
+    // sys.puts("loading " + filename + "...");
     fs.readFile(filename, function (err, data) {
       if (err) {
         sys.puts("Error loading " + filename);
@@ -245,7 +245,7 @@ fu.staticHandler = function (filename) {
                   , "Content-Length": body.length
                   };
         if (!DEBUG) headers["Cache-Control"] = "public";
-        sys.puts("static file " + filename + " loaded");
+        // sys.puts("static file " + filename + " loaded");
         callback();
       }
     });
