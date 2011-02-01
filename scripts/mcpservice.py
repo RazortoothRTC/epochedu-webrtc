@@ -84,6 +84,7 @@ MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content',
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'], 
+			  'BROWSER_PLAYER_EXTENSIONS' : ['.jpg', '.gif', '.png', '.tif', '.apk', '.txt', '.html'], # These are things that only play in the browser
 			'ASCII_LOGO' : """
 			@#@#++@@@@@@@@@@@
 			@+++++++#@@+@@@@@
@@ -122,14 +123,14 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b6-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b7-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
 	Fix some bad stuff in getbesturlpath.  Added ISANDROID.  Fix broken notification.  Sync works now.
-	Working on killplatformplayer.
+	Working on killplatformplayer.  Bug fixes on launchviewer.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -318,19 +319,25 @@ Todo ...
 		# Get the best url path
 		aurl = self.getbesturlpath(aurl)
 		print 'launchurl is opening best url path ' + aurl
+		
+		if aurl is None:
+			rsp['status'] = 1 # Launch in the browser
+			return rsp
 		if amime is None:
 			try:
+				print 'launching without mime type'
 				self.droid.view(aurl)
 			except:
 				webbrowser.open(aurl)
 			print "droid view launched with url" + aurl
 		else:
 			try:
+				print 'launching with mime type ' + amime
 				self.droid.view(aurl, amime)
 			except:
 				webbrowser.open(aurl)  
 			print "droid view launched with mime type + url"
-		rsp['status'] = 0;
+		rsp['status'] = 0
 		return rsp
 		
 	def syncContent(self, urls, rsp):
@@ -443,8 +450,8 @@ Todo ...
 			print "pretending to kill " + uri
 
 	def notifyUser(self, message, title=None):
-		
 		if self.ISANDROID:
+			print 'notifyUser ISANDROID'
 			if self.droid is None:
 				try:
 					self.droid = Android.android()
@@ -455,6 +462,7 @@ Todo ...
 			if title is not None:
 				self.droid.notify(title, message)
 		else:
+			print 'notifyUser NOT ISANDROID'
 			print message
 		
 
@@ -462,7 +470,12 @@ Todo ...
 		besturi = None
 		channel = uri.split('/')[-2]
 		fileExtList = MCP_CONFIG['VALID_FILE_EXTENSIONS']
+		filename = uri[uri.rindex('/') + 1:]
 		
+		# Check if this only plays in the browser, if so, just let the browser handle it
+		for ext in MCP_CONFIG['BROWSER_PLAYER_EXTENSIONS']:
+			if filename.endswith(ext):
+				return None
 		if channel is not None:
 			if self.ISANDROID:
 				channelpath = MCP_CONFIG['ANDROID_CONTENT_PATH'] + '/' + channel
@@ -474,7 +487,7 @@ Todo ...
 			print "using path " + channelpath + " to find a content with these extensions: " + json.dumps(fileExtList)
 			
 			# Check to see if the filename matches anything in the ext list, if so, it is a valid file
-			filename = uri[uri.rindex('/') + 1:]
+			
 			isafile = False
 			for ext in fileExtList:
 				if filename.endswith(ext):
@@ -550,9 +563,7 @@ def mcploop():
 		time.sleep(tickinterval)
 			
 def mcpServiceConnector():
-	print "here 1"
 	# svc = MCPService()
-	print "here 2"
 	# droid = svc.droid
 	droid = None
 	try:
