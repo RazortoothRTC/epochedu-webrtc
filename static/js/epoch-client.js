@@ -724,7 +724,7 @@ function longPoll (data) {
 							// If there is a platformplayer running, kill it
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
 								if (json && json.status == 0) {
-									alert('successful call to killplatformplayer');
+									// alert('successful call to killplatformplayer');
 									platformplayer = false;
 								}
 							}, function(d, msg) {

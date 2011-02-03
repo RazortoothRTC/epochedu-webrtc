@@ -289,7 +289,7 @@ INSERT YOUR CODE!!!
 			$("#testapdu8").click(function() {
 		    	$.jsonp({
 					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
-					"data": { apdu: '7', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", killplatformplayer: "[]"},
+					"data": { apdu: '8', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", killplatformplayer: "[]"},
 					"success": function(data) {
 						var mcpResponse;
 						alert(eval('"' + data.status + '"'));
