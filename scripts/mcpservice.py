@@ -491,12 +491,13 @@ Todo ...
 			rsp['status'] = 1 # Launch in the browser
 			return rsp
 		try:
-			amime = MCP_CONFIG['VALID_MIME_TYPES'][aurl[aurl.rindex('.'):0]]
+			amime = MCP_CONFIG['VALID_MIME_TYPES'][aurl[aurl.rindex('.'):]]
 		except KeyError, e:
 			pass
 		if amime is not None:
 			try:
-				self.droid.view(aurl, amime)
+				# self.droid.view(aurl, amime)
+				self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], amime, None, False)
 			except:
 				webbrowser.open(aurl)
 			print "droid view launched with url" + aurl + ' and mime = ' + amime
@@ -565,13 +566,13 @@ Todo ...
 		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
-		killpackage(uri)
+		self.killpackage(uri)
 		rsp['status'] = 0;
 		return rsp
 		
 	def killplatformplayer(self, rsp):
 		for pkg in self.PACKAGE_PLAYERLIST:
-			killpackage(pkg)
+			self.killpackage(pkg)
 		rsp['status'] = 0;
 		return rsp
 		
@@ -611,7 +612,7 @@ Todo ...
 	def killpackage(self, uri):
 		try:
 			self.droid.forceStopPackage(uri) # Does this have return value?
-			self.droid.makeToast('Killed ' + uri)
+			self.notifyUser('Teacher closed applicaton ' + uri, 'Closed Player')
 		except:
 			print "pretending to kill " + uri
 
