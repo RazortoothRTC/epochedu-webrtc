@@ -15,6 +15,7 @@
 
 """
 import logging
+import threading
 # The multiprocessing package isn't
 # part of the ASE installation so
 # we must disable multiprocessing logging
@@ -33,6 +34,72 @@ import urllib
 import types
 import threading
 
+#
+# Utility Class
+# 
+class BackgroundSync(threading.Thread): # Need to figure out how scoping works on this
+	def __init__ (self, syncurl, mcpserviceref):
+		threading.Thread.__init__(self)
+		self.syncurl = syncurl
+		self.mcpserviceref = mcpserviceref
+	
+	def setURL(self, syncurl):
+		self.syncurl = syncurl
+		
+	def run(self):
+		downloaderrors = []
+		urls = self.syncurl
+		print "syncing content to device"
+		time.sleep(120)
+		# 
+		# XXX We need to get the path off and create directory if needed
+		#
+		if urls is None: 
+			print 'urls are empty'
+
+		print 'threaded sync'
+		
+		try:
+			print "syncing single url: " + urls
+			apath = self.mcpserviceref.ANDROID_CONTENT_PATH + '/' + urls.split('/')[-2] 
+			dpath = self.mcpserviceref.DESKTOP_CONTENT_PATH + '/' + urls.split('/')[-2]
+			filename = urls.split('/')[-1]
+			if (not os.path.exists(apath + '/' + filename)) and (not os.path.exists(dpath + '/' + filename)):
+				webFile = urllib.urlopen(urls)
+				
+				if not os.path.exists(apath):
+					try:
+						os.makedirs(apath)
+					except OSError, e:
+						print "may not be on android, could not create path " + apath + ", trying local path " + dpath
+						if not os.path.exists(dpath):
+							try:
+								os.makedirs(dpath)
+							except OSError, e:
+								print 'could not create a valid path at' + apath + ' or ' + dpath
+								return
+				try:
+					localFile = open(apath + '/' + filename, 'wa') # XXX Double check the write bits
+					print 'storing url on ' + apath + '/'  + filename
+				except IOError, e:
+					localFile = open(dpath + '/' + filename, 'wa') # XXX Double check the write bits
+					print 'storing url on ' + dpath + '/' + filename
+				try:
+					localFile.write(webFile.read())
+					try:
+						self.mcperviceref.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
+					except:
+						print "Completed sync of " + filename + " to sd card."
+				except IOError, e:
+					print 'error storing to ' + apath
+				webFile.close()
+				localFile.close()
+			else:
+				print 'url ' + urls + ' already synced to device'
+		except IOError, e:
+			downloaderrors.append(urls)
+			print "errors syncing " + urls
+			print e
 #
 #
 # MISC Globals
@@ -290,14 +357,16 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b8-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b10-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
 	Fix some bad stuff in getbesturlpath.  Added ISANDROID.  Fix broken notification.  Sync works now.
-	Working on killplatformplayer.  Bug fixes on launchviewer ...
+	Working on killplatformplayer.  Bug fixes on launchviewer.  Added a few more players to the list.
+	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
+	callback to notify the teacher sync is done, but we might be able to fake it till we make it.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -308,6 +377,8 @@ class MCPService(object):
 	PACKAGE_RESTORELIST = []
 	PACKAGE_PLAYERLIST = ['com.android.camera', # The Android Camera
 						'com.android.music', # The Android Music Player, NEED PDF VIEWER, Documents 2 Go, Text Viewer
+						'com.android.videoplayer', # Android Video Player
+						'org.vudroid', # Our chosen PDF Viewer, Vudroid
 						]
 	def __init__(self):
 		try:
@@ -430,7 +501,10 @@ Todo ...
 			jsonResp = self.launchurl(params['launchurl'], jsonResp)
 		if apdu == '2':
 			print 'sync value is ' + params['sync']
-			jsonResp = self.syncContent(params['sync'], jsonResp)
+			# Old version, synchronous... takes too long :(, can fix this in 2.3 by using DOWNLOAD MANAGER
+			# jsonResp = self.syncContent(params['sync'], jsonResp)
+			BackgroundSync(params['sync'], self).start()
+			jsonResp['status'] = 0 # Sync is now backgrounded
 		if apdu == '3':
 			jsonResp = self.kill(kill, jsonResp)
 		if apdu == '4':
@@ -521,37 +595,41 @@ Todo ...
 		
 		try:
 			print "syncing single url: " + urls
-			webFile = urllib.urlopen(urls)
-			filename = urls.split('/')[-1]
 			apath = self.ANDROID_CONTENT_PATH + '/' + urls.split('/')[-2] 
 			dpath = self.DESKTOP_CONTENT_PATH + '/' + urls.split('/')[-2]
-			if not os.path.exists(apath):
+			filename = urls.split('/')[-1]
+			if (not os.path.exists(apath + '/' + filename)) or (not os.path.exists(dpath + '/' + filename)):
+				webFile = urllib.urlopen(urls)
+				
+				if not os.path.exists(apath):
+					try:
+						os.makedirs(apath)
+					except OSError, e:
+						print "may not be on android, could not create path " + apath + ", trying local path " + dpath
+						if not os.path.exists(dpath):
+							try:
+								os.makedirs(dpath)
+							except OSError, e:
+								print 'could not create a valid path at' + apath + ' or ' + dpath
+								return
 				try:
-					os.makedirs(apath)
-				except OSError, e:
-					print "may not be on android, could not create path " + apath + ", trying local path " + dpath
-					if not os.path.exists(dpath):
-						try:
-							os.makedirs(dpath)
-						except OSError, e:
-							print 'could not create a valid path at' + apath + ' or ' + dpath
-							return
-			try:
-				localFile = open(apath + '/' + filename, 'wa') # XXX Double check the write bits
-				print 'storing url on ' + apath + '/'  + filename
-			except IOError, e:
-				localFile = open(dpath + '/' + filename, 'wa') # XXX Double check the write bits
-				print 'storing url on ' + dpath + '/' + filename
-			try:
-				localFile.write(webFile.read())
+					localFile = open(apath + '/' + filename, 'wa') # XXX Double check the write bits
+					print 'storing url on ' + apath + '/'  + filename
+				except IOError, e:
+					localFile = open(dpath + '/' + filename, 'wa') # XXX Double check the write bits
+					print 'storing url on ' + dpath + '/' + filename
 				try:
-					self.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
-				except:
-					print "Completed sync of " + filename + " to sd card."
-			except IOError, e:
-				print 'error storing to ' + apath
-			webFile.close()
-			localFile.close()
+					localFile.write(webFile.read())
+					try:
+						self.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
+					except:
+						print "Completed sync of " + filename + " to sd card."
+				except IOError, e:
+					print 'error storing to ' + apath
+				webFile.close()
+				localFile.close()
+			else:
+				print 'url ' + urls + ' already synced to device'
 		except IOError, e:
 			downloaderrors.append(urls)
 			print "errors syncing " + urls
@@ -741,8 +819,7 @@ def mcpServiceConnector():
 	
 	try:
 		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
-		# droid.view(mcpconnectorurl, 'text/html')
-		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], None, None, False)
+		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], None, None, False) # Nonblocking
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
