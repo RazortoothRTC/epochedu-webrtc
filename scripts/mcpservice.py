@@ -49,8 +49,6 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 	def run(self):
 		downloaderrors = []
 		urls = self.syncurl
-		print "syncing content to device"
-		time.sleep(120)
 		# 
 		# XXX We need to get the path off and create directory if needed
 		#
