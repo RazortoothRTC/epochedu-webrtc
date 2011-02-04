@@ -123,6 +123,7 @@ WIP = "MCP command work in progress.\n \
 		Wrap up work on end player.  \n \
 		Bug fixing on universalsend which is crashing \n \
 		Added student sync folder button \n \
+		Fix bug where teacher joining a started session gets show that session is not started. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

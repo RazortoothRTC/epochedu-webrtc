@@ -57,6 +57,13 @@
 			start.show();
 		});
 		
+		this.toggleTimer = function(state) {
+			if (state) {
+				stop.hide();
+				start.show();
+				startTimer();
+			} 
+		}
 		this.startTimer = function() {
 			timer = setInterval(do_time, 1000);
 		}

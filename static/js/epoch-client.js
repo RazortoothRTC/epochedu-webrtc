@@ -1027,6 +1027,9 @@ function onConnect (session) {
 	$('#notificationTabInner').find('a.sessionstatus2').removeClass('sessionstatus2').addClass('sessionstatus1');
   if (session.channelstate == 1) { 
 	isClassInSession = true;
+	if (teacher) { 
+		$('.start').trigger('click'); // XXX ADD GROWLER
+	}
   } else {
 	isClassInSession = false;
   }
@@ -1052,20 +1055,7 @@ function onConnect (session) {
 		}
 	}
 }
-  /*
-  if (!teacher) {
-	setEpochCookie(CONFIG.id, starttime);
-	checkSession(CONFIG.nick);
-  } else {
-	setEpochCookie(CONFIG.id, starttime); // Set the cookie
-	if ($.mobile) {
-		showMobileChat(CONFIG.nick);
-	} else {
-		$('#account').show()
-		showChat(CONFIG.nick);
-	}
-  }
-  */
+
   //listen for browser events so we know to update the document title
   $(window).bind("blur", function() {
     CONFIG.focus = false;
