@@ -1517,7 +1517,7 @@ $(document).ready(function() {
 						});
 
 					} // XXX Should give some feedback if no content available
-				  });
+				});
 			});
 			$('#attendance').live('pageshow',function(event, ui){
 				updateAttendanceSheet($(this));

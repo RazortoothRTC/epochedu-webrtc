@@ -101,7 +101,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b17-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b18-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Incorporating feedback for crayola demo from customer \n \
 		Remove Cufon \n \
@@ -122,6 +122,7 @@ WIP = "MCP command work in progress.\n \
 		Added options for openNewWindow, including title \n \
 		Wrap up work on end player.  \n \
 		Bug fixing on universalsend which is crashing \n \
+		Added student sync folder button \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
