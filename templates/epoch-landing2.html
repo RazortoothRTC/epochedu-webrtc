@@ -1,0 +1,110 @@
+{%set name landing2 %}
+{%set args who %}
+
+{%extends 'boilerplate' %}
+
+{%block 'title' %}Welcome to EpochEDU : {%= who%}{%/block %}
+{%block 'css-styles' %}
+	<link type="text/css" rel="stylesheet" href="/static/css/student.css" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
+{%/block %}
+
+{%block 'body-scripts' %}
+<script type="text/javascript">
+	$(document).ready(function() {		
+		//
+		// Setup any data we need for this thing
+		//
+		getChannelsList(function(json) {
+			var channelslist = json;
+			var classrooms = "";
+			$('#classrooms').append('<table cellspacing="0" style="width:100%"><tr><td style="padding-left:10px;width:50%">');
+			for (aclass in channelslist) {
+				$('#classrooms').append('<div id="folder' + aclass + '" title="' + aclass + '(' + channelslist[aclass]+ ')"><p>Classroom: ' + aclass + ' Intermediate Level I.</p><br><span class"openchannels" id="launchClass'+ aclass +'"></span></div>');
+				classrooms = classrooms + '#folder' + aclass + ',';
+				$('#launchClass' + aclass).ninjaButtonCreate({
+				  onSelect:function(){
+				    $.ninjaWaitStart({
+				      onStop:function(){ // optional JavaScript function
+				        // $('#launch').ninjaButtonDeselect();
+						var suffix = "";
+						if (isTeacher()) suffix = 'moderator';
+						window.open('/class' + suffix + '/' + aclass, '_self','resizable,location,menubar,toolbar,scrollbars,status');
+				      },
+				      seconds:3,
+				      text:'Joining classroom: ' + aclass + '...'
+				    });
+				  },
+				  title:'Join Class'
+				});
+			}
+			$(classrooms).ninjaFoldersCreate({
+			  direction:'vertical', // optional, defaults to horizontal
+			  onChange:function(){ // optional JavaScript function
+			    alert('Folder changed to: ' + this.attr('title') + '.');
+			  },
+			  selected:$('#folderfoo') // optional, defaults to first folder
+			});
+			$('#classrooms').append('</td></tr></table>');
+		}, function(error) {
+			$('#classrooms').append('<h1>No Classrooms Available</h1>');
+		});
+		
+		$('#tabFirst, #tabSecond, #tabThird, #tabFourth').ninjaTabsCreate({
+			selected:$('#tabFirst')
+		});
+		$('.footertab').click(function() {
+			if ($(this).attr('id') == "tabSecond") { 
+				$.ninjaWindowOpen({
+				      id:'aboutWindow', // optional unique identifier
+				      onClose:function(){ // optional JavaScript function
+				        $('#windowButton').ninjaButtonDeselect();
+				      },
+				      icon:'profile', // optional image before title
+				      title:'About EpochEDU',
+				      url:'/about'
+				});
+			}
+	 	});
+		// add any existing channels into the list and refresh the list
+		// Get the other channels
+	});
+</script>
+<script type="text/javascript">
+	/* XXX Refactor this into epoch-client.js */
+	function getChannel() {
+		return 'landing';
+	}
+	function isTeacher() {
+		return ('{%= who%}' == 'student'? false : true);
+	}
+</script>
+<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
+{%/block %}
+{%block 'head' %}
+{%/block %}
+
+{%block 'container' %}
+	<!-- Start of first page -->
+	<div data-role="page" id="chat">
+
+		<div data-role="header" data-id="header" data-position="fixed">
+			<div id="branding">
+				<h1>Welcome, {%= who%}</h1>
+			</div>
+		</div><!-- /header -->
+		<div id='classrooms'></div>
+
+		<div class="footer">
+			<span class="footertab" id="tabFirst" title="target">Classrooms</span>
+			<span class="footertab" id="tabSecond">About</span> <!-- title attribute used for icon -->
+			<span class="footertab" id="tabThird">Setup</span>
+			<span class="footertab" id="tabFourth">Sync</span>
+			
+			<div class="footercopy">
+				<p>Powered by Razortooth Communications, LLC</p>
+			</div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+</body>
+{%/block%}

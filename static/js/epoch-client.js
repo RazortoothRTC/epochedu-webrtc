@@ -506,8 +506,12 @@ function addMessage (from, text, time, _class) {
 
   if (!$.mobile) {
 	// alert('appending message');
-  	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
-  	// XXX Remove for customer Cufon.refresh();
+	if ($.jSrollPane) {
+  		$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+	} else {
+		$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>'));
+	}
+	// XXX Remove for customer Cufon.refresh();
   } else {
 	// alert('appending mobile message');
 	
@@ -515,7 +519,7 @@ function addMessage (from, text, time, _class) {
   } 
   // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
   if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
-  Shadowbox.setup(); // XXX Make sure I still need this
+  if ($.Shadowbox) Shadowbox.setup(); // XXX Make sure I still need this
 }
 
 function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
@@ -561,6 +565,17 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 	} else {
 		alert('mcpDispatcher3: No readable MCP apdu received');
 	}
+}
+
+function getChannelsList(jcallback, ecallback) {
+	$.ajax({ cache: false
+	         , type: "GET"
+	         , url: "/channels"
+	         , dataType: "json"
+	         , data: {}
+			 , success: jcallback
+			 , error: ecallback
+	});
 }
 
 function updateRSS () {

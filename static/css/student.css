@@ -265,6 +265,9 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 	color: #cc3300;
 }
 
+.footer {
+	text-align:center;
+}
 /* notification tab */
 /*
 #notificationTab { 

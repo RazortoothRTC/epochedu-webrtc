@@ -91,6 +91,8 @@ CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
 // versions.
 CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"; // XXX This is fixed for android!!!!
 
+DEFAULT_CHANNELS = ['science', 'math', 'history', 'multimedia']; // XXX DEMO CONFIG
+
 //
 // INTERVALS & TIMEOUT VALUES
 //
@@ -101,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b18-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b20-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = "MCP command work in progress.\n \
 		Incorporating feedback for crayola demo from customer \n \
 		Remove Cufon \n \
@@ -124,6 +126,7 @@ WIP = "MCP command work in progress.\n \
 		Bug fixing on universalsend which is crashing \n \
 		Added student sync folder button \n \
 		Fix bug where teacher joining a started session gets show that session is not started. \n \
+		Added new landing page using ninjaui for GUI. \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -528,12 +531,23 @@ fu.getterer("/classmoderator-v2/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("(/student|/teacher)", function(req, res) { // Match either student or teacher URL
+fu.getterer("(/student-v3|/teacher-v3)", function(req, res) { // Match either student or teacher URL
 	var path = url.parse(req.url).pathname.split("/")[1];
 	sys.puts('landing page path: ' + path);
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var landing_tpl = nTPL("./templates/epoch-landing.html");
 	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // V1
+	  res.end(landing_tpl({
+	      who: path,
+	    }));
+});
+
+fu.getterer("(/student|/teacher)", function(req, res) { // Match either student or teacher URL
+	var path = url.parse(req.url).pathname.split("/")[1];
+	sys.puts('landing page path: ' + path);
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var landing_tpl = nTPL("./templates/epoch-landing2.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
 	  res.end(landing_tpl({
 	      who: path,
 	    }));
@@ -703,15 +717,33 @@ fu.get("/part", function (req, res) {
   res.simpleJSON(200, { rss: mem.rss });
 });
 
-// XXX Can I acomplish this on /recv ?
-fu.get("/isalive", function (req, res) {
-  var id = qs.parse(url.parse(req.url).query).id;
-  var chan = qs.parse(url.parse(req.url).query).channel;
-  var sessions = channels[chan].sessions;
-  var session;
-  if (!id || !sessions[id]) {
-  	res.simpleJSON(400, { error: "Your session id " + id + " is invalid"});
-  }
+fu.get("/channels", function (req, res) {
+  	// var id = qs.parse(url.parse(req.url).query).id;
+	// Setup the default channels if they don't exist
+	var channelslist = {'foo': 1};
+	
+	for (var i = 0; i < DEFAULT_CHANNELS.length; i++) {
+		if (!channels[DEFAULT_CHANNELS[i]]) {
+			// Add it
+			var achannel = channelFactory();
+			sys.puts('channelFactory invoked for @' + DEFAULT_CHANNELS[i]);
+			channels[DEFAULT_CHANNELS[i]] = achannel;
+		}
+	}
+	
+	for (i in channels) {
+		if (channels[i].sessions) {
+			var count = 0;
+			for (ses in channels[i].sessions) {
+				count = count + 1;
+			}
+			channelslist[i] = count;
+		}
+		// sys.log('channelslist is ' + JSON.stringify(channelslist));
+	}
+             
+	// sys.log('channelslist is ' + JSON.stringify(channelslist));
+  	res.simpleJSON(200, channelslist);
 });
 
 fu.get("/recv", function (req, res) {
