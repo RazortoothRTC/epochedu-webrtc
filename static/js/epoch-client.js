@@ -1138,7 +1138,7 @@ function updateTeacherContent2(contentlist) {
 	$('.ui-footer[data-position="fixed"]').fixHeaderFooter();
 }
 
-function addGrowlNotification(text, title, imagepath, time) {
+function addGrowlNotification(title, text, imagepath, time) {
 	var unique_id = $.gritter.add({
 		// (string | mandatory) the heading of the notification
 		title: title,
