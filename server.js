@@ -130,7 +130,6 @@ WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Add gritter notification infrastructure --- wip</li> \n \
 		<li>Added missing jsonp library js.</li> \n \
 		<li>Add missing gritter css, js, and images. \n \
-		<li>
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
