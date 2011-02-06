@@ -103,30 +103,32 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b20-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = "MCP command work in progress.\n \
-		Incorporating feedback for crayola demo from customer \n \
-		Remove Cufon \n \
-		Trying to fix url bar area to make it go away \n \
-		Fix broken mcprequests \n \
-		Added new #mediacontrol buttons w/ ninjaui buttons. \n \
-		Fixing media carousel \n \
-		Implemented non-mcp side of universalsend command \n \
-		Fixed bug in jsonp callback handling, cherrypy should NOT use JSONIFY, it doesn't work \n \
-		Added callbacks for mcpDispatcher3 for success and error \n \
-		Implement universalsend with optmization of url for checking locally synched content. \n \
-		Fix bug with double MCP request on device \n \
-		Fix for missing MOV icon.\n \
-		Fix missing PDF ... it was on the filter list in fu.js \n \
-		Adding in test frameworks for MCP Service. \n \
-		Added a few more test cases to help support a player kill. \n \
-		Working on close window/kill player \n \
-		Added options for openNewWindow, including title \n \
-		Wrap up work on end player.  \n \
-		Bug fixing on universalsend which is crashing \n \
-		Added student sync folder button \n \
-		Fix bug where teacher joining a started session gets show that session is not started. \n \
-		Added new landing page using ninjaui for GUI. \n \
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b21-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = " <li>MCP command work in progress.</li>\n \
+		<li>Incorporating feedback for crayola demo from customer</li> \n \
+		<li>Remove Cufon </li>\n \
+		<li>Trying to fix url bar area to make it go away</li> \n \
+		<li>Fix broken mcprequests</li> \n \
+		<li>Added new #mediacontrol buttons w/ ninjaui buttons.</li> \n \
+		<li>Fixing media carousel</li> \n \
+		<li>Implemented non-mcp side of universalsend command</li> \n \
+		<li>Fixed bug in jsonp callback handling, cherrypy should NOT use JSONIFY, it doesn't work</li> \n \
+		<li>Added callbacks for mcpDispatcher3 for success and error</li> \n \
+		<li>Implement universalsend with optmization of url for checking locally synched content.</li> \n \
+		<li>Fix bug with double MCP request on device</li> \n \
+		<li>Fix for missing MOV icon.</li> \n \
+		<li>Fix missing PDF ... it was on the filter list in fu.js</li> \n \
+		<li>Adding in test frameworks for MCP Service.</li> \n \
+		<li>Added a few more test cases to help support a player kill.</li> \n \
+		<li>Working on close window/kill player</li> \n \
+		<li>Added options for openNewWindow, including title</li> \n \
+		<li>Wrap up work on end player.</li>  \n \
+		<li>Bug fixing on universalsend which is crashing</li> \n \
+		<li>Added student sync folder button</li> \n \
+		<li>Fix bug where teacher joining a started session gets show that session is not started.</li> \n \
+		<li>Added new landing page using ninjaui for GUI.</li> \n \
+		<li>Add gritter notification infrastructure --- wip</li> \n \
+		<li>Added missing jsonp library js.</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -461,10 +463,10 @@ fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 // APP ROUTES
 //
 fu.get("/about", function(req, res) {
-	var body = 'EpochEDU version: ' + VERSION + '\nWork in progress: ' + WIP;
+	var body = '<H2>EpochEDU version: ' + VERSION + '\nWork in progress:</H2><UL>' + WIP + '</UL>';
 	res.writeHead(200, {
 	  'Content-Length': body.length,
-	  'Content-Type': 'text/plain'
+	  'Content-Type': 'text/html'
 	});
 	res.write(body);
 	res.end();

@@ -7,6 +7,7 @@
 {%block 'css-styles' %}
 	<link type="text/css" rel="stylesheet" href="/static/css/student.css" media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/jquery.gritter.css" media="all">
 {%/block %}
 
 {%block 'body-scripts' %}
@@ -41,7 +42,7 @@
 			$(classrooms).ninjaFoldersCreate({
 			  direction:'vertical', // optional, defaults to horizontal
 			  onChange:function(){ // optional JavaScript function
-			    alert('Folder changed to: ' + this.attr('title') + '.');
+			    // alert('Folder changed to: ' + this.attr('title') + '.');
 			  },
 			  selected:$('#folderfoo') // optional, defaults to first folder
 			});
