@@ -766,6 +766,7 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
+			addGrowlNotification('Class Session Started', 'Class: ' + channel + ' has started', '', '');
 			isClassInSession = true;
 			if (!teacher) {
 				if (isUserInSession()) {
@@ -790,6 +791,7 @@ function longPoll (data) {
 		
 		case "endsession":
 		 	// alert('ended a class');
+			addGrowlNotification('Class Session Ended', 'Class: ' + channel + ' has ended', '', '');
 			isClassInSession = false;
 			if (!teacher) {
 				$('.chatscroll').children().remove();
@@ -1041,7 +1043,6 @@ function onConnect (session) {
 	updateRSS();
   	updateUptime();
 	$('#notificationTabInner').find('a.sessionstatus2').removeClass('sessionstatus2').addClass('sessionstatus1');
-	addGrowlNotification();
   if (session.channelstate == 1) { 
 	isClassInSession = true;
 	if (teacher) { 
@@ -1137,18 +1138,17 @@ function updateTeacherContent2(contentlist) {
 	$('.ui-footer[data-position="fixed"]').fixHeaderFooter();
 }
 
-function addGrowlNotification(text, title, imagename, time) {
+function addGrowlNotification(text, title, imagepath, time) {
 	var unique_id = $.gritter.add({
 		// (string | mandatory) the heading of the notification
-		title: 'This is a sticky notice!',
+		title: title,
 		// (string | mandatory) the text inside the notification
-		text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eget tincidunt velit. Cum sociis natoque penatibus et <a href="#" style="color:#ccc">magnis dis parturient</a> montes, nascetur ridiculus mus.',
-		// (string | optional) the image to display on the left
-		image: 'http://s3.amazonaws.com/twitter_production/profile_images/132499022/myface_bigger.jpg',
+		text: text,		// (string | optional) the image to display on the left
+		image: imagepath,
 		// (bool | optional) if you want it to fade out on its own or just sit there
-		sticky: true, 
+		sticky: false, 
 		// (int | optional) the time you want it to be alive for before fading out
-		time: '',
+		time: time,
 		// (string | optional) the class name you want to apply to that specific message
 		class_name: 'my-sticky-class' 
 	});

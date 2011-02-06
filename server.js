@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b22-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b23-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -129,7 +129,9 @@ WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Added new landing page using ninjaui for GUI.</li> \n \
 		<li>Add gritter notification infrastructure --- wip</li> \n \
 		<li>Added missing jsonp library js.</li> \n \
-		<li>Add missing gritter css, js, and images. \n \
+		<li>Add missing gritter css, js, and images.</li> \n \
+		<li>Fix bug start/stop session WIP </li> \n \
+		<li>Fix bug in click on join class WIP </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
