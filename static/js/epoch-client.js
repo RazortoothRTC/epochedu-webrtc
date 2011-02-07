@@ -971,6 +971,7 @@ function mcpPayloadFactory(msg, type, apdu) {
 	var mcpdata = msg;
 	if (!mcpdata) mcpdata = [];
 	payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + mcpdata + '"}';
+	alert('mcpPayloadFactory = ' + payload); 
 	return payload;
 }
 
