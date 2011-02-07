@@ -133,6 +133,7 @@ WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Fix bug start/stop session WIP </li> \n \
 		<li>Fix bug in click on join class WIP </li> \n \
 		<li>Bug fix on shadowbox reference for CSS </li> \n \
+		<li>Bug fix for jChatscroll bug. </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

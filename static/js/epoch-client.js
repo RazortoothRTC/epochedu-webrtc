@@ -506,7 +506,7 @@ function addMessage (from, text, time, _class) {
 
   if (!$.mobile) {
 	// alert('appending message');
-	if ($.jSrollPane) {
+	if ($.jScrollPane) {
   		$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
 	} else {
 		$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>'));
