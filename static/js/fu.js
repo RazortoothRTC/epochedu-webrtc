@@ -234,7 +234,7 @@ fu.staticHandler = function (filename) {
       return;
     }
 
-    sys.puts("loading " + filename + "...");
+    // sys.puts("loading " + filename + "...");
     fs.readFile(filename, function (err, data) {
       if (err) {
         sys.puts("Error loading " + filename);

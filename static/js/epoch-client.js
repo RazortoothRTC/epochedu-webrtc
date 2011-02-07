@@ -543,8 +543,6 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 	   timestamp: '<isoformat DATETIME>'
 	};
 	if (mcpRequest.apdu) {
-		
-		
 		if (mcpRequest.apdu.constructor.name == 'Number') mcpRequest.apdu = eval('"' + mcpRequest.apdu + '"');
 		// Perform any special handling
 		// For now, all we do is dispatch
@@ -695,7 +693,6 @@ function longPoll (data) {
 						
 						if (json) {
 							mcpResp = json;
-
 						} 
 						
 						// XXX Should report back some status here
@@ -708,17 +705,18 @@ function longPoll (data) {
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
 								if (!json || json.status != 0) browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 							}, function(d, msg) {
-								alert('error on launchurl - couldn not reach MCP universalsend - pop open a new window');
+								addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 								browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 							});
 						} else { // XXX Why would this ever happen ?
 							// Just open it in the browser
-							alert("MCP Service is not running, please notify your teacher");
+							addGrowlNotification('Error launching Content', 'Ping heartbeat returned improper resonse - pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 							browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 						}
 					}, function(d,msg) {
 						    // alert("MCP Service is not running, please notify your teacher");
 							// Just open it in the browser
+							addGrowlNotification('Error launching Content', 'No ping heartbeat receivedMCP Service is not running, please notify teacher - could not reach MCP universalsend - pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 							browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
 					});
 					
@@ -753,8 +751,6 @@ function longPoll (data) {
 						// XXX Should report back some status here
 						if (mcpResp && mcpResp.status == '0') { 
 							// alert('Got mcpResponse status = ' + mcpResp.status);
-						
-						
 							// If there is a platformplayer running, kill it
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
 								if (json && json.status == 0) {
@@ -762,13 +758,13 @@ function longPoll (data) {
 									platformplayer = false;
 								}
 							}, function(d, msg) {
-								alert('error on killplatformplayer');
+								addGrowlNotification('Error ending Content Player', 'Unable to end native Content player on device.  You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 							});
 						} else { // XXX Why would this ever happen ?
-							alert("MCP Service is not running, please notify your teacher");
+							addGrowlNotification('Error ending Content Player', 'Ping heartbeat returned improper resonse - You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 						}
 					}, function(d,msg) {
-						    alert("MCP Service is not running, please notify your teacher");
+						    addGrowlNotification('Error ending Content Player', 'Unable to send a ping heartbeat.  You will need to close the player manually.  Notify teacher: No MCP Service is reachable.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 					});
 				}
 			}
@@ -841,7 +837,7 @@ function longPoll (data) {
 					// alert('Got mcpResponse status = ' + mcpResponse.status + ' send response back to teacher');
 					// XXX Should report back some status here
 				  }, function(d,msg) {
-				    alert("Timeout or MCP Service is not running, please notify your teacher");
+					addGrowlNotification('Error sending MCPRequest', 'Error sending MCPRequest ' + message.payload.apdu + ' - MCP Service not running or unreachable.  Please notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 				});
 			}
 			break;
@@ -928,7 +924,6 @@ function send(msg, type) {
 function handleError(myReqObj,textStatus,errorThrown) {
 	alert("Error: "+myReqObj.number
 		+"\nType: "+textStatus.name
-		+"\nDescription: "+errorThrown.description
 		+"\nSource Object Id: "+myReqObj.id
 	);
 }
@@ -939,7 +934,6 @@ function sendviewer(msg, type) {
     // XXX should be POST
     // XXX should add to messages immediately
     jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
-	
   }
 }
 
