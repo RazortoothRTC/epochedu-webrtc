@@ -149,7 +149,7 @@ INSERT YOUR CODE!!!
 			$("#testapdu2").click(function() {
 		    	$.jsonp({
 					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
-					"data": { apdu: '2', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", sync: "http://192.168.1.148:5000/content/multimedia/Voyager_II.3gp"},
+					"data": { apdu: '2', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", sync: "http://192.168.1.16:5000/content/multimedia/Voyager_II.3gp"},
 					"success": function(data) {
 						var mcpResponse;
 						alert(eval('"' + data.status + '"'));

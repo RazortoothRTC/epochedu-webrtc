@@ -533,6 +533,15 @@ function addMessage (from, text, time, _class) {
 }
 
 function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
+	var ticketid;
+	
+	if (mcpRequest) {
+		if (mcpRequest.ticketid) { // XXX Why would this ever happen
+			ticketid = mcpRequest.ticketid; 
+		} else {
+			ticketid = CONFIG.id + 'foo';
+		}
+	}
 	var mcpResponse = {
 	   apduresp: mcpRequest.ticketid,
 	   sender: CONFIG.id,
@@ -825,18 +834,29 @@ function longPoll (data) {
 			break;
 		
 		case "mcprequest":
+			var apdu = message.payload.apdu;
+			
 			if (!teacher) {
 				// alert('mcprequest');
 				mcpDispatcher3(message.payload, function(json, textStatus) {
 					if (json.status == '0') {
 						// alert('received some data from MCP' + eval('"' + json + '"'));
 						mcpResponse = json;
+						if (apdu == '2') {
+							addGrowlNotification('Successfully Dispatched Sync Request', 'Results of Content Sync Request will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
+						}
+					} else {
+						addGrowlNotification('MCP Response', 'Received response: ' + json.status, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 					}
 					// alert('Got mcpResponse status = ' + mcpResponse.status + ' send response back to teacher');
 					// XXX Should report back some status here
 				  }, function(d,msg) {
 					addGrowlNotification('Error sending MCPRequest', 'Error sending MCPRequest ' + message.payload.apdu + ' - MCP Service not running or unreachable.  Please notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 				});
+			} else {
+				if (apdu == 2) {
+					addGrowlNotification('Sent Content Sync Request', 'Results of Content Sync Reuqest will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
+				}
 			}
 			break;
 
@@ -1407,7 +1427,7 @@ $(document).ready(function() {
 	    $('#resources').find('input:checked').each(
 	    function(index) {
 	        var msg = this.value;
-	        alert('click sync ' + msg);
+	        // alert('click sync ' + msg);
 	        messageDispatcher("sync", msg);
 	        this.checked = false;
 	    }
