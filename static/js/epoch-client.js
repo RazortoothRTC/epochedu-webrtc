@@ -373,10 +373,8 @@ function openNewWindow(url, options) {
 	var awindow;
 	if (options) {
 		awindow = window.open(url, "player", options);
-		awindow.document.write("<title>mediaplayer</title>");
 	} else {
 		awindow = window.open(url);
-		awindow.document.write("<title>mediaplayer</title>");
 	}
 	return awindow;
 }

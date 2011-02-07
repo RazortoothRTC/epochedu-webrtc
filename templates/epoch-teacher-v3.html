@@ -267,7 +267,8 @@
 				$('#resources').find('input:checked').each(
 			    	function(index) {
 				        var msg = this.value;
-				        if (!util.isBlank(msg)) openNewWindow(msg);
+						// alert('url ' + msg);
+				        if (!util.isBlank(msg)) openNewWindow(msg, BROWSERPLAYERWINDOW_OPTIONS);
 				        this.checked = false;
 						toggleNinjaButton('#mediacontrol', false);
 				    }

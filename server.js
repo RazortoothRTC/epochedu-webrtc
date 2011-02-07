@@ -91,7 +91,7 @@ CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
 // versions.
 CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"; // XXX This is fixed for android!!!!
 
-DEFAULT_CHANNELS = ['science', 'math', 'history', 'multimedia']; // XXX DEMO CONFIG
+DEFAULT_CHANNELS = ['science', 'math', 'history', 'multimedia']; // XXX DEMOSETUP
 
 //
 // INTERVALS & TIMEOUT VALUES
@@ -138,6 +138,7 @@ WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Removing Question Submit functionality from Student UI, should be from teacher UI \n \
 		<li>MCP Errors and Notifications need grow alerts</li> \n \
 		<li>Fix bug in landing page launching wrong classroom</li> \n \
+		<li>Fix for broken preview pop up. </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
