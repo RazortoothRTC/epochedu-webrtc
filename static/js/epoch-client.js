@@ -595,7 +595,7 @@ function updateUptime () {
 
 var transmission_errors = 0;
 var first_poll = true;
-
+var first_invalid_session = true; // XXX Hack to deal with fact that first /recv after login will not know you've logged in yet
 
 //process updates if we have any, request updates from the server,
 // and call again with response. the last part is like recursion except the call
@@ -604,15 +604,18 @@ var first_poll = true;
 function longPoll (data) {
   if (transmission_errors > LONG_POLL_ERROR_MAX_RETRY) { // XXX Make this more robust and reconnect opportunistically
     addMessage("", "Too many long poll errors, exceeded " + LONG_POLL_ERROR_MAX_RETRY + ', logout', new Date(), "error");
-	addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: Too many long poll errors, exceeded ' + LONG_POLL_ERROR_MAX_RETRY + ' , logout', '/static/images/red-dot.png', '', true, 'sessionstatusgrowl');
+	addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: Too many long poll errors, exceeded ' + LONG_POLL_ERROR_MAX_RETRY + ' , logout', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
 	
 	setTimeout(logoutSession, 5000); // If we fail to reconnect, show message and then go to login
     return;
   }
   
-  if (data && (data.state < 0)) { // XXX Bug here trying to test if session is invalid
-	addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please reload the page to restore your session.", '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
-	
+  if (data && (data.state < 0) && (CONFIG.id != null)) { // XXX Bug here trying to test if session is invalid
+	if (first_invalid_session) {
+		first_invalid_session = false;
+	} else {
+		addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please reload the page to restore your session.", '/static/images/status_unknown.png', '', true, 'sessionstatusgrowl');
+	}
 	// invalidateEpochCookie();
 	// XXX DEBUGON if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
   }
