@@ -766,7 +766,7 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
-			addGrowlNotification('Class Session Started', 'Class: ' + getChannel() + ' has started', '/static/images/birdy.png', '');
+			addGrowlNotification('Class Session Started', 'Class: ' + getChannel() + ' has started', '/static/images/birdy.png', '', false);
 			isClassInSession = true;
 			if (!teacher) {
 				if (isUserInSession()) {
@@ -791,7 +791,7 @@ function longPoll (data) {
 		
 		case "endsession":
 		 	// alert('ended a class');
-			addGrowlNotification('Class Session Ended', 'Class: ' + getChannel() + ' has ended', '/static/images/birdy.png', '');
+			addGrowlNotification('Class Session Ended', 'Class: ' + getChannel() + ' has ended', '/static/images/birdy.png', '', false);
 			isClassInSession = false;
 			if (!teacher) {
 				$('.chatscroll').children().remove();
@@ -857,16 +857,19 @@ function longPoll (data) {
          , dataType: "json"
          , data: { since: CONFIG.last_message_time, id: CONFIG.id, channel: getChannel() }
          , error: function () {
-		   	 var retryDuration = transmission_errors * 10*1000;
-             addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
-             transmission_errors += 1;
-			 $('#notificationTabInner').find('a.wifistatus1').removeClass('wifistatus1').addClass('wifistatus2');
+			var retryDuration = transmission_errors * 10*1000;
+			addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
+			transmission_errors += 1;
+			addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: long poll error. trying again... in ' + (retryDuration/1000) + ' seconds', '/static/images/birdy.png', '', false, 'wifistatusgrowl');
 			 
              //don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
              setTimeout(longPoll, retryDuration);
            }
          , success: function (data) {
-			 if (transmission_errors > 0) $('#notificationTabInner').find('a.wifistatus2').removeClass('wifistatus2').addClass('wifistatus1');
+			 if (transmission_errors > 0) $.gritter.remove('wifistatusgrowl', { 
+			                    fade: true,
+			                    speed: 'slow'
+			                });
              transmission_errors = 0;
 			 
              //if everything went well, begin another request immediately
@@ -1046,7 +1049,7 @@ function onConnect (session) {
   if (session.channelstate == 1) { 
 	isClassInSession = true;
 	if (teacher) { 
-		$('.start').trigger('click'); // XXX ADD GROWLER
+		$('.start').trigger('click'); 
 	}
   } else {
 	isClassInSession = false;
@@ -1138,7 +1141,8 @@ function updateTeacherContent2(contentlist) {
 	$('.ui-footer[data-position="fixed"]').fixHeaderFooter();
 }
 
-function addGrowlNotification(title, text, imagepath, time) {
+function addGrowlNotification(title, text, imagepath, time, sticky, classname) {
+	if !(classname) classname = 'epochgrowl';
 	var unique_id = $.gritter.add({
 		// (string | mandatory) the heading of the notification
 		title: title,
@@ -1146,11 +1150,11 @@ function addGrowlNotification(title, text, imagepath, time) {
 		text: text,		// (string | optional) the image to display on the left
 		image: imagepath,
 		// (bool | optional) if you want it to fade out on its own or just sit there
-		sticky: false, 
+		sticky: sticky, 
 		// (int | optional) the time you want it to be alive for before fading out
 		time: time,
 		// (string | optional) the class name you want to apply to that specific message
-		class_name: 'my-sticky-class' 
+		class_name: classname,
 	});
 	return false;
 }
