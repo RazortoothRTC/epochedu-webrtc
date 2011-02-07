@@ -502,8 +502,13 @@ function addMessage (from, text, time, _class) {
   }
   text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
   $pane = $('.chatscroll');
-  var autoScroll = ($pane.data('jScrollPanePosition') == $pane.data('jScrollPaneMaxScroll'));
-
+  var panepos = $pane.data('jScrollPanePosition');
+  var maxpanepos = $pane.data('jScrollPaneMaxScroll');
+  var autoScroll;
+  if (panepos && maxpanepos && (panepos == maxpanepos)) {
+		autoScroll = true;	
+  }
+  // addGrowlNotification('jScrollPaneDebug', 'jScrollPanePosition = ' + $pane.data('jScrollPanePosition') + ' jScrollPaneMaxScroll = ' + $pane.data('jScrollPaneMaxScroll'), '/static/images/wifi-red.png', '', false, 'debuggrowl');
   if (!$.mobile) {
 	// alert('appending message');
 	if ($.jScrollPane) {
@@ -518,7 +523,14 @@ function addMessage (from, text, time, _class) {
 	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>'));
   } 
   // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
-  if (!autoScroll) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
+  if (!autoScroll) {
+	// alert('! autoscroll');
+	$pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
+	} else {
+		$pane[0].scrollTo($pane.data('jScrollPaneMaxScroll'));
+		// $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')-15); 
+		// $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll') + 30); 
+	}
   if ($.Shadowbox) Shadowbox.setup(); // XXX Make sure I still need this
 }
 
