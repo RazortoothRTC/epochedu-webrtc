@@ -193,13 +193,17 @@ function channelFactory() {
 			   , timestamp: (new Date()).getTime()
 			};
 		} else {
-			sys.puts('Received mcprequest with payload - ' + JSON.stringify(payload));
-			m = { nick: nick
-			   , type: type
-			   , text: text
-			   , payload: payload
-			   , timestamp: (new Date()).getTime()
-			};
+			if (payload) {
+				sys.puts('Received mcprequest with payload - ' + JSON.stringify(payload));
+				m = { nick: nick
+				   , type: type
+				   , text: text
+				   , payload: payload
+				   , timestamp: (new Date()).getTime()
+				};
+			} else {
+				type = 'mcprequestmissingpayload';
+			}
 		}
 
 		// MSGDEF
