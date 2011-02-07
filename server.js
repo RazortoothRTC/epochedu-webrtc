@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b33-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b34-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -142,6 +142,7 @@ WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Update to tester URLS </li> \n \
 		<li>Updates to Sync Growl notifications </li> \n \
 		<li>Fix some issues in mcpDispatcher3 </li> \n \
+		<li>Checkpoint for Demo to Tonya, remove client side debu, remove toolboar </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -865,7 +866,6 @@ fu.get("/send", function (req, res) {
   }
 
   session.poke();
-  sys.puts('Got request type ' + type + ' with payload ' + payload);
   // sys.puts("/send testing for text value");
   if (text && text.match(/#startsession/i)) { // XXX Change this, use message type instead
 	channel.appendMessage(session.nick, "startsession", text); 

@@ -948,7 +948,7 @@ function sendmcprequest(msg, type, apdu) {
 	if (CONFIG.debug === false) {
 		var payload;
 		if ((type) && (apdu)) {
-			alert('sendmcprequest with data: ' + msg);
+			// alert('sendmcprequest with data: ' + msg);
 			// The message format is simple.  The message data is contained in an identifier = APDU name
 			// payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + msg + '"}';
 	    	// payload = {apdu: apdu};
@@ -975,7 +975,7 @@ function mcpPayloadFactory(msg, type, apdu) {
 	var mcpdata = msg;
 	if (!mcpdata) mcpdata = [];
 	payload = '{ apdu: ' + apdu + ', to: "*", requestoruri: "' + CONFIG.nick + '@' + CONFIG.id + '", ticketid: "<unique ticket ID>", ' + type + ': "' + mcpdata + '"}';
-	alert('mcpPayloadFactory = ' + payload); 
+	// alert('mcpPayloadFactory = ' + payload); 
 	return payload;
 }
 
@@ -1419,7 +1419,7 @@ $(document).ready(function() {
 	    $('#resources').find('input:checked').each(
 	    function(index) {
 	        var msg = this.value;
-	        alert('click sync ' + msg);
+	        // alert('click sync ' + msg);
 	        messageDispatcher("sync", msg);
 	        this.checked = false;
 	    }
