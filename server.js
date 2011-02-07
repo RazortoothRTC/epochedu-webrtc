@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b27-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b28-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -135,6 +135,7 @@ WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Bug fix on shadowbox reference for CSS </li> \n \
 		<li>Bug fix for jChatscroll bug. </li> \n \
 		<li>Enhanced growl controls.  Add for Wifi and Session status</li> \n \
+		<li>Removing Question Submit functionality from Student UI, should be from teacher UI \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
