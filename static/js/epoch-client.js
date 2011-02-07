@@ -234,7 +234,7 @@ function doLogout() {
 	partSession();
 	$('#account').hide();
 	$('#nickname').text('');
-	$('#notificationTabInner').find('a.sessionstatus1').removeClass('sessionstatus1').addClass('sessionstatus2');
+	// $('#notificationTabInner').find('a.sessionstatus1').removeClass('sessionstatus1').addClass('sessionstatus2');
 	displayLogin();
 }
 
@@ -604,13 +604,17 @@ var first_poll = true;
 function longPoll (data) {
   if (transmission_errors > LONG_POLL_ERROR_MAX_RETRY) { // XXX Make this more robust and reconnect opportunistically
     addMessage("", "Too many long poll errors, exceeded " + LONG_POLL_ERROR_MAX_RETRY + ', logout', new Date(), "error");
+	addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: Too many long poll errors, exceeded ' + LONG_POLL_ERROR_MAX_RETRY + ' , logout', '/static/images/red-dot.png', '', true, 'sessionstatusgrowl');
+	
 	setTimeout(logoutSession, 5000); // If we fail to reconnect, show message and then go to login
     return;
   }
   
   if (data && (data.state < 0)) { // XXX Bug here trying to test if session is invalid
-		invalidateEpochCookie();
-		// XXX DEBUGON if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
+	addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please reload the page to restore your session.", '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
+	
+	// invalidateEpochCookie();
+	// XXX DEBUGON if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
   }
 
   if (data && data.rss) {
@@ -860,7 +864,7 @@ function longPoll (data) {
 			var retryDuration = transmission_errors * 10*1000;
 			addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
 			transmission_errors += 1;
-			addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: long poll error. trying again... in ' + (retryDuration/1000) + ' seconds', '/static/images/birdy.png', '', false, 'wifistatusgrowl');
+			addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: long poll error. trying again... in ' + (retryDuration/1000) + ' seconds', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
 			 
              //don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
              setTimeout(longPoll, retryDuration);
@@ -1045,7 +1049,7 @@ function onConnect (session) {
   	rss         = session.rss;
 	updateRSS();
   	updateUptime();
-	$('#notificationTabInner').find('a.sessionstatus2').removeClass('sessionstatus2').addClass('sessionstatus1');
+	// $('#notificationTabInner').find('a.sessionstatus2').removeClass('sessionstatus2').addClass('sessionstatus1');
   if (session.channelstate == 1) { 
 	isClassInSession = true;
 	if (teacher) { 
