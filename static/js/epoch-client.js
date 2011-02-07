@@ -559,6 +559,7 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 			case "1":
 				break;
 			case "2":
+				addGrowlNotification('Successfully Dispatched Sync Request', 'Results of Content Sync Request will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 				break;
 			case "3":
 				break;
@@ -834,7 +835,6 @@ function longPoll (data) {
 			break;
 		
 		case "mcprequest":
-			var apdu = message.payload.apdu;
 			
 			if (!teacher) {
 				// alert('mcprequest');
@@ -842,21 +842,14 @@ function longPoll (data) {
 					if (json.status == '0') {
 						// alert('received some data from MCP' + eval('"' + json + '"'));
 						mcpResponse = json;
-						if (apdu == '2') {
-							addGrowlNotification('Successfully Dispatched Sync Request', 'Results of Content Sync Request will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
-						}
 					} else {
 						addGrowlNotification('MCP Response', 'Received response: ' + json.status, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 					}
 					// alert('Got mcpResponse status = ' + mcpResponse.status + ' send response back to teacher');
 					// XXX Should report back some status here
 				  }, function(d,msg) {
-					addGrowlNotification('Error sending MCPRequest', 'Error sending MCPRequest ' + message.payload.apdu + ' - MCP Service not running or unreachable.  Please notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+					addGrowlNotification('Error sending MCPRequest', 'Error sending MCPRequest - MCP Service not running or unreachable.  Please notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 				});
-			} else {
-				if (apdu == 2) {
-					addGrowlNotification('Sent Content Sync Request', 'Results of Content Sync Reuqest will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
-				}
 			}
 			break;
 
