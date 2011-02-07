@@ -1142,7 +1142,7 @@ function updateTeacherContent2(contentlist) {
 }
 
 function addGrowlNotification(title, text, imagepath, time, sticky, classname) {
-	if !(classname) classname = 'epochgrowl';
+	if (!classname) classname = 'epochgrowl';
 	var unique_id = $.gritter.add({
 		// (string | mandatory) the heading of the notification
 		title: title,
