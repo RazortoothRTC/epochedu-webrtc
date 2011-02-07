@@ -535,13 +535,6 @@ function addMessage (from, text, time, _class) {
 function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 	var ticketid;
 	
-	if (mcpRequest) {
-		if (mcpRequest.ticketid) { // XXX Why would this ever happen
-			ticketid = mcpRequest.ticketid; 
-		} else {
-			ticketid = CONFIG.id + 'foo';
-		}
-	}
 	var mcpResponse = {
 	   apduresp: mcpRequest.ticketid,
 	   sender: CONFIG.id,
