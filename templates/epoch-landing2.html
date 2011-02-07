@@ -25,15 +25,21 @@
 				classrooms = classrooms + '#folder' + aclass + ',';
 				$('#launchClass' + aclass).ninjaButtonCreate({
 				  onSelect:function(){
+					var clicked = this.id;
+					if (clicked.indexOf('launchClass') == 0) { // XXX This is stupid, fix it, gotta know what classroom
+						clicked = clicked.substr(11);
+					}
+					// alert('clicked ' + clicked);
 				    $.ninjaWaitStart({
 				      onStop:function(){ // optional JavaScript function
 				        // $('#launch').ninjaButtonDeselect();
 						var suffix = "";
 						if (isTeacher()) suffix = 'moderator';
-						window.open('/class' + suffix + '/' + aclass, '_self','resizable,location,menubar,toolbar,scrollbars,status');
+						
+						window.open('/class' + suffix + '/' + clicked, '_self','resizable,location,menubar,toolbar,scrollbars,status');
 				      },
 				      seconds:3,
-				      text:'Joining classroom: ' + aclass + '...'
+				      text:'Joining classroom: ' + clicked + '...'
 				    });
 				  },
 				  title:'Join Class'
@@ -99,7 +105,7 @@
 		<div class="footer">
 			<span class="footertab" id="tabFirst" title="target">Classrooms</span>
 			<span class="footertab" id="tabSecond">About</span> <!-- title attribute used for icon -->
-			<span class="footertab" id="tabThird">Setup</span>
+			<span class="footertab" id="tabThird">Status</span>
 			<span class="footertab" id="tabFourth">Sync</span>
 			
 			<div class="footercopy">

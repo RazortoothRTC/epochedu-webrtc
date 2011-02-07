@@ -525,9 +525,9 @@ function addMessage (from, text, time, _class) {
   // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
   if (!autoScroll) {
 	// alert('! autoscroll');
-	$pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
+	if ($pane[0]) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
 	} else {
-		$pane[0].scrollTo($pane.data('jScrollPaneMaxScroll'));
+		if ($pane[0]) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll'));
 		// $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')-15); 
 		// $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll') + 30); 
 	}
