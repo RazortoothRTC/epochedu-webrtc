@@ -1208,6 +1208,7 @@ function messageDispatcher(cmd, data) {
 			if (!util.isBlank(data)) sendviewer(data, cmd);
 			break;
 		case "sync":
+			addGrowlNotification('Sync Request Sent', 'Sent Sync request for URL: ' + data + '.  Results of Content Sync Request will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 			if (!util.isBlank(data)) sendmcprequest(data, cmd, 2); // XXX HARDCODED APDU
 			break;
 		case "mcpmodestart":
