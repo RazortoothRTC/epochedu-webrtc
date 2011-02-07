@@ -723,7 +723,7 @@ function longPoll (data) {
 					
 				} else {
 					// Just open it in the browser
-					browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
+					browserplayerwindow = openNewWindow(message.text);
 				}
 			}
 			break;		
