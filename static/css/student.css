@@ -76,10 +76,15 @@ outline:0;
 
 .user {
 	font-weight:bold;
+	color: #AFAEAE;
 }
 
 .msgcon {
 	padding-left:10px;
+}
+
+.msgcon > p {
+	color: #FFFFFF;
 }
 
 #chatmsg {
