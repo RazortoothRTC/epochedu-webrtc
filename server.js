@@ -865,6 +865,7 @@ fu.get("/send", function (req, res) {
   }
 
   session.poke();
+  sys.puts('Got request type ' + type + ' with payload ' + payload);
   // sys.puts("/send testing for text value");
   if (text && text.match(/#startsession/i)) { // XXX Change this, use message type instead
 	channel.appendMessage(session.nick, "startsession", text); 
