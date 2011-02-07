@@ -1413,7 +1413,7 @@ $(document).ready(function() {
 	    $('#resources').find('input:checked').each(
 	    function(index) {
 	        var msg = this.value;
-	        // alert('click sync ' + msg);
+	        alert('click sync ' + msg);
 	        messageDispatcher("sync", msg);
 	        this.checked = false;
 	    }
