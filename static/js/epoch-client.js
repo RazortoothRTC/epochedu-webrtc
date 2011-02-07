@@ -766,7 +766,7 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
-			addGrowlNotification('Class Session Started', 'Class: ' + getChannel() + ' has started', '', '');
+			addGrowlNotification('Class Session Started', 'Class: ' + getChannel() + ' has started', '/static/images/birdy.png', '');
 			isClassInSession = true;
 			if (!teacher) {
 				if (isUserInSession()) {
@@ -791,7 +791,7 @@ function longPoll (data) {
 		
 		case "endsession":
 		 	// alert('ended a class');
-			addGrowlNotification('Class Session Ended', 'Class: ' + getChannel() + ' has ended', '', '');
+			addGrowlNotification('Class Session Ended', 'Class: ' + getChannel() + ' has ended', '/static/images/birdy.png', '');
 			isClassInSession = false;
 			if (!teacher) {
 				$('.chatscroll').children().remove();
