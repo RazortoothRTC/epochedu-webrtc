@@ -49,7 +49,7 @@ var SHADOWBOX_CONFIG_HEIGHT = 600;
 var MCP_RPC_PORT = '8080';  // Assume MCP runs on localhost
 var MCP_RPC_ENDPOINT = '/rpc';
 var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
-var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=no";
+var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
 var browserplayerwindow;
 var platformplayer = false;
 
