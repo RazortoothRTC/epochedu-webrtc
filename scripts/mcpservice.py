@@ -355,16 +355,17 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b10-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b11-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
 	Fix some bad stuff in getbesturlpath.  Added ISANDROID.  Fix broken notification.  Sync works now.
-	Working on killplatformplayer.  Bug fixes on launchviewer.  Added a few more players to the list.
+	Finished killplatformplayer.  Bug fixes on launchviewer.  Added a few more players to the list.
 	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
-	callback to notify the teacher sync is done, but we might be able to fake it till we make it.
+	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
+	teacher control monitor to send student back to classroom.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -386,7 +387,7 @@ class MCPService(object):
 		self.ISANDROID = os.path.exists('/system/lib/libandroid_runtime.so')
 		print 'MCPService init completed'
 		# XXX Put t into a shutdown hook so it gets stopped or canceled
-		# self.t = threading.Timer(10.0, mcploop).start()
+		self.t = threading.Timer(10.0, mcploop).start()
 		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
