@@ -144,8 +144,8 @@ def check_access(default=False):
 #
 _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
-			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.148:5000/student'], # DEMOSETUP
-			  'MCP_TICK_INTERVAL' : 30, # Seconds between ticks DEMOSETUP
+			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'], # DEMOSETUP
+			  'MCP_TICK_INTERVAL' : 15, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'],
