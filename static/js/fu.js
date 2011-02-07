@@ -47,7 +47,7 @@ var fu = exports;
 // XXX Localize these strings?
 var NOT_FOUND = "Not Found\n";
 var INTERNAL_SERVER_ERROR = 'Internal Server Error!  Oh pshaw\n';
-var SERVER_RESTART_TIMEOUT = 20000; // 20 Seconds before notification
+var SERVER_RESTART_TIMEOUT = 15000; // 20 Seconds before notification
 function notFound(req, res) {
 	console.log("404 Error - ");
 	fu.staticHandler("templates/learn-simplified-german.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
@@ -234,7 +234,7 @@ fu.staticHandler = function (filename) {
       return;
     }
 
-    // sys.puts("loading " + filename + "...");
+    sys.puts("loading " + filename + "...");
     fs.readFile(filename, function (err, data) {
       if (err) {
         sys.puts("Error loading " + filename);
