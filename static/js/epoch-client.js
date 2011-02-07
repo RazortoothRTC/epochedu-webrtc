@@ -961,7 +961,11 @@ function sendmcprequest(msg, type, apdu) {
 			// XXX transmitting via send may not be the right idea ... or, don't put any data into text other than chat 
 	    	payload = mcpPayloadFactory(msg, type, apdu);
 			// XXX We don't do anything with the response!!!
-			jQuery.get("/send", {id: CONFIG.id, text: msg, type: 'mcprequest', channel: getChannel(), payload: eval("(" + payload + ")")}, function (data) { }, "json");
+			if (payload) {
+				jQuery.get("/send", {id: CONFIG.id, text: msg, type: 'mcprequest', channel: getChannel(), payload: eval("(" + payload + ")")}, function (data) { }, "json");
+			} else {
+				alert('paylod is empty');
+			}
 		}
 	}
 }
