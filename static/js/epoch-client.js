@@ -905,19 +905,21 @@ function longPoll (data) {
 function send(msg, type) {
   // alert('send called' + msg);
   // jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) {}, "json");
-
+  addGrowlNotification('/send type = ' + type, 'msg body = ' + msg + ' CONFIG.debug = ' + CONFIG.debug, '/static/images/white/gear.png', '', false, 'debuggrowl');
   if (CONFIG.debug === false) {
 	$.ajax({
 		url: "/send",
 		data: {id: CONFIG.id, text: msg, type: type, channel: getChannel()},
 		dataType: "text",
 		success: function(data, textStatus, XMLHttpRequest){
-			// alert('Success send data ' + data + ' textStatus ' + ' resp: ' + XMLHttpRequest.responseText);
+			addGrowlNotification('/send AJAX done', 'Send msg type '  + type, '/static/images/white/gear.png', '', false, 'debuggrowl');
 		},
 		complete: function complete(XMLHttpRequest, textStatus){
 			// alert('/send done');
 		},
-		error: handleError
+		error: function(e) {
+			addGrowlNotification('/send ' + type + ' ERROR', 'Error msg = ' + e.number ,'/static/images/white/gear.png', '', false, 'debuggrowl');
+		},
 	});
     // XXX should be POST
     // XXX should add to messages immediately
