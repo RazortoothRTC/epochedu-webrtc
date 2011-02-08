@@ -259,6 +259,43 @@ fu.staticHandler = function (filename) {
   }
 };
 
+fu.dkqs = {
+	RE_OBJS : {"RE_ARRAYOBJ" : /\[(\/?)(\w+)([^>]*?)\]/ , },
+	
+	// The only reason I am doing this is because Node.js or me (not sure) has proven to be not so awesome
+	// For some reason, on the plug, I get some garbage parsing of the payload and possibly some other data
+	// So instead of relying on the garbage, parse it by hand :( barf ....
+	// 'id=50335038871&text=http://192.168.1.16:5000/content/science/EarthChangingSurfaceHandout.pdf&type=mcprequest&channel=science&payload[apdu]=2&payload[to]=*&payload[requestoruri]=alexandr@50335038871&payload[ticketid]=<unique+ticket+ID>&payload[sync]=http://192.168.1.16:5000/content/science/EarthChangingSurfaceHandout.pdf'
+	// This takes a QS and will convert it into a JSON object.  If a specific ID is passed in, it does something... TBD
+	// Writing a good parser is tricky.  So for now, don't write a good one.  Just make one that gets the payload together.	
+	getJSON: function(querystring, jsid) {
+		var jsobj = {};
+		
+		if (querystring) {
+			var splitqs;
+			var payloadobj = {};
+			querystring = qs.unescape(querystring); // First unescape
+			splitqs = querystring.split('&');
+			sys.puts('fu.dkqs splitqs = ' + splitqs + ' length = ' + splitqs.length);
+			for (var i = 0; i < splitqs.length; i++) {
+				var item = splitqs[i];
+				sys.puts('fu.dkqs item = ' + item);
+				var keyval = item.split('=');
+				sys.puts('fu.dkqs keyval = ' + keyval);
+				var match = item.match(fu.dkqs.RE_OBJS["RE_ARRAYOBJ"]);
+				if (match) { // If it contains an ARRAY of sorts, collect it into a single object
+					sys.puts(match);
+					payloadobj[match[2]] = keyval[1];
+				} else {
+					jsobj[keyval[0]] = keyval[1];
+				}
+			}
+			jsobj['payload'] = payloadobj; // XXX This is so dumb I am crying
+		}
+		
+ 		return jsobj;
+	}, 
+}
 // stolen from jack- thanks
 fu.mime = {
   // returns MIME type for extension, or fallback, or octet-steam

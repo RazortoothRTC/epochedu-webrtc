@@ -836,6 +836,7 @@ fu.get("/send", function (req, res) {
   
   sys.puts('/send with unescaped query string = ' + uqs);
   sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
+  sys.puts('/send with dkqs = ' + JSON.stringify(fu.dkqs.getJSON(uqs)));
   if (payload) sys.puts('and message payload = ' + JSON.stringify(payload));
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
