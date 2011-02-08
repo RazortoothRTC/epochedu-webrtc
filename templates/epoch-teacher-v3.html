@@ -262,6 +262,7 @@
 					data: {id: CONFIG.id, text: 'startsession', type: 'startsession', channel: getChannel()},
 					dataType: "text",
 					async:false,
+					cache:false,
 					success: function(data, textStatus, XMLHttpRequest){
 					
 					},
@@ -281,8 +282,8 @@
 			$('#stopsessionbtn').ninjaButtonCreate({
 			  icon:'flag', 
 			  onSelect:function(){ 
-				var msg = "endsession";
-			    send(msg, 'endsession');
+				// var msg = "endsession";
+			    // send(msg, 'endsession');
 				$('#timer').stopTimer()
 				$('#startsessionbtn').ninjaButtonEnable();
 				$(this).ninjaButtonDeselect();
@@ -291,6 +292,7 @@
 					data: {id: CONFIG.id, text: 'endsession', type: 'endsession', channel: getChannel()},
 					dataType: "text",
 					async:false,
+					cache:false,
 					success: function(data, textStatus, XMLHttpRequest){
 					
 					},
