@@ -831,7 +831,7 @@ fu.get("/send", function (req, res) {
   var channel = channels[chan];
   var sessions = channel.sessions;
   sys.puts('/send with qs = ' + qs.unescape(url.parse(req.url).query));
-
+  if (payload) sys.puts('and message payload = ' + JSON.stringify(payload));
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
 	  res.simpleJSON(400, { error: "Channel required"});
