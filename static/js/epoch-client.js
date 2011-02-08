@@ -1338,13 +1338,13 @@ $(document).ready(function() {
 	//lock the UI while waiting for a response
 	showLoad();
 
-	$(".start").click(function() {
+	$(".start").live('click', function() {
 	    var msg = "#startsession";
 	    if (!util.isBlank(msg)) send(msg, 'startsession');
 	    return false;
 	});
 
-	$(".stop").click(function() {
+	$(".stop").live('click', function() {
 	    var msg = "#endsession";
 	    if (!util.isBlank(msg)) send(msg, 'endsession');
 	    return false;
