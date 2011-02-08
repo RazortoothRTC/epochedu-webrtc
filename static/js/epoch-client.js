@@ -821,7 +821,7 @@ function longPoll (data) {
 				}
 			} else {
 				$('.chatscroll').children().remove();
-				addMessage("", "Class Session has ended!", new Date(), "error");
+				// addMessage("", "Class Session has ended!", new Date(), "error");
 			}
 			
 			break;

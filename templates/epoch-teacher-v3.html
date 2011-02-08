@@ -251,13 +251,26 @@
 			$('#startsessionbtn').ninjaButtonCreate({
 			  icon:'bookmark', 
 			  onSelect:function(){ 
-				var msg = "startsession";
-			    send(msg, 'startsession');
+				// var msg = "startsession";
+			    // send(msg, 'startsession');
 				$('#timer').startTimer();
 			    $('#stopsessionbtn').ninjaButtonEnable();
 				
 				$(this).ninjaButtonDeselect();
-				
+				$.ajax({
+					url: "/send",
+					data: {id: CONFIG.id, text: 'startsession', type: 'startsession', channel: getChannel()},
+					dataType: "text",
+					async:false,
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+					},
+				});
 			  },
 			  onDeselect:function() {
 				$(this).ninjaButtonDisable();
@@ -268,11 +281,25 @@
 			$('#stopsessionbtn').ninjaButtonCreate({
 			  icon:'flag', 
 			  onSelect:function(){ 
-				var msg = "endsession";
-			    send(msg, 'endsession');
+				// var msg = "endsession";
+			    // send(msg, 'endsession');
 				$('#timer').stopTimer()
 				$('#startsessionbtn').ninjaButtonEnable();
 				$(this).ninjaButtonDeselect();
+				$.ajax({
+					url: "/send",
+					data: {id: CONFIG.id, text: 'endsession', type: 'endsession', channel: getChannel()},
+					dataType: "text",
+					async:false,
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+					},
+				});
 			  },
 			  onDeselect:function() {
 				$(this).ninjaButtonDisable();
