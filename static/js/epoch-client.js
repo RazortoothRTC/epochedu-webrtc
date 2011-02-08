@@ -615,8 +615,7 @@ var first_invalid_session = true; // XXX Hack to deal with fact that first /recv
 function longPoll (data) {
   if (transmission_errors > LONG_POLL_ERROR_MAX_RETRY) { // XXX Make this more robust and reconnect opportunistically
     addMessage("", "Too many long poll errors, exceeded " + LONG_POLL_ERROR_MAX_RETRY + ', logout', new Date(), "error");
-	addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: Too many long poll errors, exceeded ' + LONG_POLL_ERROR_MAX_RETRY + ' , logout', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
-	
+	addGrowlNotification('Server Error', 'Access to WiFi is interrupted or Server has Crashed.  Detail: Too many long poll errors, exceeded ' + LONG_POLL_ERROR_MAX_RETRY + ' , logout', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
 	setTimeout(logoutSession, 5000); // If we fail to reconnect, show message and then go to login
     return;
   }
@@ -879,7 +878,7 @@ function longPoll (data) {
 			var retryDuration = transmission_errors * 10*1000;
 			addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
 			transmission_errors += 1;
-			addGrowlNotification('Connectivity Interrupted', 'Access to WiFi is interrupted or Server is down.  Detail: long poll error. trying again... in ' + (retryDuration/1000) + ' seconds', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
+			addGrowlNotification('Server Error', 'Access to WiFi is interrupted or Server has Crashed.  Detail: long poll error. trying again... in ' + (retryDuration/1000) + ' seconds', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
 			 
              //don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
              setTimeout(longPoll, retryDuration);

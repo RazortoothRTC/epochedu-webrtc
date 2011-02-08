@@ -276,12 +276,12 @@ fu.dkqs = {
 			var payloadobj = {};
 			querystring = qs.unescape(querystring); // First unescape
 			splitqs = querystring.split('&');
-			sys.puts('fu.dkqs splitqs = ' + splitqs + ' length = ' + splitqs.length);
+			// sys.puts('fu.dkqs splitqs = ' + splitqs + ' length = ' + splitqs.length);
 			for (var i = 0; i < splitqs.length; i++) {
 				var item = splitqs[i];
-				sys.puts('fu.dkqs item = ' + item);
+				// sys.puts('fu.dkqs item = ' + item);
 				var keyval = item.split('=');
-				sys.puts('fu.dkqs keyval = ' + keyval);
+				// sys.puts('fu.dkqs keyval = ' + keyval);
 				var match = item.match(fu.dkqs.RE_OBJS["RE_ARRAYOBJ"]);
 				if (match) { // If it contains an ARRAY of sorts, collect it into a single object
 					sys.puts(match);
