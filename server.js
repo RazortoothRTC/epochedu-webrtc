@@ -824,6 +824,7 @@ fu.get("/recv", function (req, res) {
 
 fu.get("/send", function (req, res) {
   var query = url.parse(req.url).query;
+  var uqs = qs.unescape(query);
   var querystring = qs.parse(query);
   var id = querystring.id;
   var text = querystring.text;
@@ -832,7 +833,9 @@ fu.get("/send", function (req, res) {
   var payload = querystring.payload;
   var channel = channels[chan];
   var sessions = channel.sessions;
-  sys.puts('/send with qs = ' + JSON.stringify(querystring));
+  
+  sys.puts('/send with unescaped query string = ' + uqs);
+  sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
   if (payload) sys.puts('and message payload = ' + JSON.stringify(payload));
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
