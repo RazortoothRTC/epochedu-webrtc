@@ -782,7 +782,6 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
-			bindstopstart();
 			addGrowlNotification('Class Session Started', 'Class: ' + getChannel() + ' has started', '/static/images/birdy.png', '', false);
 			isClassInSession = true;
 			if (!teacher) {
@@ -807,7 +806,6 @@ function longPoll (data) {
 			break;
 		
 		case "endsession":
-			bindstopstart();
 		 	// alert('ended a class');
 			addGrowlNotification('Class Session Ended', 'Class: ' + getChannel() + ' has ended', '/static/images/birdy.png', '', false);
 			isClassInSession = false;
