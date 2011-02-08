@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b36-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b37-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -145,6 +145,8 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Checkpoint for Demo to Tonya, remove client side debu, remove toolboar </li> \n \
 		<li>Fix 3GP css tag.</li> \n \
 		<li>Backout all Dirty DB references </li> \n \
+		<li>Fix lost payload on plug platform by using fu.dkqs instead </li> \n \
+		<li>Stabalize startsession, stopsession WIP </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -825,7 +827,7 @@ fu.get("/recv", function (req, res) {
 fu.get("/send", function (req, res) {
   var query = url.parse(req.url).query;
   var uqs = qs.unescape(query);
-  var querystring = qs.parse(query);
+  var querystring = qs.parse(query); // XXX This fails on the PLUG :( barf on my face ):
   var id = querystring.id;
   var text = querystring.text;
   var type = querystring.type;
@@ -834,10 +836,10 @@ fu.get("/send", function (req, res) {
   var channel = channels[chan];
   var sessions = channel.sessions;
   
-  sys.puts('/send with unescaped query string = ' + uqs);
-  sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
-  sys.puts('/send with dkqs = ' + JSON.stringify(fu.dkqs.getJSON(uqs)));
-  if (!payload) payload = fu.dkqs.getJSON(uqs).payload;
+  // sys.puts('/send with unescaped query string = ' + uqs);
+  // sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
+  // sys.puts('/send with dkqs = ' + JSON.stringify(fu.dkqs.getJSON(uqs)));
+  if (!payload) payload = fu.dkqs.getJSON(uqs).payload; // XXX I would love to know why node's querystring doesn't work
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
 	  res.simpleJSON(400, { error: "Channel required"});
@@ -871,13 +873,15 @@ fu.get("/send", function (req, res) {
 
   session.poke();
   // sys.puts("/send testing for text value");
+  /*
   if (text && text.match(/#startsession/i)) { // XXX Change this, use message type instead
 	channel.appendMessage(session.nick, "startsession", text); 
   } else if (text && text.match(/#endsession/i)) {
-	channel.appendMessage(session.nick, "endsession", text); // XXX Change this, use message type instead
-  } else { // XXX Catch all
+	channel.appendMessage(session.nick, "endsession", text); 
+  } else { 
   	channel.appendMessage(session.nick, type, text, payload);
-  }
+  } */
+  channel.appendMessage(session.nick, type, text, payload); // Pass the error handling on down 
   res.simpleJSON(200, { rss: mem.rss });
 });
 

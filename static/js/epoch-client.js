@@ -1340,13 +1340,13 @@ $(document).ready(function() {
 
 	$(".start").click(function() {
 	    var msg = "#startsession";
-	    if (!util.isBlank(msg)) send(msg);
+	    if (!util.isBlank(msg)) send(msg, 'startsession');
 	    return false;
 	});
 
 	$(".stop").click(function() {
 	    var msg = "#endsession";
-	    if (!util.isBlank(msg)) send(msg);
+	    if (!util.isBlank(msg)) send(msg, 'endsession');
 	    return false;
 	});
 
