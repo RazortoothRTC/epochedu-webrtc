@@ -270,7 +270,7 @@
 					},
 					error: function(e) {
 					},
-				});
+				}); 
 			  },
 			  onDeselect:function() {
 				$(this).ninjaButtonDisable();
@@ -281,8 +281,8 @@
 			$('#stopsessionbtn').ninjaButtonCreate({
 			  icon:'flag', 
 			  onSelect:function(){ 
-				// var msg = "endsession";
-			    // send(msg, 'endsession');
+				var msg = "endsession";
+			    send(msg, 'endsession');
 				$('#timer').stopTimer()
 				$('#startsessionbtn').ninjaButtonEnable();
 				$(this).ninjaButtonDeselect();
@@ -299,7 +299,7 @@
 					},
 					error: function(e) {
 					},
-				});
+				}); 
 			  },
 			  onDeselect:function() {
 				$(this).ninjaButtonDisable();

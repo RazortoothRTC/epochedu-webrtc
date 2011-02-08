@@ -624,7 +624,7 @@ function longPoll (data) {
 	if (first_invalid_session) {
 		first_invalid_session = false;
 	} else {
-		addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please reload the page to restore your session.", '/static/images/status_unknown.png', '', true, 'sessionstatusgrowl');
+		addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please reload the page to restore your session.", '/static/images/status_unknown.png', '', false, 'sessionstatusgrowl');
 	}
 	// invalidateEpochCookie();
 	// XXX DEBUGON if (CONFIG.id) addMessage("", "Session is invalid, you won't be able to send messages but you can observe...probably server restarted, please cmd://refresh", new Date(), "error");
@@ -904,20 +904,20 @@ function longPoll (data) {
 function send(msg, type) {
   // alert('send called' + msg);
   // jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) {}, "json");
-  addGrowlNotification('/send type = ' + type, 'msg body = ' + msg + ' CONFIG.debug = ' + CONFIG.debug, '/static/images/white/gear.png', '', false, 'debuggrowl');
+  // addGrowlNotification('/send type = ' + type, 'msg body = ' + msg + ' CONFIG.debug = ' + CONFIG.debug, '/static/images/white/gear.png', '', false, 'debuggrowl');
   if (CONFIG.debug === false) {
 	$.ajax({
 		url: "/send",
 		data: {id: CONFIG.id, text: msg, type: type, channel: getChannel()},
 		dataType: "text",
 		success: function(data, textStatus, XMLHttpRequest){
-			addGrowlNotification('/send AJAX done', 'Send msg type '  + type, '/static/images/white/gear.png', '', false, 'debuggrowl');
+			// addGrowlNotification('/send AJAX done', 'Send msg type '  + type, '/static/images/white/gear.png', '', false, 'debuggrowl');
 		},
 		complete: function complete(XMLHttpRequest, textStatus){
 			// alert('/send done');
 		},
 		error: function(e) {
-			addGrowlNotification('/send ' + type + ' ERROR', 'Error msg = ' + e.number ,'/static/images/white/gear.png', '', false, 'debuggrowl');
+			// addGrowlNotification('/send ' + type + ' ERROR', 'Error msg = ' + e.number ,'/static/images/white/gear.png', '', false, 'debuggrowl');
 		},
 	});
     // XXX should be POST
