@@ -103,8 +103,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b34-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = " <li>MCP command work in progress.</li>\n \
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b35-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
 		<li>Trying to fix url bar area to make it go away</li> \n \
@@ -143,6 +143,7 @@ WIP = " <li>MCP command work in progress.</li>\n \
 		<li>Updates to Sync Growl notifications </li> \n \
 		<li>Fix some issues in mcpDispatcher3 </li> \n \
 		<li>Checkpoint for Demo to Tonya, remove client side debu, remove toolboar </li> \n \
+		<li>Fix 3GP css tag.</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
