@@ -251,8 +251,8 @@
 			$('#startsessionbtn').ninjaButtonCreate({
 			  icon:'bookmark', 
 			  onSelect:function(){ 
-				var msg = "#startsession";
-			    if (!util.isBlank(msg)) send(msg, 'startsession');
+				var msg = "startsession";
+			    send(msg, 'startsession');
 				$('#timer').startTimer();
 			    $('#stopsessionbtn').ninjaButtonEnable();
 				
@@ -268,8 +268,8 @@
 			$('#stopsessionbtn').ninjaButtonCreate({
 			  icon:'flag', 
 			  onSelect:function(){ 
-				var msg = "#endsession";
-			    if (!util.isBlank(msg)) send(msg, 'endsession');
+				var msg = "endsession";
+			    send(msg, 'endsession');
 				$('#timer').stopTimer()
 				$('#startsessionbtn').ninjaButtonEnable();
 				$(this).ninjaButtonDeselect();
