@@ -823,6 +823,7 @@ fu.get("/recv", function (req, res) {
 });
 
 fu.get("/send", function (req, res) {
+  var query = url.parse(req.url).query;
   var id = qs.parse(url.parse(req.url).query).id;
   var text = qs.parse(url.parse(req.url).query).text;
   var type = qs.parse(url.parse(req.url).query).type;
@@ -830,7 +831,7 @@ fu.get("/send", function (req, res) {
   var payload = qs.parse(url.parse(req.url).query).payload;
   var channel = channels[chan];
   var sessions = channel.sessions;
-  sys.puts('/send with qs = ' + qs.unescape(url.parse(req.url).query));
+  sys.puts('/send with qs = ' + url.parse(req.url).query);
   if (payload) sys.puts('and message payload = ' + JSON.stringify(payload));
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
