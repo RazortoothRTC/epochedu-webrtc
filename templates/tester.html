@@ -79,6 +79,10 @@ INSERT YOUR CODE!!!
 	<input id="testclosepopup1" type="button" value="testclosepopup1" />
 	<p><label>testwindowname1 - </label>
 	<input id="testwindowname1" type="button" value="testwindowname1" />
+	<p><label>teststartsession1 - </label>
+	<input id="teststartsession1" type="button" value="teststartsession1" />
+	<p><label>teststopsession1 - </label>
+	<input id="teststopsession1" type="button" value="teststopsession1" />
     <footer>
     <footer>
     </footer>
@@ -304,6 +308,38 @@ INSERT YOUR CODE!!!
 					    alert("MCP Service is not running d = " + d + " msg= " + msg);
 						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
 					}
+				});
+			});
+			$("#teststartsession1").click(function() {
+				$.ajax({
+					url: "/send",
+					data: {id: 'CONFIG.id', text: 'startsession', type: 'startsession', channel: 'multimedia'},
+					dataType: "text",
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+						alert('error');
+					},
+				});
+			});
+			$("#teststopsession1").click(function() {
+				$.ajax({
+					url: "/send",
+					data: {id: 'CONFIG.id', text: 'stopsession', type: 'stopsession', channel: 'multimedia'},
+					dataType: "text",
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+						alert('error');
+					},
 				});
 			});
 			var playerwindow;

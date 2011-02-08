@@ -826,7 +826,6 @@ fu.get("/recv", function (req, res) {
 });
 
 fu.get("/send", function (req, res) {
-  
   var query = url.parse(req.url).query;
   var uqs = qs.unescape(query);
   var querystring = qs.parse(query); // XXX This fails on the PLUG :( barf on my face ):
@@ -837,7 +836,8 @@ fu.get("/send", function (req, res) {
   var payload = querystring.payload;
   var channel = channels[chan];
   var sessions = channel.sessions;
-  sys.log('Received message ' + type);
+  
+  sys.puts('Received message ' + type);
   // sys.puts('/send with unescaped query string = ' + uqs);
   // sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
   // sys.puts('/send with dkqs = ' + JSON.stringify(fu.dkqs.getJSON(uqs)));
