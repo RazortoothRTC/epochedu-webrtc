@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b37-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b38-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -146,7 +146,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Fix 3GP css tag.</li> \n \
 		<li>Backout all Dirty DB references </li> \n \
 		<li>Fix lost payload on plug platform by using fu.dkqs instead </li> \n \
-		<li>Stabalize startsession, stopsession WIP </li> \n \
+		<li>Stabalize startsession, stopsession - use live() instead of click() handlers</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
