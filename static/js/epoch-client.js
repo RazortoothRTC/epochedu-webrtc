@@ -1413,8 +1413,9 @@ $(document).ready(function() {
 
 	    return false;
 	});
-	
+
 	/* XXX DEPRICATED, NOW LIVES IN HTML TEMPLATE */
+	/*
 	$("#sync").click(function(e) {
 	    $('#resources').find('input:checked').each(
 	    function(index) {
@@ -1425,7 +1426,7 @@ $(document).ready(function() {
 	    }
 	    );
 	    return false;
-	});
+	}); */ 
 	//make the actual join request to the server
 	$.ajax({
 	    cache: false

@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b35-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b36-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -144,6 +144,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Fix some issues in mcpDispatcher3 </li> \n \
 		<li>Checkpoint for Demo to Tonya, remove client side debu, remove toolboar </li> \n \
 		<li>Fix 3GP css tag.</li> \n \
+		<li>Backout all Dirty DB references </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -171,7 +172,7 @@ var MESSAGE_BACKLOG = 200,
 
 var channels = {}; // XXX Load from DB instead!!!
 var channelstates = {'NOT_IN_CLASS': 0, 'IN_CLASS': 1};
-fu.initDB([], broadcastRestart); // XXX empty options, handler
+// fu.initDB([], broadcastRestart); // XXX empty options, handler
 
 
 function channelFactory() {
@@ -365,18 +366,12 @@ setInterval(function () {
 		timestamp: 'Date String'
 	}
 */
+/* 
 function loadChannels() {
 	// XXX I was going to load it all into memory, but the framework actually does that 
 	// already.
-	/*
-	var chans = {};
-	fu.db['channels'].forEach(function(key, val) {
-	    console.log('Found key: %s, val: %j', key, val);
-		
-	});
-	*/
 	return fu.db['channels'];
-}
+} */
 
 /* 
 	loadSessions()
@@ -388,10 +383,12 @@ function loadChannels() {
 	    timestamp: new Date(),
 	}
 */
+/*
 function loadSessions() {
 	return fu.db['sessions'];
-}
+} */
 
+/*
 function broadcastRestart() {
 	sys.puts('broadcastRestart');
 	fu.db['channels'].forEach(function(key, val) {
@@ -401,7 +398,7 @@ function broadcastRestart() {
 			chan.botMessage('Restarted Server');
 		}
 	});
-}
+} */
 fu.listen(Number(process.env.PORT || PORT), HOST);
 
 
@@ -452,7 +449,7 @@ fu.get("/helloworld", function(req, res) {
 
 fu.get("/testdirty", function(req, res) {
 	var body = "wrote out 'john', {eyes: 'blue'}";
-	fu.db['channels'].set('testchannel', {timestamp: new Date(), sessionkeys: []});
+	// fu.db['channels'].set('testchannel', {timestamp: new Date(), sessionkeys: []});
 	
 	res.writeHead(200, {
 	  'Content-Length': body.length,
@@ -656,7 +653,7 @@ fu.get("/join", function (req, res) {
   if (!channels[chan]) {
 	channels[chan] = channelFactory();
 	sys.puts('channelFactory invoked for @' + chan);
-	fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});
+	// fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});
   }
   if (!channels[chan]) {
 	  res.simpleJSON(400, {error: "Unable to create channel for " + chan}); // can I just return this resp?
@@ -671,7 +668,7 @@ fu.get("/join", function (req, res) {
     return;
    */ }  else {
 	  channels[chan].sessions[session.id] = session;
-	  fu.db['sessions'].set(session.id, {id: session.id, nick: session.nick, timestamp: session.timestamp, channel: chan});
+	  // fu.db['sessions'].set(session.id, {id: session.id, nick: session.nick, timestamp: session.timestamp, channel: chan});
   }
 
   sys.puts("connection: " + nick + "@" + res.connection.remoteAddress + " on " + chan);
@@ -784,7 +781,7 @@ fu.get("/recv", function (req, res) {
 	  sys.puts('channelFactory invoked for @' + chan);
 	  if (achannel != null) {
 	  	channels[chan] = achannel;
-		fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});
+		// fu.db['channels'].set(chan, {timestamp: new Date(), sessionkeys: []});
   	  } else {
 		sys.puts('/recv achannel is null');
 	  }
