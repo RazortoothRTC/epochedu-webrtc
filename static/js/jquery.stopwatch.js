@@ -23,7 +23,7 @@
 		var state = 0; // 0 = stopped , 1 = running
 		stop.hide();
 		
-		stopstart.bind('click', function() {
+		stopstart.live('click', function() {
 			if (state == 0) {
 				state = 1;
 				timer = setInterval(do_time, 1000);

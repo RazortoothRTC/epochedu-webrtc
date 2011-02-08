@@ -782,6 +782,7 @@ function longPoll (data) {
 			
 		case "startsession":
 			// alert('started a class');
+			bindstopstart();
 			addGrowlNotification('Class Session Started', 'Class: ' + getChannel() + ' has started', '/static/images/birdy.png', '', false);
 			isClassInSession = true;
 			if (!teacher) {
@@ -806,6 +807,7 @@ function longPoll (data) {
 			break;
 		
 		case "endsession":
+			bindstopstart();
 		 	// alert('ended a class');
 			addGrowlNotification('Class Session Ended', 'Class: ' + getChannel() + ' has ended', '/static/images/birdy.png', '', false);
 			isClassInSession = false;
@@ -1244,6 +1246,20 @@ function messageDispatcher(cmd, data) {
 	}
 }
 
+function bindstopstart() {
+	$(".start").live('click', function() {
+	    var msg = "#startsession";
+	    if (!util.isBlank(msg)) send(msg, 'startsession');
+	    return false;
+	});
+
+	$(".stop").live('click', function() {
+	    var msg = "#endsession";
+	    if (!util.isBlank(msg)) send(msg, 'endsession');
+	    return false;
+	});
+}
+
 $(document).ready(function() {
   teacher = isTeacher();
   $('#account').hide(); // XXX Only for teacher?
@@ -1338,17 +1354,7 @@ $(document).ready(function() {
 	//lock the UI while waiting for a response
 	showLoad();
 
-	$(".start").live('click', function() {
-	    var msg = "#startsession";
-	    if (!util.isBlank(msg)) send(msg, 'startsession');
-	    return false;
-	});
-
-	$(".stop").live('click', function() {
-	    var msg = "#endsession";
-	    if (!util.isBlank(msg)) send(msg, 'endsession');
-	    return false;
-	});
+	bindstopstart();
 
 
 	$('#resources > li').click(function(e) {
