@@ -20,7 +20,7 @@
 				<h1>Classroom: {%= channel %}</h1>
 			</div>
 			<div id="session">
-				<div id="timer"></div>
+				<div id="timer"></div><div id='sessioncontrols'><span id='stopsessionbtn'></span><span id='startsessionbtn'></span></div>
 				<!-- <a class="start" href="#">Start Session</a> -->
 			</div>
 			
@@ -28,13 +28,11 @@
 				<p>Hello, <span id="nickname"></span><a class="logout jqModal" href="javascript:void(0);" onclick="doLogout(); return false;">Logout</a></p>
 			</div>
 			<div id="toolbar">
-				{*
 		        <ul id="status">
 		          <li><a id="usersLink" href="#">5 users</a></li>
 		          <li>uptime: <span id="uptime">?</span></li>
 		          <li>memory: <span id="rss">?</span>mb RSS</li>
 		        </ul>
-				*}
 		    </div>
 		</div>
 		<!-- end header -->
@@ -249,8 +247,39 @@
 			});
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
 			$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
-			$('#timer').stopwatch();
-			$('#timer').startTimer();
+			$('#timer').stopwatch();;
+			$('#startsessionbtn').ninjaButtonCreate({
+			  icon:'bookmark', 
+			  onSelect:function(){ 
+				var msg = "#startsession";
+			    if (!util.isBlank(msg)) send(msg, 'startsession');
+				$('#timer').startTimer();
+			    $('#stopsessionbtn').ninjaButtonEnable();
+				
+				$(this).ninjaButtonDeselect();
+				
+			  },
+			  onDeselect:function() {
+				$(this).ninjaButtonDisable();
+			  }, 
+			  state:'enabled',
+			  title:'Start Class' 
+			});
+			$('#stopsessionbtn').ninjaButtonCreate({
+			  icon:'flag', 
+			  onSelect:function(){ 
+				var msg = "#endsession";
+			    if (!util.isBlank(msg)) send(msg, 'endsession');
+				$('#timer').stopTimer()
+				$('#startsessionbtn').ninjaButtonEnable();
+				$(this).ninjaButtonDeselect();
+			  },
+			  onDeselect:function() {
+				$(this).ninjaButtonDisable();
+			  }, 
+			  state:'disabled',
+			  title:'End Class' 
+			});
 			$('#send').ninjaButtonCreate({
 			  icon:'mail', 
 			  onSelect:function(){ 
