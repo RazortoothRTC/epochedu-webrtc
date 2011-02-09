@@ -85,6 +85,8 @@ INSERT YOUR CODE!!!
 	<input id="teststartsession1" type="button" value="teststartsession1" />
 	<p><label>teststopsession1 - </label>
 	<input id="teststopsession1" type="button" value="teststopsession1" />
+	<p><label>testnotify1 - </label>
+	<input id="testnotify1" type="button" value="testnotify1" />
     <footer>
     <footer>
     </footer>
@@ -380,6 +382,22 @@ INSERT YOUR CODE!!!
 			});
 			$('#testwindowname1').click(function() {
 				alert(window.screen);
+			});
+			$("#testnotify1").click(function() {
+				$.ajax({
+					url: "/testnotify",
+					data: {},
+					dataType: "text",
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+						alert('error');
+					},
+				});
 			});
 		});
 	</script>
