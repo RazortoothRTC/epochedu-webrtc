@@ -33,7 +33,7 @@ h1 {
 #media {
 	clear:both;
 	background:url('../images/css/media-bg.gif') repeat-x;
-	height:90px;
+	height:80px;
 }
 
 #footer {
@@ -41,7 +41,7 @@ h1 {
 	background:#1a1d20;
 	color:#aaaeb2;
 	min-height: 2em;
-	padding:5px;
+	/* padding:5px; */
 }
 
 #mediacontrol {
@@ -213,12 +213,12 @@ li.wav {
 }
 
 .mediaCarousel .forward {
-	background: url('../images/css/right-90x33.gif') no-repeat;
+	background: url('../images/css/right-80x33.gif') no-repeat;
 	right: 0;
 }
 
 .mediaCarousel .back {
-	background: url('../images/css/left-90x33.gif') no-repeat 0 0;
+	background: url('../images/css/left-80x33.gif') no-repeat 0 0;
 	left: 0;
 }
 
