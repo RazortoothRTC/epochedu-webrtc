@@ -942,13 +942,13 @@ function handleError(myReqObj,textStatus,errorThrown) {
 	);
 }
 
-//push a viewer out to clients XXX This is identical to send :( 
+//push a viewer out to clients XXX This is identical to send :(  .... Get rid of this
 function sendviewer(msg, type) {
+  send(msg, type);
+  /* 
   if (CONFIG.debug === false) {
-    // XXX should be POST
-    // XXX should add to messages immediately
-    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, cache: false, channel: getChannel()}, function (data) { }, "json");
-  }
+    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
+  } */
 }
 
 //
