@@ -363,7 +363,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b12-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b13-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -373,7 +373,8 @@ class MCPService(object):
 	Finished killplatformplayer.  Bug fixes on launchviewer.  Added a few more players to the list.
 	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
-	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.
+	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
+	to player list.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -383,8 +384,10 @@ class MCPService(object):
 						]
 	PACKAGE_RESTORELIST = []
 	PACKAGE_PLAYERLIST = ['com.android.camera', # The Android Camera
-						'com.android.music', # The Android Music Player, NEED PDF VIEWER, Documents 2 Go, Text Viewer
 						'com.android.videoplayer', # Android Video Player
+						'com.android.providers.media', # Not really sure what this is, I think it is the video player backend
+						'com.android.music', # The Android Music Player, NEED PDF VIEWER, Documents 2 Go, Text Viewer
+						'com.android.gallery', # Image gallery?
 						'org.vudroid', # Our chosen PDF Viewer, Vudroid
 						]
 	def __init__(self):
@@ -392,7 +395,7 @@ class MCPService(object):
 			self.droid = android.Android()
 		except:
 			print 'Exception initializing Android'
-		self.ISANDROID = os.path.exists('/system/lib/libandroid_runtime.so')
+		self.ISANDROID = os.path.exists('/system/lib/libandroid_runtime.so') 
 		print 'MCPService init completed'
 		# XXX Put t into a shutdown hook so it gets stopped or canceled
 		self.t = threading.Timer(10.0, mcploop).start()
@@ -704,7 +707,7 @@ Todo ...
 	def killpackage(self, uri):
 		try:
 			self.droid.forceStopPackage(uri) # Does this have return value?
-			self.notifyUser('Teacher closed applicaton ' + uri, 'Closed Player')
+			self.notifyUser('Teacher closed applicaton ' + uri)
 		except:
 			print "pretending to kill " + uri
 
