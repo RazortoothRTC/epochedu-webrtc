@@ -758,7 +758,7 @@ function longPoll (data) {
 					
 						// XXX Should report back some status here
 						alert('Got mcpResponse status = ' + mcpResp.status);
-						if (mcpResp && mcpResp.status == 0) { 
+						if (mcpResp && mcpResp.status == '0') { 
 							
 							// alert('Got mcpResponse status = ' + mcpResp.status);
 							// If there is a platformplayer running, kill it
