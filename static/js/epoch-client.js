@@ -757,7 +757,9 @@ function longPoll (data) {
 						} 
 					
 						// XXX Should report back some status here
+						alert('Got mcpResponse status = ' + mcpResp.status);
 						if (mcpResp && mcpResp.status == 0) { 
+							
 							// alert('Got mcpResponse status = ' + mcpResp.status);
 							// If there is a platformplayer running, kill it
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
@@ -774,6 +776,8 @@ function longPoll (data) {
 					}, function(d,msg) {
 						    addGrowlNotification('Error ending Content Player', 'Unable to send a ping heartbeat.  You will need to close the player manually.  Notify teacher: No MCP Service is reachable.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 					});
+				} else {
+					addGrowlNotification('No Running Player Detected', 'Could not detect a Native Platform Content Player.  If it is still running, please close it manually.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 				}
 			}
 			break;
