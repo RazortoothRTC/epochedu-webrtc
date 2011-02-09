@@ -759,7 +759,7 @@ function longPoll (data) {
 						// XXX Should report back some status here
 						alert('Got mcpResponse status = ' + mcpResp.status);
 						if (mcpResp && mcpResp.status == '0') { 
-							
+							alert('calling killplatformplayer');
 							// alert('Got mcpResponse status = ' + mcpResp.status);
 							// If there is a platformplayer running, kill it
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
