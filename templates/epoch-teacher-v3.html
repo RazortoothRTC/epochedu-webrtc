@@ -362,7 +362,7 @@
 				$(this).ninjaButtonDeselect();
 				/* XXX Put this back into epoch-client.js once design is final */
 				var msg = "#endviewer";
-			    if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
+			    sendviewer(msg, "endviewer");
 				toggleNinjaButton('#mediacontrol', false);
 			    return false;
 			  },
