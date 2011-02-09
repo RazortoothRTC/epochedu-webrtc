@@ -918,6 +918,7 @@ function send(msg, type) {
 		url: "/send",
 		data: {id: CONFIG.id, text: msg, type: type, channel: getChannel()},
 		dataType: "text",
+		cache: false,
 		success: function(data, textStatus, XMLHttpRequest){
 			// addGrowlNotification('/send AJAX done', 'Send msg type '  + type, '/static/images/white/gear.png', '', false, 'debuggrowl');
 		},
