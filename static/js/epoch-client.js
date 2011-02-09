@@ -703,7 +703,12 @@ function longPoll (data) {
 							// If it is not, do a view
 							// alert('universalsend - running android.View of url ' + contenturl);
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
-								if (!json || json.status != 0) browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
+								if (!json || json.status != 0) {
+									browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
+								} else {
+									// Success
+									platformplayer = true;
+								}
 							}, function(d, msg) {
 								addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 								browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
