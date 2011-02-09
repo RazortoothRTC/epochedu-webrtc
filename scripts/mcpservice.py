@@ -85,14 +85,22 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 				try:
 					localFile.write(webFile.read())
 					try:
-						self.mcperviceref.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
+						self.mcpserviceref.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
 					except:
 						print "Completed sync of " + filename + " to sd card."
 				except IOError, e:
+					try:
+						self.mcpserviceref.notifyUser("Unable to completed sync of " + filename + " to sd card: IOError.", "Teacher Content Sync Failed")
+					except:
+						pass
 					print 'error storing to ' + apath
 				webFile.close()
 				localFile.close()
 			else:
+				try:
+					self.mcpserviceref.notifyUser('url ' + urls + ' already synced to device', "Teacher Content Synched")
+				except:
+					pass
 				print 'url ' + urls + ' already synced to device'
 		except IOError, e:
 			downloaderrors.append(urls)
@@ -148,7 +156,7 @@ MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content',
 			  'MCP_TICK_INTERVAL' : 15, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
-			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'],
+			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.3gp', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'],
 			  'VALID_MIME_TYPES' : {    ".3gp"   : "video/3gpp" # BORROWED FROM fu.js (see source for epochedu-master)
 			          				  , ".a"     : "application/octet-stream"
 							          , ".ai"    : "application/postscript"
@@ -355,7 +363,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b11-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b12-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -365,7 +373,7 @@ class MCPService(object):
 	Finished killplatformplayer.  Bug fixes on launchviewer.  Added a few more players to the list.
 	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
-	teacher control monitor to send student back to classroom.
+	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -429,6 +437,12 @@ Todo ...
 	    return range(int(limit))
 	getrange.exposed = True
 	
+	@cherrypy.expose
+	def testnotify(self, **params):
+		self.notifyUser('One Argument')
+		self.notifyUser('Two Arguments', 'Title Arg')
+		return 'ok'
+		
 	@cherrypy.expose
 	# Test in a browser : http://localhost:8080/contentsyncpull?channel=foo3&jsoncallback=?
 	def contentsyncpull(self, **params):
@@ -560,20 +574,21 @@ Todo ...
 		aurl = self.getbesturlpath(aurl)
 		print 'launchurl is opening best url path ' + aurl
 		
-		if aurl is None:
-			rsp['status'] = 1 # Launch in the browser
+		if aurl is None or aurl.startswith('http://'):
+			rsp['status'] = 1 # Launch in the browser since no URL is bad, and URL is also bad for some reason
 			return rsp
+			
 		try:
 			amime = MCP_CONFIG['VALID_MIME_TYPES'][aurl[aurl.rindex('.'):]]
 		except KeyError, e:
 			pass
 		if amime is not None:
 			try:
-				# self.droid.view(aurl, amime)
-				self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], amime, None, False)
+				self.notifyUser("droid view launched with url" + aurl + " and mime = " + amime)
+				self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], aurl, amime, None, False)
 			except:
 				webbrowser.open(aurl)
-			print "droid view launched with url" + aurl + ' and mime = ' + amime
+			print "droid view launched with url " + aurl + ' and mime = ' + amime
 			rsp['status'] = 0
 		else:
 			print "can't launch a url without a mime type ... to unpredictable in SL4A"
@@ -700,6 +715,7 @@ Todo ...
 				try:
 					self.droid = Android.android()
 				except:
+					print "Couldn't create Android.android()"
 					return
 			self.droid.makeToast(message)
 			self.droid.ttsSpeak(message)
@@ -711,7 +727,7 @@ Todo ...
 		
 
 	def getbesturlpath(self, uri):
-		besturi = None
+		besturi = uri
 		channel = uri.split('/')[-2]
 		fileExtList = MCP_CONFIG['VALID_FILE_EXTENSIONS']
 		filename = uri[uri.rindex('/') + 1:]
@@ -822,6 +838,7 @@ def mcpServiceConnector():
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
+	print "MCP Service Version:%s"%(MCPService.VERSION_TAG)
 	print MCP_CONFIG['ASCII_LOGO2']
 	print MCP_CONFIG['COPYRIGHT']
 
