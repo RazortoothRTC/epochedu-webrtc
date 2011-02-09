@@ -564,7 +564,10 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 				break;
 			case "7":
 				break;
+			case "8":
+				break;
 			default:
+				addGrowlNotification('MCPRequest Error', 'Received unknown MCPRequest  Detail: apdu = ' + mcpRequest.apdu, '/static/images/status_unknown.png', '', true, 'mcpstatusgrowl');
 				return false;
 		} 
 		$.jsonp({
@@ -574,7 +577,7 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 			"error": ecallback,
 		});
 	} else {
-		alert('mcpDispatcher3: No readable MCP apdu received');
+		addGrowlNotification('MCPRequest Error', 'Received unknown MCPRequest  Detail: no readable apdu received.', '', true, 'mcpstatusgrowl');
 	}
 }
 
@@ -755,11 +758,10 @@ function longPoll (data) {
 						if (json) {
 							mcpResp = json;
 						} 
-					
 						// XXX Should report back some status here
-						alert('Got mcpResponse status = ' + mcpResp.status);
+						// alert('Got mcpResponse status = ' + mcpResp.status);
 						if (mcpResp && mcpResp.status == '0') { 
-							alert('calling killplatformplayer');
+							// alert('calling killplatformplayer');
 							// alert('Got mcpResponse status = ' + mcpResp.status);
 							// If there is a platformplayer running, kill it
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
