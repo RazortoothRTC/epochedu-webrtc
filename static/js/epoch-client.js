@@ -704,25 +704,27 @@ function longPoll (data) {
 							// alert('universalsend - running android.View of url ' + contenturl);
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
 								if (!json || json.status != 0) {
-									browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
+									browserplayerwindow = openNewWindow(message.text);
 								} else {
 									// Success
+									addGrowlNotification('Launched Native Player', 'Launched a Native Platform Player for content' + message.text, '/static/images/birdy.png', '', true, 'mcpstatusgrowl');
+	
 									platformplayer = true;
 								}
 							}, function(d, msg) {
 								addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-								browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
+								browserplayerwindow = openNewWindow(message.text);
 							});
 						} else { // XXX Why would this ever happen ?
 							// Just open it in the browser
 							addGrowlNotification('Error launching Content', 'Ping heartbeat returned improper resonse - pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-							browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
+							browserplayerwindow = openNewWindow(message.text);
 						}
 					}, function(d,msg) {
 						    // alert("MCP Service is not running, please notify your teacher");
 							// Just open it in the browser
 							addGrowlNotification('Error launching Content', 'No ping heartbeat receivedMCP Service is not running, please notify teacher - could not reach MCP universalsend - pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-							browserplayerwindow = openNewWindow(message.text, BROWSERPLAYERWINDOW_OPTIONS);
+							browserplayerwindow = openNewWindow(message.text);
 					});
 					
 				} else {
@@ -737,6 +739,7 @@ function longPoll (data) {
 			// platformplayer
 			if (!first_poll) {
 				// If there is a browserplayerwindow open, close it
+				addGrowlNotification('Ending Content Player', 'Request made to end the currently running Content Player.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 				var contenturl = message.text; // XXX This can be anything really
 				if (browserplayerwindow) {
 					// alert('browserplayer is true');

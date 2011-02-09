@@ -206,7 +206,7 @@
 							// XXX I think this will only work on android unless you change your CAPS file
 							$(".syncurl").live("click", function(e) { // Attach to current and future
 								var syncurl = $(this).attr('name');
-								openNewWindow(syncurl, BROWSERPLAYERWINDOW_OPTIONS);
+								openNewWindow(syncurl);
 								e.stopPropagation(); // Don't bubble up the event!!
 							});
 						} else {

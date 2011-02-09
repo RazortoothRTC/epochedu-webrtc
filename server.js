@@ -150,6 +150,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Switch to ninjaui buttons, retool the stopwatch to work without their buttons. </li> \n \
 		<li>Call stop/start directly using sync call, turn off caching.</li> \n \
 		<li>Fix for end player WIP</li> \n \
+		<li>Cleanup some debug</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
