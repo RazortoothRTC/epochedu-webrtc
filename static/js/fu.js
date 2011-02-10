@@ -284,7 +284,7 @@ fu.dkqs = {
 				// sys.puts('fu.dkqs keyval = ' + keyval);
 				var match = item.match(fu.dkqs.RE_OBJS["RE_ARRAYOBJ"]);
 				if (match) { // If it contains an ARRAY of sorts, collect it into a single object
-					sys.puts(match);
+					// sys.puts(match);
 					payloadobj[match[2]] = keyval[1];
 				} else {
 					jsobj[keyval[0]] = keyval[1];

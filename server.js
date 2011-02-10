@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b45-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b46-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -153,7 +153,8 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Cleanup some debug</li> \n \
 		<li>Fix for end viewer button checkbox not deselecting </li> \n \
 		<li>Fix for for dead jquery.get() ajax calls, which use cache: true, set to false </li> \n \
-		<li>Fix for teacher layout issue on 10in tablet \n \
+		<li>Fix for teacher layout issue on 10in tablet </li>\n \
+		<li>Added best effort sync notification mechanism </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -193,7 +194,7 @@ function channelFactory() {
 		this.state = channelstates['NOT_IN_CLASS'];
 		this.appendMessage = function (nick, type, text, payload) {
 		var m;
-		
+	
 		// 
 		// XXX OK, this is extremely double effort if we already have this nice case statement below
 		// Work this out what is the right thing to do ... I think move this into some kind of standard handler
@@ -264,6 +265,9 @@ function channelFactory() {
 				break;
 			case "endviewer":
 				sys.puts(nick + " endviewer");
+				break;
+			case "syncack":
+				sys.puts(nick + " syncack");
 				break;
 			default:
 				sys.puts('unhandled message type ' + type + ' received');
@@ -472,8 +476,8 @@ fu.get("/testdirty", function(req, res) {
 // STATIC ROUTES
 //
 // XXX Need a default / route, maybe a splash page
-fu.get("/cruzy", fu.staticHandler("templates/chat.html")); // XXX TODO: Add a default chat room
 fu.get("/tester", fu.staticHandler("templates/tester.html")); // XXX TODO: Add a default chat room
+
 fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
@@ -481,7 +485,23 @@ fu.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
 	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
 fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
-	return fu.staticHandler(CONTENT_REPO_FILE_PATH + req.url.substring(req.url.indexOf('/content') + '/content'.length)) (req, res);
+	var syncnick = qs.parse(url.parse(req.url).query).syncnick;
+	var aurl = req.url;
+	// Allow the requestor to encode the nickname into the url... done in the name of efficiency
+	// Rather than force the protocol for MCP to carry this information and the MCP to handle the callback
+	// XXX Not really sure what is the smartest way, clearly the client could notify if and only if it completes
+	// the asynchronous sync.  So this isn't reliable in the case that the MCP Service couldn't sync the content.
+	// Do it this way for now because changing the client is trickier and requires 3x more testing than doing it
+	// from the server side.
+	if (syncnick) { 
+		var chan = url.parse(req.url).pathname.split("/")[2];
+		aurl = aurl.split('?')[0]; // Drop the query string, as we already have what we need from the request
+		var syncdmsg = '@' + syncnick + ' completed sync of content: ' + aurl.substring(aurl.lastIndexOf('/') + 1) + ' on channel: ' + chan;
+		sys.puts(syncdmsg);
+		chan = channels[chan]
+		if (chan) chan.appendMessage(syncnick, 'syncack', syncdmsg); 
+	}
+	return fu.staticHandler(CONTENT_REPO_FILE_PATH + aurl.substring(aurl.indexOf('/content') + '/content'.length)) (req, res);
 });
 
 //
@@ -880,15 +900,6 @@ fu.get("/send", function (req, res) {
   }
 
   session.poke();
-  // sys.puts("/send testing for text value");
-  /*
-  if (text && text.match(/#startsession/i)) { // XXX Change this, use message type instead
-	channel.appendMessage(session.nick, "startsession", text); 
-  } else if (text && text.match(/#endsession/i)) {
-	channel.appendMessage(session.nick, "endsession", text); 
-  } else { 
-  	channel.appendMessage(session.nick, type, text, payload);
-  } */
   channel.appendMessage(session.nick, type, text, payload); // Pass the error handling on down 
   res.simpleJSON(200, { rss: mem.rss });
 });

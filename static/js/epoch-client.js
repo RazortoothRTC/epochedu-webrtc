@@ -565,6 +565,7 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 			case "7":
 				break;
 			case "8":
+				mscpRequest['syncnick'] = CONFIG.nick;
 				break;
 			default:
 				addGrowlNotification('MCPRequest Error', 'Received unknown MCPRequest  Detail: apdu = ' + mcpRequest.apdu, '/static/images/status_unknown.png', '', true, 'mcpstatusgrowl');
@@ -858,7 +859,11 @@ function longPoll (data) {
 				});
 			}
 			break;
-
+		case "syncack":
+			if (teacher){
+				addGrowlNotification('Sync Completed', message.text, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
+			}
+			break;
 		case "askquestion":
 			if ((!first_poll ) && (message.nick != CONFIG.nick)){
 				var question = message.text;
@@ -868,8 +873,9 @@ function longPoll (data) {
 				// alert('ask a question');
 			}
 			break;
+		 
 		default:
-			alert('unknown message type: ' + message.type + ' received');
+			addGrowlNotification('Unknown mesage type received: ' + message.type, 'Error 500:  No way to process this incoming message.  Notify your systems administrator.', '/static/images/status_unknown.png', '', true, 'msgstatusgrowl');
       }
     }
     //update the document title to include unread message count if blurred
