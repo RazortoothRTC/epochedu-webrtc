@@ -376,7 +376,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b14-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b15-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -387,7 +387,7 @@ class MCPService(object):
 	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
 	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
-	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback
+	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
