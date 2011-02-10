@@ -153,6 +153,7 @@ def check_access(default=False):
 _cp_config = {'tools.sessions.on': True}
 MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
 			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'], # DEMOSETUP
+			  'SYNCACK_PARAM': 'syncack', # Used for sync ack
 			  'MCP_TICK_INTERVAL' : 15, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
@@ -363,7 +364,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b13-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b14-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -374,7 +375,7 @@ class MCPService(object):
 	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
 	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
-	to player list.
+	to player list.  Fix for endplayer, launch browser class.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -597,7 +598,9 @@ Todo ...
 			print "can't launch a url without a mime type ... to unpredictable in SL4A"
 			rsp['status'] = -1
 		return rsp
-		
+	#
+	# XXX Depricated now ... use BackGroundSync
+	#
 	def syncContent(self, urls, rsp):
 		downloaderrors = []
 		print "syncing content to device"
@@ -666,8 +669,20 @@ Todo ...
 		return rsp
 		
 	def killplatformplayer(self, rsp):
+		try:
+			title = "Teacher stopping current Content Player"
+			message = "Stopping the player in several moments.  Please be patient.  If the player does not step, please hit the back button twice to rejoin your class."
+			# Showing a dialog puts the current activity in the "Visible" state but it is no longer front center
+			self.droid.dialogCreateSpinnerProgress(title, message)
+			self.droid.dialogShow()
+			# Launching the Browser should put the user back into the current page where we left off
+			self.droid.launch('com.android.browser.BrowserActivity') # XXX Hardcoded, put into config
+		except:
+			pass
+		# XXX This doesn't seem to actually work ... should we just skip it?
 		for pkg in self.PACKAGE_PLAYERLIST:
 			self.killpackage(pkg)
+			self.droid.dialogDismiss()
 		rsp['status'] = 0;
 		return rsp
 		
