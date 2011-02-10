@@ -493,7 +493,7 @@ fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 	// the asynchronous sync.  So this isn't reliable in the case that the MCP Service couldn't sync the content.
 	// Do it this way for now because changing the client is trickier and requires 3x more testing than doing it
 	// from the server side.
-	if (syncnick) { 
+	if (syncnick) { // XXX I don't think I'll use this for now.  Remove it later if we don't need it
 		var chan = url.parse(req.url).pathname.split("/")[2];
 		aurl = aurl.split('?')[0]; // Drop the query string, as we already have what we need from the request
 		var syncdmsg = '@' + syncnick + ' completed sync of content: ' + aurl.substring(aurl.lastIndexOf('/') + 1) + ' on channel: ' + chan;
@@ -651,6 +651,19 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	}
 });
 
+fu.getterer("/syncack/[\\w\\.\\-]+", function(req, res) {
+	var requrlobj = url.parse(req.url);
+	var chan = requrlobj.pathname.split("/")[2];
+	var syncnick = qs.parse(requrlobj.query).syncnick;
+	var fname = qs.parse(requrlobj.query).fname;
+	
+	sys.puts('/syncack @' + syncnick + ' content = ' + fname)
+	var syncdmsg = '@' + syncnick + ' completed sync of content: ' + fname + ' on channel: ' + chan;
+	sys.puts(syncdmsg);
+	chan = channels[chan]
+	if (chan) chan.appendMessage(syncnick, 'syncack', syncdmsg);
+	res.simpleJSON(200, { rss: mem.rss });
+});
 
 fu.get("/who", function (req, res) {
   var nicks = [];
@@ -666,6 +679,7 @@ fu.get("/who", function (req, res) {
                       , rss: mem.rss
                       });
 });
+
 
 fu.get("/join", function (req, res) {
   var nick = qs.parse(url.parse(req.url).query).nick;
