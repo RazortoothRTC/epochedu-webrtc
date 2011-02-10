@@ -31,6 +31,7 @@ import json
 import datetime
 import time
 import urllib
+import urllib2
 import types
 import threading
 
@@ -38,10 +39,11 @@ import threading
 # Utility Class
 # 
 class BackgroundSync(threading.Thread): # Need to figure out how scoping works on this
-	def __init__ (self, syncurl, mcpserviceref):
+	def __init__ (self, syncurl, mcpserviceref, syncnick):
 		threading.Thread.__init__(self)
 		self.syncurl = syncurl
 		self.mcpserviceref = mcpserviceref
+		self.syncnick = syncnick
 	
 	def setURL(self, syncurl):
 		self.syncurl = syncurl
@@ -59,8 +61,9 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 		
 		try:
 			print "syncing single url: " + urls
-			apath = self.mcpserviceref.ANDROID_CONTENT_PATH + '/' + urls.split('/')[-2] 
-			dpath = self.mcpserviceref.DESKTOP_CONTENT_PATH + '/' + urls.split('/')[-2]
+			classroom = urls.split('/')[-2] 
+			apath = self.mcpserviceref.ANDROID_CONTENT_PATH + '/' + classroom
+			dpath = self.mcpserviceref.DESKTOP_CONTENT_PATH + '/' + classroom
 			filename = urls.split('/')[-1]
 			if (not os.path.exists(apath + '/' + filename)) and (not os.path.exists(dpath + '/' + filename)):
 				webFile = urllib.urlopen(urls)
@@ -84,6 +87,9 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 					print 'storing url on ' + dpath + '/' + filename
 				try:
 					localFile.write(webFile.read())
+					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
+					urllib2.urlopen(mcpconnectorurl).read()
+					urllib2.close()
 					try:
 						self.mcpserviceref.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
 					except:
@@ -98,6 +104,9 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 				localFile.close()
 			else:
 				try:
+					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
+					urllib2.urlopen(mcpconnectorurl).read()
+					urllib2.close()
 					self.mcpserviceref.notifyUser('url ' + urls + ' already synced to device', "Teacher Content Synched")
 				except:
 					pass
@@ -151,10 +160,13 @@ def check_access(default=False):
 # Global config
 #
 _cp_config = {'tools.sessions.on': True}
-MCP_CONFIG = {'ANDROID_CONTENT_PATH':'/sdcard/content', 
-			  'DESKTOP_CONTENT_PATH': '/tmp', 'MCP_SERVER_URI' : ['http://192.168.1.16:5000/student'], # DEMOSETUP
-			  'SYNCACK_PARAM': 'syncack', # Used for sync ack
-			  'MCP_TICK_INTERVAL' : 15, # Seconds between ticks DEMOSETUP
+MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://192.168.1.16:5000'], # DEMOSETUP
+			  'STUDENT_ENDPOINT':'/student', 
+			  'SYNCACK_ENDPOINT':'/syncack',
+			  'ANDROID_CONTENT_PATH':'/sdcard/content', 
+			  'DESKTOP_CONTENT_PATH':'/tmp', 
+			  'SYNCACK_PARAM':'syncack', # Used for sync ack
+			  'MCP_TICK_INTERVAL':15, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.3gp', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'],
@@ -375,7 +387,7 @@ class MCPService(object):
 	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
 	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
-	to player list.  Fix for endplayer, launch browser class.
+	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -399,7 +411,7 @@ class MCPService(object):
 		self.ISANDROID = os.path.exists('/system/lib/libandroid_runtime.so') 
 		print 'MCPService init completed'
 		# XXX Put t into a shutdown hook so it gets stopped or canceled
-		self.t = threading.Timer(10.0, mcploop).start()
+		# self.t = threading.Timer(10.0, mcploop).start()
 		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
@@ -520,7 +532,7 @@ Todo ...
 			print 'sync value is ' + params['sync']
 			# Old version, synchronous... takes too long :(, can fix this in 2.3 by using DOWNLOAD MANAGER
 			# jsonResp = self.syncContent(params['sync'], jsonResp)
-			BackgroundSync(params['sync'], self).start()
+			BackgroundSync(params['sync'], self, params['syncnick']).start()
 			jsonResp['status'] = 0 # Sync is now backgrounded
 		if apdu == '3':
 			jsonResp = self.kill(kill, jsonResp)
@@ -833,8 +845,7 @@ def mcploop():
 					droid.makeToast("Teacher's Assistant sending user back to class")
 					droid.ttsSpeak("Please return to class")
 					droid.forceStopPackage('com.android.launcher')
-					# droid.view(MCP_CONFIG['MCP_SERVER_URI'][0], "text/html") # XXX These calls block :(, so page better load
-					droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], None, None, False)
+					droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['STUDENT_ENDPOINT'] , None, None, False)
 			else:
 				print "ta says get back to class"
 		loopcount = loopcount + 1
@@ -848,11 +859,11 @@ def mcpServiceConnector():
 		droid = android.Android()
 	except:
 		print "running in desktop mode"
-	mcpconnectorurl = MCP_CONFIG['MCP_SERVER_URI'][0]
+	mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['STUDENT_ENDPOINT']
 	
 	try:
 		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
-		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_URI'][0], None, None, False) # Nonblocking
+		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], mcpconnectorurl, None, None, False) # Nonblocking
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
