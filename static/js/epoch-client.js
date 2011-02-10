@@ -552,6 +552,7 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 			case "1":
 				break;
 			case "2":
+				mcpRequest['syncnick'] = CONFIG.nick;
 				addGrowlNotification('Successfully Dispatched Sync Request', 'Results of Content Sync Request will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 				break;
 			case "3":
@@ -565,7 +566,6 @@ function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
 			case "7":
 				break;
 			case "8":
-				mscpRequest['syncnick'] = CONFIG.nick;
 				break;
 			default:
 				addGrowlNotification('MCPRequest Error', 'Received unknown MCPRequest  Detail: apdu = ' + mcpRequest.apdu, '/static/images/status_unknown.png', '', true, 'mcpstatusgrowl');
