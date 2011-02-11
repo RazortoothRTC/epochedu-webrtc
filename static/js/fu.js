@@ -170,7 +170,6 @@ var server = createServer(function (req, res) {
 		// sys.puts(new Error().stack);
 		console.log("Caught a server-side Node.js exception.  Ouch!  Here's what happened: " + e.name + ". Error message: " + e.message);
 		internalServerError2(req, res);
-		sys.puts("done done");
 	}
 });
 
