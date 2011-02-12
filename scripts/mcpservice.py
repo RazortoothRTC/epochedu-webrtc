@@ -89,7 +89,6 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 					localFile.write(webFile.read())
 					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
 					urllib2.urlopen(mcpconnectorurl).read()
-					urllib2.close()
 					try:
 						self.mcpserviceref.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
 					except:
@@ -376,7 +375,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b15-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b17-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -387,7 +386,8 @@ class MCPService(object):
 	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
 	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
-	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback.
+	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback.  Turn on MCP Loop.
+	Fix typo bug in urllib2.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -411,7 +411,7 @@ class MCPService(object):
 		self.ISANDROID = os.path.exists('/system/lib/libandroid_runtime.so') 
 		print 'MCPService init completed'
 		# XXX Put t into a shutdown hook so it gets stopped or canceled
-		# self.t = threading.Timer(10.0, mcploop).start()
+		self.t = threading.Timer(10.0, mcploop).start()
 		
 	""" Basic MCP Service - need to add auth """
 	@cherrypy.expose
