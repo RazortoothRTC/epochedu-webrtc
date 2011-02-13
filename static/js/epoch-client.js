@@ -209,7 +209,19 @@ function isLoggedIn() {
 
 function partSession() {
 	if (CONFIG.id) {
-		jQuery.get("/part", {id: CONFIG.id, channel: getChannel()}, function (data) { }, "json");
+		// jQuery.get("/part", {id: CONFIG.id, channel: getChannel()}, function (data) { }, "json");
+		$.ajax({
+			url: "/part",
+			data: {id: CONFIG.id, channel: getChannel()},
+			dataType: "json",
+			cache: false,
+			success: function(data, textStatus, XMLHttpRequest){
+			},
+			complete: function complete(XMLHttpRequest, textStatus){
+			},
+			error: function(e) {
+			},
+		});
 	} 
 }
 
@@ -922,9 +934,6 @@ function longPoll (data) {
 
 //submit a new message to the server
 function send(msg, type) {
-  // alert('send called' + msg);
-  // jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) {}, "json");
-  // addGrowlNotification('/send type = ' + type, 'msg body = ' + msg + ' CONFIG.debug = ' + CONFIG.debug, '/static/images/white/gear.png', '', false, 'debuggrowl');
   if (CONFIG.debug === false) {
 	$.ajax({
 		url: "/send",
@@ -938,12 +947,9 @@ function send(msg, type) {
 			// alert('/send done');
 		},
 		error: function(e) {
-			// addGrowlNotification('/send ' + type + ' ERROR', 'Error msg = ' + e.number ,'/static/images/white/gear.png', '', false, 'debuggrowl');
+			addGrowlNotification('/send ' + type + ' ERROR', 'Error msg = ' + e.number ,'/static/images/white/gear.png', '', false, 'debuggrowl');
 		},
 	});
-    // XXX should be POST
-    // XXX should add to messages immediately
-  //   jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
   }
 }
 
@@ -957,10 +963,6 @@ function handleError(myReqObj,textStatus,errorThrown) {
 //push a viewer out to clients XXX This is identical to send :(  .... Get rid of this
 function sendviewer(msg, type) {
   send(msg, type);
-  /* 
-  if (CONFIG.debug === false) {
-    jQuery.get("/send", {id: CONFIG.id, text: msg, type: type, channel: getChannel()}, function (data) { }, "json");
-  } */
 }
 
 //
@@ -1663,6 +1665,7 @@ $(document).ready(function() {
 
 
 //if we can, notify the server that we're going away.
-/* $(window).unload(function () {
-  setTimeout(partSession(), 60000);  // XXX Give the user a minute to return
-}); */
+$(window).unload(function () {
+	partSession();
+	// setTimeout(partSession(), 60000);  // XXX Give the user a minute to return
+});

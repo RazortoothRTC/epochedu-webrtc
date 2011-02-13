@@ -178,7 +178,7 @@ var fu = require("./static/js/fu"),
     nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
-    SESSION_TIMEOUT = 60 * 1000 * 5; // XXX 1000ms = 1 s * 60  x 6 = 5 minutes - this should be configurable
+    SESSION_TIMEOUT = 60 * 1000; // XXX 1000ms = 1 s * 60 = 1 minutes - this should be configurable
 
 
 var channels = {}; // XXX Load from DB instead!!!
