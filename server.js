@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b48-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b49-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -156,6 +156,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Fix for teacher layout issue on 10in tablet </li>\n \
 		<li>Added good sync ack notification mechanism </li> \n \
 		<li>Fix for student chat scroll when student chats.</li> \n \
+		<li>Fix for session timeout set to 1 min and window unload events for user part \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
