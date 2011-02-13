@@ -105,7 +105,6 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 				try:
 					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
 					urllib2.urlopen(mcpconnectorurl).read()
-					urllib2.close()
 					self.mcpserviceref.notifyUser('url ' + urls + ' already synced to device', "Teacher Content Synched")
 				except:
 					pass
@@ -375,7 +374,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b17-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b18-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
