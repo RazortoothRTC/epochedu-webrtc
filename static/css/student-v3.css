@@ -67,14 +67,14 @@ outline:0;
 }
 
 #chatmsg {
-/*	background:#FFFFFF;
+	background:#FFFFFF;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border-radius: 5px;*/
+	border-radius: 5px;
 	padding:10px;
 	margin:0px 0px 10px 0px;
 	overflow:hidden;
-/*	height:260px;*/
+	height:260px;
 }
 
 .chathistory {
@@ -85,7 +85,7 @@ outline:0;
 
 .chatscroll {
 	clear:both;
-/*	height:260px;*/
+	height:260px;
 	overflow:hidden;
 	padding:0px;
 }

@@ -141,37 +141,22 @@
 		$(document).ready(function() {
 			window.scrollTo(0, 1);
 			$('body').addClass('bg');
+			
 			$('.chatscroll').jScrollPane({
 				showArrows:true,
 				scrollbarWidth:30,
-				dragMinHeight:50,
-				dragMaxHeight:100,
-				animateTo: true, 
 				maintainPosition: false,
+				animateTo: true,
 			});
 			$('#dialog').jqm({modal:true}).jqmShow();
 			$('#qadialog').jqm({modal:false, autofire:true});
 			var h = $(window).height();
 	        var w = $(window).width();
-			// alert('width = ' + w + ' height = ' + h);
-			// $(".jScrollPaneContainer").css('height',(h < 600) ? 450 : 910).css('width',(w < 700) ? 500 : 845);
-	        $(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);
-			// $(".chatscroll").css('width',(w < 700) ? 500 : 845);
+			$(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);
 			$(".chatscroll").css('width',(h < 600) ? 680 : 480);
-			// $(".msgcon").css('width',(h < 600) ? 600 : 350);
 			$(".msgcon").css('width',(h < 600) ? 600 : 350);
-			// $(".cinput").css('width',(h < 600) ? '80%' : '78%');
 			$(".cinput").css('width',(h < 600) ? '80%' : '78%');
-			// $(".bg").css('backgroundImage',(h < 600) ? 'url(/static/images/css/student-bg-h.jpg)' : 'url(/static/images/css/student-bg-v.jpg)').css('width',(h < 600) ? 580 : 300);
 			
-			$(window).resize(function(){
-			       	var h = $(window).height(); // XXX Don't redeclare these
-			        var w = $(window).width();  // XXX Don't redeclare these
-			        $(".jScrollPaneContainer").css('height',(h < 600) ? 300 : 810).css('width',(h < 600) ? 730 : 530);
-					$(".chatscroll").css('width',(h < 600) ? 680 : 480);
-					$(".msgcon").css('width',(h < 600) ? 600 : 350);
-					$(".cinput").css('width',(h < 600) ? '80%' : '78%');
-			});
 			$('#syncFolder').ninjaMenuCreate({
 			  icon:'download', // optional image before title
 			  onSelect:function(){ // optional JavaScript function
