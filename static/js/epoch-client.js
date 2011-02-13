@@ -723,7 +723,7 @@ function longPoll (data) {
 									browserplayerwindow = openNewWindow(message.text);
 								} else {
 									// Success
-									addGrowlNotification('Launched Native Player', 'Launched a Native Platform Player for content' + message.text, '/static/images/birdy.png', '', true, 'mcpstatusgrowl');
+									addGrowlNotification('Launched Native Player', 'Launched a Native Platform Player for content' + message.text, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 	
 									platformplayer = true;
 								}

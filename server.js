@@ -156,7 +156,8 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Fix for teacher layout issue on 10in tablet </li>\n \
 		<li>Added good sync ack notification mechanism </li> \n \
 		<li>Fix for student chat scroll when student chats.</li> \n \
-		<li>Fix for session timeout set to 1 min and window unload events for user part \n \
+		<li>Fix for session timeout set to 1 min and window unload events for user part</li> \n \
+		<li>Native Player Growl notification should not be sticky </li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
