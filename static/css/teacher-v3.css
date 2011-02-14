@@ -117,13 +117,6 @@ h1 {
 	top: 0;
 }
 
-/*.mediaCarousel ul a img {
-	border: 5px solid #000;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-}*/
-
 .mediaCarousel .wrapper ul {
 	width: 9999px;
 	list-style-image:none;
@@ -138,10 +131,10 @@ h1 {
 .mediaCarousel ul li {
 	display:block;
 	float:left;
-	padding: 5px 0px 0px 60px;
+	padding: 45px 0px 0px 10px;
 	height: 60px;
 	width: 160px;
-	margin:30px 6px 0px 0px;
+	margin:5px;
 	color:#e6e8ea;
 }
 
@@ -193,6 +186,9 @@ li.wav {
 	background:url('../images/css/WAV-icon.png') no-repeat;
 }
 
+li.apk {
+	background:url('../images/css/APK-icon.png') no-repeat;
+}
 
 .mediaCarousel ul li a {
 	display:block;
