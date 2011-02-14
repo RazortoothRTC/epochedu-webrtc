@@ -808,9 +808,9 @@ function longPoll (data) {
 					}, function(d,msg) {
 						    addGrowlNotification('Error ending Content Player', 'Unable to send a ping heartbeat.  You will need to close the player manually.  Notify teacher: No MCP Service is reachable.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 					});
-				} else {
+				} /* else {
 					addGrowlNotification('No Running Player Detected', 'Could not detect a Native Platform Content Player.  If it is still running, please close it manually.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
-				}
+				} */
 			}
 			break;
 				
