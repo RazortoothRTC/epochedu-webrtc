@@ -400,13 +400,15 @@ function openBestPlayer(url, selector, options) {
 		if (supportedextensions.indexOf(fname) > -1) { /* If we can play in JS 'player' do it */
 			$.colorbox({href:url});
 		} else {
-			openNewWindow(url); // Not using options for now
+			return openNewWindow(url); // Not using options for now
 		}
 	}
 }
 
 function closeBrowserWindow(windowref) {
-	if (windowref && windowref.screen) windowref.close(); // XXX Is there a better way to detect?
+	if (windowref) {
+		windowref.close(); // XXX Is there a better way to detect?
+	}
 	$.colorbox.close();
 }
 
