@@ -72,6 +72,17 @@
 				      url:'/about'
 				});
 			}
+			if ($(this).attr('id') == "tabThird") { 
+					$.ninjaWindowOpen({
+					      id:'statusWindow', // optional unique identifier
+					      onClose:function(){ // optional JavaScript function
+					        $('#windowButton').ninjaButtonDeselect();
+					      },
+					      icon:'profile', // optional image before title
+					      title:'Status MCP Service',
+					      url:'http://localhost:8080/about'
+					});
+			}
 	 	});
 		// add any existing channels into the list and refresh the list
 		// Get the other channels

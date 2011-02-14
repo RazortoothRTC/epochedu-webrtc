@@ -745,7 +745,7 @@ function longPoll (data) {
 									platformplayer = true;
 								}
 							}, function(d, msg) {
-								addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+								// XXX Hide this for now addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 								browserplayerwindow = openBestPlayer(message.text);
 							});
 						} else { // XXX Why would this ever happen ?
@@ -779,8 +779,8 @@ function longPoll (data) {
 					closeBrowserWindow(browserplayerwindow);
 					browserplayerwindow = undefined;
 				}
-				
-				if (true) { // XXX For now, always try to kill the local player
+
+				if (!teacher) { // XXX For now, always try to kill the local player
 					// Then Try to ping the MCP
 					mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
 						var mcpResp;

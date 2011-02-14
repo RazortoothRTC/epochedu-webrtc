@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b54-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b55-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -161,6 +161,8 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Added Colorbox as replacement for using Shadowbox to playcontent.</li> \n \
 		<li>Integrated Colorbox into template and for both student/teacher</li> \n \
 		<li>Enable end button for teacher after sending content.</li> \n \
+		<li>Add something to show an MCP Service about page from landing page - WIP</li> \n \
+		<li>Cleanup error message handlign with native and browser player</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
