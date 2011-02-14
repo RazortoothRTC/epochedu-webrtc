@@ -123,7 +123,7 @@
 {%block 'body-scripts' %}
 	<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
 	<script type="text/javascript" src="/static/js/jqModal.js"></script>
-	<script src="/static/js/jquery.colorbox-min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.colorbox-min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 	<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
 	<script type="text/javascript">
@@ -193,7 +193,8 @@
 							// XXX I think this will only work on android unless you change your CAPS file
 							$(".syncurl").live("click", function(e) { // Attach to current and future
 								var syncurl = $(this).attr('name');
-								openNewWindow(syncurl);
+								// openNewWindow(syncurl);
+								openBestPlayer(syncurl, '.syncurl');
 								e.stopPropagation(); // Don't bubble up the event!!
 							});
 						} else {

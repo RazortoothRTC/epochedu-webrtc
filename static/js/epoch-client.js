@@ -391,6 +391,20 @@ function openNewWindow(url, options) {
 	return awindow;
 }
 
+function openBestPlayer(url, selector, options) {
+	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'txt'];
+	var fname = url.lastIndexOf('.');
+	
+	if (fname > -1) {
+		fname = url.substring(fname + 1);
+		if (supportedextensions.indexOf(fname) > -1) { /* If we can play in JS 'player' do it */
+			$.colorbox({href:url});
+		} else {
+			openNewWindow(url); // Not using options for now
+		}
+	}
+}
+
 function closeBrowserWindow(windowref) {
 	if (windowref.screen) windowref.close(); // XXX Is there a better way to detect?
 }
