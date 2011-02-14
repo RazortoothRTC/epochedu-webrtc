@@ -406,7 +406,8 @@ function openBestPlayer(url, selector, options) {
 }
 
 function closeBrowserWindow(windowref) {
-	if (windowref.screen) windowref.close(); // XXX Is there a better way to detect?
+	if (windowref && windowref.screen) windowref.close(); // XXX Is there a better way to detect?
+	$.colorbox.close();
 }
 
 function toggleNinjaButton(selector, isEnabled) {
@@ -734,7 +735,7 @@ function longPoll (data) {
 							// alert('universalsend - running android.View of url ' + contenturl);
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
 								if (!json || json.status != 0) {
-									browserplayerwindow = openNewWindow(message.text);
+									browserplayerwindow = openBestPlayer(message.text);
 								} else {
 									// Success
 									addGrowlNotification('Launched Native Player', 'Launched a Native Platform Player for content' + message.text, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
@@ -743,23 +744,23 @@ function longPoll (data) {
 								}
 							}, function(d, msg) {
 								addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-								browserplayerwindow = openNewWindow(message.text);
+								browserplayerwindow = openBestPlayer(message.text);
 							});
 						} else { // XXX Why would this ever happen ?
 							// Just open it in the browser
 							addGrowlNotification('Error launching Content', 'Ping heartbeat returned improper resonse - pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-							browserplayerwindow = openNewWindow(message.text);
+							browserplayerwindow = openBestPlayer(message.text);
 						}
 					}, function(d,msg) {
 						    // alert("MCP Service is not running, please notify your teacher");
 							// Just open it in the browser
 							addGrowlNotification('Error launching Content', 'No ping heartbeat receivedMCP Service is not running, please notify teacher - could not reach MCP universalsend - pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-							browserplayerwindow = openNewWindow(message.text);
+							browserplayerwindow = openBestPlayer(message.text);
 					});
 					
 				} else {
 					// Just open it in the browser
-					browserplayerwindow = openNewWindow(message.text);
+					browserplayerwindow = openBestPlayer(message.text);
 				}
 			}
 			break;		
@@ -771,13 +772,13 @@ function longPoll (data) {
 				// If there is a browserplayerwindow open, close it
 				addGrowlNotification('Ending Content Player', 'Request made to end the currently running Content Player.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 				var contenturl = message.text; // XXX This can be anything really
-				if (browserplayerwindow) {
+				if (true) { // XXX For now, always try to kill the browser player
 					// alert('browserplayer is true');
 					closeBrowserWindow(browserplayerwindow);
 					browserplayerwindow = undefined;
 				}
 				
-				if (platformplayer) {
+				if (true) { // XXX For now, always try to kill the local player
 					// Then Try to ping the MCP
 					mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
 						var mcpResp;
@@ -1608,7 +1609,7 @@ $(document).ready(function() {
 						$(".syncurl").click(function(e) {
 							var syncurl = $(this).attr('name');
 							// alert('syncurl clicked ' + syncurl);
-							openNewWindow(syncurl, BROWSERPLAYERWINDOW_OPTIONS);
+							openBestPlayer(syncurl);
 						});
 
 					} // XXX Should give some feedback if no content available
