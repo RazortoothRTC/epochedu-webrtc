@@ -49,14 +49,14 @@ var NOT_FOUND = "Not Found\n";
 var INTERNAL_SERVER_ERROR = 'Internal Server Error!  Oh pshaw\n';
 var SERVER_RESTART_TIMEOUT = 15000; // 20 Seconds before notification
 function notFound(req, res) {
-	console.log("404 Error - ");
-	fu.staticHandler("templates/learn-simplified-german.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
+	console.log("404 Error - " + req.url);
+	fu.staticHandler("templates/404.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
 	// Add these URLs to a set of standard URLs
 }
 
 function internalServerError2(req, res) {
-	console.log("500 Error - ");
-	fu.staticHandler("templates/oh-pshaw.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
+	console.log("500 Error - " + req.url);
+	fu.staticHandler("templates/500.html")(req,res); // XXX Ok, this is a little wierd to hardcode this in. 
 	// Add these URLs to a set of standard URLs
 }
 
