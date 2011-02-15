@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b59-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b60-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -166,6 +166,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Cleanup layout of content items in media carousel.</li> \n \
 		<li>Add APK icon.</li> \n \
 		<li>Fix for bug launching send of .htm content.</li> \n \
+		<li>Add 5 min session timeout back in.</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -188,7 +189,7 @@ var fu = require("./static/js/fu"),
     nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
-    SESSION_TIMEOUT = 60 * 1000; // XXX 1000ms = 1 s * 60 = 1 minutes - this should be configurable
+    SESSION_TIMEOUT = 60 * 1000 * 5; // XXX 1000ms = 1 s * 60 * 5 = 5 minutes - this should be configurable
 
 
 var channels = {}; // XXX Load from DB instead!!!
