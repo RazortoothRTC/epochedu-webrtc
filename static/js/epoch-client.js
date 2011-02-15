@@ -1707,7 +1707,8 @@ $(document).ready(function() {
 		// Check if longPoll has died, restart if it has
 		var timenow = (new Date()).getTime();
 		var diff = timenow - CONFIG.last_message_time;
-		if (diff > 30000) {
+
+		if (CONFIG.id && (diff > 30000)) {
 			addGrowlNotification('Server Error', 'Long Poll errror.  Detail: Long poll connection broken while launching content. ', '/static/images/wifi-red.png', '', true, 'wifistatusgrowl');
 		}
 	}, 30000);
