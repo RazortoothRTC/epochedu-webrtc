@@ -374,7 +374,7 @@ function userJoin(nick, timestamp) {
   updateUsersLink();
   if (teacher) {
 	if (!$.mobile) {
-		updateUserStatus(nick, timestamp);
+		updateUserStatus3(nick, timestamp);
 	} else {
   		updateUserStatus2(nick, timestamp);
 	}
