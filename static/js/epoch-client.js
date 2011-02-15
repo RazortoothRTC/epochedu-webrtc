@@ -990,7 +990,8 @@ function send(msg, type) {
 			// alert('/send done');
 		},
 		error: function(e) {
-			addGrowlNotification('/send ' + type + ' ERROR', 'Error msg = ' + e.number ,'/static/images/white/gear.png', '', false, 'debuggrowl');
+			addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted or you left the session when your browser went off to a new page, please reload the page to restore your session.", '/static/images/status_unknown.png', '', false, 'sessionstatusgrowl');
+			
 		},
 	});
   }
