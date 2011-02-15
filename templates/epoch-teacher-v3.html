@@ -236,38 +236,6 @@
 			listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><br><label for="'+ itemi +'">' + filename + '</label></li>';
 		});
 		$('#resources').append(listitemdata);
-		
-		{*
-		/* 
-		var idlist = '';
-		var w = $(window).width();
-		var framewidth = 75;
-		var framecount = w/framewidth;
-		$.each(contents, function(i, content) {
-			var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-
-			itemi = 'item' + (i+1);
-			fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-			mime = fqname.split('.')[1].toLowerCase();
-
-			// Handle any special cases for mime types
-			if (mime == '3gp') {
-				mime = mime.replace('3', 'three');
-			}
-			filename = fqname.split('.')[0];
-			idlist += '#' + itemi + ',';
-			listitemdata += '<span class="' + mime + '" id="' + itemi + '"  value="' + content + '"><label for="'+ itemi +'">' + filename + '</label></span>';
-		});
-		$('#resources').append(listitemdata);
-		$(idlist).ninjaFilmstripCreate({
-		  frameHeight:75, // optional height of frame, defaults to 100
-		  frameWidth: framewidth, // optional width of frame, defaults to 100
-		  icon:'photo', // optional image before title
-		  seconds:3, // optional automatic advance after x seconds
-		  show:framecount, // optional number of frames to show, defaults to 3
-		  title:'Classroom Contents' // optional text
-		}); */
-		*}
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function() {

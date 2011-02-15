@@ -392,7 +392,7 @@ function openNewWindow(url, options) {
 }
 
 function openBestPlayer(url, selector, options) {
-	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'txt'];
+	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'htm', 'txt'];
 	var fname = url.lastIndexOf('.');
 	
 	if (fname > -1) {
