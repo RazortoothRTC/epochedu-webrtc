@@ -411,13 +411,18 @@ function openNewWindow(url, options) {
 }
 
 function openBestPlayer(url, selector, options) {
-	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'htm', 'txt'];
+	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'htm', 'txt']; // DEMO CONF
 	var fname = url.lastIndexOf('.');
 	
 	if (fname > -1) {
 		fname = url.substring(fname + 1);
 		if (supportedextensions.indexOf(fname) > -1) { /* If we can play in JS 'player' do it */
-			$.colorbox({href:url});
+			if (fname != 'html' && fname != 'htm') {
+				$.colorbox({href:url});
+			} else {
+				// $.colorbox({href:url, iframe: true});	
+				launchShadowboxPreview(url);
+			}
 		} else {
 			return openNewWindow(url); // Not using options for now
 		}
@@ -429,6 +434,8 @@ function closeBrowserWindow(windowref) {
 		windowref.close(); // XXX Is there a better way to detect?
 	}
 	$.colorbox.close();
+	Shadowbox.close();
+	Shadowbox.clearCache();
 }
 
 function toggleNinjaButton(selector, isEnabled) {
