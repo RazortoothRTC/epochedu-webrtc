@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b65-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b66-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -171,7 +171,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Fix for handling of html player </li> \n \
 		<li>Fix for bad growl message in /send </li> \n \
 		<li>Add ignore for .db content </li> \n \
-		<li>Fix for longPoll error </li> \n \
+		<li>Fix for longPoll error - not really long poll error, but end player closes window ref on current window</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"

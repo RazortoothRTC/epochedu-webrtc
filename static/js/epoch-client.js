@@ -426,7 +426,7 @@ function openBestPlayer(url, selector, options) {
 				launchShadowboxPreview(url);
 			}
 		} else {
-			return openNewWindow(url); // Not using options for now
+			openNewWindow(url); // Not using options for now
 		}
 	}
 }
@@ -1705,6 +1705,7 @@ $(document).ready(function() {
   //interestingly, we don't need to join a room to get its updates
   //we just don't show the chat stream to the user until we create a session
   longPoll();
+  /* 
   setInterval(function() {
 		// Check if longPoll has died, restart if it has
 		var timenow = (new Date()).getTime();
@@ -1713,7 +1714,7 @@ $(document).ready(function() {
 		if (CONFIG.id && (diff > 30000)) {
 			addGrowlNotification('Server Error', 'Long Poll errror.  Detail: Long poll connection broken while launching content. ', '/static/images/wifi-red.png', '', true, 'wifistatusgrowl');
 		}
-	}, 30000);
+	}, 30000); */
 
   showConnect();
 });
