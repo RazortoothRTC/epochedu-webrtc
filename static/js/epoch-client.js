@@ -223,6 +223,8 @@ function partSession() {
 			},
 		});
 	} 
+	CONFIG.id = null;  // XXX Needed to set status of user login
+	CONFIG.nick ="#";
 }
 
 /* JQM Depricate */
