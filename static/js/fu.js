@@ -201,7 +201,7 @@ fu.pullcontent = function(crdbpath, crdburl, chan) {
 
 	var dirpath = "";
 	var contentlist = [ ];
-	var filter = /xml|^\./i; // XXX DEMOSETTING put this somewhere else
+	var filter = /xml|db|^\./i; // XXX DEMOSETTING put this somewhere else
 	if (chan) {
 		dirpath = "/" + chan;
 	}
