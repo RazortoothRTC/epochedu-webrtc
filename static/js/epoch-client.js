@@ -674,9 +674,9 @@ var first_invalid_session = true; // XXX Hack to deal with fact that first /recv
 function longPoll (data) {
   if (transmission_errors > LONG_POLL_ERROR_MAX_RETRY) { // XXX Make this more robust and reconnect opportunistically
     addMessage("", "Too many long poll errors, exceeded " + LONG_POLL_ERROR_MAX_RETRY + ', logout', new Date(), "error");
-	addGrowlNotification('Server Error', 'Access to WiFi is interrupted or Server has Crashed.  Detail: Too many long poll errors, exceeded ' + LONG_POLL_ERROR_MAX_RETRY + ' , logout', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
+	addGrowlNotification('Server Error', 'Access to WiFi is interrupted or Server has Crashed.  Detail: Too many long poll errors, exceeded ' + LONG_POLL_ERROR_MAX_RETRY + ' , logout', '/static/images/wifi-red.png', '', true, 'wifistatusgrowl');
 	setTimeout(logoutSession, 5000); // If we fail to reconnect, show message and then go to login
-    return;
+	return;
   }
   
   if (data && (data.state < 0) && (CONFIG.id != null)) { // XXX Bug here trying to test if session is invalid
@@ -1703,6 +1703,14 @@ $(document).ready(function() {
   //interestingly, we don't need to join a room to get its updates
   //we just don't show the chat stream to the user until we create a session
   longPoll();
+  setInterval(function() {
+		// Check if longPoll has died, restart if it has
+		var timenow = (new Date()).getTime();
+		var diff = timenow - CONFIG.last_message_time;
+		if (diff > 30000) {
+			addGrowlNotification('Server Error', 'Long Poll errror.  Detail: Long poll connection broken while launching content. ', '/static/images/wifi-red.png', '', true, 'wifistatusgrowl');
+		}
+	}, 30000);
 
   showConnect();
 });
