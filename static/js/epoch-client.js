@@ -296,8 +296,6 @@ function updateUsersLink ( ) {
 
 function updateUserStatus(nick, timestamp) {
 	if (teacher) {
-		addGrowlNotification('updateUserStatus', 'timestamp = ' + timestamp, '/static/images/wifi-red.png', '', false, 'debuggrowl');
-
 		if (timestamp > 0) {
 			if ($('#userstatus > li').length > 0) {
 				if ($('li#' + nick).length > 0) {
@@ -335,6 +333,25 @@ function updateUserStatus2(nick, timestamp) {
 	}
 	if ($.mobile) {
 		$('#userstatus').listview('refresh'); // Refresh the listview
+	}
+}
+
+function updateUserStatus3(nick, timestamp) {
+	if (teacher) {
+		if (timestamp != -1) { // XXX Bug fix for devices with negative timestamp
+			if ($('#userstatus > li').length > 0) {
+				if ($('li#' + nick).length > 0) {
+					// alert('found a match, do not insert');
+					// XXX No op is dumb, fix this later
+				} else {
+					$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+				}
+			} else {
+				$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+			}
+		} else {
+			$('li#' + nick).remove();
+		}
 	}
 }
 
