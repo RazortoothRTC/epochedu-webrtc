@@ -17,6 +17,7 @@
     <mkdir dir="${dist}"/>
 
     <zip destfile="${dist}/${dist.name}-${env.BUILD_NUMBER}-${DSTAMP}.zip" basedir="scripts" includes="mcpservice.py">
+	<fileset dir="script_for_android_template/bin" includes="ScriptForAndroidTemplate-debug.apk"/>
 	<zipfileset dir="scripts/cherrypy" prefix="cherrypy"/>
     </zip>
   </target>
