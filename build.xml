@@ -16,7 +16,9 @@
     <!-- Create the distribution directory -->
     <mkdir dir="${dist}"/>
 
-    <zip destfile="${dist}/${dist.name}-${env.BUILD_NUMBER}-${DSTAMP}.zip" basedir="scripts" includes="mcpservice.py"/>
+    <zip destfile="${dist}/${dist.name}-${env.BUILD_NUMBER}-${DSTAMP}.zip" basedir="scripts" includes="mcpservice.py">
+	<zipfileset dir="scripts/cherrypy" prefix="cherrypy"/>
+    </zip>
   </target>
 
   <target name="clean" description="clean up" >
