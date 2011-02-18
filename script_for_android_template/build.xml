@@ -176,7 +176,7 @@
     <property name="java.source" value="1.5" />
 
     <!-- Verbosity -->
-    <property name="verbose" value="false" />
+    <property name="verbose" value="true" />
     <!-- This is needed by emma as it uses multilevel verbosity instead of simple 'true' or 'false'
          The property 'verbosity' is not user configurable and depends exclusively on 'verbose'
          value.-->

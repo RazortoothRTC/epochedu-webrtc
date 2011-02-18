@@ -447,6 +447,10 @@ Todo ...
 		jsonResp = {'foo': 1, 'bar': 'b'}
 		return json.dumps(jsonResp)
 
+	@cherrypy.expose
+	def about(self):
+		return """Version Tag: %s, Changes:%s"""%(self.VERSION_TAG, self.VERSION_DESC)
+	
 	@cherrypy.tools.jsonify()
 	def getrange(self, limit=4):
 	    return range(int(limit))
