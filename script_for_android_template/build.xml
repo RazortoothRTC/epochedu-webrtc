@@ -358,6 +358,7 @@
                         androidjar="${android.jar}"
                         rfolder="${gen.absolute.dir}">
                     <res path="${resource.absolute.dir}" />
+                    <res path="${resource.absolute.dir}/raw" />
                 </aapt>
             </then>
             <else>
