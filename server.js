@@ -91,7 +91,7 @@ CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
 // versions.
 CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"; // XXX This is fixed for android!!!!
 
-DEFAULT_CHANNELS = ['science', 'math', 'history', 'multimedia']; // XXX DEMOSETUP
+DEFAULT_CHANNELS = ['science', 'math', 'history', 'spanish']; // XXX DEMOSETUP
 
 //
 // INTERVALS & TIMEOUT VALUES
@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b66-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b68-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -172,6 +172,8 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Fix for bad growl message in /send </li> \n \
 		<li>Add ignore for .db content </li> \n \
 		<li>Fix for longPoll error - not really long poll error, but end player closes window ref on current window</li> \n \
+		<li>Remove multimedia classroom as default and replace with spanish </li> \n \
+		<li>Added user docs</LI>
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
