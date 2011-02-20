@@ -19,7 +19,7 @@
     <zip destfile="${dist}/${dist.name}-${env.BUILD_NUMBER}-${DSTAMP}.zip" basedir="scripts" includes="mcpservice.py"/>
  
     <zip destfile="script_for_android_template/cherrypy.zip">
-	<zipfileset dir="scripts/cherrypy" prefix="res/raw/cherrypy" excludes="**/_*"/>
+	<zipfileset dir="scripts/cherrypy" prefix="res/raw/cherrypy"/> 
     </zip>
  
   </target>
