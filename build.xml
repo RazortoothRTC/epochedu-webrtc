@@ -18,8 +18,8 @@
 
     <zip destfile="${dist}/${dist.name}-${env.BUILD_NUMBER}-${DSTAMP}.zip" basedir="scripts" includes="mcpservice.py"/>
  
-    <zip destfile="script_for_android_template/cherrypy.zip" basedir="scripts">
-	<zipfileset dir="scripts/cherrypy" prefix="res/raw/cherrypy"/>
+    <zip destfile="script_for_android_template/cherrypy.zip">
+	<zipfileset dir="scripts/cherrypy" prefix="res/raw/cherrypy" excludes="**/_*"/>
     </zip>
  
   </target>
@@ -27,6 +27,7 @@
   <target name="clean" description="clean up" >
     <!-- Delete the ${dist} directory trees -->
     <delete dir="${dist}"/>
+    <delete file="script_for_android_template/cherrypy.zip"/>
   </target>
 
 </project>
