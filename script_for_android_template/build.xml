@@ -113,6 +113,9 @@
     <property name="asset.dir" value="assets" />
     <property name="asset.absolute.dir" location="${asset.dir}" />
 
+    <!-- cherrypy zip archive -->
+    <property name="cherrypy" value="cherrypy.zip" />
+
     <!-- Directory for the third party java libraries -->
     <property name="jar.libs.dir" value="libs" />
     <property name="jar.libs.absolute.dir" location="${jar.libs.dir}" />
@@ -288,6 +291,7 @@
                 <sourcefolder refid="project.libraries.src"/>
                 <jarfolder path="${jar.libs.absolute.dir}" />
                 <jarfolder refid="project.libraries.libs" />
+		<zip path="${cherrypy}" />
                 <nativefolder path="${native.libs.absolute.dir}" />
                 <nativefolder refid="project.libraries.libs" />
                 <extra-jars/>
