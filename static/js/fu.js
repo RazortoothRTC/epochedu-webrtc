@@ -196,6 +196,22 @@ function extname (path) {
   return index < 0 ? "" : path.substring(index);
 }
 
+fu.pullcontentdirs = function(crdbpath) {
+	var dirlist = [];
+	var contentdirs = [];
+	try {
+		dirlist = fs.readdirSync(crdbpath); // XXX make ASYNC
+	} catch(err) {
+		dirlist = [];
+	}
+	
+	for (var i = 0; i < dirlist.length; i++) {
+		if (fs.statSync(crdbpath + "/" + dirlist[i]).isDirectory()) { // XXX MAke ASYNC
+			contentdirs.push(dirlist[i]);
+		}
+	}
+	return contentdirs;
+}
 fu.pullcontent = function(crdbpath, crdburl, chan) {
 	// XXX This should get cached intelligently so you don't do file IO for each call unless cache is dirty
 

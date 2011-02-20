@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b68-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b69-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -173,7 +173,8 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Add ignore for .db content </li> \n \
 		<li>Fix for longPoll error - not really long poll error, but end player closes window ref on current window</li> \n \
 		<li>Remove multimedia classroom as default and replace with spanish </li> \n \
-		<li>Added user docs</LI>
+		<li>Added user docs</LI> \n \
+		<li>Dynamically generate classrooms based on contents of USB stick</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -800,7 +801,7 @@ fu.get("/part", function (req, res) {
 fu.get("/channels", function (req, res) {
   	// var id = qs.parse(url.parse(req.url).query).id;
 	// Setup the default channels if they don't exist
-	var channelslist = {'foo': 1};
+	var channelslist = {};
 	
 	for (var i = 0; i < DEFAULT_CHANNELS.length; i++) {
 		if (!channels[DEFAULT_CHANNELS[i]]) {
@@ -808,6 +809,16 @@ fu.get("/channels", function (req, res) {
 			var achannel = channelFactory();
 			sys.puts('channelFactory invoked for @' + DEFAULT_CHANNELS[i]);
 			channels[DEFAULT_CHANNELS[i]] = achannel;
+		}
+	}
+	
+	var contentdirlist = fu.pullcontentdirs(CONTENT_REPO_FILE_PATH);
+	
+	for (var i = 0; i < contentdirlist.length; i++) {
+		if (!channels[contentdirlist[i]]) {
+			var achannel = channelFactory();
+			sys.puts('channelFactory invoked for @' + contentdirlist[i]);
+			channels[contentdirlist[i]] = achannel;
 		}
 	}
 	
