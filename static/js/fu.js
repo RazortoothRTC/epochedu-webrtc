@@ -199,7 +199,7 @@ function extname (path) {
 fu.pullcontentdirs = function(crdbpath) {
 	var dirlist = [];
 	// Ignore dot directories
-	var filter = /\./i; // XXX DEMOSETTING put this somewhere else
+	var filter = /^\./i; // XXX DEMOSETTING put this somewhere else
 	var contentdirs = [];
 	try {
 		dirlist = fs.readdirSync(crdbpath); // XXX make ASYNC
@@ -209,7 +209,7 @@ fu.pullcontentdirs = function(crdbpath) {
 	
 	for (var i = 0; i < dirlist.length; i++) {
 		if (fs.statSync(crdbpath + "/" + dirlist[i]).isDirectory()) { // XXX MAke ASYNC
-			if (contentdirs.toLowerCase().match(filter)) continue;
+			if (dirlist[i].toLowerCase().match(filter)) continue;
 			contentdirs.push(dirlist[i]);
 		}
 	}
