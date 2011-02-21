@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b69-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-marvell-ces-stable-demo-v3-b70-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -175,6 +175,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 		<li>Remove multimedia classroom as default and replace with spanish </li> \n \
 		<li>Added user docs</LI> \n \
 		<li>Dynamically generate classrooms based on contents of USB stick</li> \n \
+		<li>Fix for dot directories showing up on landing page</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
