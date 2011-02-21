@@ -86,7 +86,15 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 					localFile = open(dpath + '/' + filename, 'wa') # XXX Double check the write bits
 					print 'storing url on ' + dpath + '/' + filename
 				try:
-					localFile.write(webFile.read())
+					# XXX Android tablet can't handle this for large files localFile.write(webFile.read())
+					maxread = MCP_CONFIG['SYNC_MAX_BYTES_READ']
+					bytesread = None
+					while 1:
+						bytesread = webFile.read(maxread)
+						if bytesread == '': # I guess this is the EOF way in Python
+							break
+						localFile.write(bytesread)
+						
 					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
 					urllib2.urlopen(mcpconnectorurl).read()
 					try:
@@ -162,7 +170,8 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://192.168.1.16:5000'], # DEMOSETUP
 			  'STUDENT_ENDPOINT':'/student', 
 			  'SYNCACK_ENDPOINT':'/syncack',
 			  'ANDROID_CONTENT_PATH':'/sdcard/content', 
-			  'DESKTOP_CONTENT_PATH':'/tmp', 
+			  'DESKTOP_CONTENT_PATH':'/tmp',
+			  'SYNC_MAX_BYTES_READ': 1024, # Read at most 1K 
 			  'SYNCACK_PARAM':'syncack', # Used for sync ack
 			  'MCP_TICK_INTERVAL':15, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
@@ -374,7 +383,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b18-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b19-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -386,7 +395,7 @@ class MCPService(object):
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
 	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
 	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback.  Turn on MCP Loop.
-	Fix typo bug in urllib2.
+	Fix typo bug in urllib2.  Added reads/writes for sync on smaller, configurable number of bytes, currently 1024.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
