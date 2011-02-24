@@ -665,9 +665,20 @@ function updateUptime () {
   }
 }
 
+
+
 var transmission_errors = 0;
 var first_poll = true;
 var first_invalid_session = true; // XXX Hack to deal with fact that first /recv after login will not know you've logged in yet
+
+function longpollErrorHandler() {
+	var retryDuration = transmission_errors * 10*1000;
+	addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
+	transmission_errors += 1;
+	// addGrowlNotification('Server Error', 'Access to WiFi is interrupted or Server has Crashed.  Detail: long poll error. trying again... in ' + (retryDuration/1000) + ' seconds', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
+	//don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
+	setTimeout(longPoll, retryDuration);
+}
 
 //process updates if we have any, request updates from the server,
 // and call again with response. the last part is like recursion except the call
@@ -951,28 +962,20 @@ function longPoll (data) {
          , url: "/recv"
          , dataType: "json"
          , data: { since: CONFIG.last_message_time, id: CONFIG.id, channel: getChannel() }
-         , error: function () {
-			var retryDuration = transmission_errors * 10*1000;
-			addMessage("", "long poll error. trying again... in " + (retryDuration/1000) + ' seconds', new Date(), "error");
-			transmission_errors += 1;
-			addGrowlNotification('Server Error', 'Access to WiFi is interrupted or Server has Crashed.  Detail: long poll error. trying again... in ' + (retryDuration/1000) + ' seconds', '/static/images/wifi-red.png', '', false, 'wifistatusgrowl');
-			 
-             //don't flood the servers on error, wait 10 seconds * number of transmission_errors before retrying 
-             setTimeout(longPoll, retryDuration);
-           }
+         , error: longpollErrorHandler
          , success: function (data) {
-			 if (transmission_errors > 0) $.gritter.remove('wifistatusgrowl', { 
-			                    fade: true,
-			                    speed: 'slow'
-			                });
-             transmission_errors = 0;
-			 
-             //if everything went well, begin another request immediately
-             //the server will take a long time to respond
-             //how long? well, it will wait until there is another message
-             //and then it will return it to us and close the connection.
-             //since the connection is closed when we get data, we longPoll again
-             longPoll(data);
+			if(!data){
+			           longpollErrorHandler();
+			} else {
+		             transmission_errors = 0;
+
+		             //if everything went well, begin another request immediately
+		             //the server will take a long time to respond
+		             //how long? well, it will wait until there is another message
+		             //and then it will return it to us and close the connection.
+		             //since the connection is closed when we get data, we longPoll again
+		             longPoll(data);
+			}
            }
          });
 }
