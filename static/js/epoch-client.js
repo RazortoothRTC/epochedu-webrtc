@@ -52,7 +52,7 @@ var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
 var browserplayerwindow;
 var platformplayer = false;
-var MEM_CRITICAL_THRESHOLD = 480; // In MB
+var MEM_CRITICAL_THRESHOLD = 400; // In MB
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
 http://github.com/jherdman/javascript-relative-time-helpers/
