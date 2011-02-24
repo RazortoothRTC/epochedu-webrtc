@@ -14,13 +14,18 @@ import shutil
 droid = android.Android()
 title = "Resetting EpochEDU Demo"
 message = "Deleting Cached content on SDCard.  Please be patient while we clean up."
-contentcache = '/sdcard/contents'
+contentcache = '/mnt/sdcard/content'
 droid.dialogCreateSpinnerProgress(title, message)
 droid.dialogShow()
 
-contentdirs = os.listdir(contentcache)
+try:
+	contentdirs = os.listdir(contentcache)
 
-for dir in contentdirs:
-	shutil.rmtree(os.path.join(contentcache,dir))
-
+	for dir in contentdirs:
+		try:
+			shutil.rmtree(os.path.join(contentcache,dir))
+		except:
+			print "No cached content to remove in " + os.path.join(contentcache,dir)
+except:
+	print "No cached content directory " + contentcache
 droid.dialogDismiss()
