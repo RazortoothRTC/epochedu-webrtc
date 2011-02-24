@@ -992,8 +992,7 @@ function send(msg, type) {
 			// alert('/send done');
 		},
 		error: function(e) {
-			addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted or you left the session when your browser went off to a new page, please reload the page to restore your session.", '/static/images/status_unknown.png', '', false, 'sessionstatusgrowl');
-			
+			addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted or you left the session when your browser went off to a new page, please reload the page to restore your session.", '/static/images/status_unknown.png', '', false, 'sessionstatusgrowl');			
 		},
 	});
   }
@@ -1125,7 +1124,7 @@ var rss;
 //handle the server's response to our nickname and join request
 function onConnect (session) {
   if (session.error) {
-    alert("error connecting: " + session.error);
+	addGrowlNotification('error connecting', "error connecting: " + session.error, '/static/images/status_unknown.png', '', false, 'serverstatusgrowl');
 	setStatusMessage('#loginform', 'error connecting: ' + session.error, 'status')
     showConnect();
     return;
