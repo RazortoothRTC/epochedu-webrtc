@@ -1137,13 +1137,12 @@ function onConnect (session) {
   	rss         = session.rss;
 	updateRSS();
   	updateUptime();
-	// $('#notificationTabInner').find('a.sessionstatus2').removeClass('sessionstatus2').addClass('sessionstatus1');
+
   if (session.channelstate == 1) { 
 	isClassInSession = true;
 	if (teacher) { 
-		$('.start').trigger('click'); 
-		$('#startsessionbtn').ninjaButtonEnable();
-		$('#stopsessionbtn').ninjaButtonDeselect();
+		// $('.start').trigger('click');
+		$('#startsessionbtn').trigger('click');
 	}
   } else {
 	isClassInSession = false;
