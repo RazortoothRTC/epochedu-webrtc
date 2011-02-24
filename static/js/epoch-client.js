@@ -52,7 +52,7 @@ var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
 var browserplayerwindow;
 var platformplayer = false;
-
+var MEM_CRITICAL_THRESHOLD = 480; // In MB
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
 http://github.com/jherdman/javascript-relative-time-helpers/
@@ -655,6 +655,9 @@ function updateRSS () {
   if (bytes) {
     var megabytes = bytes / (1024*1024);
     megabytes = Math.round(megabytes*10)/10;
+	if (teacher && (megabytes > MEM_CRITICAL_THRESHOLD)) {
+		addGrowlNotification('Low Memory Warning', 'Memory on plug computer has surpassed critical threshold, currently at ' + megabytes + ' MB.  Please avoid syncing further content until current requests complete.', '/static/images/status_unknown.png', '', true, 'serverstatusgrowl');
+	}
     $("#rss").text(megabytes.toString());
   }
 }
