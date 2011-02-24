@@ -1142,6 +1142,8 @@ function onConnect (session) {
 	isClassInSession = true;
 	if (teacher) { 
 		$('.start').trigger('click'); 
+		$('#startsessionbtn').ninjaButtonEnable();
+		$('#stopsessionbtn').ninjaButtonDeselect();
 	}
   } else {
 	isClassInSession = false;
