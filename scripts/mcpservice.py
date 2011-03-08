@@ -383,7 +383,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b19-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b20-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -395,7 +395,8 @@ class MCPService(object):
 	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
 	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
 	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback.  Turn on MCP Loop.
-	Fix typo bug in urllib2.  Added reads/writes for sync on smaller, configurable number of bytes, currently 1024.
+	Fix typo bug in urllib2.  Added reads/writes for sync on smaller, configurable number of bytes, currently 1024.  
+	Added droid reader to list of players.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -409,7 +410,7 @@ class MCPService(object):
 						'com.android.providers.media', # Not really sure what this is, I think it is the video player backend
 						'com.android.music', # The Android Music Player, NEED PDF VIEWER, Documents 2 Go, Text Viewer
 						'com.android.gallery', # Image gallery?
-						'org.vudroid', # Our chosen PDF Viewer, Vudroid
+						'de.hilses.droidreader', # Our chosen PDF Viewer
 						]
 	def __init__(self):
 		try:
