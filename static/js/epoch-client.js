@@ -426,15 +426,19 @@ function openBestPlayer(url, selector, options) {
 				launchShadowboxPreview(url);
 			}
 		} else {
-			if (fname.indexOf('pdf') < -1) {
-				openNewWindow(url); // Not using options for now
+			if (!teacher) {
+				if (fname.indexOf('pdf') < -1) {
+					openNewWindow(url); // Not using options for now
+				} else {
+					url = 'http://192.168.1.168:5000/content' + url.substring(url.indexOf('sdcard') + 6);
+					mcpDispatcher3(eval("(" + mcpPayloadFactory(url, "launchurl", 1) + ")"), function(json) {
+						platformplayer = true;
+					}, function(d, msg) {
+						addGrowlNotification('Error launching Sync Folder Content', 'Unable to launch content on local device using native player', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+					});
+				}
 			} else {
-				url = 'http://192.168.1.168:5000/content' + url.substring(url.indexOf('sdcard') + 6);
-				mcpDispatcher3(eval("(" + mcpPayloadFactory(url, "launchurl", 1) + ")"), function(json) {
-					platformplayer = true;
-				}, function(d, msg) {
-					addGrowlNotification('Error launching Sync Folder Content', 'Unable to launch content on local device using native player', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-				});
+				openNewWindow(url); // Not using options for now
 			}
 		}
 	}
