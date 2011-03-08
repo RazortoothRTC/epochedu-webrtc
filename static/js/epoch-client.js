@@ -430,6 +430,7 @@ function openBestPlayer(url, selector, options) {
 				openNewWindow(url); // Not using options for now
 			} else {
 				url = 'http://192.168.1.168:5000/content' + url.substring(url.indexOf('sdcard') + 6);
+				alert('launching pdf url ' + url);
 				mcpDispatcher3(eval("(" + mcpPayloadFactory(url, "launchurl", 1) + ")"), function(json) {
 					platformplayer = true;
 				}, function(d, msg) {
