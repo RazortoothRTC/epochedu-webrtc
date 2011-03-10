@@ -850,29 +850,15 @@ function longPoll (data) {
 							// alert('Got mcpResponse status = ' + mcpResp.status);
 							// If there is a platformplayer running, kill it
 							
-							// For now, always try to launch a dummy blank.mp4 video first before killing the player
 							// XXX This sucks ... only here to deal with Android media player deficiencies
-							mcpDispatcher3(eval("(" + mcpPayloadFactory("http://192.168.1.16:5000/static/images/blank.mp4", "launchurl", 1) + ")"), function(json) {
-								mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
-									if (json && json.status == 0) {
-										// alert('successful call to killplatformplayer');
-										platformplayer = false;
-									}
-								}, function(d, msg) {
-									addGrowlNotification('Error ending Content Player', 'Unable to end native Content player on device.  You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-								});
+							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
+								if (json && json.status == 0) {
+									// alert('successful call to killplatformplayer');
+									platformplayer = false;
+								}
 							}, function(d, msg) {
-								mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
-									if (json && json.status == 0) {
-										// alert('successful call to killplatformplayer');
-										platformplayer = false;
-									}
-								}, function(d, msg) {
-									addGrowlNotification('Error ending Content Player', 'Unable to end native Content player on device.  You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-								});
-							});
-							
-							
+								addGrowlNotification('Error ending Content Player', 'Unable to end native Content player on device.  You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+							});		
 						} else { // XXX Why would this ever happen ?
 							addGrowlNotification('Error ending Content Player', 'Ping heartbeat returned improper resonse - You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 						}

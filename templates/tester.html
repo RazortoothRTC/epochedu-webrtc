@@ -55,6 +55,8 @@ INSERT YOUR CODE!!!
 	<input id="testapdu1b" type="button" value="testapdu1b" />
 	<p><label>testapdu1c - launchurl</label>
 	<input id="testapdu1c" type="button" value="testapdu1c" />
+	<p><label>testapdu1d - launchurl</label>
+	<input id="testapdu1d" type="button" value="testapdu1d" />
 	<p><label>testapdu2 - sync</label>
 	<input id="testapdu2" type="button" value="testapdu2" />
 	<p><label>testapdu2b - sync</label>
@@ -158,6 +160,25 @@ INSERT YOUR CODE!!!
 		    	$.jsonp({
 					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
 					"data": { apdu: '1', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launchurl: "http://192.168.1.16:5000/content/bar/MadagascarVideo.mp4"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("ERROR or MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu1d").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '1', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launchurl: "http://192.168.1.16:5000/content/setup/blank.mov"},
 					"success": function(data) {
 						var mcpResponse;
 						alert(eval('"' + data.status + '"'));
