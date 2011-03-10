@@ -171,6 +171,7 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://192.168.1.16:5000'], # DEMOSETUP
 			  'SYNCACK_ENDPOINT':'/syncack',
 			  'ANDROID_CONTENT_PATH':'/sdcard/content', 
 			  'DESKTOP_CONTENT_PATH':'/tmp',
+			  'BLANK_VIDEO_PATH':'/static/images/blank.mov',
 			  'SYNC_MAX_BYTES_READ': 1024, # Read at most 1K 
 			  'SYNCACK_PARAM':'syncack', # Used for sync ack
 			  'MCP_TICK_INTERVAL':15, # Seconds between ticks DEMOSETUP
@@ -383,7 +384,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b20-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b21-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -614,6 +615,10 @@ Todo ...
 		if amime is not None:
 			try:
 				self.notifyUser("droid view launched with url" + aurl + " and mime = " + amime)
+				# If this is a video, kick off a blank video
+				if amime.startswith('video'):
+					self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'] + MCP_CONFIG['BLANK_VIDEO_PATH'], 'video/mov', None, False)
+					time.sleep(1)
 				self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], aurl, amime, None, False)
 			except:
 				webbrowser.open(aurl)
