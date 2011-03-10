@@ -28,12 +28,14 @@
 			<div id="account">
 				<p>Hello, <span id="nickname"></span><a class="logout jqModal" href="javascript:void(0);" onclick="doLogout(); return false;">Logout</a></p>
 			</div>
+			
 			<div id="toolbar">
-		        <ul id="status">
+				<span id="home"></span>
+		        {*<ul id="status">
 		          <li><a id="usersLink" href="#">5 users</a></li>
 		          <li>uptime: <span id="uptime">?</span></li>
 		          <li>memory: <span id="rss">?</span>mb RSS</li>
-		        </ul>
+		        </ul>*}
 		    </div>
 		</div>
 		<!-- end header -->
@@ -375,7 +377,17 @@
 			  state:'disabled',
 			  title:'End' // text that is optional when there is an icon
 			});
-
+			$('#home').ninjaButtonCreate({
+			  icon:'home', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				
+			  },
+			  title:'Home' 
+			});
+			$("#home").live("click", function(e) { 
+				window.location = '/teacher';
+			});
 			
 		});
 	</script>

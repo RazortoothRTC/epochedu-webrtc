@@ -14,7 +14,7 @@
 
 {%block 'container' %}
 <div id="page">
-	<span id="syncFolder"></span><a href="/student">[ <img src="/static/images/black/home.png"/> ]</a>
+	<span id="syncFolder"></span>{*<a href="/student">[ <img src="/static/images/black/home.png"/> ]</a>*}<span id="home"></span>
 	<div id="chat" class="module">
 		<form id="chatwindow">
 			<div id="chatmsg">
@@ -206,7 +206,7 @@
 					},
 				});
 			});
-			/*
+
 			$('#home').ninjaButtonCreate({
 			  icon:'home', 
 			  onSelect:function(){ 
@@ -216,7 +216,8 @@
 			  title:'Home' 
 			});
 			$("#home").live("click", function(e) { 
-			});  */
+				window.location = '/student';
+			});
 		});
 	</script>
 	<script type="text/javascript">
