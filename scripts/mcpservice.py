@@ -384,7 +384,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b21-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2011-r7-b22-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
@@ -397,7 +397,7 @@ class MCPService(object):
 	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
 	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback.  Turn on MCP Loop.
 	Fix typo bug in urllib2.  Added reads/writes for sync on smaller, configurable number of bytes, currently 1024.  
-	Added droid reader to list of players.
+	Added droid reader to list of players.  Fix for video stutter launch.
 	</P>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
@@ -617,7 +617,7 @@ Todo ...
 				self.notifyUser("droid view launched with url" + aurl + " and mime = " + amime)
 				# If this is a video, kick off a blank video
 				if amime.startswith('video'):
-					self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'] + MCP_CONFIG['BLANK_VIDEO_PATH'], 'video/mov', None, False)
+					self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['BLANK_VIDEO_PATH'], 'video/mov', None, False)
 					time.sleep(1)
 				self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], aurl, amime, None, False)
 			except:
