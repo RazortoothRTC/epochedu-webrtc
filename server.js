@@ -103,88 +103,8 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b86-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
-WIP = " <li>MCP command work completed.</li>\n \
-		<li>Incorporating feedback for crayola demo from customer</li> \n \
-		<li>Remove Cufon </li>\n \
-		<li>Trying to fix url bar area to make it go away</li> \n \
-		<li>Fix broken mcprequests</li> \n \
-		<li>Added new #mediacontrol buttons w/ ninjaui buttons.</li> \n \
-		<li>Fixing media carousel</li> \n \
-		<li>Implemented non-mcp side of universalsend command</li> \n \
-		<li>Fixed bug in jsonp callback handling, cherrypy should NOT use JSONIFY, it doesn't work</li> \n \
-		<li>Added callbacks for mcpDispatcher3 for success and error</li> \n \
-		<li>Implement universalsend with optmization of url for checking locally synched content.</li> \n \
-		<li>Fix bug with double MCP request on device</li> \n \
-		<li>Fix for missing MOV icon.</li> \n \
-		<li>Fix missing PDF ... it was on the filter list in fu.js</li> \n \
-		<li>Adding in test frameworks for MCP Service.</li> \n \
-		<li>Added a few more test cases to help support a player kill.</li> \n \
-		<li>Working on close window/kill player</li> \n \
-		<li>Added options for openNewWindow, including title</li> \n \
-		<li>Wrap up work on end player.</li>  \n \
-		<li>Bug fixing on universalsend which is crashing</li> \n \
-		<li>Added student sync folder button</li> \n \
-		<li>Fix bug where teacher joining a started session gets show that session is not started.</li> \n \
-		<li>Added new landing page using ninjaui for GUI.</li> \n \
-		<li>Add gritter notification infrastructure --- wip</li> \n \
-		<li>Added missing jsonp library js.</li> \n \
-		<li>Add missing gritter css, js, and images.</li> \n \
-		<li>Fix bug start/stop session WIP </li> \n \
-		<li>Fix bug in click on join class</li> \n \
-		<li>Bug fix on shadowbox reference for CSS </li> \n \
-		<li>Bug fix for jChatscroll bug. </li> \n \
-		<li>Enhanced growl controls.  Add for Wifi and Session status</li> \n \
-		<li>Removing Question Submit functionality from Student UI, should be from teacher UI \n \
-		<li>MCP Errors and Notifications need grow alerts</li> \n \
-		<li>Fix bug in landing page launching wrong classroom</li> \n \
-		<li>Fix for broken preview pop up. </li> \n \
-		<li>Update to tester URLS </li> \n \
-		<li>Updates to Sync Growl notifications </li> \n \
-		<li>Fix some issues in mcpDispatcher3 </li> \n \
-		<li>Checkpoint for Demo to Tonya, remove client side debu, remove toolboar </li> \n \
-		<li>Fix 3GP css tag.</li> \n \
-		<li>Backout all Dirty DB references </li> \n \
-		<li>Fix lost payload on plug platform by using fu.dkqs instead </li> \n \
-		<li>Stabalize startsession, stopsession - use live() instead of click() handlers</li> \n \
-		<li>Switch to ninjaui buttons, retool the stopwatch to work without their buttons. </li> \n \
-		<li>Call stop/start directly using sync call, turn off caching.</li> \n \
-		<li>Fix for end player WIP</li> \n \
-		<li>Cleanup some debug</li> \n \
-		<li>Fix for end viewer button checkbox not deselecting </li> \n \
-		<li>Fix for for dead jquery.get() ajax calls, which use cache: true, set to false </li> \n \
-		<li>Fix for teacher layout issue on 10in tablet </li>\n \
-		<li>Added good sync ack notification mechanism </li> \n \
-		<li>Fix for student chat scroll when student chats.</li> \n \
-		<li>Fix for session timeout set to 1 min and window unload events for user part</li> \n \
-		<li>Native Player Growl notification should not be sticky </li> \n \
-		<li>Added Colorbox as replacement for using Shadowbox to playcontent.</li> \n \
-		<li>Integrated Colorbox into template and for both student/teacher</li> \n \
-		<li>Enable end button for teacher after sending content.</li> \n \
-		<li>Add something to show an MCP Service about page from landing page - WIP</li> \n \
-		<li>Cleanup error message handling with native and browser player</li> \n \
-		<li>Cleanup layout of content items in media carousel.</li> \n \
-		<li>Add APK icon.</li> \n \
-		<li>Fix for bug launching send of .htm content.</li> \n \
-		<li>Add 5 min session timeout back in.</li> \n \
-		<li>Fix for improper handling of user status updates when plug timeclock is set to origin of universe </li> \n \
-		<li>Fix for handling of html player </li> \n \
-		<li>Fix for bad growl message in /send </li> \n \
-		<li>Add ignore for .db content </li> \n \
-		<li>Fix for longPoll error - not really long poll error, but end player closes window ref on current window</li> \n \
-		<li>Remove multimedia classroom as default and replace with spanish </li> \n \
-		<li>Added user docs</LI> \n \
-		<li>Dynamically generate classrooms based on contents of USB stick</li> \n \
-		<li>Fix for dot directories showing up on landing page</li> \n \
-		<li>Fix for no default tab beign selected on landing page</li> \n \
-		<li>Fix for multi-teacher login session state</li> \n \
-		<li>Fix for onConnect server error alert - use growler</li> \n \
-		<li>Fix for long poll error notification handling </li> \n \
-		<li>Added growl status notification for low memory situations </li> \n \
-		<li>Fix for sync folder PDF Launch bug</li> \n \
-		<li>Fix for stutter stop on video.</li> \n \
-		<li>Adding home button to student ui</li> \n \
-		<li>Add Home page button to student and teacher UI</li> \n \
+VERSION = "escdemo-v1-b1" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+WIP = " <li>Fix bug with how server process gets run.  </li>\n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -199,12 +119,11 @@ setInterval(function () {
   mem = process.memoryUsage();
 }, 10*1000);
 
-
 var fu = require("./static/js/fu"),
     sys = require("sys"),
     url = require("url"),
     qs = require("querystring"),
-    nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
+	nTPL = require('nTPL').plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000 * 5; // XXX 1000ms = 1 s * 60 * 5 = 5 minutes - this should be configurable
