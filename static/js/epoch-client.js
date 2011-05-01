@@ -1445,24 +1445,32 @@ $(document).ready(function() {
 
 	bindstopstart();
 
+    $('#resources > input[type="checkbox"]').click(function (e) {
+		alert('clicked on checkbox');
+ 	});
 
 	$('#resources > li').click(function(e) {
-			var $cb = $(this).children('input[type="checkbox"]');
-			if ($cb.attr('checked')) {
-				$('#mediacontrol').children().each(
-					function(index){
-						$(this).ninjaButtonEnable();
-					}
-				);
-			} else {
-				$('#mediacontrol').children().each(
-					function(index){
-						$(this).ninjaButtonDisable();
-					}
-				);
-			}
-	    }
-    );
+		var $cb = $(this).children('input[type="checkbox"]');
+		if ($cb.attr('checked')) {
+			$cb.removeAttr('checked')
+		} else {
+			$cb.attr('checked', true);
+		}
+		if ($cb.attr('checked')) {
+			$('#mediacontrol').children().each(
+				function(index){
+					$(this).ninjaButtonEnable();
+				}
+			);
+		} else {
+			$('#mediacontrol').children().each(
+				function(index){
+					$(this).ninjaButtonDisable();
+				}
+			);
+		}
+		return false;
+	});
 
 
 	$("#sendurl").click(function(e) {
