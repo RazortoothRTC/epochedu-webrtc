@@ -1091,6 +1091,16 @@ function showWaiting(nick, channel) {
 	$('#dialog').append('<div id="waiting" class="modalrow"><H2>Hello ' + nick + ' , Waiting for class session: ' 
 	+ getChannel() + ' to begin ...</H2><br><p>When class begins, you will receive instructions \
 	from your teacher on content to view.  Please standby.<br/></div>');
+	$('#gohome').ninjaButtonCreate({
+	  icon:'home', 
+	  onSelect:function(){ 
+		$(this).ninjaButtonDeselect();
+	  },
+	  title:'Home' 
+	});
+	$("#gohome").live("click", function(e) { 
+		window.location = '/teacher';
+	});
 }
 
 function checkSession(nick) {
