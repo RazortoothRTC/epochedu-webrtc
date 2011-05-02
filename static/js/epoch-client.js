@@ -1345,6 +1345,12 @@ function messageDispatcher(cmd, data) {
 	}
 }
 
+function doUpload() {
+	var fileUploadName = $(".fuselector").attr("value");
+	addGrowlNotification('Uploading file', 'Uploading file to teacher: ' + fileUploadName, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
+	multipartupload(fileUploadName);
+	return false;
+}
 function bindstopstart() {
 	$(".start").live('click', function() {
 	    var msg = "#startsession";
@@ -1410,13 +1416,29 @@ $(document).ready(function() {
 	  });
 	}
 
+	// XXX Shouldn't these be inside the above if/else statement
   	$(".qsubmit").click(function() {
 		var msg = $("#entry").attr("value").replace("\n", "");
 	    if (!util.isBlank(msg)) send(msg, "askquestion");
 	    $("#entry").attr("value", ""); // clear the entry field.
 		return false;
 	  });
-
+	
+	if (!isTeacher()) {
+		$('#studentupload').ajaxForm(function() { 
+			var fileUploadName = $(".fuselector").attr("value");
+			addGrowlNotification('Completed upload', 'Upload of file ' + fileUploadName + ' is complete.', '/static/images/white/gear.png', '', true, 'debuggrowl'); // XXX Add error checking, should use ajaxSubmit() with custom handler
+		});
+	}
+	
+	/* $(".fupload").click(function() {
+		var fileUploadName = $(".fuselector").attr("value");
+		addGrowlNotification('Uploading file', 'Uploading file to teacher: ' + fileUploadName, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
+		multipartupload(fileUploadName);
+		return false;
+	}); */
+	
+	
 	$(".asubmit").click(function() {
 	// var msg = $("#answerform #entry").attr("value").replace("\n", "");
 	var msg = "Q: " + $('#question').text() + " : A:" + $("#answerform #entry").attr("value").replace("\n", "");

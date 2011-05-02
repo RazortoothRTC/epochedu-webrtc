@@ -34,7 +34,6 @@ var url = require("url");
 var assert = require("assert");
 var path = require("path");
 var qs = require("querystring");
-var	dirty = require("./dirty");
 
 DEBUG = true;
 
@@ -127,7 +126,7 @@ var server = createServer(function (req, res) {
 	
 	
 	try {
-	  if (req.method === "GET" || req.method === "HEAD") {
+	  if (req.method === "GET" || req.method === "HEAD" || req.method === "POST") {
 		var handler = false;
 		// XXX Do a quick lookup.  If there is no match
 		// Walk the regex object in a loop
@@ -194,6 +193,10 @@ fu.close = function () { server.close(); };
 function extname (path) {
   var index = path.lastIndexOf(".");
   return index < 0 ? "" : path.substring(index);
+}
+
+fu.renamelocalfile = function(from, to, handler) {
+	fs.rename(from, to, handler); // XXX This needs and deserves tons and tons of security :(
 }
 
 fu.pullcontentdirs = function(crdbpath) {

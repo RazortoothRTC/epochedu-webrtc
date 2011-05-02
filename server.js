@@ -103,10 +103,11 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "escdemo-v1-b3" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "escdemo-v1-b4" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>Fix bug with how server process gets run.  </li>\n \
 <li>Working on fix for media resources clickable by icon and not just tiny checkbox.</li>\n \
 <li>Fix for missing home button on Waiting screen</li>\n \
+<li>Added File Upload to Student UI</li>\n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -125,6 +126,7 @@ var fu = require("./static/js/fu"),
     sys = require("sys"),
     url = require("url"),
     qs = require("querystring"),
+	formidable = require("formidable"),
 	nTPL = require('nTPL').plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
@@ -727,6 +729,43 @@ fu.get("/part", function (req, res) {
     session.destroy();
   }
   res.simpleJSON(200, { rss: mem.rss });
+});
+
+fu.getterer("/upload/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	var form = new formidable.IncomingForm(),
+        files = [],
+        fields = [];
+	sys.puts("/upload initiated");
+    form.uploadDir = CONTENT_REPO_FILE_PATH + '/' + chan;
+    form.keepExtensions = true;
+
+    form
+      .on('field', function(field, value) {
+        console.log(field, value);
+        fields.push([field, value]);
+      })
+      .on('file', function(field, file) {
+        console.log(field, file);
+        files.push([field, file]);
+      })
+      .on('end', function() {
+        console.log('-> upload done');
+		
+        /* res.writeHead(200, {'content-type': 'text/plain'});
+        res.write('received fields:\n\n '+util.inspect(fields));
+        res.write('\n\n');
+        res.end('received files:\n\n '+util.inspect(files)); */
+        for (var i = 0; i < files.length; i++) {
+            var filein = files[i][1];
+			console.log(filein);
+			fu.renamelocalfile(filein.path, form.uploadDir + '/' +  filein.name, function() {
+                console.log('Moved uploaded file from ' + filein.path + ' to ' + form.uploadDir + '/' +  filein.name);
+            });
+        }
+		res.simpleJSON(200, { rss: mem.rss });
+      });
+    form.parse(req);
 });
 
 fu.get("/channels", function (req, res) {

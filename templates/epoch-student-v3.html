@@ -14,7 +14,7 @@
 
 {%block 'container' %}
 <div id="page">
-	<span id="syncFolder"></span><span id="home"></span>
+	<span id="syncFolder"></span><span id="home"></span><form id="studentupload" enctype="multipart/form-data" action="/upload/{%= channel%}" method="POST" {*onSubmit="doUpload(); return false;"*}><input type="file" class="fuselector" name="upload" multiple="multiple" /><br><input type="submit" src="/static/images/submit.png" class="fupload" value="Upload"></form>
 	<div id="chat" class="module">
 		<form id="chatwindow">
 			<div id="chatmsg">
@@ -123,6 +123,7 @@
 {%block 'body-scripts' %}
 	<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
 	<script type="text/javascript" src="/static/js/jqModal.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.form.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.colorbox-min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 	<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
