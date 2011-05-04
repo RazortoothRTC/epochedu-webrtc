@@ -103,11 +103,12 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "escdemo-v1-b4" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "escdemo-v1-b5" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>Fix bug with how server process gets run.  </li>\n \
 <li>Working on fix for media resources clickable by icon and not just tiny checkbox.</li>\n \
 <li>Fix for missing home button on Waiting screen</li>\n \
 <li>Added File Upload to Student UI</li>\n \
+<li>WIP Rework file upload to use MCP service on Android</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -756,6 +757,7 @@ fu.getterer("/upload/[\\w\\.\\-]+", function(req, res) {
         res.write('received fields:\n\n '+util.inspect(fields));
         res.write('\n\n');
         res.end('received files:\n\n '+util.inspect(files)); */
+		console.log('received files:\n\n '+util.inspect(files));
         for (var i = 0; i < files.length; i++) {
             var filein = files[i][1];
 			console.log(filein);
