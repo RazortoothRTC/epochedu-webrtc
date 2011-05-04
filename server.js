@@ -108,7 +108,7 @@ WIP = " <li>Fix bug with how server process gets run.  </li>\n \
 <li>Working on fix for media resources clickable by icon and not just tiny checkbox.</li>\n \
 <li>Fix for missing home button on Waiting screen</li>\n \
 <li>Added File Upload to Student UI</li>\n \
-<li>Rework file upload to use MCP service on Android</li> \n \
+<li>WIP Rework file upload to use MCP service on Android</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
