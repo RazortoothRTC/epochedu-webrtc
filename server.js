@@ -103,11 +103,11 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "escdemo-v1-b4" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "escdemo-v1-b5" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>Fix bug with how server process gets run.  </li>\n \
 <li>Working on fix for media resources clickable by icon and not just tiny checkbox.</li>\n \
 <li>Fix for missing home button on Waiting screen</li>\n \
-<li>Added File Upload to Student UI</li>\n \
+<li>Added File Upload to Student UI - added some new logging</li> \n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
@@ -758,7 +758,8 @@ fu.getterer("/upload/[\\w\\.\\-]+", function(req, res) {
         res.end('received files:\n\n '+util.inspect(files)); */
         for (var i = 0; i < files.length; i++) {
             var filein = files[i][1];
-			console.log(filein);
+			// console.log(filein);
+			console.log('attempt to rename file from ' + filein.path);
 			fu.renamelocalfile(filein.path, form.uploadDir + '/' +  filein.name, function() {
                 console.log('Moved uploaded file from ' + filein.path + ' to ' + form.uploadDir + '/' +  filein.name);
             });
