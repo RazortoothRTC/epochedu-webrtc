@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "escdemo-v1-b5" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "escdemo-v1-b6" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>Fix bug with how server process gets run.  </li>\n \
 <li>Working on fix for media resources clickable by icon and not just tiny checkbox.</li>\n \
 <li>Fix for missing home button on Waiting screen</li>\n \
