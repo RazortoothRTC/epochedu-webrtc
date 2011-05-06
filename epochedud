@@ -15,4 +15,4 @@ sudo -u epoched hg update
 # sudo -u epoched hg merge
 # uncomment for development mode
 # nodemon server.js 
-node server.js
+node server.js&
