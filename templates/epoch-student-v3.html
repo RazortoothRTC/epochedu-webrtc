@@ -14,7 +14,7 @@
 
 {%block 'container' %}
 <div id="page">
-	<span id="syncFolder"></span><span id="uploadFolder"></span><span id="home"></span>
+	<span id="syncFolder"></span><span id="home"></span>
 	<div id="chat" class="module">
 		<form id="chatwindow">
 			<div id="chatmsg">
@@ -82,7 +82,6 @@
 		</div>
 		<div class="modalbranding">
 		</div>
-		<span id="gohome"></span>
 	</div>
 	<form id="loginform">
 		<div class="modalrow">
@@ -123,7 +122,6 @@
 {%block 'body-scripts' %}
 	<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
 	<script type="text/javascript" src="/static/js/jqModal.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.form.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.colorbox-min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
 	<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
@@ -163,6 +161,12 @@
 			$('#syncFolder').ninjaMenuCreate({
 			  icon:'download', // optional image before title
 			  onSelect:function(){ // optional JavaScript function
+			    if(this.text() == 'Barrack Obama'){
+			      alert(this.text() + ' is correct!');
+			    }
+			    else{
+			      alert(this.text() + ' is not correct, please try again.');
+			    };
 			  },
 			  title:'Content Sync Folder', // text that is optional when there is an icon
 			  values:['No Content Available'] // array of possible values
@@ -202,53 +206,6 @@
 				});
 			});
 
-			$('#uploadFolder').ninjaMenuCreate({
-			  icon:'download', // optional image before title
-			  onSelect:function(){ // optional JavaScript function
-			  },
-			  title:'Upload File', // text that is optional when there is an icon
-			  values:['No Content Available'] // array of possible values
-			});
-			$('span#uploadFolder:not(descendant)').live("click", function() {
-				// Get the sync content list
-				var $dropdown = $(this).find('div.ninjaMenuChoices').empty();
-				$.jsonp({
-					url: 'http://localhost:' + MCP_RPC_PORT  + SYNC_FOLDER_ENDPOINT + '?jsoncallback=?',
-					data: {
-								channel: getChannel()
-							},
-					success: function(json) {
-						
-						if ((json.resultsCount) && (json.resultsCount > 0)) {					
-							var contentlist = json.results;							
-							for (var i = 0; i < contentlist.length; i++) {
-								var tmp = contentlist[i].split('/');
-								var filename = tmp[tmp.length-1];
-								if ((filename.toLowerCase().lastIndexOf('.doc') > 0) || (filename.toLowerCase().lastIndexOf('.xls') > 0) || filename.toLowerCase().lastIndexOf('.txt') > 0 || (filename.toLowerCase().lastIndexOf('.csv') > 0)) {
-								$dropdown.append('<div class="ninjaPlastic ninjaEnabled ninjaMenuChoice uploadurl" style="border-top-left-radius: 0.5em 0.5em; border-top-right-radius: 0.5em 0.5em; border-bottom-right-radius: 0px 0px; border-bottom-left-radius: 0px 0px; background-color: rgb(204, 204, 204); border-top-color: rgb(153, 153, 153); border-right-color: rgb(153, 153, 153); border-bottom-color: rgb(153, 153, 153); border-left-color: rgb(153, 153, 153); color: rgb(0, 0, 0); " name="'+ contentlist[i] + '">' + filename + '</div>');
-								}
-							}
-
-							// XXX I think this will only work on android unless you change your CAPS file
-							$(".uploadurl").live("click", function(e) { // Attach to current and future
-								var uploadurl = $(this).attr('name');
-								document.body.innerHTML += "<form id='studentupload' enctype='multipart/form-data' action='/upload/{%= channel%}' method='POST'><input type='file' class='fuselector' name='upload' value='" + uploadurl + "' /></form>";
-								$('#studentupload').ajaxForm(function() {
-									addGrowNotification('Completed Upload', 'Upload of file to teacher is complete.', '/static/images/birdy.png', '', true, 'mcpstatusgrowl'); 
-									$(this).remove();
-								});
-								$('#studentupload').submit();
-								e.stopPropagation(); // Don't bubble up the event!!
-							});
-						} else {
-							alert('no results');
-						}
-					},
-					error: function(error) {
-						$dropdown.append('<div class="ninjaPlastic ninjaEnabled ninjaMenuChoice" style="border-top-left-radius: 0.5em 0.5em; border-top-right-radius: 0.5em 0.5em; border-bottom-right-radius: 0px 0px; border-bottom-left-radius: 0px 0px; background-color: rgb(204, 204, 204); border-top-color: rgb(153, 153, 153); border-right-color: rgb(153, 153, 153); border-bottom-color: rgb(153, 153, 153); border-left-color: rgb(153, 153, 153); color: rgb(0, 0, 0); ">No Content Available</div>');
-					},
-				});
-			});
 			$('#home').ninjaButtonCreate({
 			  icon:'home', 
 			  onSelect:function(){ 
