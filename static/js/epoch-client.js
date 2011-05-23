@@ -1424,12 +1424,12 @@ $(document).ready(function() {
 		return false;
 	  });
 	
-	if (!isTeacher()) {
+	/* if (!isTeacher()) {
 		$('#studentupload').ajaxForm(function() { 
 			var fileUploadName = $(".fuselector").attr("value");
 			addGrowlNotification('Completed upload', 'Upload of file ' + fileUploadName + ' is complete.', '/static/images/white/gear.png', '', true, 'debuggrowl'); // XXX Add error checking, should use ajaxSubmit() with custom handler
 		});
-	}
+	} */
 	
 	/* $(".fupload").click(function() {
 		var fileUploadName = $(".fuselector").attr("value");
