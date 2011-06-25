@@ -1,0 +1,8 @@
+
+Code References:
+JQuery Form Plugin http://www.malsup.com/jquery/form/
+JQuery post form data download: http://stackoverflow.com/questions/3499597/javascript-jquery-to-download-file-via-post-with-json-data
+
+Tool References:
+HG Merge Multiple Heads: http://kiln.stackexchange.com/questions/1696/how-to-fix-multiple-heads/1698#1698
+HG Named Branches vs. Multiple Repositories http://stackoverflow.com/questions/890723/mercurial-named-branches-vs-multiple-repositories
