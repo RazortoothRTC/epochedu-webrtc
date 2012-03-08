@@ -113,7 +113,7 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 				try:
 					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
 					urllib2.urlopen(mcpconnectorurl).read()
-					self.mcpserviceref.notifyUser('url ' + urls + ' already synced to device', "Teacher Content Synched")
+					self.mcpserviceref.notifyUser('Content already synced to device', "Teacher Content Synched")
 				except:
 					pass
 				print 'url ' + urls + ' already synced to device'
@@ -371,7 +371,7 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://192.168.1.16:5000'], # DEMOSETUP
 			| | |~
 			|_|_|_
 			""",
-			'COPYRIGHT' : 'Copyright 2011 Razortooth Communications, LLC'
+			'COPYRIGHT' : 'Copyright 2011-2012 Razortooth Communications, LLC'
 			  }
 
 class MCPService(object):
@@ -384,10 +384,10 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2011-r7-b22-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'postces2011-r1-b2-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
-	<P>Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
+	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  Should be speaking error if there is a sync error.  Already synced content should not list out all of the url. Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
 	Fix some bad stuff in getbesturlpath.  Added ISANDROID.  Fix broken notification.  Sync works now.
@@ -694,6 +694,7 @@ Todo ...
 		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
+		self.notifyUser('Teacher closed player');
 		self.killpackage(uri)
 		rsp['status'] = 0;
 		return rsp
@@ -752,7 +753,7 @@ Todo ...
 	def killpackage(self, uri):
 		try:
 			self.droid.forceStopPackage(uri) # Does this have return value?
-			self.notifyUser('Teacher closed applicaton ' + uri)
+			# self.notifyUser('Teacher closed applicaton ' + uri)
 		except:
 			print "pretending to kill " + uri
 
@@ -854,7 +855,7 @@ def mcploop():
 		print "MCP Teachers Assistant is waking up to check on you, heartbeat #%d"%(loopcount)
 		# XXX We may want to put some housekeeping work here
 		print ismcpmodeon
-		if ismcpmodeon:
+		if not ismcpmodeon:
 			print "mcpmode is on"
 			if droid is not None:
 				print "checking if launcher is running"
@@ -881,6 +882,7 @@ def mcpServiceConnector():
 	
 	try:
 		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
+		droid.ttsSpeak('Launching M C P');
 		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], mcpconnectorurl, None, None, False) # Nonblocking
 	except:
 		print "opening " + mcpconnectorurl
