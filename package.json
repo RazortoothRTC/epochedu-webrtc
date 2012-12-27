@@ -1,0 +1,19 @@
+{
+  	"name": "epochedu",
+	"descrption": "EpochEDU app for in-class content delivery and realtime learning.",
+	"author": "dkords@gmail.com",
+	"contributors":  [ "Simba",
+					  "Keiko",
+					  "Fish - RIP",
+					  "Benny - RIP"]
+  	"version": "0.6.0",
+  	"private": true,
+  	"dependencies": {
+  	},
+  	"directories": {
+		"lib": "."
+	},
+  	"engines": {
+		"node": ">=0.8.5"
+  	}
+}
