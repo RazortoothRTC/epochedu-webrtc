@@ -1,6 +1,6 @@
 /**
 #
-#Copyright (c) 2010-2011 Razortooth Communications, LLC. All rights reserved.
+#Copyright (c) 2010-2012 Razortooth Communications, LLC. All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification,
 #are permitted provided that the following conditions are met:
@@ -200,16 +200,24 @@ setInterval(function () {
   mem = process.memoryUsage();
 }, 10*1000);
 
-var fu = require("./static/js/fu"),
-    sys = require("sys"),
-    url = require("url"),
-    qs = require("querystring"),
-    nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
+var JS =  require('js.js').JS,
+	sys = require("sys"),
+	url = require("url"),
+	util = require("util"),
+	qs = require("querystring"),
+	nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
     SESSION_TIMEOUT = 60 * 1000 * 5; // XXX 1000ms = 1 s * 60 * 5 = 5 minutes - this should be configurable
 
+var js = new JS();
+js.CONFIG['DOCROOT'] = './';
+//
+// Override Default CONFIG
+//
+js.CONFIG['HTTPWS_PORT'] = 5000;
 
+var db = {};
 var channels = {}; // XXX Load from DB instead!!!
 var channelstates = {'NOT_IN_CLASS': 0, 'IN_CLASS': 1};
 // fu.initDB([], broadcastRestart); // XXX empty options, handler
@@ -287,7 +295,7 @@ function channelFactory() {
 				sys.puts(nick + " askquestion");
 				break;
 			case "sendviewerlocal":
-			 	var content_repo = (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content'));
+			 	var content_repo = (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content'));
 				var local_url = text.replace(content_repo, CONTENT_REPO_LOCAL_URL);
 			 	sys.puts(nick + " sendviewerlocal, transforming player URL from " + text + 
 				" to " + local_url);
@@ -442,7 +450,9 @@ function broadcastRestart() {
 		}
 	});
 } */
-fu.listen(Number(process.env.PORT || PORT), HOST);
+
+
+// fu.listen(Number(process.env.PORT || PORT), HOST);
 
 
 //
@@ -454,7 +464,7 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 // 
 // TEST ROUTES, REMOVE LATER
 //
-fu.get("/hello-test-nTPL", function( req, res ) {
+js.get("/", function( req, res ) {
   res.writeHead(200, {"Content-Type": "text/html"});   
   var test_tpl = nTPL("./templates/ntpl-index.html");
   var base = nTPL("./templates/ntpl-base.html");
@@ -466,7 +476,19 @@ fu.get("/hello-test-nTPL", function( req, res ) {
   // res.end();
 });
 
-fu.get("/hello-test2-nTPL", function( req, res ) {
+js.get("/hello-test-nTPL", function( req, res ) {
+  res.writeHead(200, {"Content-Type": "text/html"});   
+  var test_tpl = nTPL("./templates/ntpl-index.html");
+  var base = nTPL("./templates/ntpl-base.html");
+  res.end(test_tpl({
+      username: "Paul",
+      userfax: "12345678",
+      usermail: "a@a.com"
+    }));
+  // res.end();
+});
+
+js.get("/hello-test2-nTPL", function( req, res ) {
   res.writeHead(200, {"Content-Type": "text/html"});   
   var test2_tpl = nTPL("./templates/ntpl-test2.html");
   var base = nTPL("./templates/boilerplate-ntpl.html");
@@ -478,7 +500,7 @@ fu.get("/hello-test2-nTPL", function( req, res ) {
   // res.end();
 });
 
-fu.get("/helloworld", function(req, res) {
+js.get("/helloworld", function(req, res) {
 	var body = 'hello world';
 	res.writeHead(200, {
 	  'Content-Length': body.length,
@@ -490,7 +512,7 @@ fu.get("/helloworld", function(req, res) {
 
 
 
-fu.get("/testdirty", function(req, res) {
+js.get("/testdirty", function(req, res) {
 	var body = "wrote out 'john', {eyes: 'blue'}";
 	// fu.db['channels'].set('testchannel', {timestamp: new Date(), sessionkeys: []});
 	
@@ -506,15 +528,17 @@ fu.get("/testdirty", function(req, res) {
 // STATIC ROUTES
 //
 // XXX Need a default / route, maybe a splash page
-fu.get("/tester", fu.staticHandler("templates/tester.html")); // XXX TODO: Add a default chat room
+js.get("/tester", js.staticHandler("templates/tester.html")); // XXX TODO: Add a default chat room
 
-fu.getterer("/static/[\\w\\.\\-]+", function(req, res) {
-	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
+js.getterer("/static/[\\w\\.\\-]+", function(req, res) {
+	return js.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
-fu.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
-	return fu.staticHandler("." + url.parse(req.url).pathname)(req, res);
+
+js.getterer("/templates/[\\w\\.\\-]+", function(req, res) {
+	return js.staticHandler("." + url.parse(req.url).pathname)(req, res);
 });
-fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
+
+js.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 	var syncnick = qs.parse(url.parse(req.url).query).syncnick;
 	var aurl = req.url;
 	// Allow the requestor to encode the nickname into the url... done in the name of efficiency
@@ -531,13 +555,13 @@ fu.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 		chan = channels[chan]
 		if (chan) chan.appendMessage(syncnick, 'syncack', syncdmsg); 
 	}
-	return fu.staticHandler(CONTENT_REPO_FILE_PATH + aurl.substring(aurl.indexOf('/content') + '/content'.length)) (req, res);
+	return js.staticHandler(CONTENT_REPO_FILE_PATH + aurl.substring(aurl.indexOf('/content') + '/content'.length)) (req, res);
 });
 
 //
 // APP ROUTES
 //
-fu.get("/about", function(req, res) {
+js.get("/about", function(req, res) {
 	var body = '<H2>EpochEDU version: ' + VERSION + '\nWork in progress:</H2><UL>' + WIP + '</UL>';
 	res.writeHead(200, {
 	  'Content-Length': body.length,
@@ -548,7 +572,7 @@ fu.get("/about", function(req, res) {
 });
 
 
-fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var student_tpl = nTPL("./templates/epoch-student-v3.html");
@@ -558,7 +582,7 @@ fu.getterer("/class/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("/class-v2/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/class-v2/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var student_tpl = nTPL("./templates/epoch-student-v2.html");
@@ -568,7 +592,7 @@ fu.getterer("/class-v2/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("/class-v3/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/class-v3/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var student_tpl = nTPL("./templates/student-jqm-ntpl.html");
@@ -580,9 +604,9 @@ fu.getterer("/class-v3/[\\w\\.\\-]+", function(req, res) {
 
 
 
-fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
+	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist); // V1
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
@@ -594,9 +618,9 @@ fu.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("/classmoderator-v2/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/classmoderator-v2/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
+	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist); // V1
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
@@ -608,9 +632,9 @@ fu.getterer("/classmoderator-v2/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("(/student-v3|/teacher-v3)", function(req, res) { // Match either student or teacher URL
+js.getterer("(/student-v3|/teacher-v3)", function(req, res) { // Match either student or teacher URL
 	var path = url.parse(req.url).pathname.split("/")[1];
-	sys.puts('landing page path: ' + path);
+	util.puts('landing page path: ' + path);
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var landing_tpl = nTPL("./templates/epoch-landing.html");
 	  var base = nTPL("./templates/boilerplate-jqm-ntpl.html"); // V1
@@ -619,20 +643,27 @@ fu.getterer("(/student-v3|/teacher-v3)", function(req, res) { // Match either st
 	    }));
 });
 
-fu.getterer("(/student|/teacher)", function(req, res) { // Match either student or teacher URL
-	var path = url.parse(req.url).pathname.split("/")[1];
-	sys.puts('landing page path: ' + path);
-	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var landing_tpl = nTPL("./templates/epoch-landing2.html");
-	  var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
-	  res.end(landing_tpl({
-	      who: path,
-	    }));
+js.getterer("(/student|/teacher)", function(req, res) { // Match either student or teacher URL
+	try {
+		var path = url.parse(req.url).pathname.split("/")[1];
+		util.puts('landing page path: ' + path);
+		res.writeHead(200, {"Content-Type": "text/html"});   
+		var landing_tpl = nTPL("./templates/epoch-landing2.html");
+		console.log("landing_tpl");
+		var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
+		console.log("base");
+		res.end(landing_tpl({
+		      who: path,
+		}));
+	} catch(e) {
+		var stack = new Error().stack;
+		console.log(stack);
+	}
 });
 
-fu.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
+	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist);
 	// sys.puts(chan + ' = ' + roomcl);
 	res.writeHead(200, {"Content-Type": "text/html"});   
@@ -644,9 +675,9 @@ fu.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("/epochtester/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/epochtester/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
+	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist);
 	// sys.puts(chan + ' = ' + roomcl);
 	res.writeHead(200, {"Content-Type": "text/html"});   
@@ -658,7 +689,7 @@ fu.getterer("/epochtester/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	var requrlobj = url.parse(req.url);
 	var chan = requrlobj.pathname.split("/")[2];
 	var host = requrlobj.host;
@@ -666,7 +697,7 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	var contentlist;
 	
 	// Load all of the content from disk
-	contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + fu.address + ':' + PORT + '/content')), chan);
+	contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	if (output != null && output == "json") {
 		res.simpleJSON(200, contentlist)
 	} else {
@@ -681,7 +712,7 @@ fu.getterer("/crdb/[\\w\\.\\-]+", function(req, res) {
 	}
 });
 
-fu.getterer("/syncack/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/syncack/[\\w\\.\\-]+", function(req, res) {
 	var requrlobj = url.parse(req.url);
 	var chan = requrlobj.pathname.split("/")[2];
 	var syncnick = qs.parse(requrlobj.query).syncnick;
@@ -695,7 +726,7 @@ fu.getterer("/syncack/[\\w\\.\\-]+", function(req, res) {
 	res.simpleJSON(200, { rss: mem.rss });
 });
 
-fu.get("/who", function (req, res) {
+js.get("/who", function (req, res) {
   var nicks = [];
   var chan = qs.parse(url.parse(req.url).query).channel;
   var sessions = channels[chan].sessions;
@@ -711,7 +742,7 @@ fu.get("/who", function (req, res) {
 });
 
 
-fu.get("/join", function (req, res) {
+js.get("/join", function (req, res) {
   var nick = qs.parse(url.parse(req.url).query).nick;
   var chan = qs.parse(url.parse(req.url).query).channel;
   var achannel = channels[chan];
@@ -755,7 +786,7 @@ fu.get("/join", function (req, res) {
                       });
 });
 
-fu.get("/rejoin", function (req, res){
+js.get("/rejoin", function (req, res){
 	var sessionid = qs.parse(url.parse(req.url).query).id;
 	var chan = qs.parse(url.parse(req.url).query).channel;
 	var session,
@@ -796,7 +827,7 @@ fu.get("/rejoin", function (req, res){
 	res.simpleJSON(200, { nick: session.nick});
 });
 
-fu.get("/part", function (req, res) {
+js.get("/part", function (req, res) {
   var id = qs.parse(url.parse(req.url).query).id;
   var chan = qs.parse(url.parse(req.url).query).channel;
   var sessions = channels[chan].sessions;
@@ -808,7 +839,7 @@ fu.get("/part", function (req, res) {
   res.simpleJSON(200, { rss: mem.rss });
 });
 
-fu.get("/channels", function (req, res) {
+js.get("/channels", function (req, res) {
   	// var id = qs.parse(url.parse(req.url).query).id;
 	// Setup the default channels if they don't exist
 	var channelslist = {};
@@ -822,7 +853,7 @@ fu.get("/channels", function (req, res) {
 		}
 	}
 	
-	var contentdirlist = fu.pullcontentdirs(CONTENT_REPO_FILE_PATH);
+	var contentdirlist = pullcontentdirs(CONTENT_REPO_FILE_PATH);
 	
 	for (var i = 0; i < contentdirlist.length; i++) {
 		if (!channels[contentdirlist[i]]) {
@@ -847,7 +878,7 @@ fu.get("/channels", function (req, res) {
   	res.simpleJSON(200, channelslist);
 });
 
-fu.get("/recv", function (req, res) {
+js.get("/recv", function (req, res) {
   var chan = qs.parse(url.parse(req.url).query).channel;
   // XXX Clean up this mess
   if (chan == null) {
@@ -905,7 +936,7 @@ fu.get("/recv", function (req, res) {
   // sys.puts("Done with /recv");
 });
 
-fu.get("/send", function (req, res) {
+js.get("/send", function (req, res) {
   var query = url.parse(req.url).query;
   var uqs = qs.unescape(query);
   var querystring = qs.parse(query); // XXX This fails on the PLUG :( barf on my face ):
@@ -958,4 +989,85 @@ fu.get("/send", function (req, res) {
   res.simpleJSON(200, { rss: mem.rss });
 });
 
+//
+// Some local utility functions
+//
+function renamelocalfile(from, to, handler) {
+	fs.rename(from, to, handler); // XXX This needs and deserves tons and tons of security :(
+}
 
+function pullcontentdirs(crdbpath) {
+	var dirlist = [];
+	// Ignore dot directories
+	var filter = /^\./i; // XXX DEMOSETTING put this somewhere else
+	var contentdirs = [];
+	try {
+		dirlist = fs.readdirSync(crdbpath); // XXX make ASYNC
+	} catch(err) {
+		dirlist = [];
+	}
+	
+	for (var i = 0; i < dirlist.length; i++) {
+		if (fs.statSync(crdbpath + "/" + dirlist[i]).isDirectory()) { // XXX MAke ASYNC
+			if (dirlist[i].toLowerCase().match(filter)) continue;
+			contentdirs.push(dirlist[i]);
+		}
+	}
+	return contentdirs;
+}
+
+function initDB(options, handler) {
+	var self = this;
+	var channels_db = new dirty('channels.dirty');
+	var sessions_db = new dirty('sessions.dirty');
+
+	// XXX Refactor into a db setup fucntion
+	// channels_db.on('load', handler);
+	channels_db.on('load', function() {
+		console.log("channel_db is loaded using dirty");
+	});
+
+	channels_db.on('drain', function() {
+		console.log("channel_db records written out using dirty");
+	});
+	sessions_db.on('load', function() {
+		console.log("session_db is loaded using dirty");
+	});
+
+	sessions_db.on('drain', function() {
+		console.log("session_db records written out using dirty");
+	});
+	self.db['channels'] = channels_db;
+	self.db['sessions'] = sessions_db;
+	setTimeout(handler, SERVER_RESTART_TIMEOUT); // Give the existing channels time to be recreated
+}
+function pullcontent(crdbpath, crdburl, chan) {
+	// XXX This should get cached intelligently so you don't do file IO for each call unless cache is dirty
+
+	var dirpath = "";
+	var contentlist = [ ];
+	var filter = /xml|db|^\./i; // XXX DEMOSETTING put this somewhere else
+	if (chan) {
+		dirpath = "/" + chan;
+	}
+	console.log(crdbpath + dirpath);
+	var dircontents = [];
+	
+	try {
+		dircontents = fs.readdirSync(crdbpath + dirpath); // XXX Can we make this more performant async, also, use a DB
+	} catch(err) {
+		dircontents = []
+	}
+	// XXX Need to check to see if path exists or else we will hit an exception
+	for (var i = 0 ; i < dircontents.length; i++) {
+		if (fs.statSync(crdbpath + dirpath + "/" + dircontents[i]).isDirectory()) continue; // XXX there is an opportunity to handle directories 
+		if (dircontents[i].toLowerCase().indexOf('img') == 0) continue; // Skip HTML img template files
+		if (dircontents[i].toLowerCase().match(filter)) continue; // Skip all items we want to filter.
+		contentlist.push(crdburl + path.normalize(dirpath) + "/" + qs.escape(dircontents[i])); // XXX Double check this path on deploy?
+	}
+	return contentlist;
+}
+console.log(js.CONFIG);
+js.create(js.address, js.CONFIG['HTTPWS_PORT']);
+js.listenHttpWS();
+js.listenSocketIO(js.js_handler); // This is initially set to null, so it will fallback to use js.DEFAULT_JS_HANDLER

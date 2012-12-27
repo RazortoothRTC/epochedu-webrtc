@@ -29,7 +29,7 @@
 **/
 var createServer = require("http").createServer;
 var fs = require("fs");
-var sys = require("sys");
+var util = require("util");
 var url = require("url");
 var assert = require("assert");
 var path = require("path");
@@ -122,9 +122,6 @@ fu.getterer = function(path, handler) {
 
 
 var server = createServer(function (req, res) {
-	
-	
-	
 	try {
 	  if (req.method === "GET" || req.method === "HEAD" || req.method === "POST") {
 		var handler = false;
@@ -137,7 +134,7 @@ var server = createServer(function (req, res) {
 				// if (unid.test && unid.test(req.url)) handler = getMap[unid];
 				// break;
 				if (regexMap[unid].test(url.parse(req.url).pathname)) {
-					// console.log("Found matching regex for unid " + unid);
+					console.log("Found matching regex for unid " + unid);
 					handler = getMap[regexMap[unid].toString()];
 					break;
 				} else {
@@ -166,26 +163,33 @@ var server = createServer(function (req, res) {
 	  }
 	} catch (e) {
 		// handler = internalServerError;
-		// sys.puts(new Error().stack);
+		util.puts(new Error().stack);
 		console.log("Caught a server-side Node.js exception.  Ouch!  Here's what happened: " + e.name + ". Error message: " + e.message);
 		internalServerError2(req, res);
 	}
 });
 
 fu.listen = function (port, host) {
-  server.listen(port, host);
-  fu.address = server.address().address;
-  if (fu.address == '0.0.0.0') {
-	getNetworkIP(function (error, ip) {
-	    if (!error) {
-			fu.address = ip;
-			console.log('Started server on IP address: ', fu.address);
-	    } else {
-			console.log('error:', error);
+	server.listen(port, host);
+	if (server) {
+		if (server.address()) {	
+			fu.address = server.address().address;
 		}
-	}, false); 
-  }
-  sys.puts("Server at http://" + (host || "127.0.0.1") + ":" + port.toString() + "/");
+	}
+	
+	if (fu.address == '0.0.0.0') {
+		getNetworkIP(function (error, ip) {
+			if (!error) {
+				fu.address = ip;
+				console.log('Started server on IP address: ', fu.address);
+			} else {
+				console.log('error:', error);
+			}
+		}, false); 
+	} else {
+		console.log('Started server on IP address: ', fu.address);
+	}
+	util.puts("Server at http://" + (host || "127.0.0.1") + ":" + port.toString() + "/");
 };
 
 fu.close = function () { server.close(); };
@@ -255,10 +259,10 @@ fu.staticHandler = function (filename) {
       return;
     }
 
-    sys.puts("loading " + filename + "...");
+    util.puts("loading " + filename + "...");
     fs.readFile(filename, function (err, data) {
       if (err) {
-        sys.puts("Error loading " + filename);
+        util.puts("Error loading " + filename);
 		console.log("Error loading file: " + filename + " because of " + err)
       } else {
         body = data;
