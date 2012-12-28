@@ -73,8 +73,8 @@ CONTENT_REPO_URL = null;  // If not set, then default to /content
 // CONTENT_REPO_FILE_PATH - the base path to look into for a directory mapping to classroom
 //
 CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
-// CONTENT_REPO_FILE_PATH = "./contentrepo";// XXX This is lame... but best effort for now, we
-// CONTENT_REPO_FILE_PATH = "/Users/dkords/Pictures"; // XXX This is lame... but best effort for now, 
+// CONTENT_REPO_FILE_PATH = "./contentrepo";
+// CONTENT_REPO_FILE_PATH = "/Users/dkords/Pictures"; 
 // We need to crawl the list of files available on the web server
 // where the content is located.  This is best to have come from a 
 // CMS, but we need something that will give us a nice file list
@@ -222,6 +222,43 @@ var channels = {}; // XXX Load from DB instead!!!
 var channelstates = {'NOT_IN_CLASS': 0, 'IN_CLASS': 1};
 // fu.initDB([], broadcastRestart); // XXX empty options, handler
 
+var dkqs = {
+	RE_OBJS : {"RE_ARRAYOBJ" : /\[(\/?)(\w+)([^>]*?)\]/ , },
+	
+	// The only reason I am doing this is because Node.js or me (not sure) has proven to be not so awesome
+	// For some reason, on the plug, I get some garbage parsing of the payload and possibly some other data
+	// So instead of relying on the garbage, parse it by hand :( barf ....
+	// 'id=50335038871&text=http://192.168.1.16:5000/content/science/EarthChangingSurfaceHandout.pdf&type=mcprequest&channel=science&payload[apdu]=2&payload[to]=*&payload[requestoruri]=alexandr@50335038871&payload[ticketid]=<unique+ticket+ID>&payload[sync]=http://192.168.1.16:5000/content/science/EarthChangingSurfaceHandout.pdf'
+	// This takes a QS and will convert it into a JSON object.  If a specific ID is passed in, it does something... TBD
+	// Writing a good parser is tricky.  So for now, don't write a good one.  Just make one that gets the payload together.	
+	getJSON: function(querystring, jsid) {
+		var jsobj = {};
+		
+		if (querystring) {
+			var splitqs;
+			var payloadobj = {};
+			querystring = qs.unescape(querystring); // First unescape
+			splitqs = querystring.split('&');
+			// sys.puts('fu.dkqs splitqs = ' + splitqs + ' length = ' + splitqs.length);
+			for (var i = 0; i < splitqs.length; i++) {
+				var item = splitqs[i];
+				// sys.puts('fu.dkqs item = ' + item);
+				var keyval = item.split('=');
+				// sys.puts('fu.dkqs keyval = ' + keyval);
+				var match = item.match(dkqs.RE_OBJS["RE_ARRAYOBJ"]);
+				if (match) { // If it contains an ARRAY of sorts, collect it into a single object
+					// sys.puts(match);
+					payloadobj[match[2]] = keyval[1];
+				} else {
+					jsobj[keyval[0]] = keyval[1];
+				}
+			}
+			jsobj['payload'] = payloadobj; // XXX This is so dumb I am crying
+		}
+		
+ 		return jsobj;
+	}, 
+}
 
 function channelFactory() {
 	var channel = new function () {
@@ -620,7 +657,7 @@ js.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 
 js.getterer("/classmoderator-v2/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
-	var contentlist = fu.pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
+	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist); // V1
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
@@ -952,7 +989,7 @@ js.get("/send", function (req, res) {
   // sys.puts('/send with unescaped query string = ' + uqs);
   // sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
   // sys.puts('/send with dkqs = ' + JSON.stringify(fu.dkqs.getJSON(uqs)));
-  if (!payload) payload = fu.dkqs.getJSON(uqs).payload; // XXX I would love to know why node's querystring doesn't work
+  if (!payload) payload = dkqs.getJSON(uqs).payload; // XXX I would love to know why node's querystring doesn't work
   if (!chan) { // XXX refactor to use default channel
 	  sys.puts('Error 400: channel required');
 	  res.simpleJSON(400, { error: "Channel required"});
@@ -1067,6 +1104,7 @@ function pullcontent(crdbpath, crdburl, chan) {
 	}
 	return contentlist;
 }
+
 console.log(js.CONFIG);
 js.create(js.address, js.CONFIG['HTTPWS_PORT']);
 js.listenHttpWS();
