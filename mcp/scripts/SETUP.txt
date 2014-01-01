@@ -1,0 +1,64 @@
+Step 1a: Turn on your plug 
+
+Plug in your plug to ethernet and then into power
+
+Step 1b: Configure USB Flash Drive Content
+
+    Format a USB Drive for FAT32
+    Create folders on the root level of the drive, one for each classroom
+    Copy all contents to your folders for each classroom.
+    Example: Create folders for Science, History, Math, Spaish.  Copy content for each classroom into these folders.
+
+Step 2: Basic Tablet Setup 
+
+    Wifi: on
+    Wifi: demo1
+    Browser: Uncheck "Block Popup Windows"
+    Browser: Check "Landscape-only display"
+
+Step 3: Install SL4A 
+
+    If required, go back onto the internet WIFI
+    Install SL4a: http://code.google.com/p/android-scripting/downloads/detail?name=sl4a_r3.apk
+    Install Sl4a python module: http://code.google.com/p/android-scripting/downloads/detail?name=python_for_android_r1.apk. Note: When you install python, you must click on the "Install" button after you launch the app
+
+Step 4: Install the MCP Service 
+
+    Remove the SD card from the tablet
+    Plug the SD card into a desktop PC
+    Browse to the /sdcard/sl4a/scripts directory
+    Copy mcpservice.py (http://www.box.net/shared/kk1aummqpn ) to the sd card under /sl4a/scripts
+    Unzip cherrypy.zip (http://www.box.net/shared/pimqpejgvm ) to the sd card under /sl4a/scripts
+    Put the SD card back into the tablet
+    add copy demo reset file onto SD
+
+Step 5: Install Additional Players 
+
+    Additional Players: Flash Player
+    Install PDF reader (droidviewer: http://code.google.com/p/droidreader/downloads/detail?name=droidreader-0.5.apk&can=2&q= >
+    Install Marvell YouTube Player (I Need a URL)
+
+Step 6: Launch and Run the MCP Service 
+
+    Open the Applications List
+    Launch SL4A (with green eyes )
+    To check that it is running, pull down the tooltray at the top and click on the "Click To View Running Scripts" in SL4A. There should always be one script running, mcpservice.py
+
+Step 7: Bookmark EpochEDU Demo on tablet 
+
+    Bookmark student url (list url)
+    Bookmark teacher url
+
+Step 8: Verify Demo Setup
+
+    http://192.168.1.16:5000/about -> You should see an EpochEDU version string with the changes currently deployed on your server.
+    From the teacher tablet, go to http://192.168.1.16:5000/teacher .  You should see a list of classrooms matching the list of folders created on the USB drive.  If you don't see these folders, or you see other folders with odd names, there is a problem loading your USB flash drive.  Please contact support dkords@razortooth.biz for help debugging and revisit step #1b.  Click into a classroom.  Verify the content is available in the classroom.
+    From the student tablet(s), got to http://192.168.1.16:5000/student.  As in the previous step, you should see the proper classrooms configured.
+
+Step 9: Demo Reset
+
+    Frequently you will need to reset the demo state on client and server.
+    On Tablet Student Devices: Go to SL4A -> Scripts -> demoreset.py.  Power cycle your tablet can often clear up wifi issues and any odd things happening with the Android browser.
+    On Server: Easiest way is to reboot the devices.
+
+
