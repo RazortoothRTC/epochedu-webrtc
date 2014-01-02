@@ -855,7 +855,7 @@ def mcploop():
 		print "MCP Teachers Assistant is waking up to check on you, heartbeat #%d"%(loopcount)
 		# XXX We may want to put some housekeeping work here
 		print ismcpmodeon()
-		if not ismcpmodeon():
+		if ismcpmodeon():
 			print "mcpmode is on"
 			if droid is not None:
 				print "checking if launcher is running"
