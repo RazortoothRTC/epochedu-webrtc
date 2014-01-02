@@ -1,13 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Hello World, EpochWatchdogActivity"
-    />
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/scancaptureviewerview_id" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android.layout_weight="1"
+	>
+	<!--
+
+	LAYOUT: XXX TODO Add the UI spec here
+
+	[|  	  |]
+	[|		  |]
+	[|		  |]
+	[|		  |]
+
+
+
+	-->
+	<ScrollView 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" 
+		android:scrollbars="horizontal"
+		android:layout_gravity="center"
+		android:id="@+id/scrollview_id">
+			<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    			android:orientation="vertical"
+    			android:layout_width="fill_parent"
+    			android:layout_height="fill_parent"
+    			android:id="@+id/scrollviewlayout_id"
+    		>
+				<TextView
+			    	android:layout_width="wrap_content"
+			    	android:layout_height="wrap_content"
+			    	android:id="@+id/title_tv"
+			    	android:textSize="32dp"
+			    	android:typeface="sans"
+			    	android:text="@string/label_title_msg"
+				/>
+				<TextView
+			    	android:layout_width="wrap_content"
+			    	android:layout_height="wrap_content"
+			    	android:id="@+id/status_tv"
+			    	android:textSize="16dp"
+			    	android:typeface="sans"
+			    	android:text="@string/label_status_msg"
+				/>
+			</LinearLayout>
+	</ScrollView>
+	<!-- 
+	<LinearLayout
+			android:id="@+id/centerlayout" 
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="48dip"
+			android:layout_marginLeft="128px"
+			android:layout_marginRight="128px"
+			android:layout_gravity="center" >
+			<TextView
+    			android:layout_width="fill_parent"
+    			android:layout_height="wrap_content"
+    			android:text="Hello World, EpochWatchdogActivity"
+    		/>
+	</LinearLayout>
+-->
+</FrameLayout>
 

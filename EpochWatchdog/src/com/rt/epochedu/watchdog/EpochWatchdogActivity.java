@@ -55,12 +55,14 @@ public class EpochWatchdogActivity extends Activity
         // mPackageManager.setComponentEnabledSetting(mLauncherComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
     }
 
+    /*
     @Override
     public void onAttachedToWindow() {
     	super.onAttachedToWindow();
     	this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
 	}
-
+	*/
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if(keyCode==KeyEvent.KEYCODE_HOME)

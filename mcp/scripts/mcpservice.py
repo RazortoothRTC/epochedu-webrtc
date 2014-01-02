@@ -175,7 +175,8 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://192.168.1.16:5000'], # DEMOSETUP
 			  'SYNC_MAX_BYTES_READ': 1024, # Read at most 1K 
 			  'SYNCACK_PARAM':'syncack', # Used for sync ack
 			  'MCP_TICK_INTERVAL':15, # Seconds between ticks DEMOSETUP
-			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider", 
+			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider",
+			  'EPOCHWATCHDOG_ACTIVITY' : "com.rt.epochedu.watchdog.EpochWatchdogActivity",
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.3gp', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'],
 			  'VALID_MIME_TYPES' : {    ".3gp"   : "video/3gpp" # BORROWED FROM fu.js (see source for epochedu-master)
@@ -384,10 +385,12 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'ces2014-b1-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b2-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
-	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  Should be speaking error if there is a sync error.  Already synced content should not list out all of the url. Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
+	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
+	Should be speaking error if there is a sync error.  Already synced content should not list out all of the url. Fixed breakage 
+	from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
 	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
 	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
 	Fix some bad stuff in getbesturlpath.  Added ISANDROID.  Fix broken notification.  Sync works now.
@@ -863,8 +866,10 @@ def mcploop():
 				if 'com.android.launcher' in pkgs:
 					droid.makeToast("Teacher's Assistant sending user back to class")
 					droid.ttsSpeak("Please return to class")
-					droid.forceStopPackage('com.android.launcher')
-					droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['STUDENT_ENDPOINT'] , None, None, False)
+					droid.forceStopPackage('com.android.launcher') # XXX Move this package in to MCP_CONFIG as a property of launcher
+					droid.launch(MCP_CONFIG['EPOCHWATCHDOG_ACTIVITY'])
+					# XXX SAVE THIS SO WE CAN LAUNCH BROWSER WITH EPOCHEDU
+					# droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['STUDENT_ENDPOINT'] , None, None, False)
 			else:
 				print "ta says get back to class"
 		loopcount = loopcount + 1

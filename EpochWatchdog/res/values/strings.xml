@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">EpochWatchdogActivity</string>
+    <string name="app_name">EpochWatchdog</string>
+    <string name="label_title_msg">Epoch Tablet Locked</string>
+    <string name="label_status_msg">Please Wait for Instructions from the Teacher</string>
 </resources>
