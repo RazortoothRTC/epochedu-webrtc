@@ -788,7 +788,7 @@ Todo ...
 		# extras['com.googlecode.android_scripting.extra.SCRIPT_PATH'] = '/any/script/you/like.py'
 		# packagename =  'com.googlecode.android_scripting'
 		# classname = 'com.googlecode.android_scripting.activity.ScriptingLayerServiceLauncher'
-		intent = self.droid.makeIntent(activity, uri, typez, extras, categories, packagename, classname).result
+		intent = self.droid.makeIntent(activity, uri, typez, extras, categories, packagename, classname, flags).result
 		self.droid.startActivityIntent(intent)
 
 	def killpackage(self, uri):
