@@ -1,0 +1,59 @@
+# General 
+#*#
+*~
+*.swp
+*.log
+*.out
+
+# Binary to ignore
+*.a
+*.exe
+*.lib
+*.log
+*.map
+#*.mk
+*.ncb
+*.pyc
+*.scons*
+*.suo
+*.user
+*.pdbkk
+*.class
+
+# Eclipse General Stuff to ignore
+.settings
+.metadata
+.manifest
+# We need the project file, since it defines the project type
+# .project# Team wants to have this preconfigured, not set per individual
+# .classpath
+*/bin
+bin/
+
+# ANT general
+*/build
+
+# Ignore specific android SDK isms
+*/gen
+*/obj
+local.properties
+project.properties
+proguard-project.txt
+
+# Mac OS X - XCode Stuff to ignore
+.DS_Store
+*~.nib
+*.xcodeproj
+*.idb
+*.pbxuser
+*.perspective
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+*.tm_build_errors
+
+# Maven specific
+*/target
+
+# Other SCM
+*/.svn
