@@ -371,7 +371,7 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://192.168.1.16:5000'], # DEMOSETUP
 			| | |~
 			|_|_|_
 			""",
-			'COPYRIGHT' : 'Copyright 2011-2012 Razortooth Communications, LLC'
+			'COPYRIGHT' : 'Copyright 2011-2013 Razortooth Communications, LLC'
 			  }
 
 class MCPService(object):
@@ -384,7 +384,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = 'postces2011-r1-b2-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = 'ces2014-b1-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  Should be speaking error if there is a sync error.  Already synced content should not list out all of the url. Fixed breakage from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
