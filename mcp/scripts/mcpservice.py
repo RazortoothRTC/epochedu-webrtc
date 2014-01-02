@@ -177,6 +177,10 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.0.0.10:5000'], # DEMOSETUP
 			  'MCP_TICK_INTERVAL':15, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider",
 			  'EPOCHWATCHDOG_ACTIVITY' : "com.rt.epochedu.watchdog.EpochWatchdogActivity",
+			  'LAUNCHER_ACTIVITY' : "com.android.launcher.Launcher",
+			  'ACTION_MAIN' : "android.intent.action.MAIN",
+			  'CATEGORY_HOME' : "android.intent.category.HOME",
+			  'FLAG_ACTIVITY_NEW_TASK' : 268435456, # defined: http://developer.android.com/reference/android/content/Intent.html#FLAG_ACTIVITY_NEW_TASK
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
 			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.3gp', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'],
 			  'VALID_MIME_TYPES' : {    ".3gp"   : "video/3gpp" # BORROWED FROM fu.js (see source for epochedu-master)
@@ -384,7 +388,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = '1.0.0-ces2014-b3-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b5-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -595,7 +599,9 @@ Todo ...
 		   'sender': '<sender URI>',
 		   'status': '<status code, negative for error conditions, 0 for success>'
 		}
-			
+	
+
+
 	#
 	# MCP apdu Handlers
 	#
@@ -696,7 +702,8 @@ Todo ...
 		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
-		self.notifyUser('Teacher closed blacklist apps');
+		# XXX For now, don't say anything since this is annoying
+		# self.notifyUser('Teacher closed blacklist apps');
 		self.killpackage(uri)
 		rsp['status'] = 0;
 		return rsp
@@ -750,11 +757,40 @@ Todo ...
 			print "attempting to restore " + packagename
 		rsp['status'] = 0;
 		self.notifyUser("Ending Teacher Control Mode")
+		self.launchIntent(MCP_CONFIG['ACTION_MAIN'], None, None, None, [MCP_CONFIG['CATEGORY_HOME']], None, None, MCP_CONFIG['FLAG_ACTIVITY_NEW_TASK'])
+		# self.droid.launch(MCP_CONFIG['LAUNCHER_ACTIVITY'])
 		return rsp
 	
 	#
 	# MCP Utility Methods
 	# 
+
+	def launchIntent(self, activity, uri, typez, extras, categories, packagename, classname, flags): 
+		# We don't really need this routine, but it helps to put the documentation inline with some examples
+		# Because the API docs aren't obvioius to my lazy eyes.  Perhaps we need some defaults here and
+		# some loggin?
+		#
+		# makeIntent(
+ 		# 	String action,
+ 		# 	String uri[optional],
+ 		# 	String type[optional]: MIME type/subtype of the URI,
+ 		# 	JSONObject extras[optional]: a Map of extras to add to the Intent,
+ 		# 	JSONArray categories[optional]: a List of categories to add to the Intent,
+ 		# 	String packagename[optional]: name of package. If used, requires classname to  
+			# be useful,
+ 		# 	String classname[optional]: name of class. If used, requires packagename to be 
+ 		# 	useful,
+		# Integer flags[optional]: Intent flags)
+
+		# The activity package
+		# activity = 'com.googlecode.android_scripting.action.LAUNCH_BACKGROUND_SCRIPT'		
+		# Set a value here
+		# extras['com.googlecode.android_scripting.extra.SCRIPT_PATH'] = '/any/script/you/like.py'
+		# packagename =  'com.googlecode.android_scripting'
+		# classname = 'com.googlecode.android_scripting.activity.ScriptingLayerServiceLauncher'
+		intent = self.droid.makeIntent(activity, uri, typez, extras, categories, packagename, classname).result
+		self.droid.startActivityIntent(intent)
+
 	def killpackage(self, uri):
 		try:
 			self.droid.forceStopPackage(uri) # Does this have return value?
