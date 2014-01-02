@@ -166,7 +166,7 @@ def check_access(default=False):
 # Global config
 #
 _cp_config = {'tools.sessions.on': True}
-MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://192.168.1.16:5000'], # DEMOSETUP
+MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.0.0.10:5000'], # DEMOSETUP
 			  'STUDENT_ENDPOINT':'/student', 
 			  'SYNCACK_ENDPOINT':'/syncack',
 			  'ANDROID_CONTENT_PATH':'/sdcard/content', 
