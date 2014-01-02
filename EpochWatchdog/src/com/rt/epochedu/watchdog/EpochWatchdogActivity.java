@@ -45,14 +45,14 @@ public class EpochWatchdogActivity extends Activity
         mPackageManager = this.getPackageManager();
         // mPackageManager.setComponentEnabledSetting (ComponentName componentName, int newState, int flags);
     	// mPackageManager.setComponentEnabledSetting(mThisComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-        mPackageManager.setComponentEnabledSetting(mLauncherComponent, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
+        // mPackageManager.setComponentEnabledSetting(mLauncherComponent, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mPackageManager.setComponentEnabledSetting(mThisComponent, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
-        mPackageManager.setComponentEnabledSetting(mLauncherComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
+        // mPackageManager.setComponentEnabledSetting(mThisComponent, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
+        // mPackageManager.setComponentEnabledSetting(mLauncherComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
     }
 
     @Override
