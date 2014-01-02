@@ -377,7 +377,6 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.0.0.10:5000'], # DEMOSETUP
 
 class MCPService(object):
 	droid = None
-	mcpmodeison = False
 	
 	#
 	# CONFIG
@@ -385,7 +384,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = '1.0.0-ces2014-b2-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b3-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -697,7 +696,7 @@ Todo ...
 		
 	def kill(self, uri, rsp):
 		if uri is None: return rsp
-		self.notifyUser('Teacher closed player');
+		self.notifyUser('Teacher closed blacklist apps');
 		self.killpackage(uri)
 		rsp['status'] = 0;
 		return rsp
@@ -732,7 +731,10 @@ Todo ...
 		# Also, is there a way to disable the system softkeys (HOME, MENU, Back)
 		# 
 		print "mcpmodestart invoked"
-		mcpmodetoggle = 1
+		# mcpmodetoggle = 1
+		setmcpmode(1)
+
+		# XXX We may want to revisit when and why to kill these placklisted packages 
 		for packagename in self.PACKAGE_BLACKLIST:
 			self.kill(packagename, rsp)
 			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
@@ -743,7 +745,7 @@ Todo ...
 	def mcpmodestop(self, rsp):
 		# XXX Add code to relaunch killed apps
 		print "mcpmodestop invoked"
-		mcpmodetoggle = False
+		setmcpmode(0)
 		for packagename in self.PACKAGE_RESTORELIST:
 			print "attempting to restore " + packagename
 		rsp['status'] = 0;
@@ -838,10 +840,16 @@ Todo ...
 #		mcpmodetoggle = 0
 #		return False
 def ismcpmodeon():
+	global mcpmodetoggle
+	print "mcpmodetoggle is %s"%(mcpmodetoggle)
 	if mcpmodetoggle == 0:
 		return False
 	else:
 		return True
+
+def setmcpmode(mode):
+	global mcpmodetoggle
+	mcpmodetoggle = mode
 
 def mcploop():
 	print "mcploop"
