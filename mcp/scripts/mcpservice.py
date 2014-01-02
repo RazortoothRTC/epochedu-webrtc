@@ -641,7 +641,7 @@ Todo ...
 			print 'urls are empty'
 			return rsp
 
-		print 'singuar sync'
+		print 'single url sync'
 		
 		try:
 			print "syncing single url: " + urls
