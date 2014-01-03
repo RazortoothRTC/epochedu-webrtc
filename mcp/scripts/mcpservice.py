@@ -26,6 +26,8 @@ try:
 except:
 	import webbrowser # XXX Leave this in, it may be useful for linux/mac testing
 import cherrypy
+from cherrypy.lib.static import serve_file
+
 import os
 import json
 import datetime
@@ -388,7 +390,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = '1.0.0-ces2014-b5-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b6-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -443,9 +445,10 @@ Put services documentation here.
 <h1>Status</h1>
 Todo ...
 <h1>About</h1>
+<P><pre>%s</pre>
 <UL>Version: %s</UL>
 <UL>Description: %s</UL>
-</body></html>"""%(self.VERSION_TAG, self.VERSION_DESC)
+</body></html>"""%(MCP_CONFIG['ASCII_LOGO'], self.VERSION_TAG, self.VERSION_DESC)
 
 	def exit(self):
 		raise SystemExit(0)
@@ -458,6 +461,7 @@ Todo ...
 		jsonResp = {'foo': 1, 'bar': 'b'}
 		return jsonResp
 	
+	# XXX Test Route, remove
 	@cherrypy.expose
 	def testjson2(self):
 		cherrypy.response.headers['Content-Type']= 'applications/json'
@@ -468,6 +472,13 @@ Todo ...
 	def about(self):
 		return """Version Tag: %s, Changes:%s"""%(self.VERSION_TAG, self.VERSION_DESC)
 	
+	@cherrypy.expose
+	def screengrab(self):
+		name = 'screengrab'
+		# cherrypy.response.headers['Content-Type']= 'image/png'
+		return serve_file(os.path.join(current_dir, 'mcpfeeds', '%s.png' % name),
+                                  content_type='image/png')
+
 	@cherrypy.tools.jsonify()
 	def getrange(self, limit=4):
 	    return range(int(limit))
@@ -868,6 +879,7 @@ Todo ...
 				urllist.append(contentrepourl + channelpath + "/" + f)
 		return urllist
 
+
 # def togglemcpmode():
 #	if mcpmodetoggle == 0:
 #		mcpmodetoggle = 1
@@ -916,12 +928,16 @@ def mcploop():
 					# droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['STUDENT_ENDPOINT'] , None, None, False)
 			else:
 				print "ta says get back to class"
+		#
+		# Hack in screen grabs
+		# XXX We should not do it this way, but for expediency, we must have some working screen capture
+		# This is the only way I found to do this without rooting.  May need to call this in a non-blocking manner
+		# Realize also this may not work on other tablets
+		os.system('/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab.png')
 		loopcount = loopcount + 1
 		time.sleep(tickinterval)
 			
 def mcpServiceConnector():
-	# svc = MCPService()
-	# droid = svc.droid
 	droid = None
 	try:
 		droid = android.Android()
@@ -949,13 +965,10 @@ def run():
 	    cherrypy.engine.signal_handler.subscribe()
 	if hasattr(cherrypy.engine, "console_control_handler"):
 	    cherrypy.engine.console_control_handler.subscribe()
-	
-	# cherrypy.engine.start(blocking=False)
-	# cherrypy.quickstart()
 	cherrypy.engine.subscribe('start', mcpServiceConnector, priority=90)
-	# cherrypy.quickstart(MCPService(), '/')
 	cherrypy.engine.start()
 	cherrypy.engine.block()
 
 if __name__ == '__main__':
-    run()
+	current_dir = os.path.dirname(os.path.abspath(__file__))
+	run()
