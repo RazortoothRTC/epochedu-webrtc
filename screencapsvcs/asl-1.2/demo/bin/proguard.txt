@@ -1,0 +1,6 @@
+# view AndroidManifest.xml #generated:16
+-keep class pl.polidea.asl.ScreenshotService { <init>(...); }
+
+# view AndroidManifest.xml #generated:9
+-keep class pl.polidea.asl.demo.ScreenshotDemo { <init>(...); }
+

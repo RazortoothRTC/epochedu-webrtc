@@ -390,7 +390,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = '1.0.0-ces2014-b6-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b7-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -933,7 +933,8 @@ def mcploop():
 		# XXX We should not do it this way, but for expediency, we must have some working screen capture
 		# This is the only way I found to do this without rooting.  May need to call this in a non-blocking manner
 		# Realize also this may not work on other tablets
-		os.system('/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab.png')
+		# XXX This doesn't work without ADB
+		# os.system('/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab.png')
 		loopcount = loopcount + 1
 		time.sleep(tickinterval)
 			
@@ -960,7 +961,9 @@ def mcpServiceConnector():
 def run():
 	cherrypy.tree.mount(MCPService())
 	cherrypy.config.update({'cherrypy.server.socket_port':'8080'})
-	cherrypy.config.update({'server.socket_host':'127.0.0.1'})
+	# XXX We may want to be secure and only accept from localhost
+	# cherrypy.config.update({'server.socket_host':'127.0.0.1'})
+	cherrypy.config.update({'server.socket_host':'0.0.0.0'})
 	if hasattr(cherrypy.engine, "signal_handler"):
 	    cherrypy.engine.signal_handler.subscribe()
 	if hasattr(cherrypy.engine, "console_control_handler"):
