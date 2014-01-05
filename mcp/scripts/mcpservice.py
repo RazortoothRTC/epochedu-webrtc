@@ -390,7 +390,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = '1.0.0-ces2014-b7-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b8-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -474,10 +474,24 @@ Todo ...
 	
 	@cherrypy.expose
 	def screengrab(self):
-		name = 'screengrab'
-		# cherrypy.response.headers['Content-Type']= 'image/png'
-		return serve_file(os.path.join(current_dir, 'mcpfeeds', '%s.png' % name),
-                                  content_type='image/png')
+		#
+		# Get the list of screengrabs
+		# and serve up the newest, non-zero length file
+		#
+		mcpfeedsdir = '/mnt/sdcard/sl4a/scripts/mcpfeeds'
+		screengrabs = [os.path.join(mcpfeedsdir, f) for f in os.listdir(mcpfeedsdir)
+			if os.path.isfile(os.path.join(mcpfeedsdir, f))]
+		screengrabs.sort(key=lambda x: os.path.getmtime(x), reverse=True)
+		for currentframe in screengrabs:
+			if os.path.getsize(currentframe) > 0:
+				return serve_file(currentframe, content_type='image/png')
+		#
+		# XXX Need to handle this
+		#
+		print "Error, no Non-Zero screen grabs found, return 0"
+		return 0
+
+		
 
 	@cherrypy.tools.jsonify()
 	def getrange(self, limit=4):
