@@ -111,7 +111,7 @@ if (js.DEBUG) {
 
 registerRoute = function(path, handler, method, rexp) {
     var myHandler = function(req, res) {
-        // js.info("Handling: " + req.method + " " + req.url);
+        js.info("Handling: " + req.method + " " + req.url);
         handler(req, res);
         // console.info(req.body); // Dump all the routes
     };
@@ -383,6 +383,7 @@ js.staticHandler = function(filename) {
 
         fs.readFile(filename, function(err, data) {
             if (err) {
+                console.log("The requested URL " + req.url + " was not found on this server.");
                 res.handleError(JumboError.notFound("The requested URL " + req.url + " was not found on this server."));
             } else {
                 body = data;
@@ -430,7 +431,20 @@ registerRoute("/js/[\\w\\.\\-]+", function(req, res) {
     return js.staticHandler("." + url.parse(req.url).pathname)(req, res);
 }, 'GET', true);
 
+registerRoute("/js/[\\w\\.\\-]+", function(req, res) {
+    return js.staticHandler("." + url.parse(req.url).pathname)(req, res);
+}, 'GET', true);
+
 registerRoute("/images/[\\w\\.\\-]+", function(req, res) {
+    return js.staticHandler("." + url.parse(req.url).pathname)(req, res);
+}, 'GET', true);
+
+// XXX Is there a better place to put this ... maybe in the main server app?
+registerRoute("/togetherjs/[\\w\\.\\-]+", function(req, res) {
+    return js.staticHandler("." + url.parse(req.url).pathname)(req, res);
+}, 'GET', true);
+
+registerRoute("/togetherjs/[\\w\\.\\-]+/[\\w\\.\\-]+", function(req, res) {
     return js.staticHandler("." + url.parse(req.url).pathname)(req, res);
 }, 'GET', true);
 
@@ -628,6 +642,7 @@ js.server = createServer(function(req, res) {
                 }
             }
             if (!handler) {
+                console.log("no handler for request");
                 return handleError(js.JumboError.notFound('Not found: ' + pathName));
             }
         }
