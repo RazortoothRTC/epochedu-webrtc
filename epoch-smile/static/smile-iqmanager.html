@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+
+<!-- Set the viewport width to device width for mobile -->
+<meta name="viewport" content="width=device-width" />
+
+<title>Welcome to The SMILE IQManager</title>
+
+<!-- Included CSS Files -->
+<!-- Combine and Compress These CSS Files -->
+<link rel="stylesheet" href="css/foundation.css">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/rating.css" />
+<link rel="stylesheet" href="css/fineuploader-3.5.0.css" />
+
+<script src="js/custom.modernizr.js"></script>
+
+<!-- IE Fix for HTML5 Tags -->
+<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+<body class="antialiased off-canvas hide-extras">
+	<nav class="top-bar hide-for-small" style="">
+		<ul class="title-area">
+		<!-- Title Area -->
+		<li class="name">
+		  <h1><a href="/">SMILE IQManager  <span id="app-version"></span></a></h1>
+		</li>
+		<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+		<li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+		</ul>
+	    <section class="top-bar-section">
+	        <!-- Right Nav Section -->
+	        <ul class="right">
+	          <li class="divider"></li>
+	          <li class=""><a href="#" onclick="pushSection('#home-section');">Home</a></li>
+	          <li class="divider"></li>
+	          <li class=""><a href="#" onclick="loadIQSets(pushSection('#iqsets-section'));">IQSets</a></li>
+	          <li class="divider"></li>
+	          <li class=""><a href="#" onclick="loadSessions(pushSection('#sessions-section'));">Sessions</a></li>
+	          <li class="divider"></li>
+	          <li class=""><a href="#" onclick="alert('Help Not Implemented.  Help!  visit: https://plus.google.com/u/0/communities/117391182825484902493 for more human support'); return false; /* pushSection('#help-section'); */">Help</a></li>
+	          <li class="divider"></li>
+	          <li class=""><a href="mailto:reply+i-23475388-c2457b2df337933075fa1a78843d843cefe305ca-64202@reply.github.com">Support</a></li>
+	          <li class="divider"></li>
+	        </ul>
+	      </section>
+	  </nav>
+
+	<!-- section -->
+	<div class="section-container auto" data-section="" style="min-height: 51px;" data-section-resized="true">
+	<section class="active" id="home-section">
+		<div class="row">
+			<div class="large-12 small-12 columns">
+				<h1 class="header">
+					SMILE IQManager
+				</h1>
+				<div class="row">
+					<div class="large-12 small-12 columns">
+						<div class="panel">
+							<img src="images/smile_grey_small.png" /><br/>
+							<br />
+							<br />
+							<div id="fine-uploader" style="display: none"></div>
+							<ul class="button-group round even-3">
+								<li>
+									<input id="iqsetupload_btn" class="button" type="submit" value="Upload IQSet (.csv)">
+								</li>
+								<li>
+									<input class="button" type="submit" value="Show IQSets" onclick="loadIQSets(pushSection('#iqsets-section'));">
+								</li>
+								<li>
+									<input class="button" disabled="true" type="submit" value="Search">
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="iqsetupload-summary" class="reveal-modal" style="display: none" data-bind="with: iqsetSummary">
+					<div class="row">
+			          <div class="large-4 columns large-centered">
+			            <ul class="pricing-table">
+			              <li class="title"><span data-bind="text: title">IQ Title</span></li>
+			              <li class="price"><span data-bind="text: questionscount"># of questions</span></li>
+			              <li class="description"><span data-bind="text: groupname">Group Name</span></li>
+			              <li class="bullet-item"><span data-bind="text: createdate">Date</span></li>
+			              <li class="bullet-item"><span data-bind="text: teachername">Teacher Name</span></li>
+			              <li class="bullet-item"><a class="button iqset-view-btn" data-bind="attr: { id: iqid}">View Details</a></li>
+			            </ul>
+			          </div>
+			          <!-- NICE DEBUG TRICK -->
+					  <!-- KO:<span data-bind="text: ko.toJSON($data)"></span> -->
+			        </div>
+				</div>     
+			</div>
+		</div>
+		<!-- div.row -->
+		<div id="spash" class="row">
+			<div class="large-12 columns">
+				<div class="row">
+					<div class="large-12 columns">
+						<h2>Overview</h2>
+							<h4 class="subheader">The SMILE Inquiry Manager is used to manage contents and sessions with the SMILE Plug.</h4>
+							<hr>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- section.main -->
+	<section class="" id="iqsets-section" style="display: none">
+		<div class="row">
+			<div class="large-12 small-12 columns">
+				<h2 class="subheader">
+					IQSets
+				</h2>
+				<div class="row">
+					<div class="large-12 small-12 columns">
+						<div class="panel smile-branded" data-bind="with: iqsetCollection">
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<table>
+								<thead>
+									<tr>
+									  <th>#</th>
+									  <th width="200">Date</th>
+									  <th>IQSet Name</th>
+									  <th width="150">Teacher Name</th>
+									  <th width="150">Group Name</th>
+									  <th>Action</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: iqsets">
+									<tr class="iq-grid" data-bind="attr: {id: $index}">
+										<td data-bind="text: $index()+1">1</td>
+										<td data-bind="text: key">1/1/2013</td>
+										<td data-bind="text: value[0]">History: Roman Empire</td>
+										<td data-bind="text: value[1]">Teacher Claire</td>
+										<td data-bind="text: value[2]">Olive Elementary 5th Grade</td>
+										<td>
+											<a class="tiny button iqset-view-btn" data-bind="attr: { id: id}" href="#">View</a>
+											<a class="tiny alert button iqset-delete-btn" data-bind="attr: { id: id}" href="#"><img src="images/circlex_sm.png" /></a>
+										</td>
+									</tr>
+								</tbody>
+					        </table>
+						</div>
+						<!-- div.panel -->
+					</div>
+				</div>
+				<!-- NICE DEBUG TRICK -->
+				<!-- <span data-bind="text: ko.toJSON($data)"></span> -->
+			</div>
+		</div>
+		<div id="dialog1" style="display:none; cursor: default"> 
+        	<h4 class="subheader">Confirm deletion of this IQSet?</h4> 
+        	<input type="button" id="dialog1-yes" value="Delete" /> 
+        	<input type="button" id="dialog1-no" value="Cancel" /> 
+		</div> 
+	</section>
+	<!-- section#iqsets-section -->
+	<section class="" id="sessions-section" style="display: none">
+		<div class="row">
+			<div class="large-12 small-12 columns">
+				<h2 class="subheader">
+					IQ Sessions
+				</h2>
+				<div class="row">
+					<div class="large-12 small-12 columns">
+						<div class="panel smile-branded" data-bind="with: sessionCollection">
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<table>
+								<thead>
+									<tr>
+									  <th>#</th>
+									  <th width="200">Date</th>
+									  <th>IQ Session Name</th>
+									  <th width="150">Teacher Name</th>
+									  <th width="150">Group Name</th>
+									  <th>Action</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: iqsessions">
+									<tr class="iq-grid" data-bind="attr: {id: $index}">
+										<td data-bind="text: $index()+1">1</td>
+										<td data-bind="text: key">1/1/2013</td>
+										<td data-bind="text: value[0]">History: Roman Empire</td>
+										<td data-bind="text: value[1]">Teacher Claire</td>
+										<td data-bind="text: value[2]">Olive Elementary 5th Grade</td>
+										<td>
+											<a class="tiny button session-view-btn" data-bind="attr: { id: id}" href="#">View</a>
+											<a class="tiny alert button session-delete-btn" data-bind="attr: { id: id}" href="#" onclick="alert('Delete Sessions Feature is not available'); return false;"><img src="images/circlex_sm.png" /></a>
+										</td>
+									</tr>
+								</tbody>
+					        </table>
+						</div>
+						<!-- div.panel -->
+					</div>
+				</div>
+				<!-- NICE DEBUG TRICK -->
+				<!-- <span data-bind="text: ko.toJSON($data)"></span> -->
+			</div>
+		</div>
+		<div id="dialog1" style="display:none; cursor: default"> 
+        	<h4 class="subheader">Confirm deletion of this IQSet?</h4> 
+        	<input type="button" id="dialog1-yes" value="Delete" /> 
+        	<input type="button" id="dialog1-no" value="Cancel" /> 
+		</div> 
+	</section>
+	<!-- section#sessions-section -->
+	<section class="" id="session-detail-section" style="display: none">
+		<div class="row">
+			<div class="large-12 small-12 columns" data-bind="with: sessionSummary">
+				<h2 class="subheader">
+					Session Name: <span data-bind="text: sessionName">A Session</span>
+				</h2>
+				<h4>Date: <span data-bind="text: date">Session Date<span></h4>
+				<div class="row">
+					<div class="large-12 small-12 columns">
+						<div class="panel callout radius">
+							<!-- "numberOfStudents":1,"numberOfQuestions":1,"numberOfStudentsPostingAnswers":1 -->
+							<h5>Overview</h5>
+							<p>Teacher Name: <span data-bind="text: sessionMetadata.teacherName">Mrs. Jones</span></p>
+							<p>Group Name: <span data-bind="text: sessionMetadata.groupName">5th Grade Section 1</span></p>
+							<p># of Students: <span data-bind="text: sessionStats.numberOfStudents">5th Grade Section 1</span></p>
+							<p># of Questions: <span data-bind="text: sessionStats.numberOfQuestions">5th Grade Section 1</span></p>
+							<p># of Posted Results: <span data-bind="text: sessionStats.numberOfStudentsPostingAnswers">5th Grade Section 1</span></p>
+							<p>IQSet ID: <span data-bind="text: sessionMetadata.iqid"></span></p><!-- Link this -->
+						</div>
+						<div class="panel smile-branded">
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<table>
+								<caption>IQ Set Details</caption>
+								<thead>
+									<tr>
+									  <th>#</th>
+									  <th>Question</th>
+									  <th width="150">Answer 1</th>
+									  <th width="150">Answer 2</th>
+									  <th width="150">Answer 3</th>
+									  <th width="150">Answer 4</th>
+									  <th width="">Correct</th>
+									  <th width="">Image</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: iqdata">
+									<tr class="iq-grid" data-bind="attr: {id: $index}">
+										<td data-bind="text: $index()+1">1</td>
+										<td data-bind="text: Q">Where was it?</td>
+										<td data-bind="text: O1">Drawer</td>
+										<td data-bind="text: O2">Shelf</td>
+										<td data-bind="text: O3">TV</td>
+										<td data-bind="text: O4">Floor</td>
+										<td data-bind="text: A">3</td>
+										<td><a class="tiny button" href="#" onclick="alert('No Images Available'); return false;"><img src="images/photo-icon.png" /></a></td>
+									</tr>
+								</tbody>
+					        </table>
+					        <br />
+							<br />
+							<br />
+							
+							
+							<div class="student-results" data-bind="foreach: students">
+								<h4>Score: <span data-bind="text: name">Ralph</span> [<em><span data-bind="text: score">4</span>/<span data-bind="text: $parent.sessionStats.numberOfQuestions">5</span></em> Correct Answers]</h4>
+								
+								<table>
+									<caption>Results</caption>
+								<thead>
+									<tr>
+									  <th width="150">Q #</th>
+									  <th width="150">Answer</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: $data.answers">
+									<tr>
+										<td data-bind="text: $index()+1">1</td>
+										<td data-bind="text: $data">3</td>
+									</tr>
+								</tbody>
+					        	</table>
+					        	
+					        </div>
+					        <!-- div.student-results -->
+						</div>
+						<!-- div.panel -->
+					</div>
+				</div>
+				<!-- NICE DEBUG TRICK -->
+				<!-- <span data-bind="text: ko.toJSON($data)"></span> -->
+			</div>
+		</div>
+	</section>
+	<!-- section#session-detail-section -->
+
+	<section class="" id="iqset-detail-section" style="display: none">
+		<div class="row">
+			<div class="large-12 small-12 columns">
+				<h2 class="subheader">
+					IQSets Detail
+				</h2>
+				<div class="row" data-bind="with: iqsetSummary">
+					<div class="large-12 small-12 columns">
+						<div class="panel callout radius">
+							<h5 data-bind="text: title">Title</h5>
+							<p data-bind="text: teachername">Mrs. Jones</p>
+							<p data-bind="text: groupname">5th Grade Section 1</p>
+							<p data-bind="text: createdate">10/20/2013</p>
+						</div>
+						<div class="panel smile-branded">
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<table>
+								<thead>
+									<tr>
+									  <th>#</th>
+									  <th>Question</th>
+									  <th width="150">Answer 1</th>
+									  <th width="150">Answer 2</th>
+									  <th width="150">Answer 3</th>
+									  <th width="150">Answer 4</th>
+									  <th width="">Correct</th>
+									  <th width="">Image</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: iqdata">
+									<tr class="iq-grid" data-bind="attr: {id: $index}">
+										<td data-bind="text: $index()+1">1</td>
+										<td data-bind="text: Q">1/1/2013</td>
+										<td data-bind="text: O1">History: Roman Empire</td>
+										<td data-bind="text: O2">Teacher Claire</td>
+										<td data-bind="text: O3">Olive Elementary 5th Grade</td>
+										<td data-bind="text: O4">Olive Elementary 5th Grade</td>
+										<td data-bind="text: A"></td>
+										<td><a class="tiny button" href="#" onclick="alert('No Images Available'); return false;"><img src="images/photo-icon.png" /></a></td>
+									</tr>
+								</tbody>
+					        </table>
+						</div>
+						<!-- div.panel -->
+					</div>
+				</div>
+				<!-- NICE DEBUG TRICK -->
+				<!-- <span data-bind="text: ko.toJSON($data)"></span> -->
+			</div>
+		</div>
+		<div id="dialog1" style="display:none; cursor: default"> 
+        	<h4 class="subheader">Confirm deletion of this IQSet?</h4> 
+        	<input type="button" id="dialog1-yes" value="Delete" /> 
+        	<input type="button" id="dialog1-no" value="Cancel" /> 
+		</div> 
+	</section>
+	<!-- section#iqset-detail-section -->
+	<!-- div: row -->
+		<div class="row">
+			<div class="small-6 small-centered columns">
+				<a class="smile-logo regular" href="http://www.smileconsortium.org"></a>
+				<ul class="smile-links">
+					<li><a href="mailto:reply+i-23475388-c2457b2df337933075fa1a78843d843cefe305ca-64202@reply.github.com">Support</a></li>
+					<li><a onclick="alert('Help Not Implemented.  Help!  visit: https://plus.google.com/u/0/communities/117391182825484902493 for more human support'); return false;" href="#">Help</a></li>
+				</ul>
+				<p class="copyright">© 2012‐2013 SMILE Consortium, Inc., a 501c3 Non-Profit</p>
+			</div>
+		</div>
+		<!-- div: row -->
+	</div>
+	<!-- div.section-container -->
+
+	<!-- Included JS Files -->
+	<!-- Included JS Files -->
+	<script>
+	  /* document.write('<script src=' +
+	  ('__proto__' in {} ? 'js/zepto' : 'js/jquery') +
+	  '.js><\/script>') */
+	</script>
+	<script src="js/jquery.js"></script>
+	<!--
+	  <script src="js/jquery.js"></script>
+	  <script src="js/jquery.foundation.reveal.js"></script>
+	  <script src="js/jquery.foundation.orbit.js"></script>
+	  <script src="js/jquery.foundation.navigation.js"></script>
+	  <script src="js/jquery.foundation.buttons.js"></script>
+	  <script src="js/jquery.foundation.tabs.js"></script>
+	  <script src="js/jquery.foundation.forms.js"></script>
+	  <script src="js/jquery.foundation.tooltips.js"></script>
+	  <script src="js/jquery.foundation.accordion.js"></script>
+	  <script src="js/jquery.placeholder.js"></script>
+	  <script src="js/jquery.foundation.alerts.js"></script>
+	-->    
+	<!-- End Combine and Compress These JS Files -->
+	<script src="js/foundation.min.js"></script>
+	<script src="js/foundation.section.js"></script>
+	<script src="js/foundation.reveal.js"></script>
+	<!-- Switch to minified version after development -->
+	<script type='text/javascript' src='js/knockout-3.0.0.debug.js'></script>
+	<!-- <script type='text/javascript' src='js/knockout.mapping.js'></script> -->
+	<script type='text/javascript' src='js/underscore-1.3.3.js'></script>
+	<script type='text/javascript' src='js/async-0.1.22.js'></script>
+	<!-- Got this from: http://www.diveintojavascript.com/projects/javascript-sprintf -->
+	<script type='text/javascript' src='js/sprintf-0.7-beta1.js'></script>
+	<script type='text/javascript' src='js/smileiqmanager.js'></script>
+	<script type='text/javascript' src='js/stacktrace-min-0.4.js'></script>
+	<script type='text/javascript' src='js/jquery.blockUI-2.66.0.js'></script>
+	<script type="text/javascript" src="js/rating.js"></script>
+	<script type="text/javascript" src="js/jquery.fineuploader-3.5.0.min.js"></script>
+	<script>
+	// jQuery.noConflict();
+	$(document).foundation();
+	</script>
+</body>
+</html>
