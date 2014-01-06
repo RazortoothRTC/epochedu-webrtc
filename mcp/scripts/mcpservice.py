@@ -390,7 +390,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = '1.0.0-ces2014-b8-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b9-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -473,7 +473,7 @@ Todo ...
 		return """Version Tag: %s, Changes:%s"""%(self.VERSION_TAG, self.VERSION_DESC)
 	
 	@cherrypy.expose
-	def screengrab(self):
+	def screengrab(self, **params):
 		#
 		# Get the list of screengrabs
 		# and serve up the newest, non-zero length file
