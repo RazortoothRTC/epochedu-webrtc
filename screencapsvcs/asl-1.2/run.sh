@@ -22,11 +22,11 @@ else
 	
 	# Install service
 	echo "Installing native service..."
-	$adb push ./asl-native /data/local/asl-native
-	$adb shell /system/bin/chmod 0777 /data/local/asl-native
+	$adb push ./asl-native /data/local/tmp/asl-native
+	$adb shell /system/bin/chmod 0777 /data/local/tmp/asl-native
 	
 	# Start the service
 	echo "Starting service..."
-	$adb shell "/data/local/asl-native /data/local/asl-native.log" &
+	$adb shell "/data/local/tmp/asl-native /data/local/tmp/asl-native.log" &
 	echo "Service started successfully."
 fi
