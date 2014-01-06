@@ -1,0 +1,213 @@
+{%set name student-jqm %}
+{%set args channel %}
+
+{%extends 'boilerplate-jqm' %}
+
+{%block 'title' %}Welcome to class: {%= channel%}{%/block %}
+
+{%block 'body-scripts' %}
+<script type="text/javascript" src="/static/js/jqModal.js"></script>
+<link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+<script type="text/javascript">
+		Shadowbox.init({
+	    handleOversize: "drag",
+		overlayColor: "#330099",
+		overlayOpacity: "0.75",
+	    modal: true,
+		displayNav:         true,
+		handleUnsupported:  "link",
+		autoplayMovies:     true,
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var sessionid;
+		var nick;
+
+		displayLogin();
+		
+		/* XXX Don't use JQM ... $('#dialog').jqm({modal:true}).jqmShow();
+		$('#qadialog').jqm({modal:false, autofire:true}); */
+		/* var h = $(window).height();
+        var w = $(window).width(); */
+	});
+</script>
+<script type="text/javascript">
+	/* XXX Refactor this into epoch-client.js */
+	function getChannel() {
+		return '{%= channel%}';
+	}
+	function isTeacher() {
+		return false;
+	}
+</script>
+<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
+{%/block %}
+{%block 'head' %}
+{%/block %}
+
+{%block 'container' %}
+	<!-- Start of first page -->
+	<div data-role="page" id="chat">
+
+		<div data-role="header" data-id="header" data-position="fixed">
+			<div id="branding">
+				<h1>Classroom: {%= channel%}</h1>
+			</div>
+		</div><!-- /header -->
+
+		<div data-role="content">	
+			<div class="ui-grid-A">
+				<div class="ui-block-A">
+					<form>
+						<div class="chatscroll">
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla u sodales a, feu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Nulla at augue sem.tiam in tincidunt arcu. Nulla at aulla at augue sem.ue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla u sodales a, feu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Nulla at augue sem.tiam in tincidunt arcu. Nulla at aulla at augue sem.ue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla u sodales a, feu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Nulla at augue sem.tiam in tincidunt arcu. Nulla at aulla at augue sem.ue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+							<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+						</div>
+					</form>
+				</div>
+				<div class="ui-block-B"></div>	   
+			</div>
+		</div><!-- /content -->
+
+		<div data-role="footer" class="footer" data-position="inline">
+			<div data-role="fieldcontain" class="chatinput">
+			    <input type="text" name="name" id="entry" value=""  />
+				<div id="csubmit" data-role="button">Send</div>
+				<div class="right"><a data-icon="gear" data-transition="pop" data-rel="dialog" href="panel" data-theme="a">Options</a></div>
+				<div class="right" style="padding:0px;">Hello, <span id="nickname"></span>!</div>
+			</div>
+			<ul class="footernav">
+				<li class="link1 active"><a href="#">Chat</a></li>
+				<li class="link2"><a href="#">Apps</a></li>
+				<li class="link3"><a href="#sync">Sync</a></li>
+				<li class="link5"><a href="javascript:void(0);" onclick="doLogout(); return false;" data-icon="refresh" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Logout</a></li>
+			</ul>
+			<div class="footercopy">
+				<p>Powered by Razortooth Communications, LLC</p>
+			</div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+
+	<!-- Start of second page - APPS -  -->
+	<div data-role="page" id="apps">
+		<form action="#" method="get">
+		<div data-role="header" data-id="header" data-position="fixed">
+			<h1>Apps</h1>
+		</div><!-- /header -->
+
+		<div data-role="content">	
+			<div class="ui-grid-A">
+				<div class="ui-block-A">
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1a" name="checkbox-1a"><label for="checkbox-1a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 01</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1b" name="checkbox-1b"><label for="checkbox-1b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 02</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-1c" name="checkbox-1c"><label for="checkbox-1c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Spanish Lesson 03</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2a" name="checkbox-2a"><label for="checkbox-2a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 01</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2b" name="checkbox-2b"><label for="checkbox-2b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 02</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-2c" name="checkbox-2c"><label for="checkbox-2c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">Math Lesson 03</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3a" name="checkbox-3a"><label for="checkbox-3a" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 01</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3b" name="checkbox-3b"><label for="checkbox-3b" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 02</label></div>
+					<div class="ui-checkbox"><input type="checkbox" class="custom" id="checkbox-3c" name="checkbox-3c"><label for="checkbox-3c" data-theme="c" class="ui-btn ui-btn-icon-left ui-corner-top ui-btn-up-c">English Lesson 03</label></div>
+				</div>
+			</div>
+		</div><!-- /content -->
+
+		<div data-role="footer" class="footer" data-position="inline">
+			<div style="padding-left:15px;">
+							<fieldset>
+								<div data-role="fieldcontain" style="width:250px;">
+										<select name="shipping" id="shipping" tabindex="-1">
+											<option value="Send">Send</option>
+											<option value="Send URL">Send URL</option>
+										</select>
+									<button type="submit" data-theme="a" tabindex="-1">Submit</button>
+								</div>
+							</fieldset>
+			</div>
+						</form>
+			<ul class="footernav">
+				<li class="link1"><a href="#chat">Chat</a></li>
+				<li class="link2"><a href="#">Apps</a></li>
+				<li class="link3"><a href="#sync">Sync</a></li>
+				<li class="link5"><a href="javascript:void(0);" onclick="doLogout(); return false;" data-icon="refresh" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Logout</a></li>
+			</ul>
+			<div class="footercopy">
+				<p>Powered by Razortooth Communications</p>
+			</div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	
+	
+	<!-- Start of Third  page - SYNC -->
+	<div data-role="page" id="sync">
+
+		<div data-role="header" data-position="fixed">
+			<h1>Content Sync Folder</h1>
+		</div><!-- /header -->
+
+		<div data-role="content">
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b" id="contentsyncfolder">
+				<li data-role="list-divider">Contents in folder for classroom: {%= channel%}</li>
+				<li>No Content Available</li>
+			</ul>
+
+		</div><!-- /content -->
+
+		<div data-role="footer" class="footer" data-position="inline">
+			<ul class="footernav">
+				<li class="link1"><a href="#chat">Chat</a></li>
+				<li class="link2"><a href="#">Apps</a></li>
+				<li class="link3"><a href="#">Sync</a></li>
+				<li class="link5"><a href="javascript:void(0);" onclick="doLogout(); return false;" data-icon="refresh" data-transition="pop" data-iconpos="top" data-rel="dialog" data-theme="a">Logout</a></li>
+			</ul>
+			<div class="footercopy">
+				<p>Powered by Razortooth Communications, LLC</p>
+			</div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+	
+	<div id="panel" data-theme="c" data-role="dialog" role="dialog">
+		<div data-role="header" role="banner">
+			<a data-iconpos="notext" data-icon"delete" href="#" title="Close" data-theme="a">Close</a><h1>Account Settings</h1>
+		</div><!-- /header -->
+		<div data-role="content" data-theme="c" role="main">	
+			<a href="#" data-role="button" data-icon="refresh" data-iconpos="top" class="logout">Logout</a>
+		</div><!-- /content -->
+	</div>
+</body>
+{%/block%}

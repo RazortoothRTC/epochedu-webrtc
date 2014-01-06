@@ -1,0 +1,18 @@
+#!/bin/sh
+# 
+# Add any npm dependencies here
+# We can make this efficient later.
+#
+# prereqs
+# npm install nTPL
+# npm install nodemon
+# 
+export NODE_PATH=/home/epoched/root
+cd /home/epoched/epochedu-work
+# uncommment for autoupdates
+sudo -u epoched hg pull
+sudo -u epoched hg update
+# sudo -u epoched hg merge
+# uncomment for development mode
+# nodemon server.js 
+node server.js&

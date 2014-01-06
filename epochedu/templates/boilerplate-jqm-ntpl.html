@@ -1,0 +1,111 @@
+<!DOCTYPE html>{%set name boilerplate-jqm %}
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>{%block 'title' %}Override default 'title'{%/block %}</title>
+	<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+	<link rel="shortcut icon" href="/static/images/favicon.ico">
+	<link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+	<!-- CSS : implied media="all" -->
+	{%block 'css-styles' %}
+	{*
+			Only override this CSS if you don't want what's here, otherwise, add your CSS to head
+	*}
+	<link rel="stylesheet" href="/static/css/jquery.mobile-1.0a2.css" />
+	<link rel="stylesheet" href="/static/css/style.css?v=1">
+	{%/block %}
+	
+	<script src="/static/js/jquery-1.4.4.min.js"></script>
+	<script src="/static/js/script.js?v=1"></script>
+	<script type="text/javascript" src="/static/js/jquery.mobile-1.0a2.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+	{%block 'body-scripts' %}
+	{*
+			add any small custom scripts here
+	*}
+	{%/block %}
+	
+	{%block 'head' %}
+	{*
+			add Additional CSS or META tags here
+	*}
+	{%/block %}
+	
+</head> 
+<body>
+{%block 'container' %} 
+<div data-role="page" data-theme="b" id="{%block 'pageid' %}jqm-home{%/block%}">
+	<div data-role="content">
+		{%block 'content' %}
+		<header>
+			{%block 'content-header' %}
+			<div id="jqm-homeheader">
+				<h1 id="jqm-logo"><img src="/static/images/rtlogo_sm.jpg" alt="RT Rules"/></h1>
+				<p>A Touch-Optimized Web Framework for Smartphones &amp; Tablets</p>
+				<p id="jqm-version">Alpha Release</p>
+			</div>
+			{%/block %}
+	    </header>
+		{%block 'content' %}
+			<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+				<li data-role="list-divider">Overview</li>
+				<li><a rel="external" href="http://www.yahoo.com">Yahoo is best</a></li>
+				<li><a rel="external" href="http://google.com">Google has good search</a></li>
+				<li><a rel="external" href="http://ask.com">Ask Jeeves</a></li>
+			</ul>
+		{%/block %}
+		<footer>
+			{%block 'content-footer' %}
+			{%/block %}
+	    </footer>
+		{%/block %}
+	</div>
+</div>
+{%/block %}
+{*
+	XXX TEMPLATE THIS SNIPPET - Do we want to share this betweem each
+*}
+
+<div id="loginpanel" data-theme="c" data-role="dialog" role="dialog">
+	<!-- <div data-role="header" role="banner">
+		<a data-iconpos="notext" data-icon"delete" href="#" title="Close" data-theme="a">Close</a><h1>Account Settings</h1>
+	</div>-->
+	<div data-role="content" data-theme="c" role="main" id="dialog">	
+		<div class="modalmsg">
+			<div class="modaltxt">
+				<h3>Welcome to the digital classroom <span id="channel"></span>.  You are waiting to join the classroom.</h3>
+				<h1 class="marvellbranding1">
+					<img src="/static/images/blank_1x1.png" />
+					<span>Marvell Branding 1</span>
+				</h1>
+				<h1 class="rtbranding1">
+					<img src="/static/images/blank_1x1.png" />
+					<span>RT Branding 1</span>
+				</h1>
+				<p><span id="usersLink">? </span> in class <em><span id="channel"></span></em></p>
+			</div>
+			
+		</div>
+		<form id="loginform">
+			<p>Please touch the “Login Now” to login to the <span id='usertype'></span> control panel.</p>
+			<div class="modalrow">
+				<label>Username:</label>
+				<input id="nickInput" type="text" class="modalform" name="nick"/>
+			</div>
+			<div class="modalrow">
+				<label>Password:</label>
+				<input type="text" class="modalform"/>
+			</div>
+			<div class="modalrow">
+				<input type="submit" class="login" name="submit" id="connectButton" aria-label="submit" data-theme="a" value="Login Now" />
+				
+			</div>
+			<span class="modalrow" id="status"></span>
+		</form>
+		
+	</div><!-- /content -->
+	
+	
+</div> <!-- loginplanel>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+
+  <!-- www.phpied.com/conditional-comments-block-downloads/ -->
+  <!--[if IE]><![endif]-->
+
+  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame 
+       Remove this if you use the .htaccess -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>EpochEDU MCP Test Tool</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--  Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+  <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+  <link rel="shortcut icon" href="/static/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+
+
+  <!-- CSS : implied media="all" -->
+  <link rel="stylesheet" href="/static/css/style.css?v=1">
+
+  <!-- For the less-enabled mobile browsers like Opera Mini -->
+  <link rel="stylesheet" media="handheld" href="/static/css/handheld.css?v=1">
+
+ 
+  <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
+  <script src="/static/js/modernizr-1.5.min.js"></script>
+
+</head>
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+
+<!--[if lt IE 7 ]> <body class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <body class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <body class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <body class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <body> <!--<![endif]-->
+
+  <div id="container">
+    <header>
+
+    </header>
+<!-- 
+INSERT YOUR CODE!!!
+-->
+	<p><label>testapdu1 - launchurl</label>
+	<input id="testapdu1" type="button" value="testapdu1" />
+	<p><label>testapdu1b - launchurl</label>
+	<input id="testapdu1b" type="button" value="testapdu1b" />
+	<p><label>testapdu1c - launchurl</label>
+	<input id="testapdu1c" type="button" value="testapdu1c" />
+	<p><label>testapdu1d - launchurl</label>
+	<input id="testapdu1d" type="button" value="testapdu1d" />
+	<p><label>testapdu2 - sync</label>
+	<input id="testapdu2" type="button" value="testapdu2" />
+	<p><label>testapdu2b - sync</label>
+	<input id="testapdu2b" type="button" value="testapdu2b" />
+	<p><label>testapdu3 - kill</label>
+	<input id="testapdu3" type="button" value="testapdu3" />
+	<p><label>testapdu4 - mcpmodetsart</label>
+	<input id="testapdu4" type="button" value="testapdu4" />
+	<p><label>testapdu5 - mcpmodestop</label>
+	<input id="testapdu5" type="button" value="testapdu5" />
+	<p><label>testapdu6 - launch</label>
+	<input id="testapdu6" type="button" value="testapdu6" />
+	<p><label>testapdu7 - pingheartbeat</label>
+	<input id="testapdu7" type="button" value="testapdu7" />
+	<p><label>testapdu8 - killplatformplayer</label>
+	<input id="testapdu8" type="button" value="testapdu8" />
+	<p><label>testpopup1- </label>
+	<input id="testpopup1" type="button" value="testpopup1" />
+	<p><label>testpopup2- </label>
+	<input id="testpopup2" type="button" value="testpopup2" />
+	<p><label>testpopup3- </label>
+	<input id="testpopup3" type="button" value="testpopup3" />
+	<p><label>testclosepopup1 - </label>
+	<input id="testclosepopup1" type="button" value="testclosepopup1" />
+	<p><label>testwindowname1 - </label>
+	<input id="testwindowname1" type="button" value="testwindowname1" />
+	<p><label>teststartsession1 - </label>
+	<input id="teststartsession1" type="button" value="teststartsession1" />
+	<p><label>teststopsession1 - </label>
+	<input id="teststopsession1" type="button" value="teststopsession1" />
+	<p><label>testnotify1 - </label>
+	<input id="testnotify1" type="button" value="testnotify1" />
+    <footer>
+    <footer>
+    </footer>
+  </div> <!--! end of #container -->
+
+
+  <!-- Javascript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery. fall back to local if necessary -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script>!window.jQuery && document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
+  <script src="/static/js/jquery.jsonp-2.1.4.min.js"></script>
+
+  <script src="/static/js/plugins.js?v=1"></script>
+  <script src="/static/js/script.js?v=1"></script>
+
+  <!--[if lt IE 7 ]>
+    <script src="/js/dd_belatedpng.js?v=1"></script>
+  <![endif]-->
+
+
+  <!-- yui profiler and profileviewer - remove for production -->
+  <script src="/static/js/profiling/yahoo-profiling.min.js?v=1"></script>
+  <script src="/static/js/profiling/config.js?v=1"></script>
+  <!-- end profiling code -->
+  	<script type="text/javascript">
+		
+  	$(document).ready(function() {
+		  	window.scrollTo(0, 1);
+			$("#testapdu1").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '1', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launchurl: "http://192.168.1.16:5000/content/multimedia/Voyager_II.3gp"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("ERROR or MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu1b").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '1', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launchurl: "http://192.168.1.16:5000/content/multimedia/MadagascarVideo.mp4"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("ERROR or MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu1c").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '1', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launchurl: "http://192.168.1.16:5000/content/bar/MadagascarVideo.mp4"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("ERROR or MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu1d").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '1', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launchurl: "http://192.168.1.16:5000/content/setup/blank.mov"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("ERROR or MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu2").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '2', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", sync: "http://192.168.1.16:5000/content/multimedia/Voyager_II.3gp"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu2b").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '2', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", sync: "http://192.168.1.16:5000/content/multimedia/MadagascarVideo.mp4"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu3").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '3', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", kill: "http://foo.bar"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu4").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '4', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", mcpmodestart: "http://foo.bar"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu5").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '5', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", mcpmodestop: "http://foo.bar"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu6").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '6', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", launch: "http://foo.bar"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu7").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '7', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", pingheartbeat: "http://foo.bar"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#testapdu8").click(function() {
+		    	$.jsonp({
+					"url": 'http://localhost:8080/rpc/?jsoncallback=?',
+					"data": { apdu: '8', to: "*", requestoruri: "charlie@12312312312413sd", ticketid: "<unique ticket ID>", killplatformplayer: "[]"},
+					"success": function(data) {
+						var mcpResponse;
+						alert(eval('"' + data.status + '"'));
+						if (data.status == '0') {
+							alert('got data');
+							mcpResponse = data.status;
+						}
+						// XXX Should report back some status here
+						return mcpResponse;
+					  },
+					"error": function(d,msg) {
+					    alert("MCP Service is not running d = " + d + " msg= " + msg);
+						return { status: -1 }; // XXX mcpResponse , need to formalize handling of error responses.
+					}
+				});
+			});
+			$("#teststartsession1").click(function() {
+				$.ajax({
+					url: "/send",
+					data: {id: 'CONFIG.id', text: 'startsession', type: 'startsession', channel: 'multimedia'},
+					dataType: "text",
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+						alert('error');
+					},
+				});
+			});
+			$("#teststopsession1").click(function() {
+				$.ajax({
+					url: "/send",
+					data: {id: 'CONFIG.id', text: 'stopsession', type: 'stopsession', channel: 'multimedia'},
+					dataType: "text",
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+						alert('error');
+					},
+				});
+			});
+			var playerwindow;
+			$('#testpopup1').click(function() {
+				playerwindow = window.open("http://localhost:5000/content/foo/2.jpg","player", "location=no, scrollbar=yes,width=430,height=360,toolbar=no");
+			});
+			$('#testpopup2').click(function() {
+				playerwindow = window.open("http://localhost:5000/content/foo/2.jpg","player", "scrollbar=yes,width=430,height=360,toolbar=no");
+			});
+			$('#testpopup3').click(function() {
+				playerwindow = window.open("content://com.android.htmlfileprovider/sdcard/content/foo3/MadagascarVideo.mp4","player", "scrollbar=yes,width=430,height=360,toolbar=no");
+			});
+			$('#testclosepopup1').click(function() {
+				// netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
+				// window.close("epochplayer");
+				playerwindow.close();
+			});
+			$('#testwindowname1').click(function() {
+				alert(window.screen);
+			});
+			$("#testnotify1").click(function() {
+				$.ajax({
+					url: "http://localhost:8080/testnotify",
+					data: {},
+					dataType: "text",
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+						alert('error');
+					},
+				});
+			});
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,976 @@
+/* 
+  style.css contains a reset, font normalization and some base styles.
+  
+  credit is left where credit is due.
+  additionally, much inspiration was taken from these projects:
+    yui.yahooapis.com/2.8.1/build/base/base.css
+    camendesign.com/design/
+    praegnanz.de/weblog/htmlcssjs-kickstart
+*/
+
+/* 
+  html5doctor.com Reset Stylesheet (Eric Meyer's Reset Reloaded + HTML5 baseline)
+  v1.4 2009-07-27 | Authors: Eric Meyer & Richard Clark
+  html5doctor.com/html-5-reset-stylesheet/
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin:0;
+  padding:0;
+  border:0;
+  outline:0;
+  font-size:100%;
+  vertical-align:baseline;
+  background:transparent;
+}                  
+
+/* ML's Reset XXX Let's use the Modernizr version
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+*/
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section { 
+    display:block;
+}
+
+nav ul { list-style:none; }
+
+blockquote, q { quotes:none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after { content:''; content:none; }
+
+a { margin:0; padding:0; font-size:100%; vertical-align:baseline; background:transparent; }
+
+ins { background-color:#ff9; color:#000; text-decoration:none; }
+
+mark { background-color:#ff9; color:#000; font-style:italic; font-weight:bold; }
+
+del { text-decoration: line-through; }
+
+abbr[title], dfn[title] { border-bottom:1px dotted; cursor:help; }
+
+/* tables still need cellspacing="0" in the markup */
+table { border-collapse:collapse; border-spacing:0; }
+
+hr { display:block; height:1px; border:0; border-top:1px solid #ccc; margin:1em 0; padding:0; }
+
+input, select { vertical-align:middle; }
+/* END RESET CSS */
+
+
+/* fonts.css from the YUI Library: developer.yahoo.com/yui/
+   Please refer to developer.yahoo.com/yui/fonts/ for font sizing percentages
+
+  There are two custom edits:
+   * remove arial, helvetica from explicit font stack
+   * we normalize monospace styles ourselves
+*/
+body { font:13px/1.231 sans-serif; *font-size:small; } /* hack retained to preserve specificity */
+
+table { font-size:inherit; font: 100%; }
+
+select, input, textarea, button { font:99% sans-serif; }
+
+/* normalize monospace sizing 
+ * en.wikipedia.org/wiki/MediaWiki_talk:Common.css/Archive_11#Teletype_style_fix_for_Chrome
+ */
+pre, code, kbd, samp { font-family: monospace, sans-serif; }
+ 
+
+
+/* 
+ * minimal base styles 
+ */
+
+
+/* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */ 
+body, select, input, textarea { color: #444; }
+
+/* Headers (h1,h2,etc) have no default font-size or margin,
+   you'll want to define those yourself. */ 
+h1,h2,h3,h4,h5,h6 { font-weight: bold; }
+
+html { 
+  /* always force a scrollbar in non-IE */ 
+  overflow-y: scroll;
+}
+
+ 
+/* Accessible focus treatment: people.opera.com/patrickl/experiments/keyboard/test */
+a:hover, a:active { outline: none; }
+
+a, a:active, a:visited { color: #607890; }
+a:hover { color: #036; }
+
+
+ul, ol { margin-left: 1.8em; }
+ol { list-style-type: decimal; }
+
+small { font-size: 85%; }
+strong, th { font-weight: bold; }
+
+td, td img { vertical-align: top; } 
+
+sub { vertical-align: sub; font-size: smaller; }
+sup { vertical-align: super; font-size: smaller; }
+
+pre { 
+  padding: 15px; 
+  
+  /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
+  white-space: pre; /* CSS2 */
+  white-space: pre-wrap; /* CSS 2.1 */
+  white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+  word-wrap: break-word; /* IE */
+}
+
+/* align checkboxes, radios, text inputs with their label
+   by: Thierry Koblentz tjkdesign.com/ez-css/css/base.css  */
+input[type="radio"] { vertical-align: text-bottom; }
+input[type="checkbox"] { vertical-align: bottom; }
+.ie7 input[type="checkbox"] { vertical-align: baseline; }
+.ie6 input { vertical-align: text-bottom; }
+
+/* hand cursor on clickable input elements */
+label, input[type=button], input[type=submit], button { cursor: pointer; }
+
+/* colors for form validity */
+input:valid   {  }
+input:invalid { 
+      border-radius: 1px;
+    -moz-box-shadow: 0px 0px 5px red; 
+ -webkit-box-shadow: 0px 0px 5px red; 
+         box-shadow: 0px 0px 5px red;
+}
+.no-boxshadow input:invalid { background-color: #f0dddd; }
+
+
+/* These selection declarations have to be separate.
+   No text-shadow: twitter.com/miketaylr/status/12228805301 
+   Also: hot pink. */
+::-moz-selection{ background: #FF5E99; color:#fff; text-shadow: none; }
+::selection { background:#FF5E99; color:#fff; text-shadow: none; } 
+
+/*  j.mp/webkit-tap-highlight-color */
+a:link { -webkit-tap-highlight-color: #FF5E99; } 
+
+/* make buttons play nice in IE:    
+   www.viget.com/inspire/styling-the-button-element-in-internet-explorer/ */
+button {  width: auto; overflow: visible; }
+ 
+/* bicubic resizing for non-native sized IMG: 
+   code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/ */
+.ie7 img { -ms-interpolation-mode: bicubic; }
+
+
+
+/* 
+ * Non-semantic helper classes 
+ */
+
+/* for image replacement */
+.ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
+
+/* Hide for both screenreaders and browsers
+   css-discuss.incutio.com/wiki/Screenreader_Visibility */
+.hidden { display: none; visibility: hidden; } 
+
+/* Hide only visually, but have it available for screenreaders 
+   www.webaim.org/techniques/css/invisiblecontent/ 
+   Solution from: j.mp/visuallyhidden - Thanks Jonathan Neal! */
+.visuallyhidden { position: absolute !important;    
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px); }
+
+/* Hide visually and from screenreaders, but maintain layout */
+.invisible { visibility: hidden; }
+
+/* >> The Magnificent CLEARFIX << j.mp/phayesclearfix */
+.clearfix:after  { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+.clearfix { zoom: 1; }
+
+
+
+
+
+
+ /* Primary Styles
+    Author: 
+ */
+
+
+
+
+
+
+
+
+
+
+
+/* 
+ * print styles
+ * inlined to avoid required HTTP connection www.phpied.com/delay-loading-your-print-css/ 
+ */
+@media print {
+  * { background: transparent !important; color: #444 !important; text-shadow: none !important; }
+
+  a, a:visited { color: #444 !important; text-decoration: underline; }
+
+  a:after { content: " (" attr(href) ")"; } 
+
+  abbr:after { content: " (" attr(title) ")"; }
+  
+  .ir a:after { content: ""; }  /* Don't show links for images */
+  
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  
+  img { page-break-inside: avoid; }
+
+  @page { margin: 0.5cm; }
+
+  p, h2, h3 { orphans: 3; widows: 3; }
+
+  h2, h3{ page-break-after: avoid; }
+}
+
+
+
+/*
+ * Media queries for responsive design
+ */
+
+@media all and (orientation:portrait) { 
+  /* Style adjustments for portrait mode goes here */
+  
+}
+
+@media all and (orientation:landscape) { 
+  /* Style adjustments for landscape mode goes here */
+  
+}
+
+/* Grade-A Mobile Browsers (Opera Mobile, iPhone Safari, Android Chrome)  
+   Consider this: www.cloudfour.com/css-media-query-for-mobile-is-fools-gold/ */
+@media screen and (max-device-width: 480px) {
+  
+  
+  /* Uncomment if you don't want iOS and WinMobile to mobile-optimize the text for you
+     j.mp/textsizeadjust 
+  html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
+}
+
+
+/*Site Colors*/
+/*Blue 0092cf*/
+/*Purple 273691*/
+
+/* Text */
+body{font:13px/1.0 arial,verdana;background:#242529;color:#272626;}
+a:focus{outline:0px;}
+a{color:#007dc3;text-decoration:none;}
+a:hover{text-decoration:underline;}
+hr{border:0 #ccc solid;border-top-width:1px;clear:both;height:0}
+h1{font-size:1.4em;color:#333333;font-weight:normal;}
+h1 a {}
+h2{font-size:1.4em;color:#FFFFFF;font-weight:normal;}
+h2 a {}
+h3{font-size:1.2em;color:#333333;font-weight:normal;}
+h3 a {}
+h4{font-size:0.9em;color:#333333;font-weight:bold;}
+h4 a {}
+h5{font-size:0.8em;color:#b82f27;font-weight:normal;}
+h5 a {}
+h6{font-size:0.6em;color:#333333;font-weight:normal;}
+h6 a {}
+ol{list-style:decimal;}
+ul{list-style:disc;}
+li{margin-left:30px;}
+strong {font-size:12px;}
+p,dl,hr,h1,h2,h3,h4,h5,h6,ol,ul,pre,table,address,fieldset{margin-bottom:10px}
+h1, h2, h3, h4 , h5 {
+	margin:10px 0px 0px 0px;
+}
+
+/* Constants */
+.left {float:left;}
+.right {float:right;}
+.clear {clear:both;}
+
+
+/* Structure */
+a {
+	color: #000000;
+	/* font-size: 12px; */
+	text-decoration: none;
+}
+h2 a:link {
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+a:link {
+	color: #000000;
+	text-decoration: underline;
+}
+a:visited {
+	color: #000000;
+	text-decoration: none;
+}
+a:hover {
+	color: #0000FF;
+	text-decoration: underline;
+}
+a:active {
+	color: red;
+}
+
+#page {
+	margin:2% 2% 0 2%;
+}
+
+#teachernav {
+	padding:5px 10px 5px 10px;
+	background:#FFFFFF;
+	-moz-border-radius-bottomleft:5px; 
+	-moz-border-radius-bottomright:5px; 
+	-webkit-border-bottom-left-radius:5px;
+	-webkit-border-bottom-right-radius:5px;
+	margin-bottom:10px;
+}
+
+#teachernav ul {
+	list-style:none;
+	margin:0px;
+}
+
+#teachernav ul li {
+	margin:0px;
+	text-align:right;
+}
+
+.header {
+	background:url('/images/css/header-bg.gif') repeat-x;
+	height:36px;
+}
+
+#chat {
+	float:left;
+	width:330px;
+	margin-left:8px
+	/* width:25%; */
+}
+
+#chat-wide {
+	float:left;
+	width:50%;
+}
+
+#lessons {
+	float:left;
+	width:300px;
+	margin:0px 40px;
+	/* width:40%;
+	margin:0px 50px; */
+}
+
+#lessons .box {
+	width:100%;
+}
+
+.lessons {
+	float:left;
+	margin-left:27px;
+}
+
+#students {
+	float:left;
+	width:25%;
+}
+
+.box {
+	clear:both;
+	background:#FFFFFF;
+	width:330px;
+	-moz-border-radius-topleft:0px;
+	-moz-border-radius-topright:0px;
+	-moz-border-radius-bottomleft:5px; 
+	-moz-border-radius-bottomright:5px; 
+	-webkit-border-top-left-radius:0px;
+	-webkit-border-top-right-radius:0px;
+	-webkit-border-bottom-left-radius:5px;
+	-webkit-border-bottom-right-radius:5px;
+}
+
+.convos {
+	clear:both;
+	position:relative;
+	background:#FFFFFFF;
+	height:260px;
+}
+
+.box h2 {
+	padding:8px 10px;
+	text-transform:uppercase;
+}
+
+.chatbox {
+	clear:both;
+	position:absolute;
+	top:0;
+	z-index:40;
+	background:#FFFFFF;
+	height:100%;
+	-moz-border-radius-topleft:0px;
+	-moz-border-radius-topright:0px;
+	-moz-border-radius-bottomleft:5px; 
+	-moz-border-radius-bottomright:5px; 
+	-webkit-border-top-left-radius:0px;
+	-webkit-border-top-right-radius:0px;
+	-webkit-border-bottom-left-radius:5px;
+	-webkit-border-bottom-right-radius:5px;
+}
+
+.chathistory {
+	clear:both;
+	border-right:1px solid #c2c2c2;
+	border-left:1px solid #c2c2c2;
+	border-bottom:1px solid #c2c2c2;
+	-moz-border-radius-topleft:0px;
+	-moz-border-radius-topright:0px;
+	-moz-border-radius-bottomleft:5px; 
+	-moz-border-radius-bottomright:5px; 
+	-webkit-border-top-left-radius:0px;
+	-webkit-border-top-right-radius:0px;
+	-webkit-border-bottom-left-radius:5px;
+	-webkit-border-bottom-right-radius:5px;
+	margin:0px 10px;
+	padding:0px;
+}
+
+.chatscroll {
+	clear:both;
+	height:160px;
+	overflow:hidden;
+	padding:0px 10px;
+}
+
+.chatsend {
+	clear:both;
+	border:1px solid #c2c2c2;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	margin:10px;
+	padding:10px;
+}
+
+.chatsend input {
+	border:0px;
+	width:100%;
+	height:20%;
+}
+
+.jScrollPaneContainer {
+	position: relative;
+	overflow: hidden;
+	z-index: 1;
+}
+
+.jScrollPaneTrack {
+	position: absolute;
+	cursor: pointer;
+	right: 0;
+	top: 0;
+	height: 100%;
+	background: #899caf;
+}
+.jScrollPaneDrag {
+	position: absolute;
+	background: #6b7c8e;
+	cursor: pointer;
+	overflow: hidden;
+}
+.jScrollPaneDragTop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+}
+.jScrollPaneDragBottom {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	overflow: hidden;
+}
+a.jScrollArrowUp {
+	display: block;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	text-indent: -2000px;
+	overflow: hidden;
+	background:#899caf url('../images/css/scroll-up.png') no-repeat;
+	height: 10px;
+	width:10px;
+}
+a.jScrollArrowUp:hover {
+	background:#6b7c8e url('../images/css/scroll-up.png') no-repeat;
+}
+
+a.jScrollArrowDown {
+	display: block;
+	position: absolute;
+	z-index: 1;
+	bottom: 0;
+	right: 0;
+	text-indent: -2000px;
+	overflow: hidden;
+	background:#899caf url('../images/css/scroll-down.png') no-repeat;
+	height:10px;
+	width:10px;
+}
+a.jScrollArrowDown:hover {
+	background:#6b7c8e url('../images/css/scroll-down.png') no-repeat;
+}
+a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
+	/*background-color: #f00;*/
+}
+
+#slider {
+	width:200px;
+	position:relative;
+	z-index:20;
+}
+
+#sliderContent {
+	float:right;
+	background:#f4f3f3 url('../images/css/slider-content-bg.gif') repeat-y;
+	width:130px;
+	z-index:10;
+	min-height:200px;
+	-moz-border-radius-bottomright:5px; 
+	-webkit-border-bottom-right-radius:5px;
+}
+
+#sliderContent ul {
+	margin:0px 0px 0px 0px;
+	float:right;
+	padding:0px;
+	list-style:none;
+	width:130px;
+}
+
+#sliderContent ul li {
+	margin:0px;
+	padding:0px;
+	width:100%;
+	display:block;
+	border-bottom:1px solid #c2c2c2;
+	text-align:center;
+}
+
+#sliderContent ul li a {
+	display:block;
+	text-decoration:none;
+	padding:5px 0px;
+	width:100%;
+}
+
+#sliderContent ul li a:hover {
+	background:#d6d5d5;
+	color:#272626;
+}
+
+#openCloseWrap {
+	float:right;
+	width:40px;
+}
+
+ul.tabs {
+	clear:both;
+	list-style:none;
+	background:#d7d4d4 url('../images/css/tabs-bg.gif') repeat-x;
+	height:45px;
+	-moz-border-radius-bottomleft:5px; 
+	-moz-border-radius-bottomright:5px; 
+	-webkit-border-bottom-left-radius:5px;
+	-webkit-border-bottom-right-radius:5px;
+}
+
+ul.tabs li.first {
+	-moz-border-radius-bottomleft:5px;
+	-webkit-border-bottom-left-radius:5px;
+}
+
+ul.tabs li {
+	float:left;
+	display:block;
+	padding:10px;
+	height:25px;
+	margin:0px;
+	cursor:pointer;
+}
+
+ul.tabs li:hover {
+	background:#FFFFFF;
+}
+
+ul.tabs li.active {
+	background:#FFFFFF;
+}
+
+ul.tabs li a:hover {
+	color:#272626;
+}
+
+ul.tabs li a {
+	text-decoration:none;
+	display:block;
+	padding:8px 0px 0px 0px;
+}
+
+#lessonlist {
+	padding:0px 10px;
+}
+
+#lessonlist ul {
+	list-style:none;
+	margin:0px;
+}
+
+#lessonlist ul li {
+	clear:both;
+	margin:15px 0px 0px 0px;
+}
+
+.lessonImg {
+	float:left;
+	margin:0px 20px 0px 0px;
+}
+
+.lessonTitle {
+	margin:0px;
+	float:left;
+	display:block;
+	width:50%;
+}
+
+.lessonTitle h3 {
+	margin:10px 0px 0px 0px;
+}
+
+.lessonProgress {
+	color:#ababab;
+	float:left;
+	display:block;
+	font-size:11px;
+	margin:5px 0px 0px 0px;
+	width:80%;
+}
+
+.lessonSession {
+	float:right;
+	font-size:11px;
+	margin:14px 0px 0px 0px;
+}
+
+.lessonDescription {
+	float:left;
+	margin:5px 0px;
+}
+
+.lessonProgress p, .lessonSession p {
+	margin:0px;
+	padding:0px;
+}
+
+#resources {
+	width:92%;
+	background:#FFFFFF;
+	bottom:0;
+	position:absolute;
+	-moz-border-radius-topleft:5px; 
+	-moz-border-radius-topright:5px; 
+	-webkit-border-top-left-radius:5px;
+	-webkit-border-top-right-radius:5px;
+	padding:20px 20px 20px 20px;
+}
+
+#resources ul {
+	list-style:none;
+	margin:0px;
+}
+
+#resources ul li {
+	float:left;
+	margin:0px 15px;
+}
+
+a.pdf {
+	width:80px;
+	text-align:center;
+	display:block;
+	background:url('../images/pdf.png') center top no-repeat;
+	padding:80px 0px 0px 0px;
+}
+
+a.img {
+	width:80px;
+	text-align:center;
+	display:block;
+	background:url('../images/img.png') center top no-repeat;
+	padding:80px 0px 0px 0px;
+}
+
+a.movie {
+	width:80px;
+	text-align:center;
+	display:block;
+	background:url('../images/movie.png') center top no-repeat;
+	padding:80px 0px 0px 0px;
+}
+
+a.wav {
+	width:80px;
+	text-align:center;
+	display:block;
+	background:url('../images/wav.png') center top no-repeat;
+	padding:80px 0px 0px 0px;
+}
+
+	/* tooltip styling */
+	.tooltip {
+		display:none;
+		font-size:11px;
+		color:#3b3a3b;
+		z-index:10000;
+		line-height:normal;
+	}
+
+	/* a .label element inside tooltip */
+	.tooltip .label {
+		color:yellow;
+		width:35px;
+	}
+	.tooltipimg {
+		float:left;
+	}
+	.tooltipimg img {
+		width:100px;
+		height:auto;
+}
+	.tooltipinfo {
+		float:right;
+		width:155px;
+	}
+	.tooltipinfo p {
+		margin:0px 0px 10px 0px;
+	}
+	.tooltip .regprice {
+		color:#9b9b9b;
+		margin:0px 0px 5px 0px;
+	}
+	.tooltip strike {
+		font-weight:bold;
+	}
+	.tooltip .saleprice {
+		color:#ba1a7e;
+		font-weight:bold;
+		font-size:13px;
+		margin:0px 0px 5px 0px;
+	}
+	.tooltip h3 {
+		font-weight:bold;
+		font-size:13px;
+		margin:0px 0px 5px 0px;
+	}
+	.tooltip h3 a {
+		color:#0a0a0a;
+		text-decoration:none;
+	}
+	.clear {
+		clear:both;
+	}
+	.tooltiptop {
+		width:300px;
+		height:20px;
+		background:url('../images/css/tooltip-top.png') no-repeat;
+	}
+	.tooltipmiddle {
+		width:260px;
+		padding:0px 20px;
+		background:url('../images/css/tooltip-middle.png') repeat-y;
+	}
+	.tooltipbottom {
+		width:300px;
+		height:30px;
+		background:url('../images/css/tooltip-bottom.png') no-repeat;
+	}
+	
+#studentStatus {
+	padding:10px;
+}
+
+#studentStatus ul {
+	list-style:none;
+}
+
+#studentStatus li {
+	clear:both;
+	width:100%;
+	display:block;
+	text-align:left;
+	margin:0px 0px 10px 0px;
+	padding:5px 0px 10px 0px;
+	border-bottom:1px dotted #ccc;
+}
+
+#studentStatus li .status {
+	float:right;
+	color:green;
+	padding:0px 30px 0px 0px;
+	background:url('../images/css/success-20x20.png') no-repeat top right;
+}
+
+#studentStatus li .status.red {
+	color:#bf0000;
+	background:url('../images/css/error-20x20.png') no-repeat top right;
+}
+
+/* Added by dkords */
+#main {
+	clear: both;
+	overflow: hidden;
+	/* width: 1024; */
+	height: 600px;
+	margin-left: 24%;
+	margin-right: 24%;
+	/* padding-top: 90px; */
+}
+
+/* Z-index of #mask must lower than #boxes .window */
+#mask {
+	position: absolute;
+	z-index: 9000;
+	background-color: #000;
+	display: none;
+}
+
+#boxes .window {
+	position: absolute;
+	width: 440px;
+	height: 200px;
+	display: none;
+	z-index: 9999;
+	padding: 20px;
+}
+
+
+/* Customize your modal window here, you can add background image too */
+#boxes #login  {
+	width: 240px;
+	height: 192px;
+	background:url('/images/login-box-small.png') no-repeat;
+	padding:25px 30px;
+	color:#FFFFFF;
+}
+
+#boxes #login input.text {
+	background:#FFFFFF;
+	border:none;
+	border:1px solid #1e4f8a;
+	width:160px;
+	height:20px;
+	margin:0px 0px 5px 0px;
+}
+
+#boxes #login .loginb {
+	background:#4c89da;
+	border:none;
+	border:1px solid #427ec7;
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding:5px 10px;
+	clear:both;
+	float:right;
+	color:#FFFFFF;
+}
+
+#boxes #login .loginb:hover {
+	color:#427ec7;
+	background:#FFFFFF;
+}
+
+#boxes #login h2 {
+	color:#FFFFFF;
+	font-weight:bold;
+	margin:0px 0px 5px 0px;
+}
+
+#boxes #login a {
+	color:#FFFFFF;
+	clear:both;
+	display:block;
+	text-align:right;
+}
+
+#boxes #dialog1 {
+	width: 375px;
+	height: 203px;
+	background-color: #333399;
+	padding: 50px;
+}
+
+/* Borrowed from http://www.kollermedia.at/archive/2008/03/24/easy-css-tooltip/ */
+#contentitem a:hover {background:#ffffff; text-decoration:none;} /*BG color is a must for IE6*/
+#contentitem a.ctooltip span {display:none; padding:2px 3px; margin-left:8px; width:130px;}
+#contentitem a.ctooltip:hover span{display:inline; position:absolute; background:#ffffff; border:1px solid #cccccc; color:#6c6c6c;}
+
+
+/* FROM Blueprint CSS Framework 0.7.1 */
+#footer { clear: both; text-align: center; padding-top: 2em }
+#footer a,body {
+	color:#9999FF;
+}
+/* FROM TATSUMAKI CHAT DEMO */
+#messages {
+  margin-top: 1em;
+  margin-right: 3em;
+  width: 100%;
+}
+.avatar {
+  width: 25px;
+  vertical-align: top;
+}
+.avatar img {
+  width: 25px; height: 25px;
+  vertical-align: top;
+  margin-right: 0.5em;
+}
+.chat-message {
+  width: 70%;
+}
+.chat-message .name {
+  font-weight: bold;
+}
+.meta {
+  vertical-align: top;
+  color: #888;
+  font-size: 0.8em;
+}
+/* body {
+  margin: 1em 2em
+} */

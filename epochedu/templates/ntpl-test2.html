@@ -1,0 +1,26 @@
+{%set name test2 %}
+<!-- {%set args userfax,username,usermail %} -->
+
+{%extends 'boilerplate' %}
+
+{%block 'title' %}nTPL test2 of boilerplate{%/block %}
+
+{%block 'body-scripts' %}
+{%
+	var shadow = "0 0 4px #333";
+	var radius = "30px";
+	
+	function crossbrowser( attr , val) {
+		return [
+			"-webkit-" , attr ,  ":" , val , ";",
+			"-moz-" , attr ,  ":" , val , ";",
+			attr ,  ":" , val , ";"
+		].join("");
+	}
+%}
+
+{%/block %}
+
+{%block 'container' %}
+	<p>Some content</p>
+{%/block %}

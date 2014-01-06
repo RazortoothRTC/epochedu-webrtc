@@ -1,0 +1,786 @@
+/* html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,figure,footer,header,hgroup,menu,nav,section,menu,time,mark,audio,video {
+background: transparent;
+border: 0;
+font-size: 100%;
+margin: 0;
+outline: 0;
+padding: 0;
+vertical-align: baseline
+}
+*/ 
+html {
+	overflow-y: scroll
+}
+body,input,select,textarea {
+	color: #333
+}
+body {
+	font: 13px sans-serif;
+	line-height: 1.22
+}
+a {
+	background: transparent;
+	font-size: 100%;
+	margin: 0;
+	padding: 0;
+	vertical-align: baseline
+}
+a:active,a:hover {
+	outline: none
+}
+abbr[title],dfn[title] {
+	border-bottom: 1px dotted #000;
+	cursor: help
+}
+article,aside,figure,footer,header,hgroup,nav,section {
+	display: block
+}
+blockquote,q {
+	quotes: none
+}
+blockquote:after,blockquote:before,q:after,q:before {
+	content: '';
+	content: none
+}
+button,input[type=button],input[type=submit],label {
+	cursor: pointer
+}
+button {
+	margin: 0
+}
+code,kbd,pre,samp {
+	font-family: 'Menlo', 'Courier', monospace, sans-serif
+}
+del {
+	text-decoration: line-through
+}
+h1,h2,h3,h4,h5,h6 {
+	font-weight: bold
+}
+h1 {
+	font-size: xx-large
+}
+h2 {
+	font-size: x-large
+}
+h3 {
+	font-size: large
+}
+h4 {
+	font-size: small
+}
+h5 {
+	font-size: x-small
+}
+h6 {
+	font-size: xx-small
+}
+hr {
+	margin: 2em 0
+}
+input,select {
+	vertical-align: middle
+}
+input[type="radio"] {
+	vertical-align: text-bottom
+}
+input[type="checkbox"] {
+	vertical-align: bottom
+}
+ins,mark {
+	background-color: #ff9;
+	color: #000
+}
+ins {
+	text-decoration: none
+}
+mark {
+	font-style: italic;
+	font-weight: bold
+}
+pre {
+	white-space: pre;
+	white-space: pre-wrap
+}
+select,input[type="text"],textarea {
+	font-family: sans-serif
+}
+sub,sup {
+	font-size: smaller
+}
+sub {
+	vertical-align: sub
+}
+sup {
+	vertical-align: super
+}
+small {
+	font-size: 85%
+}
+strong,th {
+	font-weight: bold
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	font-size: inherit;
+	font: 100%
+}
+td,td img {
+	vertical-align: top
+}
+ul {
+	margin-left: 30px
+}
+ol {
+	margin-left: 30px;
+	list-style-type: decimal
+}
+.ie6 button,.ie7 button,.ie8 button {
+	overflow: visible;
+	width: auto
+}
+.ie6 pre,.ie7 pre,.ie8 pre {
+	word-wrap: break-word
+}
+.ie6 input {
+	vertical-align: text-bottom
+}
+.ie7 img {
+	-ms-interpolation-mode: bicubic
+}
+.ie7 input[type="checkbox"] {
+	vertical-align: baseline
+}
+.ninjaPaper {
+	border: 0.125em solid;
+	-ms-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	font-size: 13px;
+	padding: 0.5em;
+	position: relative
+}
+.ninjaPlastic {
+	border: 0.125em solid;
+	-ms-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	background-image: url("../images/gradient-outset.png");
+	background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.125));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.25)), to(rgba(0, 0, 0, 0.125)));
+	background-position: bottom center;
+	background-repeat: repeat-x;
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: default;
+	font-size: 13px;
+	height: 2em;
+	line-height: 2em;
+	padding: 0 0.75em;
+	position: relative;
+	vertical-align: middle;
+	white-space: nowrap
+}
+.ninjaPlastic:focus {
+	outline: 0
+}
+.ninjaPlastic::-moz-focus-inner {
+	border: 0;
+	padding: 0
+}
+a.ninjaPlastic {
+	text-decoration: none
+}
+a.ninjaPlastic:hover {
+	text-decoration: none
+}
+div.ninjaPlastic {
+	display: block
+}
+.ninjaEnabled {
+	cursor: pointer
+}
+.ninjaEnabled:active {
+	background-image: url("../images/gradient-inset.png");
+	background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.25));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.125)), to(rgba(255, 255, 255, 0.25)));
+	background-position: top center;
+	background-repeat: repeat-x
+}
+.ninjaSelected {
+	cursor: pointer;
+	background-image: url("../images/gradient-inset.png");
+	background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.25));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.125)), to(rgba(255, 255, 255, 0.25)));
+	background-position: top center;
+	background-repeat: repeat-x
+}
+.ninjaSelected:active {
+	background-image: url("../images/gradient-outset.png");
+	background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.125));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.25)), to(rgba(0, 0, 0, 0.125)));
+	background-position: bottom center;
+	background-repeat: repeat-x
+}
+.ninjaFilmstrip {
+	font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	white-space: nowrap
+}
+.ninjaFilmstrip .ninjaFilmstripBar {
+	padding-left: 0;
+	padding-right: 0;
+	text-align: center
+}
+.ninjaFilmstrip .ninjaFilmstripBar .ninjaFilmstripBack {
+	left: 0;
+	margin: -1px;
+	position: absolute !important;
+	top: 0
+}
+.ninjaFilmstrip .ninjaFilmstripBar .ninjaFilmstripForward {
+	margin: -1px;
+	position: absolute !important;
+	right: 0;
+	top: 0
+}
+.ninjaFilmstrip .ninjaFilmstripView {
+	border: 0.125em solid;
+	border-top: none;
+	display: block;
+	overflow: hidden;
+	position: relative;
+	vertical-align: middle
+}
+.ninjaFilmstrip .ninjaFilmstripView .ninjaFilmstripReel {
+	display: block;
+	font-size: 0;
+	left: 0;
+	position: absolute;
+	top: 0;
+	white-space: nowrap
+}
+.ninjaFilmstrip .ninjaFilmstripView .ninjaFilmstripReel .ninjaFilmstripFrame {
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	border-right: 1px solid;
+	font-size: 11px;
+	overflow: hidden;
+	padding: 5px;
+	text-align: left;
+	vertical-align: top;
+	white-space: normal
+}
+div.ninjaFolders .ninjaFoldersTabs {
+	white-space: nowrap
+}
+div.ninjaFolders .ninjaFoldersTabs .ninjaFoldersTab {
+	border-bottom-style: none;
+	border-left-style: none
+}
+div.ninjaFolders .ninjaFoldersTabs .ninjaFoldersTab.ninjaFoldersFirst {
+	border-left-style: solid
+}
+table.ninjaFolders {
+	width: 100%
+}
+table.ninjaFolders .ninjaFoldersTabs .ninjaFoldersTab {
+	border-right: none;
+	border-top-style: none;
+	display: block;
+	text-align: left;
+	white-space: nowrap
+}
+table.ninjaFolders .ninjaFoldersTabs .ninjaFoldersTab.ninjaFoldersFirst {
+	border-top-style: solid
+}
+table.ninjaFolders .ninjaFoldersColumn {
+	width: 100%
+}
+.ninjaIcon {
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	background-position: center;
+	background-repeat: no-repeat;
+	min-height: 16px;
+	min-width: 16px;
+	vertical-align: middle
+}
+.ninjaIconBlack.ninjaIcon-add {
+	background-image: url("../images/black/add.png")
+}
+.ninjaIconBlack.ninjaIcon-arrange {
+	background-image: url("../images/black/arrange.png")
+}
+.ninjaIconBlack.ninjaIcon-beverage {
+	background-image: url("../images/black/beverage.png")
+}
+.ninjaIconBlack.ninjaIcon-bookmark {
+	background-image: url("../images/black/bookmark.png")
+}
+.ninjaIconBlack.ninjaIcon-caution {
+	background-image: url("../images/black/caution.png")
+}
+.ninjaIconBlack.ninjaIcon-check {
+	background-image: url("../images/black/check.png")
+}
+.ninjaIconBlack.ninjaIcon-down {
+	background-image: url("../images/black/down.png")
+}
+.ninjaIconBlack.ninjaIcon-download {
+	background-image: url("../images/black/download.png")
+}
+.ninjaIconBlack.ninjaIcon-edit {
+	background-image: url("../images/black/edit.png")
+}
+.ninjaIconBlack.ninjaIcon-flag {
+	background-image: url("../images/black/flag.png")
+}
+.ninjaIconBlack.ninjaIcon-food {
+	background-image: url("../images/black/food.png")
+}
+.ninjaIconBlack.ninjaIcon-gear {
+	background-image: url("../images/black/gear.png")
+}
+.ninjaIconBlack.ninjaIcon-group {
+	background-image: url("../images/black/group.png")
+}
+.ninjaIconBlack.ninjaIcon-heart {
+	background-image: url("../images/black/heart.png")
+}
+.ninjaIconBlack.ninjaIcon-home {
+	background-image: url("../images/black/home.png")
+}
+.ninjaIconBlack.ninjaIcon-in {
+	background-image: url("../images/black/in.png")
+}
+.ninjaIconBlack.ninjaIcon-left {
+	background-image: url("../images/black/left.png")
+}
+.ninjaIconBlack.ninjaIcon-lock {
+	background-image: url("../images/black/lock.png")
+}
+.ninjaIconBlack.ninjaIcon-mail {
+	background-image: url("../images/black/mail.png")
+}
+.ninjaIconBlack.ninjaIcon-no {
+	background-image: url("../images/black/no.png")
+}
+.ninjaIconBlack.ninjaIcon-out {
+	background-image: url("../images/black/out.png")
+}
+.ninjaIconBlack.ninjaIcon-phone {
+	background-image: url("../images/black/phone.png")
+}
+.ninjaIconBlack.ninjaIcon-photo {
+	background-image: url("../images/black/photo.png")
+}
+.ninjaIconBlack.ninjaIcon-print {
+	background-image: url("../images/black/print.png")
+}
+.ninjaIconBlack.ninjaIcon-profile {
+	background-image: url("../images/black/profile.png")
+}
+.ninjaIconBlack.ninjaIcon-question {
+	background-image: url("../images/black/question.png")
+}
+.ninjaIconBlack.ninjaIcon-refresh {
+	background-image: url("../images/black/refresh.png")
+}
+.ninjaIconBlack.ninjaIcon-remove {
+	background-image: url("../images/black/remove.png")
+}
+.ninjaIconBlack.ninjaIcon-right {
+	background-image: url("../images/black/right.png")
+}
+.ninjaIconBlack.ninjaIcon-search {
+	background-image: url("../images/black/search.png")
+}
+.ninjaIconBlack.ninjaIcon-star {
+	background-image: url("../images/black/star.png")
+}
+.ninjaIconBlack.ninjaIcon-target {
+	background-image: url("../images/black/target.png")
+}
+.ninjaIconBlack.ninjaIcon-unlock {
+	background-image: url("../images/black/unlock.png")
+}
+.ninjaIconBlack.ninjaIcon-up {
+	background-image: url("../images/black/up.png")
+}
+.ninjaIconBlack.ninjaIcon-upload {
+	background-image: url("../images/black/upload.png")
+}
+.ninjaIconBlack.ninjaIcon-video {
+	background-image: url("../images/black/video.png")
+}
+.ninjaIconWhite.ninjaIcon-add {
+	background-image: url("../images/white/add.png")
+}
+.ninjaIconWhite.ninjaIcon-arrange {
+	background-image: url("../images/white/arrange.png")
+}
+.ninjaIconWhite.ninjaIcon-beverage {
+	background-image: url("../images/white/beverage.png")
+}
+.ninjaIconWhite.ninjaIcon-bookmark {
+	background-image: url("../images/white/bookmark.png")
+}
+.ninjaIconWhite.ninjaIcon-caution {
+	background-image: url("../images/white/caution.png")
+}
+.ninjaIconWhite.ninjaIcon-check {
+	background-image: url("../images/white/check.png")
+}
+.ninjaIconWhite.ninjaIcon-down {
+	background-image: url("../images/white/down.png")
+}
+.ninjaIconWhite.ninjaIcon-download {
+	background-image: url("../images/white/download.png")
+}
+.ninjaIconWhite.ninjaIcon-edit {
+	background-image: url("../images/white/edit.png")
+}
+.ninjaIconWhite.ninjaIcon-flag {
+	background-image: url("../images/white/flag.png")
+}
+.ninjaIconWhite.ninjaIcon-food {
+	background-image: url("../images/white/food.png")
+}
+.ninjaIconWhite.ninjaIcon-gear {
+	background-image: url("../images/white/gear.png")
+}
+.ninjaIconWhite.ninjaIcon-group {
+	background-image: url("../images/white/group.png")
+}
+.ninjaIconWhite.ninjaIcon-heart {
+	background-image: url("../images/white/heart.png")
+}
+.ninjaIconWhite.ninjaIcon-home {
+	background-image: url("../images/white/home.png")
+}
+.ninjaIconWhite.ninjaIcon-in {
+	background-image: url("../images/white/in.png")
+}
+.ninjaIconWhite.ninjaIcon-left {
+	background-image: url("../images/white/left.png")
+}
+.ninjaIconWhite.ninjaIcon-lock {
+	background-image: url("../images/white/lock.png")
+}
+.ninjaIconWhite.ninjaIcon-mail {
+	background-image: url("../images/white/mail.png")
+}
+.ninjaIconWhite.ninjaIcon-no {
+	background-image: url("../images/white/no.png")
+}
+.ninjaIconWhite.ninjaIcon-out {
+	background-image: url("../images/white/out.png")
+}
+.ninjaIconWhite.ninjaIcon-phone {
+	background-image: url("../images/white/phone.png")
+}
+.ninjaIconWhite.ninjaIcon-photo {
+	background-image: url("../images/white/photo.png")
+}
+.ninjaIconWhite.ninjaIcon-print {
+	background-image: url("../images/white/print.png")
+}
+.ninjaIconWhite.ninjaIcon-profile {
+	background-image: url("../images/white/profile.png")
+}
+.ninjaIconWhite.ninjaIcon-question {
+	background-image: url("../images/white/question.png")
+}
+.ninjaIconWhite.ninjaIcon-refresh {
+	background-image: url("../images/white/refresh.png")
+}
+.ninjaIconWhite.ninjaIcon-remove {
+	background-image: url("../images/white/remove.png")
+}
+.ninjaIconWhite.ninjaIcon-right {
+	background-image: url("../images/white/right.png")
+}
+.ninjaIconWhite.ninjaIcon-search {
+	background-image: url("../images/white/search.png")
+}
+.ninjaIconWhite.ninjaIcon-star {
+	background-image: url("../images/white/star.png")
+}
+.ninjaIconWhite.ninjaIcon-target {
+	background-image: url("../images/white/target.png")
+}
+.ninjaIconWhite.ninjaIcon-unlock {
+	background-image: url("../images/white/unlock.png")
+}
+.ninjaIconWhite.ninjaIcon-up {
+	background-image: url("../images/white/up.png")
+}
+.ninjaIconWhite.ninjaIcon-upload {
+	background-image: url("../images/white/upload.png")
+}
+.ninjaIconWhite.ninjaIcon-video {
+	background-image: url("../images/white/video.png")
+}
+.ninjaMenu {
+	font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	position: relative;
+	vertical-align: middle;
+	z-index: 666
+}
+.ninjaMenu .ninjaMenuChoices {
+	-ms-box-shadow: 0 0.5em 0.5em black;
+	-moz-box-shadow: 0 0.5em 0.5em black;
+	-webkit-box-shadow: 0 0.5em 0.5em black;
+	box-shadow: 0 0.5em 0.5em black;
+	display: none;
+	position: absolute;
+	z-index: 777
+}
+.ninjaMenu .ninjaMenuChoices .ninjaMenuChoice {
+	text-align: left
+}
+.ninjaMenu .ninjaMenuChoices .ninjaMenuChoice:hover {
+	background-image: url("../images/gradient-outset.png");
+	background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.125));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.25)), to(rgba(0, 0, 0, 0.125)));
+	background-position: bottom center;
+	background-repeat: repeat-x
+}
+.ninjaMessage {
+	display: none;
+	max-width: 80%;
+	position: fixed;
+	z-index: 999
+}
+.ninjaMessage .ninjaMessageClose {
+	margin: -1px;
+	position: absolute;
+	right: 0;
+	top: 0
+}
+.ninjaMessage .ninjaMessageReflection {
+	border: 0.125em solid;
+	height: 1em;
+	position: absolute;
+	width: 100%
+}
+.ninjaNavigation {
+	height: 3em;
+	line-height: 3em;
+	padding: 0 1em 0 0
+}
+.ninjaNavigation .ninjaTabs {
+	left: 0;
+	margin: -1px;
+	position: absolute;
+	top: 0
+}
+.ninjaNavigation .ninjaTab {
+	height: 3em;
+	line-height: 3em;
+	padding: 0 1em
+}
+.ninjaPanelBar {
+	margin: -0.6em -0.6em 0 -0.6em
+}
+div.ninjaPanel {
+	display: block;
+	margin: 0.5em 0
+}
+.ninjaRating {
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	margin: 0.5em 0;
+	white-space: nowrap
+}
+.ninjaRating .ninjaRatingStar {
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	cursor: pointer;
+	font-family: 'Courier', monospace, sans-serif;
+	font-size: 1.5em;
+	vertical-align: middle;
+	-moz-text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.75);
+	-webkit-text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.75);
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.75)
+}
+.ie6 .ninjaRatingStar,.ie7 .ninjaRatingStar {
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=0, Color='#000000')
+}
+.ie8 .ninjaRatingStar {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=0, Color='#000000')"
+}
+.ninjaSlider {
+	border: 0.125em solid;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: default;
+	padding: 0.5em;
+	text-align: center;
+	vertical-align: top
+}
+.ninjaSlider .ninjaSliderTitle {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none
+}
+.ninjaSlider .ninjaSliderContainer {
+	height: 1.7em;
+	line-height: 1.7em;
+	position: relative
+}
+.ninjaSlider .ninjaSliderTrack {
+	border: 0.125em solid;
+	background-image: url("../images/gradient-inset.png");
+	background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.25));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.125)), to(rgba(255, 255, 255, 0.25)));
+	background-position: top center;
+	background-repeat: repeat-x;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	height: 0.5em;
+	line-height: 0.5em;
+	position: relative
+}
+.ninjaSlider .ninjaSliderTrack .ninjaSliderLevel {
+	background-image: url("../images/gradient-outset.png");
+	background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.125));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.25)), to(rgba(0, 0, 0, 0.125)));
+	background-position: bottom center;
+	background-repeat: repeat-x;
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	height: 0.5em;
+	left: 0;
+	line-height: 0.5em;
+	position: absolute;
+	top: 0
+}
+.ninjaSlider .ninjaSliderButton {
+	height: 1.4em;
+	line-height: 1.4em;
+	padding: 0;
+	position: absolute;
+	width: 1.4em
+}
+.ninjaSlider .ninjaSliderText {
+	overflow: hidden;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+	display: block;
+	font-size: 0.8em
+}
+.ninjaTabs {
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	font-size: 0;
+	vertical-align: middle;
+	white-space: nowrap
+}
+.ninjaTabs .ninjaTab {
+	border-left-style: none
+}
+.ninjaTabs .ninjaTab.ninjaFirst {
+	border-left-style: solid
+}
+.ninjaWaitOverlay {
+	left: 0;
+	position: absolute;
+	top: 0;
+	z-index: 888
+}
+.ninjaWaitFrame {
+	border: 0.125em solid;
+	display: none;
+	max-width: 80%;
+	padding: 1em;
+	position: absolute;
+	text-align: center;
+	z-index: 999
+}
+.ninjaWaitFrame .ninjaWaitReflection {
+	border: 0.125em solid;
+	height: 1em;
+	position: absolute;
+	width: 100%
+}
+.ninjaWaitIcon {
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	background: url("../images/wait.png") left center no-repeat;
+	height: inherit;
+	min-height: 16px;
+	vertical-align: middle;
+	width: 16px
+}
+.ninjaWindowOverlay {
+	left: 0;
+	position: absolute;
+	top: 0;
+	z-index: 888
+}
+.ninjaWindowFrame {
+	display: none;
+	max-width: 80%;
+	position: absolute;
+	z-index: 999
+}
+.ninjaWindowFrame .ninjaWindowHandle .ninjaWindowTitle {
+	display: -moz-inline-box;
+	display: inline-block;*display:inline;
+	zoom: 1;
+	margin-right: 2em
+}
+.ninjaWindowFrame .ninjaWindowHandle .ninjaWindowClose {
+	margin: -1px;
+	position: absolute;
+	right: 0;
+	top: 0
+}
+.ninjaWindowFrame .ninjaWindowContent {
+	overflow: auto
+}
+.ninjaWindowFrame .ninjaWindowReflection {
+	border: 0.125em solid;
+	height: 1em;
+	position: absolute;
+	width: 100%
+}

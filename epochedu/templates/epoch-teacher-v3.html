@@ -1,0 +1,408 @@
+{%set name teacher %}
+{%set args channel, roomcl %}
+{%extends 'boilerplate' %}
+{%block 'title' %}Teachers: Welcome to class: {%= channel %}{%/block %}
+{%block 'css-styles' %}
+	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v3.css" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/jquery.gritter.css" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/colorbox.css" media="all">
+{%/block %}
+{%block 'head' %}
+	
+{%/block %}
+
+{%block 'container' %}
+	<!-- page -->
+	<div id="page">
+		<!-- header -->
+		<div id="header">
+			<div id="branding">
+				<h1>Classroom: {%= channel %}</h1>
+			</div>
+			<div id="session">
+				<div id="timer"></div><div id='sessioncontrols'><span id='stopsessionbtn'></span><span id='startsessionbtn'></span></div>
+				<!-- <a class="start" href="#">Start Session</a> -->
+			</div>
+			
+			<div id="account">
+				<p>Hello, <span id="nickname"></span><a class="logout jqModal" href="javascript:void(0);" onclick="doLogout(); return false;">Logout</a></p>
+			</div>
+			
+			<div id="toolbar">
+				<span id="home"></span>
+		        {*<ul id="status">
+		          <li><a id="usersLink" href="#">5 users</a></li>
+		          <li>uptime: <span id="uptime">?</span></li>
+		          <li>memory: <span id="rss">?</span>mb RSS</li>
+		        </ul>*}
+		    </div>
+		</div>
+		<!-- end header -->
+
+		<!-- content -->
+		<div id="content">
+			<div id="chat" class="module">
+				<form id="chatwindow">
+					<div id="chatmsg">
+						<div class="chathistory">
+							<div class="chatscroll">
+								{*
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla u sodales a, feu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augulla at augue sem.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Nulla at augue sem.tiam in tincidunt arcu. Nulla at aulla at augue sem.ue sem.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Etiam in tincidunt arcu. Nulla at augue sem.</div><div class="ts">12:44 am</div></div>
+								<div class="msg"><span class="user">Teacher:</span>   <div class="msgcon">Aliquam enim neque, tempor eu sodales a, fermentum et urna.</div><div class="ts">12:44 am</div></div>
+								*}
+							</div>
+						</div>
+					</div>
+					<div class="chatgui">
+						<input id="entry" type="text" class="cinput"/>
+						<input type="image" src="/static/images/submit.png" class="csubmit"/>
+					</div>
+				</form>
+			</div>
+			<div id="users" class="module">
+				<div class="mwrapper">
+					<div class="userhistory">
+						<div class="userscroll">
+							<ul id="userstatus">
+								{*
+								<li class="online">Brian Langer</li>
+								<li class="offline">Collin Campbell</li>
+								<li class="online">Kristi Rooney</li>
+								<li class="online">Ryan Leising</li>
+								<li class="online">Amanada Maness</li>
+								<li class="online">Mitch Lowry</li>
+								<li class="offline">Judd Whalen</li>
+								<li class="online">Jon Scott</li>
+								<li class="online">Brianne LeMoigne</li>
+								<li class="online">Julie Goodman</li>
+								<li class="online">Brian Langer</li>
+								<li class="offline">Collin Campbell</li>
+								<li class="online">Kristi Rooney</li>
+								<li class="online">Ryan Leising</li>
+								<li class="online">Amanada Maness</li>
+								<li class="online">Mitch Lowry</li>
+								<li class="offline">Judd Whalen</li>
+								<li class="online">Jon Scott</li>
+								<li class="online">Brianne LeMoigne</li>
+								<li class="online">Julie Goodman</li>
+								*}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end content -->
+ 	<div id="bottom">
+		
+		<!-- media -->
+		<div id="media">
+			<form>
+			<div class="mediaCarousel">
+			      <div class="wrapper">
+					<ul id="resources">
+						{*
+						<li class="html">
+							<input type="checkbox" name="item1" id="item1" value="item1"/>
+							<label for="item1">Etiam in tincidunt arcu. Nulla at augue sem.</label>
+						</li>
+						<li class="pdf">
+							<input type="checkbox" name="item2" id="item2" value="item2"/>
+							<label for="item2">Tincidunt arcu. Nulla at augue sem.</label>
+						</li>
+						<li class="jpg">
+							<input type="checkbox" name="item3" id="item3" value="item2"/>
+							<label for="item3">Nulla at augue sem. Etiam in tincidunt arcu. </label>
+						</li>
+						<li class="ppt">
+							<input type="checkbox" name="item4" id="item4" value="item2"/>
+							<label for="item4">Arcu. Nulla at augue sem in tincidunt a.</label>
+						</li>
+						<li class="ppt">
+							<input type="checkbox" name="item5" id="item5" value="item5"/>
+							<label for="item5">Incidunt arcu. Nulla at augue sem.</label>
+						</li>
+						<li class="html">
+							<input type="checkbox" name="item6" id="item6" value="item6"/>
+							<label for="item6">Arcu. Nulla at augue sem.</label>
+						</li>
+						<li class="jpg">
+							<input type="checkbox" name="item7" id="item7" value="item7"/>
+							<label for="item7">Lla at augue sem. Tiam in tincidunt arcu. </label>
+						</li>
+						<li class="pdf">
+							<input type="checkbox" name="item8" id="item8" value="item8"/>
+							<label for="item8">Pulalla at augue sem in tincidunt a.</label>
+						</li>
+						<li class="jpg">
+							<input type="checkbox" name="item7" id="item7" value="item7"/>
+							<label for="item7">Lla at augue sem. Tiam in tincidunt arcu. </label>
+						</li>
+						*}
+					</ul>
+				</div>
+			</div>
+			</form>
+		</div>
+		<!-- end media -->
+		<!-- media control -->
+		<div id="mediacontrol">
+			<span id="send"></span><span id="end"></span><span id="preview"></span><span id="sync-btn"></span>
+		</div>
+		<!-- end media control -->
+		
+		<!-- footer -->
+		<div id="footer">
+			<p class="left">Hardware powered by Marvell</p>
+			<p class="right">&copy 2011-2012 Razortooth Communications, LLC</p>
+		</div>
+		<!-- end footer -->
+	  </div>
+	</div>
+	<!-- end page -->
+	{*
+		XXX TEMPLATE THIS SNIPPET
+	*}
+	<div class="jqmWindow" id="dialog">
+		<div class="modalmsg">
+			<div class="modaltxt">
+				<h3>Welcome to the EpochEDU - Classroom-in-a-box.</h3>
+				<p>This is the teacher’s demonstration device.<br />Please touch the “Login Now” to login to the teacher’s control panel.</p>
+			</div>
+			<div class="modalbranding">
+				
+			</div>
+		</div>
+		<form id="loginform">
+			<div class="modalrow">
+				<label>Username:</label>
+				<input id="nickInput" type="text" class="modalform"/>
+			</div>
+			<div class="modalrow">
+				<label>Password:</label>
+				<input type="text" class="modalform"/>
+			</div>
+			<div class="modalrow">
+				<input id="connectButton" type="image" src="/static/images/login-btn.png" class="login"/>
+			</div>
+			<span class="modalrow" id="status"></span>
+		</form>
+	</div>
+{%/block %}
+
+{%block 'body-scripts' %}
+	<script type="text/javascript" src="/static/js/jquery.stopwatch.js"></script>
+	<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
+	<script type="text/javascript" src="/static/js/jqModal.js"></script>
+	<script type="text/javascript" src="/static/js/jcarousel.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.colorbox-min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+	<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+	<script type="text/javascript">
+		Shadowbox.init({
+		    handleOversize: "drag",
+			overlayColor: "#330099",
+			overlayOpacity: "0.75",
+		    modal: false,
+			displayNav:         true,
+			handleUnsupported:  "link",
+			autoplayMovies:     true,
+		});
+	</script>
+	<script type="text/javascript">
+		var contents = {%= roomcl %};
+		var listitemdata = '';
+		$.each(contents, function(i, content) {
+			var mime, fqname, filename, itemi, contentli, contentin, contentlab;
+			
+			itemi = 'item' + (i+1);
+			fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+			mime = fqname.split('.')[1].toLowerCase();
+			
+			// Handle any special cases for mime types
+			if (mime == '3gp') {
+				mime = mime.replace('3', 'three');
+			}
+			filename = fqname.split('.')[0];	
+			listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><br><label for="'+ itemi +'">' + filename + '</label></li>';
+		});
+		$('#resources').append(listitemdata);
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.chatscroll').jScrollPane({
+				showArrows:true,
+				scrollbarWidth:30,
+				maintainPosition: false,
+				animateTo: true,
+			});
+			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
+			$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
+			$('#timer').stopwatch();;
+			$('#startsessionbtn').ninjaButtonCreate({
+			  icon:'bookmark', 
+			  onSelect:function(){ 
+				$('#timer').startTimer();
+			    $('#stopsessionbtn').ninjaButtonEnable();
+				
+				$(this).ninjaButtonDeselect();
+				$.ajax({
+					url: "/send",
+					data: {id: CONFIG.id, text: 'startsession', type: 'startsession', channel: getChannel()},
+					dataType: "text",
+					async:false,
+					cache:false,
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+					},
+				}); 
+			  },
+			  onDeselect:function() {
+				$(this).ninjaButtonDisable();
+			  }, 
+			  state:'enabled',
+			  title:'Start Class' 
+			});
+			$('#stopsessionbtn').ninjaButtonCreate({
+			  icon:'flag', 
+			  onSelect:function(){ 
+				$('#timer').stopTimer()
+				$('#startsessionbtn').ninjaButtonEnable();
+				$(this).ninjaButtonDeselect();
+				$.ajax({
+					url: "/send",
+					data: {id: CONFIG.id, text: 'endsession', type: 'endsession', channel: getChannel()},
+					dataType: "text",
+					async:false,
+					cache:false,
+					success: function(data, textStatus, XMLHttpRequest){
+					
+					},
+					complete: function complete(XMLHttpRequest, textStatus){
+						// alert('/send done');
+					},
+					error: function(e) {
+					},
+				}); 
+			  },
+			  onDeselect:function() {
+				$(this).ninjaButtonDisable();
+			  }, 
+			  state:'disabled',
+			  title:'End Class' 
+			});
+			$('#send').ninjaButtonCreate({
+			  icon:'mail', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				/* XXX Put this back into epoch-client.js once design is final */
+			    $('#resources').find('input:checked').each(
+			    function(index) {
+			        var msg = this.value;
+			        if (!util.isBlank(msg)) sendviewer(msg, "universalsend");
+			        this.checked = false;	
+					toggleNinjaButton('#mediacontrol', false);
+					$('#end').ninjaButtonEnable();
+			    }
+			    );
+			  },
+			  state:'disabled',
+			  title:'Send' 
+			});
+			$('#preview').ninjaButtonCreate({
+			  icon:'video',
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				$('#resources').find('input:checked').each(
+			    	function(index) {
+				        var msg = this.value;
+						// alert('url ' + msg);
+				        if (!util.isBlank(msg)) openBestPlayer(msg);
+				        this.checked = false;
+						toggleNinjaButton('#mediacontrol', false);
+				    }
+				);
+			  },
+			  state:'disabled',
+			  title:'Preview' 
+			});
+			$('#sync-btn').ninjaButtonCreate({
+			  icon:'upload', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				/* XXX Put this back into epoch-client.js once design is final */
+				$('#resources').find('input:checked').each(
+			    	function(index) {
+				        var msg = this.value;
+				        messageDispatcher("sync", msg);
+				        this.checked = false;
+						toggleNinjaButton('#mediacontrol', false);
+				    }
+			    );
+			  },
+			  state:'disabled',
+			  title:'Sync' 
+			});
+			$('#end').ninjaButtonCreate({
+			  icon:'remove', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				/* XXX Put this back into epoch-client.js once design is final */
+				var msg = "#endviewer";
+			    sendviewer(msg, "endviewer");
+				toggleNinjaButton('#mediacontrol', false);
+				$('#resources').find('input:checked').each(
+			    	function(index) {
+						this.checked = false;
+					}
+				);
+			    return false;
+			  },
+			  state:'disabled',
+			  title:'End' // text that is optional when there is an icon
+			});
+			$('#home').ninjaButtonCreate({
+			  icon:'home', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				
+			  },
+			  title:'Home' 
+			});
+			$("#home").live("click", function(e) { 
+				window.location = '/teacher';
+			});
+			
+		});
+	</script>
+	<script type="text/javascript">
+		/* XXX Refactor this into epoch-client.js */
+		function getChannel() {
+			return '{%= channel%}';
+		}
+		
+		function isTeacher() {
+			return true;
+		}
+	</script>
+	<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
+{%/block %}
+
+
+

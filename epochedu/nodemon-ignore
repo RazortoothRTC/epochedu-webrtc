@@ -1,0 +1,6 @@
+/static/css/*
+/static/images/*
+channels.dirty
+sessions.dirty
+/.hg/*
+.hgtags

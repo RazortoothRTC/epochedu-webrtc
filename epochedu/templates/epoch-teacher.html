@@ -1,0 +1,343 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>Epoch EDU Teacher Classroom - <%= $channel %></title>
+	<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
+<script type="text/javascript" src="/static/js/jquery.md5.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
+<script type="text/javascript" src="/static/js/jquery.ev.js"></script>
+<script type="text/javascript" src="/static/js/pretty.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+<script type="text/javascript">
+Shadowbox.init({
+    handleOversize: "drag",
+	overlayColor: "#ffffff",
+	overlayOpacity: "0.75",
+    modal: false,
+	displayNav:         true,
+	handleUnsupported:  "link",
+	autoplayMovies:     true
+	
+});
+</script>
+<script type="text/javascript">
+$(function() {
+	// this initialises the demo scollpanes on the page.
+	$('.chatscroll').jScrollPane({showArrows:true});
+});
+</script>
+
+<script type="text/javascript">
+
+var cookieName = 'tatsumaki_chat_ident';
+// var path = '<%= @pathinfo[1] %>';
+// var channel = '<%= $channel %>'
+var onNewEvent = function(e) {
+	if ((e.name != null) && (e.name.match(/#killsession/i))) {
+		$('table#messages').children().remove();
+	} else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
+		if (e.ident) {
+			// Make sure you don't register the teacher
+			if (e.ident.split('@')[0].localeCompare($('#ident').attr('value').split('@')[0]) != 0) {
+				$("#onlinestudents").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '</li>');
+				$("#studentStatusList").filter(":not(:contains('" + e.ident.split('@')[0] + "'))").append('<li>' + e.ident.split('@')[0] + '<span class="status">In Class session</span></li>');
+			}
+		}
+	} else {
+		try {
+			var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+			var name   = e.name   || e.ident || 'Anonymous';
+			var avatar = $('<img/>').attr('src', src).attr('alt', name);
+			if (e.ident) {
+			  var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
+			  avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
+			}
+			avatar = $('<td/>').addClass('avatar').append(avatar);
+
+			var message = $('<td/>').addClass('chat-message');
+			if (e.text) message.text(e.text);
+			if (e.html) message.html(e.html);
+			message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
+			var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
+			if (name) 
+			  message.prepend($('<span/>').addClass('name').text(name+ ': '));
+			if (name != null && name.charAt(0) != '#') {
+				var date = new Date(e.time * 1000);
+				var meta = $('<td/>').addClass('meta').append(
+			        '(' +
+			        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
+			        ' from ' + e.address + ')'
+			      );
+				$('.pretty-time', meta).prettyDate();
+
+	$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+			} 
+		} catch(e) { if (console) console.log(e) };
+	}
+}
+
+$(document).ready(function() { 	
+	$(".topMenuAction").click( function() {
+		if ($("#openCloseIdentifier").is(":hidden")) {
+			$("#slider").animate({ 
+				marginLeft: "170px"
+				}, 500 );
+			$("#topMenuImage").html('<img src="/static/images/online-students.png" alt="online students"/>');
+			$("#openCloseIdentifier").show();
+		} else {
+			$("#slider").animate({ 
+				marginLeft: "300px"
+				}, 500 );
+			$("#topMenuImage").html('<img src="/static/images/online-students.png" alt="online students"/>');
+			$("#openCloseIdentifier").hide();
+		}
+	});
+	
+  	$('#startsession').bind('click', function() { 
+		$('#startsession').fadeOut('fast');
+		$.get(
+			"/startsession/<%= $channel %>", 
+			{ ident: $('#ident').val()},
+			function(data) {
+				return false;
+		});
+		$('#endsession').fadeIn('fast');
+	}); 
+
+  $('#endsession').bind('click', function() { 
+		$('#endsession').fadeOut('fast');
+		// Need to kill off the class room session, clear the queue for channel
+		$.get(
+			"/endsession/<%= $channel %>", 
+			{ ident: $('#ident').val()},
+			function(data) {
+				// XXX Is there some way to avoid removing all of the messages?
+				// Maybe move this over to a history tab?
+				$('table#messages').children().remove();
+				return false;
+		});
+		$('#startsession').fadeIn('fast');
+	});
+	
+	//When page loads...
+	$(".tab_content").hide(); //Hide all content
+	$("ul.tabs li:first").addClass("active first").show(); //Activate first tab
+	$(".tab_content:first").show(); //Show first tab content
+
+	//On Click Event
+	$("ul.tabs li").click(function() {
+
+		$("ul.tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".tab_content").hide(); //Hide all tab content
+
+		var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+		$(activeTab).fadeIn('fast'); //Fade in the active ID content
+		return false;
+	});
+	//On Click Event
+	$("#sliderContent ul li").click(function() {
+
+		$("#sliderContent ul li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".tab_content").hide(); //Hide all tab content
+
+		var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+		$(activeTab).fadeIn('fast'); //Fade in the active ID content
+		return false;
+	});
+	
+	$('#chatsubmit').submit(function() {
+	  doPost($('#ident'), $('#sendchat'));
+	  return false;
+	});
+	
+	$('#regid').submit(function() {
+	  $(this).fadeOut('fast');
+	  doPost($('#ident'), $('#reg'));
+	  $(this).parent().find('#loggedin').fadeIn('fast').find('#handle').before($('#ident').attr('value'));
+	  return false;
+	});
+	
+	$('.send').click(function(e){
+			var text = $(this).attr('alt');
+			$(this).fadeOut('fast');
+			if (text) {
+				$.get(
+					"/runplayer/<%= $channel %>", 
+					{ ident: $('#ident').val(), contenturl: text},
+					function(data) {
+						return false;
+				});
+			}
+			$(this).parent().find('.end').fadeIn('fast');
+			return false;
+	});
+	
+	$('.end').click(function(e){
+			var text = $('.end').attr('alt');
+			$(this).fadeOut('fast');
+			if (text) {
+				// alert('clicked end');
+				$.get(
+					"/endplayer/<%= $channel %>", 
+					{ ident: $('#ident').val(), contenturl:text},
+					function(data) {
+						return false;
+				});
+			}
+			$(this).parent().find('.send:hidden').fadeIn();
+			return false;
+	});
+	
+	$('a[name=sendlink]').click(function(e){
+		e.preventDefault();
+		var contenturl = $(this).attr('href');
+		doPost($('#ident'), $(this));
+		Shadowbox.open({
+					        title:      "Content Preview",
+							player: 'iframe',
+							content: contenturl
+					});
+	});
+	
+	$.ev.handlers.message = onNewEvent;
+	$.ev.loop('/class/<%= $channel %>/poll?client_id=' + Math.random());
+	if ($.cookie(cookieName))
+	  $('#ident').attr('value', $.cookie(cookieName));
+	window.setInterval(function(){ $(".pretty-time").prettyDate() }, 1000 * 30);
+});
+
+
+  
+
+</script>
+	<link type="text/css" rel="stylesheet" href="/static/css/style.css" media="all"/>
+</head>
+<body>
+	<div id="teachernav">
+		<EM><big>Moderated Classroom Session: <%= $channel %></big></EM><form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">Enter Your Teacher Email Address:<input class="required" id="ident" type="text" name="ident" size="24"/><input type="submit" value="Login"/><input id="reg" type="hidden" name="#reg" value="#reg"/></form>
+		<ul id="loggedin" style="display: none;">
+			<li>Hello, <span id="handle"><a href="javascript:refresh()">Logout</a></li>
+			<li><a href="javascript:refresh()">Refresh Link</a></li>
+		</ul>
+	</div>
+	
+	
+	<!-- page -->
+	<div id="page">
+		
+		<!-- chat -->
+		<div id="chat">
+			<div class="box">
+				<div class="header">
+					<h2>Chat</h2>
+				</div>
+				<div class="convos">
+					<div id="openCloseIdentifier" style="display: block;"></div>
+					<div id="slider" style="margin-top:0px;margin-left:170px;">
+						<div id="openCloseWrap">
+							<div id="openCloseWrapCon">
+								<a id="topMenuImage" class="topMenuAction" href="#" style="margin-right: 7px; float: right;"><img src="/static/images/online-students.png" alt="online students"/></a>
+							</div>
+						</div>
+				        <div id="sliderContent">
+							<ul id="onlinestudents">
+								<!-- <li><a href="#tab1">John D</a></li> -->
+							</ul>
+						</div>
+					</div>
+					<div class="chatbox">
+						<div class="tab_container">
+							<div id="tab1" class="tab_content">
+						        <div class="chathistory">
+									<div class="chatscroll">
+										<table id="messages">
+										</table>
+									</div>
+								</div>
+								<div class="chatsend">
+									<form id="chatsubmit" onsubmit="doPost($('#ident'), $('#chatsend')); return false">
+										<input id="sendchat" type="text" size="48" />
+									</form>
+								</div>
+						    </div>
+						</div>
+
+						<ul class="tabs">
+						    <li><a href="#tab1">ALL</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end chat -->
+		
+		<!-- lessons -->
+		<div id="lessons">
+			<div class="box">
+				<div class="header">
+					<h2>Lessons</h2>
+					<div id="sessionmgr">
+						<p><input type="button" class="button" id="startsession" value="Start Session" /><input type="button" class="button" id="endsession" value="End Session" style="display: none;"/>
+					</div>
+				</div>
+				<br/>
+				<br/>
+				<div id="lessonlist">
+					<ul id="contentlist">
+%						if (@roomcl) {
+%							for my $item (@roomcl) {
+%								my @tmparray = split('/',$item);
+%								my $title = @tmparray[@tmparray-1];
+							<li id="contentitem">
+								<div class="lessonImg">
+									<img class="send" src="/static/images/lesson-img-holder.png" alt="<%= $item %>"/><img class="end" src="/static/images/css/error.png" alt="<%= $item %>" style="display: none;" />
+								</div>
+								<div class="lessonTitle">
+									<h3><%= $title %></h3>
+								</div>
+								<div class="lessonDescription">
+									<p><a class="ctooltip" name="sendlink" href="<%= $item %>"><%= $item %><span>Click to send link to student</span></a></p>
+								</div>
+							</li>
+%							}
+%						} else {
+							<li>
+								<div class="lessonTitle">
+									<h3>Sorry, there is no content available in this classroom.</h3>
+								</div>
+							</li>
+%						}
+					</ul>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<!-- end lessons -->
+		
+		<!-- students -->
+		<div id="students">
+			<div class="box">
+				<div class="header">
+					<h2>Students</h2>
+				</div>
+				<div id="studentStatus">
+					<ul id="studentStatusList">
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- end students -->
+	</div>
+	<div id="footer">Powered by <a href="http://nodejs.org">NodeJS</a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a></div>
+	<!-- end page -->
+</body>
+</html>

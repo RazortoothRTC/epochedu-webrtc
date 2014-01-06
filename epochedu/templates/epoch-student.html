@@ -1,0 +1,250 @@
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<title>Epoch EDU Student Classroom demo</title>
+<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="/static/js/static/jscrollPane.js"></script>
+<script type="text/javascript" src="/static/js/jquery.md5.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/jquery.oembed.js"></script>
+<script type="text/javascript" src="/static/js/jquery.ev.js"></script>
+<script type="text/javascript" src="/static/js/pretty.js"></script>
+<script type="text/javascript" src="/static/js/static/json2.js"></script>
+<link rel="stylesheet" type="text/static/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+<script type="text/javascript">
+Shadowbox.init({
+    handleOversize: "drag",
+	overlayColor: "#330099",
+	overlayOpacity: "0.75",
+    modal: true,
+	displayNav:         true,
+	handleUnsupported:  "link",
+	autoplayMovies:     true
+	
+});
+</script>
+
+<script type="text/javascript">
+$(function() {
+	// this initialises the demo scollpanes on the page.
+	$('.chatscroll').jScrollPane({showArrows:true});
+});
+</script>
+<script>
+var cookieName = 'tatsumaki_chat_ident';
+// var path = '<%= @pathinfo[1] %>';
+// var channel = '<%= $channel %>'
+
+$(document).ready(function() {
+	//
+	// Register Modal Dialog Handler
+	//
+	showModal('#login');
+
+	$('#regid').submit(function() {
+	  doPost($('#ident'), $('#reg'));
+	  $('#regid').hide();
+	  $('#login').append('<H2>Hello, Waiting for class session: <%= $channel %> to begin ...</H2><br><p>When class begins, you will receive instructions from your teacher on content to view.  Please standby.<br/><a href="javascript:refresh()"><img src="/static/images/discovery_logo.jpg" /></a>');
+	  return false;
+	});
+	
+	$('#chatsubmit').submit(function() {
+	  doPost($('#ident'), $('#sendchat'));
+	  return false;
+	});
+	
+	$.ev.handlers.message = onNewEvent;
+	$.ev.loop('/class/<%= $channel %>/poll?client_id=' + Math.random());
+	if ($.cookie(cookieName))
+	  $('#ident').attr('value', $.cookie(cookieName));
+	window.setInterval(function(){ $(".pretty-time").prettyDate() }, 1000 * 30);
+});
+
+function showModal(modalid) {
+	var id = modalid;
+	var maskHeight = $(document).height();
+	var maskWidth = $(window).width();
+	// Fix bug when not using "main" div by setting top and left = 0, else it is offset by height of screen
+	$('#mask').css({'width':maskWidth,'height':maskHeight,'top':0,'left':0}); 
+	$('#mask').fadeIn(1000);
+	$('#mask').fadeTo('fast',0.8);
+	var winH = $(window).height();
+	var winW = $(window).width();
+	$(id).css('top', winH/2-$(id).height()/2); // Bug here in display of mask, limited to "main" div
+	$(id).css('left', winW/2-$(id).width()/2);
+	$(id).fadeIn(2000);
+}
+
+function hideModal() {
+	$('#mask, .window').hide();
+}
+
+var ss = 0;
+var es = 0;
+var bs = 0;
+var ch = 0;
+var rp = 0;
+var ep = 0;
+var rg = 0;
+var uc = 0;
+var msg = ""
+
+var onNewEvent = function(e) {
+    try {
+		// alert(e.name + 'received');
+		msg = JSON.stringify(e);
+
+		  	if ((e.name != null) && (e.name.match(/#killsession/i))) {
+			// alert('Got killsession');
+				es = es + 1;
+				
+				$('table#messages').children().remove();
+				$('#mask, .window').show();
+		  	} else if ((e.name != null) && (e.name.match(/#startsession/i))) {
+				// alert('Got start');
+				ss = ss + 1;
+				hideModal();
+				return false;
+		  	} else if ((e.name != null) && (e.name.match(/#runplayer/i))) { 
+				rp = rp + 1;
+				var contenturl = e.text;
+				if (!contenturl) 
+					conenturl = 'Sorry, no media is available';
+					Shadowbox.open({
+				        title:      "Media Player",
+						player: 'iframe',
+						content: contenturl
+				});
+				return false;
+		  	} else if ((e.name != null) && (e.name.match(/#endplayer/i))) {
+				ep = ep + 1;
+				setTimeout( function() {}, 1);
+				// alert('endplayer received');
+				Shadowbox.close();
+				Shadowbox.clearCache();
+				return false;
+		  	} else if ((e.name == null) && (e.html != null) && (e.html.match(/#reg/i))) {
+				rg = rg + 1;
+				// Pass
+			} else {
+		  		  ch = ch + 1;
+	      	  	  var src    = e.avatar || "/static/images/birdy.png" || ("http://www.gravatar.com/avatar/" + $.md5(e.ident || 'foo'));
+			      var name   = e.name   || e.ident || 'Anonymous';
+			      var avatar = $('<img/>').attr('src', src).attr('alt', name);
+			      if (e.ident) {
+			        var link = e.ident.match(/https?:/) ? e.ident : 'mailto:' + e.ident;
+			        avatar = $('<a/>').attr('href', link).attr('target', '_blank').append(avatar);
+			      }
+			      avatar = $('<td/>').addClass('avatar').append(avatar);
+
+			      var message = $('<td/>').addClass('chat-message');
+			      if (e.text) message.text(e.text);
+			      if (e.html) message.html(e.html);
+			      message.find('a').oembed(null, { embedMethod: "append", maxWidth: 500 });
+			      var name = e.name || (e.ident ? e.ident.split('@')[0] : null);
+			      if (name)
+			        message.prepend($('<span/>').addClass('name').text(name+ ': '));
+
+			      var date = new Date(e.time * 1000);
+			      var meta = $('<td/>').addClass('meta').append(
+			        '(' +
+			        '<span class="pretty-time" title="' + date.toUTCString() + '">' + date.toDateString() + '</span>' +
+			        ' from ' + e.address + ')'
+			      );
+			      $('.pretty-time', meta).prettyDate();		$('#messages').prepend($('<tr/>').addClass('message').append(avatar).append(message).append(meta)).parent().jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+		  	 } 
+		messageDbg(ss, es, ch, rp, ep, rg, uc, msg);
+    } catch(e) { if (console) console.log(e) };
+}
+
+
+
+</script>
+	<link type="text/static/css" rel="stylesheet" href="/static/css/style.css" media="all"/>
+<style>
+#messages {
+  margin-top: 1em;
+  margin-right: 3em;
+  width: 100%;
+}
+.avatar {
+  width: 25px;
+  vertical-align: top;
+}
+.avatar img {
+  width: 25px; height: 25px;
+  vertical-align: top;
+  margin-right: 0.5em;
+}
+.chat-message {
+  width: 70%;
+}
+.chat-message .name {
+  font-weight: bold;
+}
+.meta {
+  vertical-align: top;
+  color: #888;
+  font-size: 0.8em;
+}
+body {
+  margin: 1em 2em
+}
+
+</style>
+</head>
+<body>
+<h2 class="chat-room-name">Class room: <a href="javascript:refresh()"><%= $channel %></a></h2>
+<div id="boxes">
+	<div id="login" class="window">
+		<form id="regid" onsubmit="doPost($('#ident'), $('#reg')); return false">
+			<h2>Login</h2>
+			<p>Enter your student email address to begin:</p>
+			<label>Email Address</label>
+			<input type="text" class="text" id="ident" name="ident"/>
+			<input id="reg"type="hidden" name="#reg" value="#reg"/>
+			<input type="submit" class="loginb" value="Login"/>
+		</form>
+	</div>
+	<div id="mask"></div>
+</div>
+
+<!-- page -->
+<div id="page">
+	<!-- chat -->
+	<div id="chat-wide">
+		<div class="box">
+			<div class="header">
+				<h2>Chat</h2>
+			</div>
+			<div class="convos">
+				<div class="chatbox">
+					<div class="tab_container">
+						<div id="tab1" class="tab_content">
+					        <div class="chathistory">
+								<div class="chatscroll">
+									<table id="messages">
+									</table>
+								</div>
+							</div>
+							<div class="chatsend">
+								<form id="chatsubmit" onsubmit="doPost($('#ident'), $('#chatsend')); return false">
+									<input id="sendchat" type="text" size="48" />
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="footer">Powered by <a href="http://nodejs.org">NodeJS</a>.  Application design by <a href="http://razortooth.net">Razortooth Communications, LLC</a><br/><br/><br/><span id="dbg"></span></div>
+
+</body>
+</html>
