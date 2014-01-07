@@ -72,8 +72,8 @@ CONTENT_REPO_URL = null;  // If not set, then default to /content
 //
 // CONTENT_REPO_FILE_PATH - the base path to look into for a directory mapping to classroom
 //
-CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
-// CONTENT_REPO_FILE_PATH = "./contentrepo";
+// CONTENT_REPO_FILE_PATH = "/var/www/mediafiles";
+CONTENT_REPO_FILE_PATH = "./contentrepo";
 // CONTENT_REPO_FILE_PATH = "/Users/dkords/Pictures"; 
 // We need to crawl the list of files available on the web server
 // where the content is located.  This is best to have come from a 
@@ -205,6 +205,8 @@ var JS =  require('js.js').JS,
 	url = require("url"),
 	util = require("util"),
 	qs = require("querystring"),
+	path = require("path"),
+	fs = require("fs"),
 	nTPL = require("nTPL").plugins("nTPL.block", "nTPL.filter").nTPL;
 
 var MESSAGE_BACKLOG = 200,
@@ -1035,6 +1037,7 @@ function renamelocalfile(from, to, handler) {
 
 function pullcontentdirs(crdbpath) {
 	var dirlist = [];
+	
 	// Ignore dot directories
 	var filter = /^\./i; // XXX DEMOSETTING put this somewhere else
 	var contentdirs = [];
@@ -1087,12 +1090,13 @@ function pullcontent(crdbpath, crdburl, chan) {
 	if (chan) {
 		dirpath = "/" + chan;
 	}
-	console.log(crdbpath + dirpath);
+	console.log('Pulling content from: ' + crdbpath + dirpath + ' from base cwd: ' + path.resolve());
 	var dircontents = [];
 	
 	try {
 		dircontents = fs.readdirSync(crdbpath + dirpath); // XXX Can we make this more performant async, also, use a DB
 	} catch(err) {
+		console.error('Error getting content from pullcontent, reason: ' + err);
 		dircontents = []
 	}
 	// XXX Need to check to see if path exists or else we will hit an exception
@@ -1108,4 +1112,5 @@ function pullcontent(crdbpath, crdburl, chan) {
 console.log(js.CONFIG);
 js.create(js.address, js.CONFIG['HTTPWS_PORT']);
 js.listenHttpWS();
+console.log(js.address);
 js.listenSocketIO(js.js_handler); // This is initially set to null, so it will fallback to use js.DEFAULT_JS_HANDLER
