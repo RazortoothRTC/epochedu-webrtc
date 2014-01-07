@@ -1112,5 +1112,4 @@ function pullcontent(crdbpath, crdburl, chan) {
 console.log(js.CONFIG);
 js.create(js.address, js.CONFIG['HTTPWS_PORT']);
 js.listenHttpWS();
-console.log(js.address);
 js.listenSocketIO(js.js_handler); // This is initially set to null, so it will fallback to use js.DEFAULT_JS_HANDLER
