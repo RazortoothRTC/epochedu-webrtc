@@ -1404,6 +1404,7 @@ $(document).ready(function() {
 			// $('#sessionstate').html("<img src='/static/images/css/agt_action_fail.png' />");
 			
 			send(msg, "endsession");
+
 			// addMessage("", "Class Session has ended!", new Date(), "error");
 		} else {
 			isClassInSession = true;

@@ -360,6 +360,7 @@ function channelFactory() {
 	      messages.shift();
 	
 		if (type == "dumpsession") { // Dump old messages in backlog
+			console.log("dumpsession invoked");
 			messages = [];
 		}
   };

@@ -24,18 +24,21 @@
 				<div id="timer"></div><div id='sessioncontrols'><span id='stopsessionbtn'></span><span id='startsessionbtn'></span></div>
 				<!-- <a class="start" href="#">Start Session</a> -->
 			</div>
+			<div id="mcp">
+				<div id='mcpcontrols'><span id='stopmcpbtn'></span><span id='startmcpbtn'></span></div>
+			</div>
 			
 			<div id="account">
 				<p>Hello, <span id="nickname"></span><a class="logout jqModal" href="javascript:void(0);" onclick="doLogout(); return false;">Logout</a></p>
 			</div>
 			
 			<div id="toolbar">
-				<span id="home"></span>
-		        {*<ul id="status">
+				<span id="home"></span><br/>
+		        <ul id="status">
 		          <li><a id="usersLink" href="#">5 users</a></li>
 		          <li>uptime: <span id="uptime">?</span></li>
 		          <li>memory: <span id="rss">?</span>mb RSS</li>
-		        </ul>*}
+		        </ul>
 		    </div>
 		</div>
 		<!-- end header -->
@@ -307,6 +310,39 @@
 			  state:'disabled',
 			  title:'End Class' 
 			});
+			$('#startmcpbtn').ninjaButtonCreate({
+			  icon:'group', 
+			  onSelect:function(){ 
+
+			    $('#stopmcpbtn').ninjaButtonEnable();
+				
+				$(this).ninjaButtonDeselect();
+				sendmcprequest("mcpmodestart", "mcpmodestart", 4); // XXX HARDCODED APDU
+				// messageDispatcher("mcpmodestart", "#mcpmodestart");
+			  },
+			  onDeselect:function() {
+				$(this).ninjaButtonDisable();
+			  }, 
+			  state:'enabled',
+			  title:'Start MCPMode' 
+			});
+			$('#stopmcpbtn').ninjaButtonCreate({
+			  icon:'group', 
+			  onSelect:function(){ 
+
+			    $('#startmcpbtn').ninjaButtonEnable();
+				
+				$(this).ninjaButtonDeselect();
+				sendmcprequest("mcpmodestop", "mcpmodestop", 5); // XXX HARDCODED APDU
+				// messageDispatcher("mcpmodestop", "#mcpmodestop");
+			  },
+			  onDeselect:function() {
+				$(this).ninjaButtonDisable();
+			  }, 
+			  state:'disabled',
+			  title:'Stop MCPMode' 
+			});
+
 			$('#send').ninjaButtonCreate({
 			  icon:'mail', 
 			  onSelect:function(){ 
