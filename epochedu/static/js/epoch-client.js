@@ -51,7 +51,7 @@ var MCP_RPC_PORT = '8080';  // Assume MCP runs on localhost
 var MCP_RPC_ENDPOINT = '/rpc';
 var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
 var TEACHER_SCREENSHARE_PORT='6080';
-var TEACHER_SCREENSHARE_ENDPOINT = '/vnc.html?host=mintyfresh&port=' + TEACHER_SCREENSHARE_PORT;
+var TEACHER_SCREENSHARE_ENDPOINT = '/vnc.html?host=192.168.1.13&port=' + TEACHER_SCREENSHARE_PORT; // XXX Hardcoded, fix
 var STUDENT_SCREENSHARE_PORT='8080';
 var STUDENT_SCREENSHARE_ENDPOINT = '/screengrab?rand=';
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
@@ -357,7 +357,7 @@ function handleNicklistUpdate(nick, timestamp) {
 	if ((nick != CONFIG.nick) && (nick !== 'teacher')) { // XXX This is hack, we ought to know if it's us?
 		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="http://' + usermeta[nick].address +':'+ STUDENT_SCREENSHARE_PORT + STUDENT_SCREENSHARE_ENDPOINT+'" target="_blank">[<img src="/static/images/black/video.png" /> View Screen]</a></li>');
 	} else {
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'It is the teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#">[<img src="/static/images/black/video.png" />  Share]</a></li>');
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'It is the teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://'+ usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT + TEACHER_SCREENSHARE_ENDPOINT + '\'); return false;">[<img src="/static/images/black/video.png" />  Share]</a></li>');
 	}
 }
 
@@ -1385,6 +1385,14 @@ function doUpload() {
 	multipartupload(fileUploadName);
 	return false;
 }
+
+function doInsertChatMessage(msg) {
+	alert('send msg' + msg);
+	if (!util.isBlank(msg)) send(msg);
+	$("#entry").attr("value", ""); // clear the entry field.
+	return false;
+}
+
 function bindstopstart() {
 	$(".start").live('click', function() {
 	    var msg = "#startsession";
@@ -1398,6 +1406,7 @@ function bindstopstart() {
 	    return false;
 	});
 }
+
 
 $(document).ready(function() {
   teacher = isTeacher();
