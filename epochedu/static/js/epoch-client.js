@@ -36,6 +36,7 @@ var CONFIG = { debug: false
              };
 
 var nicks = [];
+var usermeta = {};
 var teacher = false;
 var isClassInSession = false;
 var EPOCH_COOKIE = "epochedu_cookie";
@@ -346,7 +347,7 @@ function updateUserStatus3(nick, timestamp) {
 					// alert('found a match, do not insert');
 					// XXX No op is dumb, fix this later
 				} else {
-					$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+					$('#userstatus').append('<li id="' + nick + '"class="online" onclick="alert(\'View user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</li>');
 				}
 			} else {
 				$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
@@ -364,7 +365,7 @@ function isUserInSession() {
 	return false;
 }
 //handles another person joining chat
-function userJoin(nick, timestamp) {
+function userJoin(nick, timestamp, payload) {
   //put it in the stream
   addMessage(nick, "joined", timestamp, "join");
   //if we already know about this user, ignore it
@@ -372,6 +373,7 @@ function userJoin(nick, timestamp) {
     if (nicks[i] == nick) return;
   //otherwise, add the user to the list
   nicks.push(nick);
+  usermeta[nick]= {'address' : payload['address']};
   //update the UI
   updateUsersLink();
   if (teacher) {
@@ -479,6 +481,7 @@ function userPart(nick, timestamp) {
   for (var i = 0; i < nicks.length; i++) {
     if (nicks[i] == nick) {
       nicks.splice(i,1)
+      delete usermeta.nick;
       break;
     }
   }
@@ -753,7 +756,10 @@ function longPoll (data) {
           break;
 
         case "join":
-          userJoin(message.nick, message.timestamp);
+          console.log('join');
+          console.log(message.text);
+          console.log(message.payload);
+          userJoin(message.nick, message.timestamp, message.payload);
           break;
 
         case "part":

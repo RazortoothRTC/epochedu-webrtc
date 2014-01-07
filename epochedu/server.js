@@ -280,6 +280,7 @@ function channelFactory() {
 			m = { nick: nick
 			   , type: type // See switch statement below
 			   , text: text
+			   , payload: payload // We will always need payload
 			   , timestamp: (new Date()).getTime()
 			};
 		} else {
@@ -817,9 +818,10 @@ js.get("/join", function (req, res) {
 
   sys.puts("connection: " + nick + "@" + res.connection.remoteAddress + " on " + chan);
 
-  channels[chan].appendMessage(session.nick, "join");
+  channels[chan].appendMessage(session.nick, "join", "usermeta[" + nick + "]", { address: res.connection.remoteAddress });
   res.simpleJSON(200, { id: session.id
                       , nick: session.nick
+                      , address: res.connection.remoteAddress
                       , rss: mem.rss
                       , starttime: starttime
 					  , channelstate: channels[chan].state
