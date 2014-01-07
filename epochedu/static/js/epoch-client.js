@@ -50,6 +50,10 @@ var SHADOWBOX_CONFIG_HEIGHT = 600;
 var MCP_RPC_PORT = '8080';  // Assume MCP runs on localhost
 var MCP_RPC_ENDPOINT = '/rpc';
 var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
+var TEACHER_SCREENSHARE_PORT='6080';
+var TEACHER_SCREENSHARE_ENDPOINT = '/vnc.html?host=mintyfresh&port=' + TEACHER_SCREENSHARE_PORT;
+var STUDENT_SCREENSHARE_PORT='8080';
+var STUDENT_SCREENSHARE_ENDPOINT = '/screengrab?rand=';
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
 var browserplayerwindow;
 var platformplayer = false;
