@@ -392,7 +392,7 @@ class MCPService(object):
 	# XXX Does cherrypy have some kind of config file thingy?
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
-	VERSION_TAG = '1.0.0-ces2014-b9-' + datetime.datetime.now().isoformat()
+	VERSION_TAG = '1.0.0-ces2014-b10-' + datetime.datetime.now().isoformat()
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -894,11 +894,13 @@ Todo ...
 				besturi = uri
 				print "Checking for content in local content sync cache"
 				# Get the list of files for this channel
-				results = self.getlocalcontentsyncurl(channelpath, contentrepourl, fileExtList)
-				for f in results:
-					if (f[f.rindex('/') + 1:] == filename):
-						besturi = f
-						print "Found matching file in content sync cache, besturi is " + besturi
+				# XXX Skipping trying to load from the cache
+				#
+				# results = self.getlocalcontentsyncurl(channelpath, contentrepourl, fileExtList)
+				# for f in results:
+				#	if (f[f.rindex('/') + 1:] == filename):
+				#		besturi = f
+				#		print "Found matching file in content sync cache, besturi is " + besturi
 		else:
 			print "/getbesturlpath didn't receive channel parameter, just use URL as is"
 			besturi = uri
