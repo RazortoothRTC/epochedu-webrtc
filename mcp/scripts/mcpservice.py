@@ -178,13 +178,15 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.0.0.10:5000'], # DEMOSETUP
 			  'SYNCACK_PARAM':'syncack', # Used for sync ack
 			  'MCP_TICK_INTERVAL':15, # Seconds between ticks DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider",
+			  'CONTENT_REPO_LOCAL_URL2' : "file://",
+			  'CONTENT_REPO_LOCAL_URL3' : "file://localhost",
 			  'EPOCHWATCHDOG_ACTIVITY' : "com.rt.epochedu.watchdog.EpochWatchdogActivity",
 			  'LAUNCHER_ACTIVITY' : "com.android.launcher.Launcher",
 			  'ACTION_MAIN' : "android.intent.action.MAIN",
 			  'CATEGORY_HOME' : "android.intent.category.HOME",
 			  'FLAG_ACTIVITY_NEW_TASK' : 268435456, # defined: http://developer.android.com/reference/android/content/Intent.html#FLAG_ACTIVITY_NEW_TASK
 			  'ANDROID_VIEW_ACTIVITY' : 'android.intent.action.VIEW', # These are documented in Android Dev Docs
-			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.3gp', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf'],
+			  'VALID_FILE_EXTENSIONS' : ['.jpg', '.gif', '.png', '.mov', '.mp3', '.wav', '.mp4', '.flv', '.3gp', '.html', '.tif', '.apk', '.txt', '.doc', '.rtf', '.pdf', '.xls', '.docx'],
 			  'VALID_MIME_TYPES' : {    ".3gp"   : "video/3gpp" # BORROWED FROM fu.js (see source for epochedu-master)
 			          				  , ".a"     : "application/octet-stream"
 							          , ".ai"    : "application/postscript"
@@ -352,7 +354,7 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.0.0.10:5000'], # DEMOSETUP
 							          , ".yml"   : "text/yaml"
 							          , ".zip"   : "application/zip"
 							          }, 
-			  'BROWSER_PLAYER_EXTENSIONS' : ['.jpg', '.gif', '.png', '.tif', '.apk', '.txt', '.html'], # These are things that only play in the browser
+			'BROWSER_PLAYER_EXTENSIONS' : ['.jpg', '.gif', '.png', '.tif', '.apk', '.txt', '.html', '.htm'], # These are things that only play in the browser
 			'ASCII_LOGO' : """
 			@#@#++@@@@@@@@@@@
 			@+++++++#@@+@@@@@
@@ -378,7 +380,7 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.0.0.10:5000'], # DEMOSETUP
 			| | |~
 			|_|_|_
 			""",
-			'COPYRIGHT' : 'Copyright 2011-2013 Razortooth Communications, LLC'
+			'COPYRIGHT' : 'Copyright 2011-2014 Razortooth Communications, LLC'
 			  }
 
 class MCPService(object):
@@ -416,6 +418,7 @@ class MCPService(object):
 	PACKAGE_RESTORELIST = []
 	PACKAGE_PLAYERLIST = ['com.android.camera', # The Android Camera
 						'com.android.videoplayer', # Android Video Player
+						'com.google.android.gallery3d'
 						'com.android.providers.media', # Not really sure what this is, I think it is the video player backend
 						'com.android.music', # The Android Music Player, NEED PDF VIEWER, Documents 2 Go, Text Viewer
 						'com.android.gallery', # Image gallery?
@@ -523,7 +526,6 @@ Todo ...
 			channelpath = MCP_CONFIG['DESKTOP_CONTENT_PATH'] + '/' + channel
 			contentrepourl = 'file://'
 		
-			 
 		if channel is not None:
 			print "/contentsyncpull received request for channel " + channel
 			print "using path " + channelpath + " to find content with these extensions: " + json.dumps(fileExtList)
@@ -635,30 +637,47 @@ Todo ...
 		amime = None
 		# Get the best url path
 		aurl = self.getbesturlpath(aurl)
-		print 'launchurl is opening best url path ' + aurl
 		
-		if aurl is None or aurl.startswith('http://'):
+		
+		
+		# if aurl is None or aurl.startswith('http://'):
+		if aurl is None: # 
+			print "No player optimization other than launch in browser"
 			rsp['status'] = 1 # Launch in the browser since no URL is bad, and URL is also bad for some reason
 			return rsp
-			
+		
+		print 'launchurl is verifying native player for url ' + aurl + ', verify mime type' 
 		try:
 			amime = MCP_CONFIG['VALID_MIME_TYPES'][aurl[aurl.rindex('.'):]]
 		except KeyError, e:
 			pass
 		if amime is not None:
 			try:
-				self.notifyUser("droid view launched with url" + aurl + " and mime = " + amime)
+				print "player mime has been set to " + amime + " to launch with url: " + amime
+				# self.notifyUser("Launch content type " + amime + " with native android viewer")
 				# If this is a video, kick off a blank video
-				if amime.startswith('video'):
-					self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['BLANK_VIDEO_PATH'], 'video/mov', None, False)
-					time.sleep(1)
+				# XXX I think this was a hack to deal with stuttering startups
+				# XXX Don't do this any more
+				# if amime.startswith('video'):
+				#	print "mcpservice handling video by launching a blank player"
+				#	self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['BLANK_VIDEO_PATH'], 'video/mov', None, False)
+				#	time.sleep(1)
+
+				#
+				# Sometimes this will crash
+				# 
+				# For the product offering, this needs to have a compresensive database of players that are known to work for each
+				# content type.  We need explicit component/package names
+				#
 				self.droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], aurl, amime, None, False)
 			except:
+				print "there was an error with the player, try opening with the browser"
+				self.notifyUser("there was an error with the player, try opening with the browser")
 				webbrowser.open(aurl)
-			print "droid view launched with url " + aurl + ' and mime = ' + amime
+			print "droid viewer launched with url " + aurl + ' and mime = ' + amime
 			rsp['status'] = 0
 		else:
-			print "can't launch a url without a mime type ... to unpredictable in SL4A"
+			print "can't launch a url without a mime type ... too unpredictable in SL4A"
 			rsp['status'] = -1
 		return rsp
 	#
@@ -742,6 +761,7 @@ Todo ...
 			self.droid.dialogShow()
 			# Launching the Browser should put the user back into the current page where we left off
 			self.droid.launch('com.android.browser.BrowserActivity') # XXX Hardcoded, put into config
+			self.launchIntent(MCP_CONFIG['ACTION_MAIN'], None, None, None, [MCP_CONFIG['CATEGORY_HOME']], None, None, MCP_CONFIG['FLAG_ACTIVITY_NEW_TASK'])
 		except:
 			pass
 		# XXX This doesn't seem to actually work ... should we just skip it?
@@ -843,6 +863,7 @@ Todo ...
 
 	def getbesturlpath(self, uri):
 		besturi = uri
+		print "starting search for besturi with " + besturi
 		channel = uri.split('/')[-2]
 		fileExtList = MCP_CONFIG['VALID_FILE_EXTENSIONS']
 		filename = uri[uri.rindex('/') + 1:]
@@ -850,6 +871,7 @@ Todo ...
 		# Check if this only plays in the browser, if so, just let the browser handle it
 		for ext in MCP_CONFIG['BROWSER_PLAYER_EXTENSIONS']:
 			if filename.endswith(ext):
+				print "Found ext in BROWSER_PLAYER_EXTENSIONS"
 				return None
 		if channel is not None:
 			if self.ISANDROID:
@@ -866,14 +888,17 @@ Todo ...
 			isafile = False
 			for ext in fileExtList:
 				if filename.endswith(ext):
+					"Filename ends with extension: " + ext
 					isafile = True
 			if isafile:
 				besturi = uri
+				print "Checking for content in local content sync cache"
 				# Get the list of files for this channel
 				results = self.getlocalcontentsyncurl(channelpath, contentrepourl, fileExtList)
 				for f in results:
 					if (f[f.rindex('/') + 1:] == filename):
 						besturi = f
+						print "Found matching file in content sync cache, besturi is " + besturi
 		else:
 			print "/getbesturlpath didn't receive channel parameter, just use URL as is"
 			besturi = uri
@@ -927,7 +952,7 @@ def mcploop():
 		time.sleep(0.3)
 		print "MCP Teachers Assistant is waking up to check on you, heartbeat #%d"%(loopcount)
 		# XXX We may want to put some housekeeping work here
-		print ismcpmodeon()
+		# print ismcpmodeon()
 		if ismcpmodeon():
 			print "mcpmode is on"
 			if droid is not None:

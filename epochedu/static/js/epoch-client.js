@@ -413,13 +413,13 @@ function openNewWindow(url, options) {
 }
 
 function openBestPlayer(url, selector, options) {
-	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'htm', 'txt']; // DEMO CONF
+	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'htm']; // XXX DEMO CONF, move this out somewhere to the top
 	var fname = url.lastIndexOf('.');
 	
 	if (fname > -1) {
 		fname = url.substring(fname + 1);
 		if (supportedextensions.indexOf(fname) > -1) { /* If we can play in JS 'player' do it */
-			if (fname != 'html' && fname != 'htm') {
+			if (fname != 'html' && fname != 'htm' && fname != 'txt') {
 				$.colorbox({href:url});
 			} else {
 				// $.colorbox({href:url, iframe: true});	
@@ -427,10 +427,16 @@ function openBestPlayer(url, selector, options) {
 			}
 		} else {
 			if (!teacher) {
-				if (fname.indexOf('pdf') < -1) {
+				// openNewWindow(url);
+				//
+				// XXX This should work for sync but it is too buggy
+				//
+				if (fname === 'apk' || fname === 'txt') {
 					openNewWindow(url); // Not using options for now
 				} else {
-					url = 'http://192.168.1.168:5000/content' + url.substring(url.indexOf('sdcard') + 6);
+					// XXX Crazy, hardcoded IP Address ... I don't even remember why we were doing this particular thing
+					// In fact, this gets us a second call to open a url, but with a worse and worse url
+					url = 'http://192.168.1.13:5000/content' + url.substring(url.indexOf('sdcard') + 6);
 					mcpDispatcher3(eval("(" + mcpPayloadFactory(url, "launchurl", 1) + ")"), function(json) {
 						platformplayer = true;
 					}, function(d, msg) {
@@ -792,15 +798,16 @@ function longPoll (data) {
 							// alert('universalsend - running android.View of url ' + contenturl);
 							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "launchurl", 1) + ")"), function(json) {
 								if (!json || json.status != 0) {
+									addGrowlNotification('Use Web Player', 'Launched a Web Player for content ' + message.text, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 									browserplayerwindow = openBestPlayer(message.text);
 								} else {
 									// Success
-									addGrowlNotification('Launched Native Player', 'Launched a Native Platform Player for content' + message.text, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
-	
+									addGrowlNotification('Launched Native Player', 'Launched a Native Platform Player for content ' + message.text, '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 									platformplayer = true;
 								}
 							}, function(d, msg) {
-								// XXX Hide this for now addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- pop open a new window', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+								// XXX Hide this for now 
+								addGrowlNotification('Error launching Content', 'Unable to launch content on local device using native player- retry in browser', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
 								browserplayerwindow = openBestPlayer(message.text);
 							});
 						} else { // XXX Why would this ever happen ?
@@ -837,34 +844,36 @@ function longPoll (data) {
 
 				if (!teacher) { // XXX For now, always try to kill the local player
 					// Then Try to ping the MCP
-					mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
-						var mcpResp;
-					
-						if (json) {
-							mcpResp = json;
-						} 
-						// XXX Should report back some status here
-						// alert('Got mcpResponse status = ' + mcpResp.status);
-						if (mcpResp && mcpResp.status == '0') { 
-							// alert('calling killplatformplayer');
+					if (platformplayer === true) {
+						mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "pingheartbeat", 7) + ")"), function(json) {
+							var mcpResp;
+						
+							if (json) {
+								mcpResp = json;
+							} 
+							// XXX Should report back some status here
 							// alert('Got mcpResponse status = ' + mcpResp.status);
-							// If there is a platformplayer running, kill it
-							
-							// XXX This sucks ... only here to deal with Android media player deficiencies
-							mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
-								if (json && json.status == 0) {
-									// alert('successful call to killplatformplayer');
-									platformplayer = false;
-								}
-							}, function(d, msg) {
-								addGrowlNotification('Error ending Content Player', 'Unable to end native Content player on device.  You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-							});		
-						} else { // XXX Why would this ever happen ?
-							addGrowlNotification('Error ending Content Player', 'Ping heartbeat returned improper resonse - You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-						}
-					}, function(d,msg) {
-						    addGrowlNotification('Error ending Content Player', 'Unable to send a ping heartbeat.  You will need to close the player manually.  Notify teacher: No MCP Service is reachable.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
-					});
+							if (mcpResp && mcpResp.status == '0') { 
+								// alert('calling killplatformplayer');
+								// alert('Got mcpResponse status = ' + mcpResp.status);
+								// If there is a platformplayer running, kill it
+								
+								// XXX This sucks ... only here to deal with Android media player deficiencies
+								mcpDispatcher3(eval("(" + mcpPayloadFactory(contenturl, "killplatformplayer", 8) + ")"), function(json) {
+									if (json && json.status == 0) {
+										// alert('successful call to killplatformplayer');
+										platformplayer = false;
+									}
+								}, function(d, msg) {
+									addGrowlNotification('Error ending Content Player', 'Unable to end native Content player on device.  You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+								});		
+							} else { // XXX Why would this ever happen ?
+								addGrowlNotification('Error ending Content Player', 'Ping heartbeat returned improper resonse - You will need to close the player manually.  Notify teacher.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+							}
+						}, function(d,msg) {
+							    addGrowlNotification('Error ending Content Player', 'Unable to send a ping heartbeat.  You will need to close the player manually.  Notify teacher: No MCP Service is reachable.', '/static/images/status_unknown.png', '', false, 'mcpstatusgrowl');
+						});
+					}
 				} /* else {
 					addGrowlNotification('No Running Player Detected', 'Could not detect a Native Platform Content Player.  If it is still running, please close it manually.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
 				} */
@@ -1698,6 +1707,7 @@ $(document).ready(function() {
 						});
 						
 						// XXX I think this will only work on android unless you change your CAPS file
+						// XXX What is a CAPS file????
 						$(".syncurl").click(function(e) {
 							var syncurl = $(this).attr('name');
 							// alert('syncurl clicked ' + syncurl);
