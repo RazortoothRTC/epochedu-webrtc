@@ -343,6 +343,24 @@ function updateUserStatus2(nick, timestamp) {
 	}
 }
 
+/*
+	handleNicklistUpdate
+
+	Make a distinction between the teacher and students
+
+	All will have share 1-M button
+	All will have View Screenshare Button
+	Only Student will have Screengrab Button
+*/
+function handleNicklistUpdate(nick, timestamp) {
+	// If it's not the teacher
+	if ((nick != CONFIG.nick) && (nick !== 'teacher')) { // XXX This is hack, we ought to know if it's us?
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="http://' + usermeta[nick].address +':'+ STUDENT_SCREENSHARE_PORT + STUDENT_SCREENSHARE_ENDPOINT+'" target="_blank">[<img src="/static/images/black/video.png" /> View Screen]</a></li>');
+	} else {
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'It is the teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#">[<img src="/static/images/black/video.png" />  Share]</a></li>');
+	}
+}
+
 function updateUserStatus3(nick, timestamp) {
 	if (teacher) {
 		if (timestamp != -1) { // XXX Bug fix for devices with negative timestamp
@@ -351,10 +369,10 @@ function updateUserStatus3(nick, timestamp) {
 					// alert('found a match, do not insert');
 					// XXX No op is dumb, fix this later
 				} else {
-					$('#userstatus').append('<li id="' + nick + '"class="online" onclick="alert(\'View user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</li>');
+					handleNicklistUpdate(nick, timestamp);
 				}
 			} else {
-				$('#userstatus').append('<li id="' + nick + '"class="online">' + nick +'</li>');
+				handleNicklistUpdate(nick, timestamp);
 			}
 		} else {
 			$('li#' + nick).remove();
@@ -760,9 +778,6 @@ function longPoll (data) {
           break;
 
         case "join":
-          console.log('join');
-          console.log(message.text);
-          console.log(message.payload);
           userJoin(message.nick, message.timestamp, message.payload);
           break;
 
