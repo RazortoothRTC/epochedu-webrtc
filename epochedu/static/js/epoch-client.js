@@ -357,7 +357,7 @@ function handleNicklistUpdate(nick, timestamp) {
 	if ((nick != CONFIG.nick) && (nick !== 'teacher')) { // XXX This is hack, we ought to know if it's us?
 		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="http://' + usermeta[nick].address +':'+ STUDENT_SCREENSHARE_PORT + STUDENT_SCREENSHARE_ENDPOINT+'" target="_blank">[<img src="/static/images/black/video.png" /> View Screen]</a></li>');
 	} else {
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'It is the teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://'+ usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT + TEACHER_SCREENSHARE_ENDPOINT + '\'); return false;">[<img src="/static/images/black/video.png" />  Share]</a></li>');
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://'+ usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT + TEACHER_SCREENSHARE_ENDPOINT + '\'); return false;">[<img src="/static/images/black/video.png" />  Share]</a></li>');
 	}
 }
 
@@ -436,6 +436,65 @@ function openNewWindow(url, options) {
 	return awindow;
 }
 
+function runSessionMonitor(duration) {
+	if (!duration) {
+		duration = 30000; // Default to 30 seconds
+	}
+	var nick;
+	var ipaddress;
+	var url;
+
+	var i = 0;
+	if (nicks.length <= 1) {
+		alert("There are no students to monitor");
+	}
+
+	// Set up first nick, and from then on we will do this in the intervalvar nick = nicks[i];
+	var nick = nicks[0];
+	var monitorwin = null;
+	
+	if (nick === 'teacher' || nick !== '#' || nick == CONFIG.nick) {
+		i++;
+	}
+	nick = nicks[i];
+	ipaddress = usermeta[nick].address;
+	url = '/screenmonitor?nick=' + nick + '&ipaddress=' + ipaddress;
+	console.log('monitor sreen url = ' + url);
+	// $.colorbox({href:url});
+	monitorwin = openNewWindow(url);
+	i++;
+
+	var monitorInterval = setInterval(function() {
+		// Only update if we have nicks in the session, otherwise do nothing
+		if (nicks.length > 1) {
+			if (i === nicks.length) {
+				console.log('reset monitor to beginning');
+				i = 0; // Reset to beginning
+			}
+			nick = nicks[i];
+			if (nick === 'teacher' || nick === '#' && nick === CONFIG.nick) {
+				i++;
+				if (i === nicks.length) {
+					i = 0; // Reset to beginning
+				}
+			}
+
+			nick = nicks[i];
+			ipaddress = usermeta[nick].address;
+			url = '/screenmonitor?nick=' + nick + '&ipaddress=' + ipaddress;
+			console.log('monitor sreen url = ' + url);
+			// $.colorbox({href:url});
+			monitorwin.location = url;
+		}
+		i++;
+	}, duration);
+	// $(monitorwin).on('beforeunload', function(){ alert ('Bye now')});
+	monitorwin.onbeforeunload = function OnBeforeUnLoad () {
+		// alert('closed monitor window');
+		console.log('end monitor loop');
+		clearInterval(monitorInterval);
+    }
+}
 function openBestPlayer(url, selector, options) {
 	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'htm']; // XXX DEMO CONF, move this out somewhere to the top
 	var fname = url.lastIndexOf('.');

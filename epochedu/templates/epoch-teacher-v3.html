@@ -33,7 +33,7 @@
 			</div>
 			
 			<div id="toolbar">
-				<span id="home"></span><br/>
+				<span id="home"></span><span id="monitor"></span><br/>
 		        <ul id="status">
 		          <li><a id="usersLink" href="#">5 users</a></li>
 		          <li>uptime: <span id="uptime">?</span></li>
@@ -417,14 +417,25 @@
 			  icon:'home', 
 			  onSelect:function(){ 
 				$(this).ninjaButtonDeselect();
-				
 			  },
 			  title:'Home' 
 			});
 			$("#home").live("click", function(e) { 
 				window.location = '/teacher';
 			});
-			
+			$('#monitor').ninjaButtonCreate({
+			  icon:'arrange', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+			  },
+			  title:'Monitor' 
+			});
+			$("#monitor").live("click", function(e) {
+				//
+				// XXX TODO, add a pop up to ask for interval
+				//
+				runSessionMonitor(30000);
+			});
 		});
 	</script>
 	<script type="text/javascript">
