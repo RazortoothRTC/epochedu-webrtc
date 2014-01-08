@@ -1,6 +1,6 @@
 /**
 #
-#Copyright (c) 2010-2012 Razortooth Communications, LLC. All rights reserved.
+#Copyright (c) 2010-2012, 2014 Razortooth Communications, LLC. All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification,
 #are permitted provided that the following conditions are met:
@@ -191,6 +191,11 @@ var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
 var mem = process.memoryUsage();
 
+//
+// Some other global settings
+//
+var STUDENT_SCREENSHARE_PORT='8080';
+var STUDENT_SCREENSHARE_ENDPOINT = '/screengrab?rand=';
 
 // 
 // System Status 
@@ -399,7 +404,7 @@ function channelFactory() {
 	return channel;
 } // channelFactory
 	
-function sessionFactory (nick, chan) {
+function sessionFactory (nick, chan, address) {
   if ((nick.length > 50) || (nick == BOTNICK)) return null;
   if (/[^\w_\-^!]/.exec(nick)) return null;
   
@@ -418,7 +423,7 @@ function sessionFactory (nick, chan) {
     nick: nick, 
     id: Math.floor(Math.random()*99999999999).toString(),
     timestamp: new Date(),
-
+    address: address,
     poke: function () {
       session.timestamp = new Date();
     },
@@ -716,6 +721,31 @@ js.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
+js.getterer("/screenmonitor", function(req, res) {
+	var ipaddr = qs.parse(url.parse(req.url).query).ipaddress;
+	var nickname = qs.parse(url.parse(req.url).query).nick;
+	var portno = STUDENT_SCREENSHARE_PORT;
+	var endpt = STUDENT_SCREENSHARE_ENDPOINT;
+
+	if (nickname === undefined || nickname === '') {
+		nickname = 'student';
+	}
+
+	if (ipaddr === undefined || ipaddr === '') {
+		res.simpleJSON(400, {error: "Bad ipaddress query parameter"});
+	} // XXX TODO: We should validate the IP as well
+
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var screenmonitor_tpl = nTPL("./templates/epoch-screenmonitor.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html");
+	  res.end(screenmonitor_tpl({
+	      ipaddress: ipaddr,
+	      nick: nickname,
+	      port: portno,
+	      endpoint: endpt
+	    }));
+});
+
 js.getterer("/epochtester/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
@@ -793,7 +823,7 @@ js.get("/join", function (req, res) {
     res.simpleJSON(400, {error: "Bad nick."});
     return;
   }
-  var session = sessionFactory(nick, chan);
+  var session = sessionFactory(nick, chan, res.connection.remoteAddress);
   // XXX Cleanup this error handling!!!!!
   if (!channels[chan]) {
 	channels[chan] = channelFactory();

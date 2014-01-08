@@ -1,0 +1,68 @@
+{%set name screenmonitor %}
+{%set args ipaddress, port, endpoint, nick %}
+{%extends 'boilerplate' %}
+{%block 'title' %}Screenmonitor: {%= nick %}@{%= ipaddress %}:{%= port %}{%/block %}
+{%block 'css-styles' %}
+	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v3.css" media="all">
+	<!-- Can we get rid of these ? -->
+	<!-- 
+	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v3.css" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/jquery.gritter.css" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/colorbox.css" media="all">
+	-->
+{%/block %}
+{%block 'head' %}
+	
+{%/block %}
+
+{%block 'container' %}
+	<!-- page -->
+	<div id="page">
+		<!-- header -->
+		<div id="header">
+			<div id="branding">
+				<h1><img src="/static/images/tabletsideways.png" />Screenmonitor: {%= nick %}@{%= ipaddress %}:{%= port %}</h1>
+			</div>
+			<hr />
+		</div>
+		<!-- end header -->
+
+		<!-- content -->
+		<div id="content">
+			<img src="http://{%= ipaddress %}:{%= port %}/{%= endpoint %}" id="currentframe" />
+		</div>
+		<!-- end content -->
+ 	<div id="bottom">
+		
+
+		
+		<!-- footer -->
+		<div id="footer">
+		</div>
+		<!-- end footer -->
+	  </div>
+	</div>
+	<!-- end bottom -->
+{%/block %}
+
+{%block 'body-scripts' %}
+	<!-- XXX I think we don't need these scripts, comment them out to improve load time -->
+	<!-- 
+	<script type="text/javascript" src="/static/js/jquery.colorbox-min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/js/shadowbox-3.0.3/shadowbox.css">
+	<script type="text/javascript" src="/static/js/shadowbox-3.0.3/shadowbox.js"></script>
+	-->
+	<script type="text/javascript">
+	var screengraburl = 'http://{%= ipaddress %}:{%= port %}/{%= endpoint %}';
+    var imageElement = document.getElementById('currentframe');
+    imageElement.src = screengraburl + Math.random();
+    setInterval(function() {
+        var imageElement = document.getElementById('currentframe');
+            imageElement.src = screengraburl + Math.random();
+    }, 2500);
+    </script>
+{%/block %}
+
+
+
