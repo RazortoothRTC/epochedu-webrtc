@@ -518,6 +518,18 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
     padding:10px 10px;
 }
 
+.jqmWindow2 {
+    display: none;
+    position: fixed;
+    top: 17%;
+    left: 50%;
+    margin-left: -200px;
+    width: 421px;
+    height:235px;
+    background:url('../images/css/modal-bg-unbranded.png') no-repeat;
+    padding:10px 10px;
+}
+
 .modalform {
 	border:1px solid #c7c7c7;
 	border-radius: 5px;
@@ -542,6 +554,9 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 	float:right;
 }
 
+.genericModalOKButton {
+	float:right;
+}
 .jqmOverlay { background-color: #000; }
 
 .coin-slider { overflow: hidden; zoom: 1; position: relative; }

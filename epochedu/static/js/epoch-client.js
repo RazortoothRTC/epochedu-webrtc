@@ -436,7 +436,7 @@ function openNewWindow(url, options) {
 	return awindow;
 }
 
-function runSessionMonitor(duration) {
+function runScreenMonitor(duration) {
 	if (!duration) {
 		duration = 30000; // Default to 30 seconds
 	}
@@ -447,13 +447,14 @@ function runSessionMonitor(duration) {
 	var i = 0;
 	if (nicks.length <= 1) {
 		alert("There are no students to monitor");
+		return false;
 	}
 
 	// Set up first nick, and from then on we will do this in the intervalvar nick = nicks[i];
 	var nick = nicks[0];
 	var monitorwin = null;
 	
-	if (nick === 'teacher' || nick !== '#' || nick == CONFIG.nick) {
+	if (nick === 'teacher' || nick === '#' || nick === CONFIG.nick) {
 		i++;
 	}
 	nick = nicks[i];
@@ -1446,7 +1447,7 @@ function doUpload() {
 }
 
 function doInsertChatMessage(msg) {
-	alert('send msg' + msg);
+	//alert('send msg ' + msg);
 	if (!util.isBlank(msg)) send(msg);
 	$("#entry").attr("value", ""); // clear the entry field.
 	return false;
@@ -1551,6 +1552,26 @@ $(document).ready(function() {
 	return false;
 	});
 
+	$("#launchMonitorButton").click(function() {
+		var monitorInterval = $("#monitorIntervalInput").attr("value");
+		if (!monitorInterval || monitorInterval.length === 0) {
+			setStatusMessage('#launchMonitorForm', "An interval value, in seconds, is required", 'status');
+            return false;
+		}
+
+		if (isNaN(monitorInterval)) {
+			setStatusMessage('#launchMonitorForm', "Input should be a number, in seconds", 'status');
+            return false;
+		}
+
+		// XXX We could do lots more validation.  But we won't
+
+		monitorInterval = monitorInterval*1000; // Convert to millis
+		runScreenMonitor(monitorInterval);
+		$('#monitorLaunchDialog').jqmHide();
+		return false;
+	});
+
   	$("#usersLink").click(outputUsers); // Only for teacher UI
 	$("#connectButton").click(function () {
         $(this).parents().find('span.error-message').removeClass('error-message').text('');
@@ -1559,53 +1580,53 @@ $(document).ready(function() {
         //dont bother the backend if we fail easy validations
 
         if (!nick || nick.length < 1) {
-                setStatusMessage('#loginform', "Login name is required.", 'status');
+            setStatusMessage('#loginform', "Login name is required.", 'status');
             return false;
-	}
+		}
 
-    if (nick.length > 50) {
-        // showConnect();
-		// $('#dialog').jqm().show();
-		setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
-      return false;
-    }
+    	if (nick.length > 50) {
+	        // showConnect();
+			// $('#dialog').jqm().show();
+			setStatusMessage('#loginform', 'Login name is too long.  Must be less than 50 character.', 'status');
+	      	return false;
+    	}
         //more validations
-    if (/[^\w_\-^!]/.exec(nick)) {
-		setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
-		return false;
-	}
-
-	//lock the UI while waiting for a response
-	showLoad();
-
-	bindstopstart();
-
-    $('#resources > input[type="checkbox"]').click(function (e) {
-		alert('clicked on checkbox');
- 	});
-
-	$('#resources > li').click(function(e) {
-		var $cb = $(this).children('input[type="checkbox"]');
-		if ($cb.attr('checked')) {
-			$cb.removeAttr('checked')
-		} else {
-			$cb.attr('checked', true);
+	    if (/[^\w_\-^!]/.exec(nick)) {
+			setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
+			return false;
 		}
-		if ($cb.attr('checked')) {
-			$('#mediacontrol').children().each(
-				function(index){
-					$(this).ninjaButtonEnable();
-				}
-			);
-		} else {
-			$('#mediacontrol').children().each(
-				function(index){
-					$(this).ninjaButtonDisable();
-				}
-			);
-		}
-		return false;
-	});
+
+		//lock the UI while waiting for a response
+		showLoad();
+
+		bindstopstart();
+
+	    $('#resources > input[type="checkbox"]').click(function (e) {
+			alert('clicked on checkbox');
+	 	});
+
+		$('#resources > li').click(function(e) {
+			var $cb = $(this).children('input[type="checkbox"]');
+			if ($cb.attr('checked')) {
+				$cb.removeAttr('checked')
+			} else {
+				$cb.attr('checked', true);
+			}
+			if ($cb.attr('checked')) {
+				$('#mediacontrol').children().each(
+					function(index){
+						$(this).ninjaButtonEnable();
+					}
+				);
+			} else {
+				$('#mediacontrol').children().each(
+					function(index){
+						$(this).ninjaButtonDisable();
+					}
+				);
+			}
+			return false;
+		});
 
 
 	$("#sendurl").click(function(e) {
@@ -1847,7 +1868,6 @@ $(document).ready(function() {
 	           });
 	    return false;
   });
-
  
   // update the daemon uptime every 10 seconds
   setInterval(function () {

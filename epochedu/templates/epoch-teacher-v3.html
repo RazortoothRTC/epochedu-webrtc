@@ -202,6 +202,26 @@
 			<span class="modalrow" id="status"></span>
 		</form>
 	</div>
+	<div class="jqmWindow2" id="monitorLaunchDialog">
+		<div class="modalmsg">
+			<div class="modaltxt">
+				<h3>Screen Monitor Setup</h3>
+				<p>The Screen Monitor feature allows the teacher to watch the screens of students in-session. <!-- <br />Please input the number of seconds to pause between each screen before displaying the next screen.<br /> Note: All students must be running MCPService and the screen capture service to enable this feature.</p> -->
+			</div>
+			<!-- <div class="modalbranding">	
+			</div> -->
+		</div>
+		<form id="monitorLaunchForm">
+			<div class="modalrow">
+				<label>Interval (Sec):</label>
+				<input id="monitorIntervalInput" type="number" class="modalform" />
+			</div>
+			<div class="modalrow">
+				<input id="launchMonitorButton" onclick="return false;" type="image" src="/static/images/graylaunchbutton.png" class="genericModalOKButton" />
+			</div>
+			<span class="modalrow" id="status"></span>
+		</form>
+	</div>
 {%/block %}
 
 {%block 'body-scripts' %}
@@ -252,6 +272,7 @@
 			});
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
 			$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
+			$('#monitorLaunchDialog').jqm({modal:false, toTop:true});
 			$('#timer').stopwatch();;
 			$('#startsessionbtn').ninjaButtonCreate({
 			  icon:'bookmark', 
@@ -431,10 +452,8 @@
 			  title:'Monitor' 
 			});
 			$("#monitor").live("click", function(e) {
-				//
-				// XXX TODO, add a pop up to ask for interval
-				//
-				runSessionMonitor(30000);
+				$('#monitorLaunchDialog').jqmShow();
+				$('#monitorIntervalInput').val(30);
 			});
 		});
 	</script>
