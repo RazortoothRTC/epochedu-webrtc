@@ -807,8 +807,10 @@ js.get("/who", function (req, res) {
     var session = sessions[id];
     nicks.push(session.nick);
   }
-  res.simpleJSON(200, { nicks: nicks
-                      , rss: mem.rss
+  res.simpleJSON(200, { nicks: nicks,
+  						address: js.address,
+  						port: js.CONFIG['HTTPWS_PORT'],
+                      	rss: mem.rss
                       });
 });
 
@@ -855,7 +857,7 @@ js.get("/join", function (req, res) {
                       , rss: mem.rss
                       , starttime: starttime
 					  , channelstate: channels[chan].state
-                      });
+                      }); // XXX What is channel state?
 });
 
 js.get("/rejoin", function (req, res){
@@ -948,6 +950,19 @@ js.get("/channels", function (req, res) {
              
 	// sys.log('channelslist is ' + JSON.stringify(channelslist));
   	res.simpleJSON(200, channelslist);
+});
+
+/*
+	/info
+
+	Call this to get basic server info
+	Should include things like server version
+*/
+js.get("/info", function (req, res) {
+	res.simpleJSON(200, {
+		address: js.address,
+  		port: js.CONFIG['HTTPWS_PORT'],
+	});
 });
 
 js.get("/recv", function (req, res) {

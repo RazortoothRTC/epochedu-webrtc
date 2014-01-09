@@ -27,12 +27,16 @@
 #(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
+
+// XXX TODO, document this config
 var CONFIG = { debug: false
-             , nick: "#"   // set in onConnect
-             , id: null    // set in onConnect
+             , nick: "#"
+             , id: null
              , last_message_time: 1
-             , focus: true //event listeners bound in onConnect
-             , unread: 0 //updated in the message-processing loop
+             , focus: true
+             , unread: 0
+             , remoteipaddress: '127.0.0.1'
+             , remoteport: '5000'
              };
 
 var nicks = [];
@@ -51,9 +55,11 @@ var MCP_RPC_PORT = '8080';  // Assume MCP runs on localhost
 var MCP_RPC_ENDPOINT = '/rpc';
 var SYNC_FOLDER_ENDPOINT = '/contentsyncpull';
 var TEACHER_SCREENSHARE_PORT='6080';
-var TEACHER_SCREENSHARE_ENDPOINT = '/vnc.html?host=192.168.1.13&port=' + TEACHER_SCREENSHARE_PORT; // XXX Hardcoded, fix
+var TEACHER_SCREENSHARE_ENDPOINT_NOVNC = '/vnc.html?host=%s&port=' + TEACHER_SCREENSHARE_PORT;
+var TEACHER_SCREENSHARE_ENDPOINT_THINVNC = ''; // Nothing to configure
 var STUDENT_SCREENSHARE_PORT='8080';
-var STUDENT_SCREENSHARE_ENDPOINT = '/screengrab?rand=';
+var STUDENT_SCREENGRAB_ENDPOINT = '/screengrab?rand=';
+var STUDENT_SCREENSHARE_ENDPOINT = '/screenmonitor'; // /screenmonitor?nick=%s&ipaddress=%s'
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
 var browserplayerwindow;
 var platformplayer = false;
@@ -353,11 +359,16 @@ function updateUserStatus2(nick, timestamp) {
 	Only Student will have Screengrab Button
 */
 function handleNicklistUpdate(nick, timestamp) {
-	// If it's not the teacher
-	if ((nick != CONFIG.nick) && (nick !== 'teacher')) { // XXX This is hack, we ought to know if it's us?
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="http://' + usermeta[nick].address +':'+ STUDENT_SCREENSHARE_PORT + STUDENT_SCREENSHARE_ENDPOINT+'" target="_blank">[<img src="/static/images/black/video.png" /> View Screen]</a></li>');
+	// If it is the teacher
+	var address = usermeta[nick].address;
+	if (nick === 'teacher' || nick === '#' || nick === CONFIG.nick) {
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://'+ address +':' + TEACHER_SCREENSHARE_PORT+ TEACHER_SCREENSHARE_ENDPOINT_THINVNC + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	} else {
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://'+ usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT + TEACHER_SCREENSHARE_ENDPOINT + '\'); return false;">[<img src="/static/images/black/video.png" />  Share]</a></li>');
+		//
+		// XXX If I can come up with a way to get URL type into payload, I won't need to do the full URL
+		//
+		var monitorurl = 'http://' + CONFIG.remoteipaddress +':'+ CONFIG.remoteport + STUDENT_SCREENSHARE_ENDPOINT + '?nick=' + nick + '&ipaddress=' + address;
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="doInsertChatMessage(\'' + monitorurl + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	}
 }
 
@@ -1321,7 +1332,18 @@ function who () {
   jQuery.get("/who", { channel: getChannel()}, function (data, status) {
     if (status != "success") return;
     nicks = data.nicks;
+    CONFIG.remoteipaddress = data.address;
+    CONFIG.remoteport = data.port;
     outputUsers();
+  }, "json");
+}
+
+function info () {
+  jQuery.get("/info", {}, function (data, status) {
+    if (status != "success") return;
+    CONFIG.remoteipaddress = data.address;
+    CONFIG.remoteport = data.port;
+    console.log("Connection to " + CONFIG.remoteipaddress + ":" + CONFIG.remoteport + " successful");
   }, "json");
 }
 
@@ -1595,6 +1617,9 @@ $(document).ready(function() {
 			setStatusMessage('#loginform', "Bad character in nick. Can only have letters, numbers, and '_', '-', '^', '!'", 'status');
 			return false;
 		}
+
+		// XXX We will take our chances and set our nick
+		CONFIG.nick = nick;
 
 		//lock the UI while waiting for a response
 		showLoad();
@@ -1889,6 +1914,7 @@ $(document).ready(function() {
   //begin listening for updates right away
   //interestingly, we don't need to join a room to get its updates
   //we just don't show the chat stream to the user until we create a session
+  info();
   longPoll();
   /* 
   setInterval(function() {
