@@ -396,8 +396,10 @@ function channelFactory() {
     for (var i = 0; i < messages.length; i++) {
     	// console.log("Looping on message " + i);
       	var message = messages[i];
+      	// console.log(message);
       	if (message.timestamp > since) {
-      		if (message.dmid === undefined) {
+      		matching.push(message);
+      		/* if (message.dmid === undefined) {
       			sys.puts("got a group message, push");
         		matching.push(message);
         	} else if (message.dmid === id) {
@@ -406,10 +408,11 @@ function channelFactory() {
         	} else {
         		// NOOP, ignore the message
         		sys.puts("Don't deliver to id = " + id);
-        	}
+        	} */
      	}
     }
 
+    // console.log(matching);
     if (matching.length != 0) {
     	sys.puts("Return matching message length = " + matching.legnth);
 		callback(matching);
@@ -1070,12 +1073,10 @@ js.get("/recv", function (req, res) {
   achannel.query(since, function (messages) {
   	for (var i = 0; i < messages.length; i++) {
 	    if (messages[i].dmid !== undefined) {
-			if (messages[i].dmid !== id) {
-  				sys.puts("Don't deliver to id = " + id);
-  				messages.splice(i, 1);
-  			} else {
-  				sys.puts("Delivering DM to recipient id = " + id);
-  			}
+	    	if (messages[i].dmid === id) continue;
+	    	if (messages[i].id === id) continue;
+	    	sys.puts("Don't deliver DM to id = " + id);
+	    	messages.splice(i, 1);
     	}
 	}
     sys.puts("channel session query");
