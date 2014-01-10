@@ -189,6 +189,7 @@ WIP = " <li>MCP command work completed.</li>\n \
 ";
 var DEFAULT_CHANNEL = 'default';
 var BOTNICK = "robot"
+var BOTID = -2001; // XXX We could generate it each time, but uh, dunno , I like the bot to be 2001.  Our random numbers will never generate this
 var mem = process.memoryUsage();
 
 //
@@ -274,15 +275,17 @@ function channelFactory() {
 		this.sessions = {};
 		this.createdate = new Date();
 		this.state = channelstates['NOT_IN_CLASS'];
-		this.appendMessage = function (nick, type, text, payload) {
+		this.appendMessage = function (nick, id, type, text, payload) {
 		var m;
-	
+		var dm;
+
 		// 
 		// XXX OK, this is extremely double effort if we already have this nice case statement below
 		// Work this out what is the right thing to do ... I think move this into some kind of standard handler
 		if (type != "mcprequest") {
 			sys.puts('Received regular message type = ' + type);
 			m = { nick: nick
+			   , id: id
 			   , type: type // See switch statement below
 			   , text: text
 			   , payload: payload // We will always need payload
@@ -292,6 +295,7 @@ function channelFactory() {
 			if (payload) {
 				sys.puts('Received mcprequest with payload - ' + JSON.stringify(payload));
 				m = { nick: nick
+				   , id: id
 				   , type: type
 				   , text: text
 				   , payload: payload
@@ -312,7 +316,13 @@ function channelFactory() {
 			case "msg":
 				sys.puts("<" + nick + "> " + text);
 
-				if (text.starts)
+				if ((dm = getDMnick(text)) !== undefined) {
+					//
+					// Store the ID
+					//
+					// XXX break
+					console.log("dm received to: " + dm);
+				}
 				break;
 			case "join":
 				sys.puts(nick + " join");
@@ -391,9 +401,20 @@ function channelFactory() {
     }
   };
 
+  this.queryIDByNick = function(nick) {
+	  for (var id in this.sessions) {
+	    if (!this.sessions.hasOwnProperty(id)) continue;
+	    var session = this.sessions[id];
+	    if (session.nick === nick) {
+	    	return id;
+	    }
+	  }
+	  return undefined;
+  };
+
   // A Simple wrapper message to broadcast something important from the server
   this.botMessage = function (text) {
-      this.appendMessage(BOTNICK, 'msg', text); // XXX Until we come up with a new message type, use basic 'msg'
+      this.appendMessage(BOTNICK, BOTID, 'msg', text); // XXX Until we come up with a new message type, use basic 'msg'
   }
 
   // clear old callbacks
@@ -434,7 +455,7 @@ function sessionFactory (nick, chan, address) {
     },
 
     destroy: function () {
-      channel.appendMessage(session.nick, "part");
+      channel.appendMessage(session.nick, session.id, "part");
       delete sessions[session.id];
     }
   };
@@ -604,7 +625,11 @@ js.getterer("/content/[\\w\\.\\-]+", function(req, res) {
 		var syncdmsg = '@' + syncnick + ' completed sync of content: ' + aurl.substring(aurl.lastIndexOf('/') + 1) + ' on channel: ' + chan;
 		sys.puts(syncdmsg);
 		chan = channels[chan]
-		if (chan) chan.appendMessage(syncnick, 'syncack', syncdmsg); 
+		if (chan) {
+			var id = chan.queryIDByNick(syncnick);
+			if (!id) console.error("Unable to queryIDByNick(" + syncnick + ")");
+			chan.appendMessage(syncnick, id, 'syncack', syncdmsg);
+		}
 	}
 	return js.staticHandler(CONTENT_REPO_FILE_PATH + aurl.substring(aurl.indexOf('/content') + '/content'.length)) (req, res);
 });
@@ -798,7 +823,11 @@ js.getterer("/syncack/[\\w\\.\\-]+", function(req, res) {
 	var syncdmsg = '@' + syncnick + ' completed sync of content: ' + fname + ' on channel: ' + chan;
 	sys.puts(syncdmsg);
 	chan = channels[chan]
-	if (chan) chan.appendMessage(syncnick, 'syncack', syncdmsg);
+	if (chan) {
+		var id = chan.queryIDByNick(syncnick);
+		if (!id) console.error("Unable to queryIDByNick(" + syncnick + ")");
+		chan.appendMessage(syncnick, id, 'syncack', syncdmsg);
+	}
 	res.simpleJSON(200, { rss: mem.rss });
 });
 
@@ -855,7 +884,7 @@ js.get("/join", function (req, res) {
 
   sys.puts("connection: " + nick + "@" + res.connection.remoteAddress + " on " + chan);
 
-  channels[chan].appendMessage(session.nick, "join", "usermeta[" + nick + "]", { address: res.connection.remoteAddress });
+  channels[chan].appendMessage(session.nick, session.id, "join", "usermeta[" + nick + "]", { address: res.connection.remoteAddress });
   res.simpleJSON(200, { id: session.id
                       , nick: session.nick
                       , address: res.connection.remoteAddress
@@ -896,7 +925,7 @@ js.get("/rejoin", function (req, res){
 		sys.log(sys.inspect(channels, true, null));
 		res.simpleJSON(400, {error: '/rejoin Error 400: Session Undefined for id'});
 	}
-	channels[chan].appendMessage(session.nick, "join");
+	channels[chan].appendMessage(session.nick, session.id, "join");
 	res.simpleJSON(200, { id: session.id
 	                      , nick: session.nick
 	                      , rss: mem.rss
@@ -1077,7 +1106,7 @@ js.get("/send", function (req, res) {
   }
 
   session.poke();
-  channel.appendMessage(session.nick, type, text, payload); // Pass the error handling on down 
+  channel.appendMessage(session.nick, id, type, text, payload); // Pass the error handling on down 
   res.simpleJSON(200, { rss: mem.rss });
 });
 
@@ -1135,6 +1164,7 @@ function initDB(options, handler) {
 	self.db['sessions'] = sessions_db;
 	setTimeout(handler, SERVER_RESTART_TIMEOUT); // Give the existing channels time to be recreated
 }
+
 function pullcontent(crdbpath, crdburl, chan) {
 	// XXX This should get cached intelligently so you don't do file IO for each call unless cache is dirty
 
@@ -1167,10 +1197,11 @@ function getDMnick(msg) {
 	var RE_DM = /\@(\/?)(\w+)([^>]*?)/;
 	var dmnick = undefined;
 	if (RE_DM.test(msg)) {
-		dmnick = msg.substring(1, msg.substring.indexOf(' '));
+		dmnick = msg.substring(1, msg.indexOf(' '));
 	}
 	return dmnick;
 }
+
 console.log(js.CONFIG);
 js.create(js.address, js.CONFIG['HTTPWS_PORT']);
 js.listenHttpWS();
