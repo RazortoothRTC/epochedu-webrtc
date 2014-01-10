@@ -316,12 +316,14 @@ function channelFactory() {
 			case "msg":
 				sys.puts("<" + nick + "> " + text);
 
-				if ((dm = getDMnick(text)) !== undefined) {
+				//
+				// Make sure we got a real, non-empty DM
+				if ((dm = getDMnick(text)) !== undefined && dm !== '@') {
 					//
 					// Store the ID
 					//
-					// XXX break
-					console.log("dm received to: " + dm);
+					var dmid = this.queryIDByNick(dm);
+					console.log("dm received to: " + dm + "(" + dmid + ")");
 				}
 				break;
 			case "join":
