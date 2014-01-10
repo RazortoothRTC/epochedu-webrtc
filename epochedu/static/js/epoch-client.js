@@ -360,15 +360,14 @@ function updateUserStatus2(nick, timestamp) {
 */
 function handleNicklistUpdate(nick, timestamp) {
 	// If it is the teacher
-	var address = usermeta[nick].address;
 	if (nick === 'teacher' || nick === '#' || nick === CONFIG.nick) {
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://'+ address +':' + TEACHER_SCREENSHARE_PORT+ TEACHER_SCREENSHARE_ENDPOINT_THINVNC + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://' + usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT+ TEACHER_SCREENSHARE_ENDPOINT_THINVNC + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	} else {
 		//
 		// XXX If I can come up with a way to get URL type into payload, I won't need to do the full URL
 		//
-		var monitorurl = 'http://' + CONFIG.remoteipaddress +':'+ CONFIG.remoteport + STUDENT_SCREENSHARE_ENDPOINT + '?nick=' + nick + '&ipaddress=' + address;
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="doInsertChatMessage(\'' + monitorurl + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		var monitorurl = 'http://' + CONFIG.remoteipaddress +':'+ CONFIG.remoteport + STUDENT_SCREENSHARE_ENDPOINT + '?nick=' + nick + '&ipaddress=' + usermeta[nick].address;
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="doInsertChatMessage(\'' + monitorurl + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	}
 }
 
