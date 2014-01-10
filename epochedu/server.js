@@ -324,6 +324,8 @@ function channelFactory() {
 					//
 					var dmid = this.queryIDByNick(dm);
 					console.log("dm received to: " + dm + "(" + dmid + ")");
+					m.dmid = dmid;
+					console.log(m);
 				}
 				break;
 			case "join":
@@ -376,7 +378,7 @@ function channelFactory() {
 	    messages.push( m );
 
 	    while (callbacks.length > 0) {
-	      callbacks.shift().callback([m]);
+			callbacks.shift().callback([m]);
 	    }
 
 	    while (messages.length > MESSAGE_BACKLOG)
@@ -388,18 +390,32 @@ function channelFactory() {
 		}
   };
 
-  this.query = function (since, callback) {
+  this.query = function (since, callback, id) {
     var matching = [];
+    // XXX I'm not sure what conditions are that we'd have timestamp > since
     for (var i = 0; i < messages.length; i++) {
-      var message = messages[i];
-      if (message.timestamp > since)
-        matching.push(message)
+    	// console.log("Looping on message " + i);
+      	var message = messages[i];
+      	if (message.timestamp > since) {
+      		if (message.dmid === undefined) {
+      			sys.puts("got a group message, push");
+        		matching.push(message);
+        	} else if (message.dmid === id) {
+        		sys.puts("Delivering DM to recipient id = " + id);
+        		matching.push(message);
+        	} else {
+        		// NOOP, ignore the message
+        		sys.puts("Don't deliver to id = " + id);
+        	}
+     	}
     }
 
     if (matching.length != 0) {
-      callback(matching);
+    	sys.puts("Return matching message length = " + matching.legnth);
+		callback(matching);
     } else {
-      callbacks.push({ timestamp: new Date(), callback: callback });
+    	sys.puts("Return no matching");
+		callbacks.push({ timestamp: new Date(), callback: callback });
     }
   };
 
@@ -1041,22 +1057,32 @@ js.get("/recv", function (req, res) {
   var session;
   
   if (id != null && sessions[id]) {
-    // sys.puts('/recv setting session for id = ' + id);
-    session = sessions[id];
-    session.poke();
+    	// sys.puts('/recv setting session for id = ' + id);
+    	session = sessions[id];
+    	session.poke();
   } else {
-	state = -1;
+		state = -1;
   }
   // sys.puts('/recv setting since');
   
   var since = parseInt(qs.parse(url.parse(req.url).query).since, 10);
 
-  achannel.query(since, function (messages) { 
-    // sys.puts("channel session query");
+  achannel.query(since, function (messages) {
+  	for (var i = 0; i < messages.length; i++) {
+	    if (messages[i].dmid !== undefined) {
+			if (messages[i].dmid !== id) {
+  				sys.puts("Don't deliver to id = " + id);
+  				messages.splice(i, 1);
+  			} else {
+  				sys.puts("Delivering DM to recipient id = " + id);
+  			}
+    	}
+	}
+    sys.puts("channel session query");
     if (session) session.poke();
     res.simpleJSON(200, { messages: messages, rss: mem.rss, state: state });
-  });
-  // sys.puts("Done with /recv");
+  }, id);
+  sys.puts("Done with /recv");
 });
 
 js.get("/send", function (req, res) {
