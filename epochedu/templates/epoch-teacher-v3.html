@@ -372,10 +372,10 @@
 			    $('#resources').find('input:checked').each(
 			    function(index) {
 			        var msg = this.value;
-			        if (!util.isBlank(msg)) sendviewer(msg, "universalsend");
+			        if (!util.isBlank(msg)) send(msg, "universalsend");
 			        this.checked = false;	
 					toggleNinjaButton('#mediacontrol', false);
-					$('#end').ninjaButtonEnable();
+					// $('#end').ninjaButtonEnable();
 			    }
 			    );
 			  },
@@ -422,7 +422,8 @@
 				$(this).ninjaButtonDeselect();
 				/* XXX Put this back into epoch-client.js once design is final */
 				var msg = "#endviewer";
-			    sendviewer(msg, "endviewer");
+				console.log("Clicked endviewer");
+			    send(msg, "endviewer");
 				toggleNinjaButton('#mediacontrol', false);
 				$('#resources').find('input:checked').each(
 			    	function(index) {
@@ -432,7 +433,7 @@
 			    return false;
 			  },
 			  state:'disabled',
-			  title:'End' // text that is optional when there is an icon
+			  title:'End'
 			});
 			$('#home').ninjaButtonCreate({
 			  icon:'home', 

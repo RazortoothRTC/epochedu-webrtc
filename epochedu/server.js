@@ -414,10 +414,10 @@ function channelFactory() {
 
     // console.log(matching);
     if (matching.length != 0) {
-    	sys.puts("Return matching message length = " + matching.legnth);
+    	// sys.puts("Return matching message length = " + matching.legnth);
 		callback(matching);
     } else {
-    	sys.puts("Return no matching");
+    	// sys.puts("Return no matching");
 		callbacks.push({ timestamp: new Date(), callback: callback });
     }
   };
@@ -1079,11 +1079,11 @@ js.get("/recv", function (req, res) {
 	    	messages.splice(i, 1);
     	}
 	}
-    sys.puts("channel session query");
+    // sys.puts("channel session query");
     if (session) session.poke();
     res.simpleJSON(200, { messages: messages, rss: mem.rss, state: state });
   }, id);
-  sys.puts("Done with /recv");
+  // sys.puts("Done with /recv");
 });
 
 js.get("/send", function (req, res) {

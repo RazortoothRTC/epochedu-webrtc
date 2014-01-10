@@ -838,6 +838,12 @@ function longPoll (data) {
 	  // XXX Add message types here
 	  // alert('received ' + message.type);
 	  // MSGDEF - longPoll loop
+	  //
+	  // THIS IS HOW WE DO IT
+	  //
+	  // PROCESS_INCOMING_MESSAGES HERE
+	  //
+	  //
       switch (message.type) {
         case "msg":
           if(!CONFIG.focus){
@@ -1130,11 +1136,6 @@ function handleError(myReqObj,textStatus,errorThrown) {
 	);
 }
 
-//push a viewer out to clients XXX This is identical to send :(  .... Get rid of this
-function sendviewer(msg, type) {
-  send(msg, type);
-}
-
 //
 // This is used to send from teacher to MCP clients
 //
@@ -1417,16 +1418,16 @@ function messageDispatcher(cmd, data) {
 			if (!util.isBlank(data)) send(data);
 			break;
 		case "sendviewer":
-			if (!util.isBlank(data)) sendviewer(data, cmd);
+			if (!util.isBlank(data)) send(data, cmd);
 			break;
 		case "endviewer":
-			if (!util.isBlank(data)) sendviewer(data, cmd);
+			if (!util.isBlank(data)) send(data, cmd);
 			break;
 		case "preview":
 			launchShadowboxPreview(data);
 			break;
 		case "sendviewerlocal":
-			if (!util.isBlank(data)) sendviewer(data, cmd);
+			if (!util.isBlank(data)) send(data, cmd);
 			break;
 		case "sync":
 			addGrowlNotification('Sync Request Sent', 'Sent Sync request for URL: ' + data + '.  Results of Content Sync Request will be updated as sync has completed.', '/static/images/birdy.png', '', false, 'mcpstatusgrowl');
@@ -1669,7 +1670,7 @@ $(document).ready(function() {
 	    function(index) {
 	        var msg = this.value;
 	        // alert('click sendviewer ' + msg);
-	        if (!util.isBlank(msg)) sendviewer(msg, "sendviewer");
+	        if (!util.isBlank(msg)) send(msg, "sendviewer");
 	        this.checked = false;
 	    }
 	    );
@@ -1680,7 +1681,8 @@ $(document).ready(function() {
 	/* XXX DEPRICATED, NOW LIVES IN HTML TEMPLATE */
 	$("#endviewer").click(function(e) {
 	    var msg = "#endviewer";
-	    if (!util.isBlank(msg)) sendviewer(msg, "endviewer");
+	    console.log("Clicked again, endviewer");
+	    if (!util.isBlank(msg)) send(msg, "endviewer");
 	    return false;
 	});
 
@@ -1689,7 +1691,7 @@ $(document).ready(function() {
 	    $('#resources').find('input:checked').each(
 	    function(index) {
 	        var msg = this.value;
-	        if (!util.isBlank(msg)) sendviewer(msg, "sendviewerlocal");
+	        if (!util.isBlank(msg)) send(msg, "sendviewerlocal");
 	        this.checked = false;
 	    }
 	    );
