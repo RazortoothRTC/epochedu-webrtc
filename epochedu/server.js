@@ -89,7 +89,7 @@ CONTENT_REPO_FILE_PATH = "./contentrepo";
 // work on android.  Ideally we should
 // not sniffing browser user agents or 
 // versions.
-CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"; // XXX This is fixed for android!!!!
+CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"; // XXX This is fixed for android!!!! -> No it's not, I think it's broken since 4.x.
 
 DEFAULT_CHANNELS = ['science', 'math', 'history', 'spanish']; // XXX DEMOSETUP
 
@@ -302,12 +302,17 @@ function channelFactory() {
 			}
 		}
 
-		// MSGDEF
+		//
+		// MSG DEF
+		// We should define the messages, at least document them
+		//
 		// XXX This switch statement seems completely redundant unless we do error checking and preprocessing
 		// XXX I only see a few cases where this is a bit useful
 		switch (type) {
 			case "msg":
 				sys.puts("<" + nick + "> " + text);
+
+				if (text.starts)
 				break;
 			case "join":
 				sys.puts(nick + " join");
@@ -1104,6 +1109,7 @@ function pullcontentdirs(crdbpath) {
 	return contentdirs;
 }
 
+// XXX Get rid of this dirtydb and replace with pouchdb
 function initDB(options, handler) {
 	var self = this;
 	var channels_db = new dirty('channels.dirty');
@@ -1157,6 +1163,14 @@ function pullcontent(crdbpath, crdburl, chan) {
 	return contentlist;
 }
 
+function getDMnick(msg) {
+	var RE_DM = /\@(\/?)(\w+)([^>]*?)/;
+	var dmnick = undefined;
+	if (RE_DM.test(msg)) {
+		dmnick = msg.substring(1, msg.substring.indexOf(' '));
+	}
+	return dmnick;
+}
 console.log(js.CONFIG);
 js.create(js.address, js.CONFIG['HTTPWS_PORT']);
 js.listenHttpWS();
