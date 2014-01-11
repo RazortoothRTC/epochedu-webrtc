@@ -368,7 +368,7 @@ function handleNicklistUpdate(nick, timestamp) {
 		// XXX If I can come up with a way to get URL type into payload, I won't need to do the full URL
 		//
 		var monitorurl = 'http://' + CONFIG.remoteipaddress +':'+ CONFIG.remoteport + STUDENT_SCREENSHARE_ENDPOINT + '?nick=' + nick + '&ipaddress=' + usermeta[nick].address;
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="doInsertChatMessage(\'' + monitorurl + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="sendmediamsg(\'' + monitorurl + '\', \'screenshare\', \'Click to view screen of: <em>'+ nick +'</em>\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	}
 }
 
@@ -675,23 +675,19 @@ function addMessage (from, text, time, _class, payload) {
 		if (payload.type === 'mediaurl') { 
 			console.log(payload);
 			var mime = payload.mime;
-			var value = payload.text;
+			var value = payload.text.replace(/\+/g, " ");
 			console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
 
+			text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
 			//
 			// Add special cases here if we plan to modify the href
 			//
+			/*
 			if (mime.match(/png|gif|jpg|html|htm/i)) {
 				text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
 			} else {
-				text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
-			}
-			/*
-			if (text.match(/http/i)) {
-				var rel = "";
-				text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">' + value + '</a>');
-			}
-			*/
+				
+			} */
 		}
 	}
 	$pane = $('.chatscroll');
@@ -1167,10 +1163,7 @@ function sendmediamsg(url, mime, text, cssid, cssclass, dataarray) {
 	};
 	console.log('send mediaurl: ' + JSON.stringify(mediaurl));
 
-	/* var payload = {
-		'mediaurl': mediaurl
-	}; */
-
+	// XXX We should be POSTing the data ....
 	if (CONFIG.debug === false) {
 		$.ajax({
 			url: "/send",

@@ -1099,9 +1099,9 @@ js.get("/send", function (req, res) {
   var channel = channels[chan];
   var sessions = channel.sessions;
   
-  sys.puts('Received message ' + type);
+  // sys.puts('Received message ' + type);
   // sys.puts('Payload is ' + payload);
-  sys.puts('/send with unescaped query string = ' + uqs);
+  // sys.puts('/send with unescaped query string = ' + uqs);
   // sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
   // sys.puts('/send with dkqs = ' + JSON.stringify(fu.dkqs.getJSON(uqs)));
   if (!payload) payload = dkqs.getJSON(uqs).payload; // XXX I would love to know why node's querystring doesn't work
