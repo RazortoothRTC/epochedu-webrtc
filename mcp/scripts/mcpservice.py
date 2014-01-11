@@ -536,7 +536,7 @@ Todo ...
 		# results = ["http://192.168.1.148:5000/content/foo/1.jpg","http://192.168.1.148:5000/content/foo/108942.jpg","http://192.168.1.148:5000/content/foo/116136642_1a928c013a.jpg","http://192.168.1.148:5000/content/foo/2.jpg","http://192.168.1.148:5000/content/foo/2010-09-29%2016.58.08.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-1.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan-2.jpg","http://192.168.1.148:5000/content/foo/251_rhode_island_floorplan.jpg","http://192.168.1.148:5000/content/foo/25938_PE103626_S4.jpg","http://192.168.1.148:5000/content/foo/310.jpg","http://192.168.1.148:5000/content/foo/3946055_f67b05180b_o.jpg","http://192.168.1.148:5000/content/foo/6a4a64a35510f0e8.jpg","http://192.168.1.148:5000/content/foo/72970129_fa08a7a531.jpg","http://192.168.1.148:5000/content/foo/98993461_593c72d2dc_o.jpg"]
 		jsonResp = json.dumps({'resultsCount' : len(results), 'results': results})
 		return jsoncallback + '(' + jsonResp + ');'
-	
+
 	@cherrypy.expose
 	# Test in a browser : http://< student IP >:8080/contentshare?nick=< nick >token=< credential >&channel=< channel name >&filename=< filename > 
 	def contentshare(self, **params):
@@ -567,7 +567,7 @@ Todo ...
 			print "/contentshare received request for channel " + channel
 		else:
 			print "/contentshare didn't receive channel parameter, no content to return"
-
+			
 		# XXX This is potentially very insecure, we should only be serving from our docroot at the sdcard
 		# The client can theoretically request any resource this way
 		# Fix this!!!!
