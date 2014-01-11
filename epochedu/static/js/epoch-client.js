@@ -656,9 +656,9 @@ function addMessage (from, text, time, _class, payload) {
 
 	// sanitize
 	text = util.toStaticHTML(text);
-
+	console.log(payload);
 	// replace URLs with links
-	if (payload === undefined) {
+	if (payload === undefined || payload.type !== 'mediaurl') {
 		if (text.match(/http/i)) {
 			var rel = "";
 			var ext = text.substring(text.lastIndexOf('.') + 1);
@@ -672,23 +672,25 @@ function addMessage (from, text, time, _class, payload) {
 		}
 		text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
 	} else {
-		if (payload.type === 'mediaurl') { 
-			console.log(payload);
-			var mime = payload.mime;
-			var value = payload.text.replace(/\+/g, " ");
-			console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
+		//
+		// Presumably we might define other payload.types, but assume
+		// we are a mediaurl in the payload type
+		//
+		console.log(payload);
+		var mime = payload.mime;
+		var value = payload.text.replace(/\+/g, " ");
+		console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
 
-			text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
-			//
-			// Add special cases here if we plan to modify the href
-			//
-			/*
-			if (mime.match(/png|gif|jpg|html|htm/i)) {
-				text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
-			} else {
-				
-			} */
-		}
+		text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
+		//
+		// Add special cases here if we plan to modify the href
+		//
+		/*
+		if (mime.match(/png|gif|jpg|html|htm/i)) {
+			text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
+		} else {
+			
+		} */
 	}
 	$pane = $('.chatscroll');
 	var panepos = $pane.data('jScrollPanePosition');
