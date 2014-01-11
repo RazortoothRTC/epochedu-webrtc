@@ -543,7 +543,8 @@ function openBestPlayer(url, selector, options) {
 				} else {
 					// XXX Crazy, hardcoded IP Address ... I don't even remember why we were doing this particular thing
 					// In fact, this gets us a second call to open a url, but with a worse and worse url
-					url = 'http://192.168.1.13:5000/content' + url.substring(url.indexOf('sdcard') + 6);
+					url = 'http://192.168.1.115:5000/content' + url.substring(url.indexOf('sdcard') + 6);
+					console.log(">>> openbestplayer using: " + url);
 					mcpDispatcher3(eval("(" + mcpPayloadFactory(url, "launchurl", 1) + ")"), function(json) {
 						platformplayer = true;
 					}, function(d, msg) {

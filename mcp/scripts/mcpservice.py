@@ -186,6 +186,7 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.0.0.16:5000'], # DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL' : "content://com.android.htmlfileprovider",
 			  'CONTENT_REPO_LOCAL_URL2' : "file://",
 			  'CONTENT_REPO_LOCAL_URL3' : "file://localhost",
+			  'CONTENT_REPO_LOCAL_URL4' : "",
 			  'EPOCHWATCHDOG_ACTIVITY' : "com.rt.epochedu.watchdog.EpochWatchdogActivity",
 			  'LAUNCHER_ACTIVITY' : "com.android.launcher.Launcher",
 			  'ACTION_MAIN' : "android.intent.action.MAIN",
@@ -951,15 +952,15 @@ Todo ...
 					isafile = True
 			if isafile:
 				besturi = uri
-				print "Checking for content in local content sync cache"
+				print "Checking for content in local content sync cache, besturi = " + besturi
 				# Get the list of files for this channel
 				# XXX Skipping trying to load from the cache
 				#
-				# results = self.getlocalcontentsyncurl(channelpath, contentrepourl, fileExtList)
-				# for f in results:
-				#	if (f[f.rindex('/') + 1:] == filename):
-				#		besturi = f
-				#		print "Found matching file in content sync cache, besturi is " + besturi
+				results = self.getlocalcontentsyncurl(channelpath, contentrepourl, fileExtList)
+				for f in results:
+					if (f[f.rindex('/') + 1:] == filename):
+						besturi = f
+					print "Found matching file in content sync cache, besturi is " + besturi
 		else:
 			print "/getbesturlpath didn't receive channel parameter, just use URL as is"
 			besturi = uri
