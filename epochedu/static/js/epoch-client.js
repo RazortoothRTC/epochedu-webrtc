@@ -230,6 +230,15 @@ function getExtName(path) {
 	return (idx = path.lastIndexOf('.')) < 1 ? "" : path.substring(idx + 1);
 }
 
+function getDMnick(msg) {
+	var RE_DM = /\@(\/?)(\w+)([^>]*?)/;
+	var dmnick = undefined;
+	if (RE_DM.test(msg)) {
+		dmnick = msg.substring(1, msg.indexOf(' '));
+	}
+	return dmnick;
+}
+
 function partSession() {
 	if (CONFIG.id) {
 		// jQuery.get("/part", {id: CONFIG.id, channel: getChannel()}, function (data) { }, "json");
@@ -689,12 +698,20 @@ function addMessage (from, text, time, _class, payload) {
 		// Presumably we might define other payload.types, but assume
 		// we are a mediaurl in the payload type
 		//
+
 		console.log(payload);
 		var mime = payload.mime;
 		var value = payload.text.replace(/\+/g, " ");
 		console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
 
-		text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
+		//
+		// Make sure it's not a DM
+		//
+		if (!getDMnick(text)) {
+			text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
+		} else {
+			text = getDMnick(text) + ' <a target="_blank" id="' + mime + '" class="mediaurl" href="' + text.substring(text.split(' ')[0].length).trim() + '">' + value + '</a>';
+		}
 		//
 		// Add special cases here if we plan to modify the href
 		//
