@@ -324,6 +324,26 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 #notificationTab a.sessionstatus:hover { background-position: 0 -24px; }
 */
 
+#account {
+	width:172px;
+	height:23px;
+	background:url('../images/css/account-bg.png') no-repeat;
+	top:0;
+	right:0;
+	position:absolute;
+	color:#FFFFFF;
+	padding:10px 20px;
+}
+
+.logout {
+	background:url('../images/css/logout.png');
+	text-indent:-10000px;
+	height:22px;
+	width:70px;
+	display:block;
+	float:right;
+}
+
 /* 
 	Use these styles with mediaurl msg types.   Add new ones at the bottom.  Please update here and in teacher-v3.css
 */
