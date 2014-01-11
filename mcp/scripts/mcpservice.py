@@ -529,7 +529,7 @@ Todo ...
 		try:
 			self.droid = android.Android()
 			channelpath = MCP_CONFIG['ANDROID_CONTENT_PATH'] + '/' + channel
-			contentrepourl = MCP_CONFIG['CONTENT_REPO_LOCAL_URL']
+			contentrepourl = MCP_CONFIG['CONTENT_REPO_LOCAL_URL3']
 		except:
 			channelpath = MCP_CONFIG['DESKTOP_CONTENT_PATH'] + '/' + channel
 			contentrepourl = 'file://'
