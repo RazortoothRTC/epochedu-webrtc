@@ -257,6 +257,10 @@ a#screenshare {
 	background:url('../images/black/video.png') no-repeat;
 }
 
+a#smile {
+	background:url('../images/smile-favico.png') no-repeat;
+}
+
 .mediaCarousel ul li a {
 	display:block;
 	text-decoration:none;

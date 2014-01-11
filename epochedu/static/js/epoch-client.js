@@ -60,6 +60,7 @@ var TEACHER_SCREENSHARE_ENDPOINT_THINVNC = ''; // Nothing to configure
 var STUDENT_SCREENSHARE_PORT='8080';
 var STUDENT_SCREENGRAB_ENDPOINT = '/screengrab?rand=';
 var STUDENT_SCREENSHARE_ENDPOINT = '/screenmonitor'; // /screenmonitor?nick=%s&ipaddress=%s'
+var STUDENT_CONTENTSHARE_ENDPOINT = '/contentshare'; // 'http://< student IP >:8080/contentshare?nick=< nick >&token=< credential >&channel=< channel name >&filename=< filename > '
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
 var browserplayerwindow;
 var platformplayer = false;
@@ -216,6 +217,11 @@ function isLoggedIn() {
 		// alert('isLoggedIn');
 		return sessionid;
 	}
+}
+
+function getExtName(path) {
+	var idx;
+	return (idx = path.lastIndexOf('.')) < 1 ? "" : path.substring(idx + 1);
 }
 
 function partSession() {
@@ -656,7 +662,7 @@ function addMessage (from, text, time, _class, payload) {
 
 	// sanitize
 	text = util.toStaticHTML(text);
-	console.log(payload);
+	// console.log(payload);
 	// replace URLs with links
 	if (payload === undefined || payload.type !== 'mediaurl') {
 		if (text.match(/http/i)) {

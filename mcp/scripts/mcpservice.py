@@ -540,7 +540,7 @@ Todo ...
 		return jsoncallback + '(' + jsonResp + ');'
 
 	@cherrypy.expose
-	# Test in a browser : http://< student IP >:8080/contentshare?nick=< nick >token=< credential >&channel=< channel name >&filename=< filename > 
+	# Test in a browser : http://< student IP >:8080/contentshare?nick=< nick >&token=< credential >&channel=< channel name >&filename=< filename > 
 	def contentshare(self, **params):
 		print params
 

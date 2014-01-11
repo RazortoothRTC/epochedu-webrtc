@@ -186,18 +186,30 @@
 							for (var i = 0; i < contentlist.length; i++) {
 								var tmp = contentlist[i].split('/');
 								var filename = tmp[tmp.length-1];
-								$dropdown.append('<div class="ninjaPlastic ninjaEnabled ninjaMenuChoice syncurl" style="border-top-left-radius: 0.5em 0.5em; border-top-right-radius: 0.5em 0.5em; border-bottom-right-radius: 0px 0px; border-bottom-left-radius: 0px 0px; background-color: rgb(204, 204, 204); border-top-color: rgb(153, 153, 153); border-right-color: rgb(153, 153, 153); border-bottom-color: rgb(153, 153, 153); border-left-color: rgb(153, 153, 153); color: rgb(0, 0, 0); " name="'+ contentlist[i] + '">' + filename + '</div>');
-							}
+								$dropdown.append('<div class="ninjaPlastic ninjaEnabled ninjaMenuChoice syncurl" id="' + filename +'" style="border-top-left-radius: 0.5em 0.5em; border-top-right-radius: 0.5em 0.5em; border-bottom-right-radius: 0px 0px; border-bottom-left-radius: 0px 0px; background-color: rgb(204, 204, 204); border-top-color: rgb(153, 153, 153); border-right-color: rgb(153, 153, 153); border-bottom-color: rgb(153, 153, 153); border-left-color: rgb(153, 153, 153); color: rgb(0, 0, 0); " name="'+ contentlist[i] + '"><img src="/static/images/black/right.png" />Open ' + filename + '</div>');
+								$dropdown.append('<div class="ninjaPlastic ninjaEnabled ninjaMenuChoice sharetoteacher" id="' + filename +'" style="border-top-left-radius: 0.5em 0.5em; border-top-right-radius: 0.5em 0.5em; border-bottom-right-radius: 0px 0px; border-bottom-left-radius: 0px 0px; background-color: rgb(204, 204, 204); border-top-color: rgb(153, 153, 153); border-right-color: rgb(153, 153, 153); border-bottom-color: rgb(153, 153, 153); border-left-color: rgb(153, 153, 153); color: rgb(0, 0, 0); " name="'+ contentlist[i] + '"><img src="/static/images/black/profile.png" />Share ' + filename + ' to Teacher</div>');
+								$dropdown.append('<div class="ninjaPlastic ninjaEnabled ninjaMenuChoice sharetoall" id="' + filename +'" style="border-top-left-radius: 0.5em 0.5em; border-top-right-radius: 0.5em 0.5em; border-bottom-right-radius: 0px 0px; border-bottom-left-radius: 0px 0px; background-color: rgb(204, 204, 204); border-top-color: rgb(153, 153, 153); border-right-color: rgb(153, 153, 153); border-bottom-color: rgb(153, 153, 153); border-left-color: rgb(153, 153, 153); color: rgb(0, 0, 0); " name="'+ contentlist[i] + '"><img src="/static/images/black/group.png" />Share ' + filename + ' to All</div>');
 
-							// XXX I think this will only work on android unless you change your CAPS file
-							$(".syncurl").live("click", function(e) { // Attach to current and future
-								var syncurl = $(this).attr('name');
-								// openNewWindow(syncurl);
-								openBestPlayer(syncurl, '.syncurl');
-								e.stopPropagation(); // Don't bubble up the event!!
+								// XXX I think this will only work on android unless you change your CAPS file
+								// $("div#syncurl-" + filename).click(function(e) { // Attach to current and future
+							}
+							$("div.syncurl").click(function(e) { // Attach to current and future
+									var syncurl = $(this).attr('name');
+									alert('fire: ' + syncurl);
+									// openNewWindow(syncurl);
+									openBestPlayer(syncurl, '.syncurl');
+									e.stopPropagation(); // Don't bubble up the event!!
+							});
+							$("div.sharetoteacher").click(function(e) {
+								var sharefile = $(this).attr('id');
+								sendmediamsg("@teacher http://" + usermeta[CONFIG.nick].address + ":" + MCP_RPC_PORT +"/contentshare?nick="+ CONFIG.nick +"&token=foofoo&channel="+ getChannel() +"&filename=" + sharefile , getExtName(sharefile), "I have shared content with you.  Click to download: " + sharefile);
+							});
+							$("div.sharetoall").click(function(e) {
+								var sharefile = $(this).attr('id');
+								sendmediamsg("http://" + usermeta[CONFIG.nick].address + ":" + MCP_RPC_PORT +"/contentshare?nick="+ CONFIG.nick +"&token=foofoo&channel="+ getChannel() +"&filename=" + sharefile, getExtName(sharefile), "I have shared content with everyone in class.  Click to download: " + sharefile);
 							});
 						} else {
-							alert('no results');
+							alert('No content available in /mnt/sdcard/content/' + getChannel());
 						}
 					},
 					error: function(error) {
