@@ -361,7 +361,8 @@ function updateUserStatus2(nick, timestamp) {
 function handleNicklistUpdate(nick, timestamp) {
 	// If it is the teacher
 	if (nick === 'teacher' || nick === '#' || nick === CONFIG.nick) {
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="doInsertChatMessage(\'http://' + usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT+ TEACHER_SCREENSHARE_ENDPOINT_THINVNC + '\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		// sendmediamsg(url, mime, text, cssid, cssclass, dataarray)
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="sendmediamsg(\'http://' + usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT+ TEACHER_SCREENSHARE_ENDPOINT_THINVNC + '\', \'screenshare\', \'Click to view my screen\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	} else {
 		//
 		// XXX If I can come up with a way to get URL type into payload, I won't need to do the full URL
@@ -641,58 +642,81 @@ function scrollDown () {
 //the event may be a msg, join or part type
 //from is the user, text is the body and time is the timestamp, defaulting to now
 //_class is a css class to apply to the message, usefull for system events
-function addMessage (from, text, time, _class) {
-  // alert('addMessage');
-  if (text === null) return;
+function addMessage (from, text, time, _class, payload) {
+	console.log('addMessage ' + text);
+	if (text === null) return;
 
-  if (time == null) {
-    // if the time is null or undefined, use the current time.
-    time = new Date();
-  } else if ((time instanceof Date) === false) {
-    // if it's a timestamp, interpret it
-    time = new Date(time);
-  }
+	if (time == null) {
+		// if the time is null or undefined, use the current time.
+		time = new Date();
+	} else if ((time instanceof Date) === false) {
+	// if it's a timestamp, interpret it
+		time = new Date(time);
+	}
 
-  // sanitize
-  text = util.toStaticHTML(text);
+	// sanitize
+	text = util.toStaticHTML(text);
 
-  // replace URLs with links
-  
-  if (text.match(/http/i)) {
-	var rel = "";
-	var ext = text.substring(text.lastIndexOf('.') + 1);
-	if (ext.match(/png|gif|jpg|html|htm/i)) rel = "shadowbox"; // XXX This should be configurable somwhere obvious?
-  	text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
-  }
-  if (text.match(/cmd/i)) {
-	var cmd = text.substring(text.lastIndexOf('/') + 1);
-	// text = text.replace(util.cmdRE, '<a target="_blank" href="javascript:' + cmd + '()">' + cmd + '</a>');
-	text = text.replace(util.cmdRE, '<a target="_blank" onclick="reloadURL()" href="#">' + cmd + '</a>');
-  }
-  text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
-  $pane = $('.chatscroll');
-  var panepos = $pane.data('jScrollPanePosition');
-  var maxpanepos = $pane.data('jScrollPaneMaxScroll');
-  var autoScroll;
-  if (panepos && maxpanepos && (panepos == maxpanepos)) {
+	// replace URLs with links
+	if (payload === undefined) {
+		if (text.match(/http/i)) {
+			var rel = "";
+			var ext = text.substring(text.lastIndexOf('.') + 1);
+			if (ext.match(/png|gif|jpg|html|htm/i)) rel = "shadowbox"; // XXX This should be configurable somwhere obvious?
+				text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
+		}
+		if (text.match(/cmd/i)) {
+			var cmd = text.substring(text.lastIndexOf('/') + 1);
+			// text = text.replace(util.cmdRE, '<a target="_blank" href="javascript:' + cmd + '()">' + cmd + '</a>');
+			text = text.replace(util.cmdRE, '<a target="_blank" onclick="reloadURL()" href="#">' + cmd + '</a>');
+		}
+		text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">$&</a>');
+	} else {
+		if (payload.type === 'mediaurl') { 
+			console.log(payload);
+			var mime = payload.mime;
+			var value = payload.text;
+			console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
+
+			//
+			// Add special cases here if we plan to modify the href
+			//
+			if (mime.match(/png|gif|jpg|html|htm/i)) {
+				text = text.replace(util.urlRE, '<a target="_blank" rel="' + rel + '" href="$&">$&</a>');
+			} else {
+				text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
+			}
+			/*
+			if (text.match(/http/i)) {
+				var rel = "";
+				text = text.replace(util.contenturlRE, '<a target="_blank" href="$&">' + value + '</a>');
+			}
+			*/
+		}
+	}
+	$pane = $('.chatscroll');
+	var panepos = $pane.data('jScrollPanePosition');
+	var maxpanepos = $pane.data('jScrollPaneMaxScroll');
+	var autoScroll;
+	if (panepos && maxpanepos && (panepos == maxpanepos)) {
 		autoScroll = true;	
-  }
-  // addGrowlNotification('jScrollPaneDebug', 'jScrollPanePosition = ' + $pane.data('jScrollPanePosition') + ' jScrollPaneMaxScroll = ' + $pane.data('jScrollPaneMaxScroll'), '/static/images/wifi-red.png', '', false, 'debuggrowl');
-  if (!$.mobile) {
+	}
+	// addGrowlNotification('jScrollPaneDebug', 'jScrollPanePosition = ' + $pane.data('jScrollPanePosition') + ' jScrollPaneMaxScroll = ' + $pane.data('jScrollPaneMaxScroll'), '/static/images/wifi-red.png', '', false, 'debuggrowl');
+	if (!$.mobile) {
 	// alert('appending message');
 	if ($.jScrollPane) {
-  		$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
+			$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>')).jScrollPane({scrollbarWidth:20, scrollbarMargin:10});
 	} else {
 		$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="eraser_500"><div class="msgcon"><p>' + text + '</p></div></div><div class="ts">' + util.timeString(time) + '</div>'));
 	}
 	// XXX Remove for customer Cufon.refresh();
-  } else {
+	} else {
 	// alert('appending mobile message');
-	
+
 	$pane.append($('<div class="msg"><span class="user">' + util.toStaticHTML(from) + '</span><div class="msgcon">' + text + '</div><div class="ts">' + util.timeString(time) + '</div>'));
-  } 
-  // alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
-  if (!autoScroll) {
+	} 
+	// alert($pane.data('jScrollPaneMaxScroll') + " v " + $pane.data('jScrollPanePosition'));
+	if (!autoScroll) {
 	// alert('! autoscroll');
 	if ($pane[0]) $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')); 
 	} else {
@@ -700,7 +724,7 @@ function addMessage (from, text, time, _class) {
 		// $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll')-15); 
 		// $pane[0].scrollTo($pane.data('jScrollPaneMaxScroll') + 30); 
 	}
-  if ($.Shadowbox) Shadowbox.setup(); // XXX Make sure I still need this
+	if ($.Shadowbox) Shadowbox.setup(); // XXX Make sure I still need this
 }
 
 function mcpDispatcher3(mcpRequest, jcallback, ecallback) {
@@ -850,7 +874,7 @@ function longPoll (data) {
             CONFIG.unread++;
           }
 		  // alert('addMsg = ' + message.text);
-          addMessage(message.nick, message.text, message.timestamp);
+          addMessage(message.nick, message.text, message.timestamp, "", message.payload);
           break;
 
         case "join":
@@ -1127,6 +1151,43 @@ function send(msg, type) {
 		},
 	});
   }
+}
+
+function sendmediamsg(url, mime, text, cssid, cssclass, dataarray) {
+	//
+	// We should use a factory to provide reasonable defaults and error handle
+	//
+	var mediaurl = {
+		'type': 'mediaurl',
+		'cssid': cssid,
+		'cssclass': cssclass,
+		'mime': mime,
+		'text': text,
+		'data': dataarray
+	};
+	console.log('send mediaurl: ' + JSON.stringify(mediaurl));
+
+	/* var payload = {
+		'mediaurl': mediaurl
+	}; */
+
+	if (CONFIG.debug === false) {
+		$.ajax({
+			url: "/send",
+			data: {id: CONFIG.id, text: url, type: 'msg', payload: mediaurl, channel: getChannel()},
+			dataType: "json",
+			cache: false,
+			success: function(data, textStatus, XMLHttpRequest){
+				// addGrowlNotification('/send AJAX done', 'Send msg type '  + type, '/static/images/white/gear.png', '', false, 'debuggrowl');
+			},
+			complete: function complete(XMLHttpRequest, textStatus){
+				// alert('/send done');
+			},
+			error: function(e) {
+				addGrowlNotification('Session Invalid', "Session is invalid, you won't be able to send messages but you can observe...probably server restarted or you left the session when your browser went off to a new page, please reload the page to restore your session.", '/static/images/status_unknown.png', '', false, 'sessionstatusgrowl');			
+			},
+		});
+	}
 }
 
 function handleError(myReqObj,textStatus,errorThrown) {

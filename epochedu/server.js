@@ -283,12 +283,12 @@ function channelFactory() {
 		// XXX OK, this is extremely double effort if we already have this nice case statement below
 		// Work this out what is the right thing to do ... I think move this into some kind of standard handler
 		if (type != "mcprequest") {
-			sys.puts('Received regular message type = ' + type);
+			sys.puts('Received regular message type = ' + type + ' with payload = ' + JSON.stringify(payload));
 			m = { nick: nick
 			   , id: id
-			   , type: type // See switch statement below
+			   , type: type
 			   , text: text
-			   , payload: payload // We will always need payload
+			   , payload: payload
 			   , timestamp: (new Date()).getTime()
 			};
 		} else {
@@ -385,6 +385,7 @@ function channelFactory() {
 	      messages.shift();
 	
 		if (type == "dumpsession") { // Dump old messages in backlog
+			// XXX This won't do it ... we still have the sessions ... they need to get removed too.
 			console.log("dumpsession invoked");
 			messages = [];
 		}
@@ -1099,7 +1100,8 @@ js.get("/send", function (req, res) {
   var sessions = channel.sessions;
   
   sys.puts('Received message ' + type);
-  // sys.puts('/send with unescaped query string = ' + uqs);
+  // sys.puts('Payload is ' + payload);
+  sys.puts('/send with unescaped query string = ' + uqs);
   // sys.puts('/send with querystringified = ' + JSON.stringify(querystring));
   // sys.puts('/send with dkqs = ' + JSON.stringify(fu.dkqs.getJSON(uqs)));
   if (!payload) payload = dkqs.getJSON(uqs).payload; // XXX I would love to know why node's querystring doesn't work

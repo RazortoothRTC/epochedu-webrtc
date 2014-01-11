@@ -323,3 +323,70 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 #notificationTab a.sessionstatus2 { height: 24px; background-image: url("../images/red-dot.png"); }
 #notificationTab a.sessionstatus:hover { background-position: 0 -24px; }
 */
+
+/* 
+	Use these styles with mediaurl msg types.   Add new ones at the bottom.  Please update here and in teacher-v3.css
+*/
+a.mediaurl {
+	padding-left: 20px;
+}
+
+a#html {
+	background:url('../images/css/mimetypes/html.png') no-repeat;
+}
+
+a#htm {
+	background:url('../images/css/mimetypes/html.png') no-repeat;
+}
+
+a#txt {
+	background:url('../images/css/mimetypes/txt.png') no-repeat;
+}
+
+a#pdf {
+	background:url('../images/css/mimetypes/pdf.png') no-repeat;
+}
+
+a#ppt {
+	background:url('../images/css/mimetypes/pps.png') no-repeat;
+}
+
+a#jpg {
+	background:url('../images/css/mimetypes/image2.png') no-repeat;
+}
+
+a#mp4 {
+	background:url('../images/css/mimetypes/video.png') no-repeat;
+}
+
+a#mp3 {
+	background:url('../images/css/mimetypes/sound.png') no-repeat;
+}
+
+a#flv {
+	background:url('../images/css/mimetypes/video.png') no-repeat;
+}
+
+a#3gp {
+	background:url('../images/css/mimetypes/video.png') no-repeat;
+}
+
+a#3gpp {
+	background:url('../images/css/mimetypes/video.png') no-repeat;
+}
+
+a#wav {
+	background:url('../images/css/mimetypes/sound.png') no-repeat;
+}
+
+a#apk {
+	background:url('../images/css/mimetypes/apk.png') no-repeat;
+}
+
+a#py {
+	background:url('../images/css/mimetypes/source_py.png') no-repeat;
+}
+
+a#screenshare {
+	background:url('../images/black/video.png') no-repeat;
+}
