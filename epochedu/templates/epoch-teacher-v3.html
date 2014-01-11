@@ -25,7 +25,7 @@
 				<!-- <a class="start" href="#">Start Session</a> -->
 			</div>
 			<div id="mcp">
-				<div id='mcpcontrols'><span id='stopmcpbtn'></span><span id='startmcpbtn'></span></div>
+				<div id='mcpcontrols'><span id='stopmcpbtn'></span><span id='startmcpbtn'></span><span id='startepochsmile'></span></div>
 			</div>
 			
 			<div id="account">
@@ -363,7 +363,20 @@
 			  state:'disabled',
 			  title:'Stop MCPMode' 
 			});
-
+			$('#startepochsmile').ninjaButtonCreate({
+			  icon:'bookmark', 
+			  onSelect:function(){ 
+				$(this).ninjaButtonDeselect();
+				openNewWindow('http://' + CONFIG.remoteipaddress + ":" + SMILE_IQMANAGER_WEB_PORT + SMILE_IQMANAGER_WEB_ENDPOINT);
+				sendmediamsg('http://' + CONFIG.remoteipaddress + ":" + SMILE_STUDENT_WEB_PORT + SMILE_STUDENT_WEB_ENDPOINT, "smile", "We are starting an SMILE Inquiry Session.  Please click to join.")
+				alert("Start The SMILE Teacher App on your Android Tablet");
+			  },
+			  onDeselect:function() {
+				// $(this).ninjaButtonDisable();
+			  }, 
+			  state:'enabled',
+			  title:'Start SMILE' 
+			});
 			$('#send').ninjaButtonCreate({
 			  icon:'mail', 
 			  onSelect:function(){ 

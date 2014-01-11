@@ -62,9 +62,15 @@ var STUDENT_SCREENGRAB_ENDPOINT = '/screengrab?rand=';
 var STUDENT_SCREENSHARE_ENDPOINT = '/screenmonitor'; // /screenmonitor?nick=%s&ipaddress=%s'
 var STUDENT_CONTENTSHARE_ENDPOINT = '/contentshare'; // 'http://< student IP >:8080/contentshare?nick=< nick >&token=< credential >&channel=< channel name >&filename=< filename > '
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
+var SMILE_STUDENT_WEB_ENDPOINT = '/smile-student.html';
+var SMILE_STUDENT_WEB_PORT = '80';
+var SMILE_IQMANAGER_WEB_PORT = '80';
+var SMILE_IQMANAGER_WEB_ENDPOINT = '/smile-iqmanager.html';
 var browserplayerwindow;
 var platformplayer = false;
-var MEM_CRITICAL_THRESHOLD = 400; // In MB
+var MEM_CRITICAL_THRESHOLD = 512; // In MB
+
+
 //  CUT  ///////////////////////////////////////////////////////////////////
 /* This license and copyright apply to all code until the next "CUT"
 http://github.com/jherdman/javascript-relative-time-helpers/
