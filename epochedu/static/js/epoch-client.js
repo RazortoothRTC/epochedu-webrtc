@@ -710,7 +710,7 @@ function addMessage (from, text, time, _class, payload) {
 		if (!getDMnick(text)) {
 			text = '<a target="_blank" id="' + mime + '" class="mediaurl" href="' + text + '">' + value + '</a>';
 		} else {
-			text = getDMnick(text) + ' <a target="_blank" id="' + mime + '" class="mediaurl" href="' + text.substring(text.split(' ')[0].length).trim() + '">' + value + '</a>';
+			text = '@'getDMnick(text) + ' <a target="_blank" id="' + mime + '" class="mediaurl" href="' + text.substring(text.split(' ')[0].length).trim() + '">' + value + '</a>';
 		}
 		//
 		// Add special cases here if we plan to modify the href
