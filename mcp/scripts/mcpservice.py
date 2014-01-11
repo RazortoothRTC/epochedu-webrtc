@@ -584,7 +584,7 @@ Todo ...
 			pass
 		
 		if os.path.isfile(sharepath):
-			self.notifyUser("Sharing " + filename)
+			# self.notifyUser("Sharing " + filename)
 			return serve_file(sharepath, content_type=amime)
 		else:
 			raise cherrypy.HTTPError(404)
@@ -904,10 +904,11 @@ Todo ...
 				except:
 					print "Couldn't create Android.android()"
 					return
+			if title is not None:
+				# self.droid.notify(title, message)
+				self.droid.makeToast(title)
 			self.droid.makeToast(message)
 			self.droid.ttsSpeak(message)
-			if title is not None:
-				self.droid.notify(title, message)
 		else:
 			print 'notifyUser NOT ISANDROID'
 			print message
@@ -1041,12 +1042,12 @@ def mcpServiceConnector():
 	
 	try:
 		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
-		droid.ttsSpeak('Launching M C P version ' + MCPService.VERSION_TAG);
+		droid.ttsSpeak('Launching M C P version ' + MCPService.VERSION_SHORT);
 		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], mcpconnectorurl, None, None, False) # Nonblocking
 	except:
 		print "opening " + mcpconnectorurl
 		webbrowser.open(mcpconnectorurl)
-	print "MCP Service Version:%s"%(MCPService.VERSION_SHORT)
+	print "MCP Service Version:%s"%(MCPService.VERSION_TAG)
 	print MCP_CONFIG['ASCII_LOGO2']
 	print MCP_CONFIG['COPYRIGHT']
 
