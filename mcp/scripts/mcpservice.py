@@ -91,26 +91,32 @@ class BackgroundSync(threading.Thread): # Need to figure out how scoping works o
 					# XXX Android tablet can't handle this for large files localFile.write(webFile.read())
 					maxread = MCP_CONFIG['SYNC_MAX_BYTES_READ']
 					bytesread = None
-					while 1:
+					while True:
 						bytesread = webFile.read(maxread)
-						if bytesread == '': # I guess this is the EOF way in Python
-							break
+						if not bytesread : break
 						localFile.write(bytesread)
-						
-					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
-					urllib2.urlopen(mcpconnectorurl).read()
+					
+					try:
+						print "Sync write completed, notify teacher"
+						mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
+						urllib2.urlopen(mcpconnectorurl).read()
+					except IOError, e:
+						print "Could not deliver sync ack, reason: I/O error({0}): {1}".format(e.errno, e.strerror)
+
 					try:
 						self.mcpserviceref.notifyUser("Completed sync of " + filename + " to sd card.", "Teacher Content Synched")
 					except:
 						print "Completed sync of " + filename + " to sd card."
 				except IOError, e:
 					try:
+						# Android
+						print "I/O error({0}): {1}".format(e.errno, e.strerror)
 						self.mcpserviceref.notifyUser("Unable to completed sync of " + filename + " to sd card: IOError.", "Teacher Content Sync Failed")
 					except:
 						pass
-					print 'error storing to ' + apath
-				webFile.close()
-				localFile.close()
+				finally:
+					webFile.close()
+					localFile.close()
 			else:
 				try:
 					mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['SYNCACK_ENDPOINT'] + '/' + classroom + "?syncnick=%s&fname=%s"%(self.syncnick, filename)
@@ -393,8 +399,8 @@ class MCPService(object):
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
 	# If you change this version, change the SHORT and the TAG
-	VERSION_TAG = '1.0.0-ces2014-b11-' + datetime.datetime.now().isoformat()
-	VERSION_SHORT = '1.0.0 b11'
+	VERSION_TAG = '1.0.0-ces2014-b12-' + datetime.datetime.now().isoformat()
+	VERSION_SHORT = '1.0.0 b12'
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
