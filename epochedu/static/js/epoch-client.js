@@ -1121,7 +1121,9 @@ function longPoll (data) {
 				// alert('ask a question');
 			}
 			break;
-		 
+		case "dumpsession":
+			alert('The current EpochEDU session has been reset.  Please reload the page.');
+			break;
 		default:
 			addGrowlNotification('Unknown mesage type received: ' + message.type, 'Error 500:  No way to process this incoming message.  Notify your systems administrator.', '/static/images/status_unknown.png', '', true, 'msgstatusgrowl');
       }

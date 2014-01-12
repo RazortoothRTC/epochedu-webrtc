@@ -385,9 +385,13 @@ function channelFactory() {
 	      messages.shift();
 	
 		if (type == "dumpsession") { // Dump old messages in backlog
-			// XXX This won't do it ... we still have the sessions ... they need to get removed too.
 			console.log("dumpsession invoked");
 			messages = [];
+			this.sessions = {};
+			callbacks = [];
+			//
+			// This might be kind of abrupt
+			//
 		}
   };
 

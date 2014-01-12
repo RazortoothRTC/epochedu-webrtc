@@ -21,7 +21,9 @@
 				<h1>Classroom: {%= channel %}</h1>
 			</div>
 			<div id="session">
-				<div id="timer"></div><div id='sessioncontrols'><span id='stopsessionbtn'></span><span id='startsessionbtn'></span></div>
+				<div id="timer"></div><div id='sessioncontrols'>
+					<span id='stopsessionbtn'></span><span id='startsessionbtn'></span><br /><span id='resetsessionbtn'></span>
+				</div>
 				<!-- <a class="start" href="#">Start Session</a> -->
 			</div>
 			<div id="mcp">
@@ -281,6 +283,7 @@
 			    $('#stopsessionbtn').ninjaButtonEnable();
 				
 				$(this).ninjaButtonDeselect();
+				/*
 				$.ajax({
 					url: "/send",
 					data: {id: CONFIG.id, text: 'startsession', type: 'startsession', channel: getChannel()},
@@ -295,7 +298,8 @@
 					},
 					error: function(e) {
 					},
-				}); 
+				}); */
+				send('startsession', 'startsession');
 			  },
 			  onDeselect:function() {
 				$(this).ninjaButtonDisable();
@@ -309,7 +313,7 @@
 				$('#timer').stopTimer()
 				$('#startsessionbtn').ninjaButtonEnable();
 				$(this).ninjaButtonDeselect();
-				$.ajax({
+				/* $.ajax({
 					url: "/send",
 					data: {id: CONFIG.id, text: 'endsession', type: 'endsession', channel: getChannel()},
 					dataType: "text",
@@ -323,13 +327,28 @@
 					},
 					error: function(e) {
 					},
-				}); 
+				}); */
+				send('endsession', 'endsession');
 			  },
 			  onDeselect:function() {
 				$(this).ninjaButtonDisable();
 			  }, 
 			  state:'disabled',
 			  title:'End Class' 
+			});
+			$('#resetsessionbtn').ninjaButtonCreate({
+			  icon:'refresh', 
+			  onSelect:function(){
+				$(this).ninjaButtonDeselect();
+				send('endsession', 'endsession');
+				send('dumpsession', 'dumpsession');
+				// XXX This is where we should send APDU #9, to reset
+			  },
+			  onDeselect:function() {
+				$(this).ninjaButtonDisable();
+			  }, 
+			  state:'enabled',
+			  title:'Reset' 
 			});
 			$('#startmcpbtn').ninjaButtonCreate({
 			  icon:'group', 
