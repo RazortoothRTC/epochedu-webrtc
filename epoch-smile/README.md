@@ -16,6 +16,16 @@ Bundled Client Applications
 * SMILE Teacher for Android 0.9.6
 * Plugmin 0.5.1 for Android
 
+Installation
+============
+Typically, just do:
+
+npm install .
+
+On ARMv7 devices running Arch Linux ARM, if you have problems installing, use the following npm packages:
+wget http://polyblog.s3.amazonaws.com/node_modules-smileserver.tar.gz && tar -xvf node_modules-smileserver.tar.gz
+
+
 Tests
 =====
 
