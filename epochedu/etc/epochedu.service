@@ -1,0 +1,13 @@
+[Unit]
+Description=EpochEDU Service for realtime collaboration
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=/run/epochedu.pid
+ExecStart=/usr/bin/node /root/dist/epochedu-webrtc/etc/epochedu/server.js
+
+Type=forking
+
+[Install]
+WantedBy=multi-user.target
