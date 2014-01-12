@@ -220,6 +220,8 @@ var MESSAGE_BACKLOG = 200,
 
 var js = new JS();
 js.CONFIG['DOCROOT'] = './';
+process.chdir(__dirname);
+console.log("Working directory is " + __dirname); // XXX Move this to js.js
 //
 // Override Default CONFIG
 //
