@@ -4,4 +4,3 @@ EpochEDU-WebRTC is an EDU oriented toolbox for managing classrooms in realtime l
 
 
 Based on: 
- - [SimpleWebRTC.com](http://simplewebrtc.com)
