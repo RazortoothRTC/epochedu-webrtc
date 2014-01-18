@@ -531,7 +531,7 @@ function runScreenMonitor(duration) {
 function openBestPlayer(url, selector, options) {
 	var supportedextensions = ['jpg', 'png', 'gif', 'tif', 'html', 'htm']; // XXX DEMO CONF, move this out somewhere to the top
 	var fname = url.lastIndexOf('.');
-	
+	console.log("Open Best Player");
 	if (fname > -1) {
 		fname = url.substring(fname + 1);
 		if (supportedextensions.indexOf(fname) > -1) { /* If we can play in JS 'player' do it */
@@ -665,7 +665,7 @@ function scrollDown () {
 //from is the user, text is the body and time is the timestamp, defaulting to now
 //_class is a css class to apply to the message, usefull for system events
 function addMessage (from, text, time, _class, payload) {
-	console.log('addMessage ' + text);
+	// console.log('addMessage ' + text);
 	if (text === null) return;
 
 	if (time == null) {
@@ -677,10 +677,12 @@ function addMessage (from, text, time, _class, payload) {
 	}
 
 	// sanitize
-	text = util.toStaticHTML(text);
+	
 	// console.log(payload);
 	// replace URLs with links
 	if (payload === undefined || payload.type !== 'mediaurl') {
+		text = util.toStaticHTML(text); // Only do this for regular messages
+
 		if (text.match(/http/i)) {
 			var rel = "";
 			var ext = text.substring(text.lastIndexOf('.') + 1);
@@ -699,10 +701,16 @@ function addMessage (from, text, time, _class, payload) {
 		// we are a mediaurl in the payload type
 		//
 
-		console.log(payload);
+		// console.log(payload);
 		var mime = payload.mime;
 		var value = payload.text.replace(/\+/g, " ");
-		console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
+		// console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
+		
+		// XXX This is a hardcoded value, we should send a teacher nick assignment
+		if (!teacher && from === "teacher") {
+			// console.log("Student mediaurl, open a window");
+			openNewWindow(text);
+		}
 
 		//
 		// Make sure it's not a DM
@@ -712,6 +720,7 @@ function addMessage (from, text, time, _class, payload) {
 		} else {
 			text = '@' + getDMnick(text) + ' <a target="_blank" id="' + mime + '" class="mediaurl" href="' + text.substring(text.split(' ')[0].length).trim() + '">' + value + '</a>';
 		}
+
 		//
 		// Add special cases here if we plan to modify the href
 		//
@@ -901,6 +910,7 @@ function longPoll (data) {
           if(!CONFIG.focus){
             CONFIG.unread++;
           }
+          // +console.log(JSON.stringify(data));
 		  // alert('addMsg = ' + message.text);
           addMessage(message.nick, message.text, message.timestamp, "", message.payload);
           break;
@@ -1195,7 +1205,7 @@ function sendmediamsg(url, mime, text, cssid, cssclass, dataarray) {
 		'text': text,
 		'data': dataarray
 	};
-	console.log('send mediaurl: ' + JSON.stringify(mediaurl));
+	// console.log('send mediaurl: ' + JSON.stringify(mediaurl));
 
 	// XXX We should be POSTing the data ....
 	if (CONFIG.debug === false) {
@@ -1563,7 +1573,7 @@ function doInsertChatMessage(msg) {
 		if (!util.isBlank(msg)) send(msg);
 		return;
 	}
-	
+
 	if (!getDMnick(msg)) {
 		if (!util.isBlank(msg)) send(msg);
 	} else {
