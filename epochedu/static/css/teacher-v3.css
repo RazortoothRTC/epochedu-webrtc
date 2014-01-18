@@ -391,7 +391,7 @@ a#smile {
 #session {
 	position:absolute;
 	top:0;
-	right:22%;
+	right:28%;
 }
 
 #session .start {
@@ -649,7 +649,7 @@ a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
 #toolbar {
 	position:absolute;
 	top:0;
-	left:30%;
+	right:20%;
 }
 /*
 #sessioncontrols {
