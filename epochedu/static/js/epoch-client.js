@@ -1558,9 +1558,17 @@ function doUpload() {
 
 function doInsertChatMessage(msg) {
 	//alert('send msg ' + msg);
-	if (!util.isBlank(msg)) send(msg);
-	$("#entry").attr("value", ""); // clear the entry field.
-	return false;
+	// XXX Refactor for efficiency
+	if (!getDMnick(msg)) {
+		if (!util.isBlank(msg)) send(msg);
+	} else {
+		var dmnick = getDMnick(msg);
+		if (dmnick !== 'teacher') {
+			alert("Student Cannot Send Direct Messages (DM) to other Students")
+		} else {
+			send(msg);
+		}
+	}
 }
 
 function bindstopstart() {
@@ -1586,7 +1594,7 @@ $(document).ready(function() {
   $("#entry").keypress(function (e) {
     if (e.keyCode != 13 /* Return */) return;
     var msg = $("#entry").attr("value").replace("\n", "");
-    if (!util.isBlank(msg)) send(msg);
+    doInsertChatMessage(msg);
     $("#entry").attr("value", ""); // clear the entry field.
   });
 
@@ -1624,7 +1632,8 @@ $(document).ready(function() {
   } else { // JQUERY
 	$(".csubmit").click(function() {
 		var msg = $("#entry").attr("value").replace("\n", "");
-	    if (!util.isBlank(msg)) send(msg);
+		
+		doInsertChatMessage(msg);
 	    $("#entry").attr("value", ""); // clear the entry field.
 		return false;
 	  });
@@ -1633,7 +1642,7 @@ $(document).ready(function() {
 	// XXX Shouldn't these be inside the above if/else statement
   	$(".qsubmit").click(function() {
 		var msg = $("#entry").attr("value").replace("\n", "");
-	    if (!util.isBlank(msg)) send(msg, "askquestion");
+		if (!util.isBlank(msg)) send(msg);
 	    $("#entry").attr("value", ""); // clear the entry field.
 		return false;
 	  });
