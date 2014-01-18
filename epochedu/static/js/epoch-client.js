@@ -1559,6 +1559,11 @@ function doUpload() {
 function doInsertChatMessage(msg) {
 	//alert('send msg ' + msg);
 	// XXX Refactor for efficiency
+	if (teacher) {
+		if (!util.isBlank(msg)) send(msg);
+		return;
+	}
+	
 	if (!getDMnick(msg)) {
 		if (!util.isBlank(msg)) send(msg);
 	} else {
