@@ -400,8 +400,8 @@ class MCPService(object):
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
 	# If you change this version, change the SHORT and the TAG
-	VERSION_TAG = '1.0.0-ces2014-b13-' + datetime.datetime.now().isoformat()
-	VERSION_SHORT = '1.0.0 b13'
+	VERSION_TAG = '1.0.0-ces2014-b14-' + datetime.datetime.now().isoformat()
+	VERSION_SHORT = '1.0.0 b14'
 	VERSION_DESC = """
 	ISANDROID = False
 	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
@@ -862,7 +862,7 @@ Todo ...
 		rsp['status'] = 0;
 		self.notifyUser("Ending Teacher Control Mode")
 		self.launchIntent(MCP_CONFIG['ACTION_MAIN'], None, None, None, [MCP_CONFIG['CATEGORY_HOME']], None, None, MCP_CONFIG['FLAG_ACTIVITY_NEW_TASK'])
-		self.showUserDialog("You are free to resume your normal activities" "MCP Mode Stopped")
+		# self.showUserDialog("You are free to resume your normal activities", "MCP Mode Stopped")
 		# self.droid.launch(MCP_CONFIG['LAUNCHER_ACTIVITY'])
 		return rsp
 	
