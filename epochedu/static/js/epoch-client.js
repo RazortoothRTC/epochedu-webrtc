@@ -383,13 +383,13 @@ function handleNicklistUpdate(nick, timestamp) {
 	// If it is the teacher
 	if (nick === 'teacher' || nick === '#' || nick === CONFIG.nick) {
 		// sendmediamsg(url, mime, text, cssid, cssclass, dataarray)
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="sendmediamsg(\'http://' + usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT+ TEACHER_SCREENSHARE_ENDPOINT_THINVNC + '\', \'screenshare\', \'Click to view my screen\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'Teacher at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="#" onclick="sendmediamsg(\'http://' + usermeta[nick].address +':' + TEACHER_SCREENSHARE_PORT+ TEACHER_SCREENSHARE_ENDPOINT_THINVNC + '\', \'screenshare\', \'Click to view my screen\', null, null, [\'' + nick +'\']); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	} else {
 		//
 		// XXX If I can come up with a way to get URL type into payload, I won't need to do the full URL
 		//
 		var monitorurl = 'http://' + CONFIG.remoteipaddress +':'+ CONFIG.remoteport + STUDENT_SCREENSHARE_ENDPOINT + '?nick=' + nick + '&ipaddress=' + usermeta[nick].address;
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="sendmediamsg(\'' + monitorurl + '\', \'screenshare\', \'Click to view screen of: <em>'+ nick +'</em>\'); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="sendmediamsg(\'' + monitorurl + '\', \'screenshare\', \'Click to view screen of: <em>'+ nick +'</em>\', null, null, [\'' + nick +'\']); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	}
 }
 
@@ -704,11 +704,12 @@ function addMessage (from, text, time, _class, payload) {
 		// console.log(payload);
 		var mime = payload.mime;
 		var value = payload.text.replace(/\+/g, " ");
-		// console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value);
+		var data = payload.data;
+		console.log("Received mediaurl: url: " + text + " mime:" + mime + " text:" + value + " data: " + data);
 		
 		// XXX This is a hardcoded value, we should send a teacher nick assignment
-		if (!teacher && from === "teacher") {
-			// console.log("Student mediaurl, open a window");
+		if (!teacher && from === "teacher" && data !== CONFIG.nick) {
+			console.log("Student mediaurl, open a window, data = " + CONFIG.nick);
 			openNewWindow(text);
 		}
 
