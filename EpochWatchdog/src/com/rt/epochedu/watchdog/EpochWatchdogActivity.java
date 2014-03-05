@@ -20,7 +20,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.StrictMode;
 
+
 import java.io.BufferedWriter;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
@@ -71,10 +76,26 @@ public class EpochWatchdogActivity extends Activity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         mLauncherComponent = new ComponentName("com.android.launcher", "Launcher");
         mThisComponent = getComponentName();
         mPackageManager = this.getPackageManager();
-        mScheduledChatWorkerTaskExecutor = Executors.newScheduledThreadPool(1);
+        mScheduledChatWorkerTaskExecutor = Executors.newScheduledThreadPool(2);
+        
+        mScheduledChatWorkerTaskExecutor.scheduleAtFixedRate(new Runnable() {
+        	int count = 0;
+			public void run() {
+				Log.d(TAG, "SMILE, capturing the screen");
+				// executeShellCommand("su -c 'ls -l' root");
+				executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png' root");
+				// executeShellCommand("/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
+				count++;
+				if (count == 10) {
+					count = 0;
+				}
+			}
+		}, 1000L, 10000L,  TimeUnit.MILLISECONDS);
+
         mScheduledChatWorkerTaskExecutor.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				Log.d(TAG, "Transform Bitmap into thumbnail");
@@ -90,13 +111,22 @@ public class EpochWatchdogActivity extends Activity
 					Bitmap sgbmp = BitmapFactory.decodeFile(sgfile.getPath());
 					Bitmap thumbbmp = Bitmap.createScaledBitmap(sgbmp, THUMBNAIL_WIDTH_DEFAULT, THUMBNAIL_HEIGHT_DEFAULT, false);
 					File thumbf = new File(MCPFEEDS_SCREENSHOT_PATH + "/" + THUMBNAIL_48X48);
+					FileOutputStream fout  = null;
 					// XXX This all can fail if we don't have write access
 					try {
-    				FileOutputStream fout = new FileOutputStream(thumbf);
-    				thumbbmp.compress(Bitmap.CompressFormat.PNG, 93, fout);
+    					fout = new FileOutputStream(thumbf);
+    					thumbbmp.compress(Bitmap.CompressFormat.PNG, 93, fout);
     				} catch(FileNotFoundException fnfe) {
     					Log.e(TAG, "Unable to write out thumbnail, reason, " + fnfe.getMessage());
     					// XXX We should visually report the error
+    				} finally {
+    					if (fout != null) {
+    						try {
+    							fout.close();
+    						} catch(IOException ioe) {
+
+    						}
+    					}
     				}
 				}
 
@@ -188,6 +218,49 @@ public class EpochWatchdogActivity extends Activity
 		} else {
 			return null;
 		}
+	}
+
+	private boolean executeShellCommand(String command){
+	    Process process = null;
+
+	    try{
+
+	        process = Runtime.getRuntime().exec(command);
+	    	/* process = new ProcessBuilder()
+       			.command(command)
+       			.redirectErrorStream(true)
+       			.start(); */
+
+	        BufferedReader reader = new BufferedReader(
+		            new InputStreamReader(process.getInputStream()));
+		    int read;
+		    char[] buffer = new char[4096];
+		    StringBuffer output = new StringBuffer();
+		    while ((read = reader.read(buffer)) > 0) {
+		        output.append(buffer, 0, read);
+		    }
+		    reader.close();
+		    
+		    // Waits for the command to finish.
+		    process.waitFor();
+
+	        Log.d(TAG, "success exec-ing " + command);
+	        Log.d(TAG, "stdout: " + output.toString());
+	        return true;
+	        
+	    } catch (Exception e) {
+	        return false;
+	    } finally{
+	        if(process != null){
+	        	/*
+	            try{
+	                process.destroy();
+	            }catch (Exception e) {
+	            	Log.e(TAG, "Error exec-ing a command: " + e.getMessage());
+	            }
+	            */
+	        }
+	    }
 	}
 
 }
