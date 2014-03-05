@@ -11,6 +11,7 @@
                   android:anyDensity="true"
     />
     <uses-permission android:name="android.permission.CHANGE_COMPONENT_ENABLED_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-sdk 
         android:minSdkVersion="15" 
         android:targetSdkVersion="16" />

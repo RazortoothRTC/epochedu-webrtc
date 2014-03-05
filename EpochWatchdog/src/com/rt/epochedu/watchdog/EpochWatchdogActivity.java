@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.content.ComponentName;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.StrictMode;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -32,21 +33,42 @@ import java.util.concurrent.Executors;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Comparator;
-
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 
 public class EpochWatchdogActivity extends Activity
 {
+	private static final boolean DEVELOPER_MODE = true;
 	public static final String TAG = "EpochWatchdog";
 	private PackageManager mPackageManager;
 	private ComponentName mLauncherComponent;
 	private ComponentName mThisComponent;
-	private static final String MCPFEEDS_SCREENSHOT_PATH = "/mnt/sdcard/sl4a/scripts/mcpfeeds";
+	private static final String MCPFEEDS_SCREENSHOT_PATH = "/mnt/sdcard/sl4a/scripts/mcpfeeds"; // XXX Don't assume this path works on all devices
+	private static final String SCREENGRAB_PREFIX = "screen-";
+	private static final String THUMBNAIL_48X48 = "thumb48x48.png";
+	private static final int THUMBNAIL_WIDTH_DEFAULT = 48;
+	private static final int THUMBNAIL_HEIGHT_DEFAULT = 48;
 	private static ScheduledExecutorService mScheduledChatWorkerTaskExecutor;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+    	if (DEVELOPER_MODE) {
+			StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+			     .detectDiskReads()
+			     .detectDiskWrites()
+			     .detectNetwork()   // or .detectAll() for all detectable problems
+			     .penaltyLog()
+			     .build());
+			StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+			     .detectLeakedSqlLiteObjects()
+			     .detectLeakedClosableObjects()
+			     .penaltyLog()
+			     .penaltyDeath()
+			     .build());
+		}
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mLauncherComponent = new ComponentName("com.android.launcher", "Launcher");
@@ -57,7 +79,34 @@ public class EpochWatchdogActivity extends Activity
 			public void run() {
 				Log.d(TAG, "Transform Bitmap into thumbnail");
 				Bitmap latestBMP;
+				File[] screengrabs = getSortedScreengrabFiles();
 
+				//
+				// Take the most recent image
+				// And take the latest file, load it, and make a bmp
+				// and save it
+				if (screengrabs.length > 0) {
+					File sgfile = screengrabs[0];
+					Bitmap sgbmp = BitmapFactory.decodeFile(sgfile.getPath());
+					Bitmap thumbbmp = Bitmap.createScaledBitmap(sgbmp, THUMBNAIL_WIDTH_DEFAULT, THUMBNAIL_HEIGHT_DEFAULT, false);
+					File thumbf = new File(MCPFEEDS_SCREENSHOT_PATH + "/" + THUMBNAIL_48X48);
+					// XXX This all can fail if we don't have write access
+					try {
+    				FileOutputStream fout = new FileOutputStream(thumbf);
+    				thumbbmp.compress(Bitmap.CompressFormat.PNG, 93, fout);
+    				} catch(FileNotFoundException fnfe) {
+    					Log.e(TAG, "Unable to write out thumbnail, reason, " + fnfe.getMessage());
+    					// XXX We should visually report the error
+    				}
+				}
+
+				//
+				// XXX Print this for debug purposes
+				//
+				Log.d(TAG, "Dumping screengrabs length = " + screengrabs.length);
+				for (int i = 0; i < screengrabs.length; i++) {
+					Log.d(TAG, "File: " + screengrabs[i].getName() + " createDate = " + new Date(screengrabs[i].lastModified()) + " length = " + screengrabs[i].length());
+				}
 
 			}
 		}, 30000, 30000, TimeUnit.MILLISECONDS); // XXX Hardcoded values 
@@ -116,7 +165,8 @@ public class EpochWatchdogActivity extends Activity
 		          File fqpath = new File(dir, filename);
 		          // Filters based on whether the file is hidden or not
 		          return (fqpath.isFile() &&
-		              fqpath.getName().toLowerCase().endsWith(".png")  && filename.startsWith("screengrab-"));
+		              fqpath.getName().toLowerCase().endsWith(".png")  && filename.startsWith(SCREENGRAB_PREFIX) &&
+		              (fqpath.length() > 0));
 		        }
 			};
 
