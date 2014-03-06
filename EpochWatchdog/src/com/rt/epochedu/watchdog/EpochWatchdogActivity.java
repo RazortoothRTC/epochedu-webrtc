@@ -87,7 +87,12 @@ public class EpochWatchdogActivity extends Activity
 			public void run() {
 				Log.d(TAG, "SMILE, capturing the screen");
 				// executeShellCommand("su -c 'ls -l' root");
-				executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png' root");
+				// executeShellCommand("/system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/foo2.png");
+				// executeShellCommand("su -c /system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
+				// executeShellCommand("su - root && /system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/foo3.png");
+				executeShellCommand("su -c busybox /system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/foo3.png");
+				// executeShellCommand("su -c /system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
+				// executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png' root");
 				// executeShellCommand("/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
 				count++;
 				if (count == 10) {
@@ -116,10 +121,13 @@ public class EpochWatchdogActivity extends Activity
 					try {
     					fout = new FileOutputStream(thumbf);
     					thumbbmp.compress(Bitmap.CompressFormat.PNG, 93, fout);
+    					fout.flush();
     				} catch(FileNotFoundException fnfe) {
     					Log.e(TAG, "Unable to write out thumbnail, reason, " + fnfe.getMessage());
     					// XXX We should visually report the error
-    				} finally {
+    				} catch(IOException ioe) {
+    					Log.e(TAG, "Error writing out thumb because: " + ioe.getMessage());
+    				}finally {
     					if (fout != null) {
     						try {
     							fout.close();
@@ -232,7 +240,7 @@ public class EpochWatchdogActivity extends Activity
        			.start(); */
 
 	        BufferedReader reader = new BufferedReader(
-		            new InputStreamReader(process.getInputStream()));
+		            new InputStreamReader(process.getErrorStream()));
 		    int read;
 		    char[] buffer = new char[4096];
 		    StringBuffer output = new StringBuffer();
@@ -249,6 +257,8 @@ public class EpochWatchdogActivity extends Activity
 	        return true;
 	        
 	    } catch (Exception e) {
+	    	Log.e(TAG, "can't run command: " + e.getMessage());
+	    	e.printStackTrace();
 	        return false;
 	    } finally{
 	        if(process != null){
