@@ -86,11 +86,14 @@ public class EpochWatchdogActivity extends Activity
         	int count = 0;
 			public void run() {
 				Log.d(TAG, "SMILE, capturing the screen");
-				// executeShellCommand("su -c 'ls -l' root");
+				executeShellCommand("su -c '/system/bin/screenshot /mnt/sdcard/foofoo.png'");
+				// executeShellCommand("su - root && /system/bin/screenshot /mnt/sdcard/foo3.png");
+				// executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/foofoo.png'");
+				// executeShellCommand("su - root");
 				// executeShellCommand("/system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/foo2.png");
-				// executeShellCommand("su -c /system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
+				// executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/foofoo.png'");
 				// executeShellCommand("su - root && /system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/foo3.png");
-				executeShellCommand("su -c busybox /system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/foo3.png");
+				// executeShellCommand("su -c busybox /system/bin/screenshot /mnt/sdcard/sl4a/scripts/mcpfeeds/foo3.png");
 				// executeShellCommand("su -c /system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
 				// executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png' root");
 				// executeShellCommand("/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
@@ -232,8 +235,9 @@ public class EpochWatchdogActivity extends Activity
 	    Process process = null;
 
 	    try{
+	    	process = Runtime.getRuntime().exec(new String[]{"su" ,"-c" ,"/system/bin/screencap -p /mnt/sdcard/tmp/foofoo.png", "root"});
 
-	        process = Runtime.getRuntime().exec(command);
+	        // process = Runtime.getRuntime().exec(command);
 	    	/* process = new ProcessBuilder()
        			.command(command)
        			.redirectErrorStream(true)
