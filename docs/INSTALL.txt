@@ -1,0 +1,10 @@
+Detailed Installation instructions and configuration will be available from a shared document
+called: EpochEDU SMILE Plug Demo Installation & Configuration Guide.docx located at:
+
+    http://sdrv.ms/1m3Zo4K
+
+
+After installation is complete, please step through the Demo Guide, which will give you a basic
+set of steps to go through when running the demo and resetting the demo:
+
+    http://sdrv.ms/L4wN47
