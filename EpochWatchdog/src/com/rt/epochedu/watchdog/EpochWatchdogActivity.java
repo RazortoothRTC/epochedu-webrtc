@@ -53,6 +53,7 @@ public class EpochWatchdogActivity extends Activity
 	private static final String THUMBNAIL_48X48 = "thumb48x48.png";
 	private static final int THUMBNAIL_WIDTH_DEFAULT = 48;
 	private static final int THUMBNAIL_HEIGHT_DEFAULT = 48;
+	private static final int MAX_THUMBS_IN_ROLL = 20;
 	private static ScheduledExecutorService mScheduledChatWorkerTaskExecutor;
 
     /** Called when the activity is first created. */
@@ -86,7 +87,8 @@ public class EpochWatchdogActivity extends Activity
         	int count = 0;
 			public void run() {
 				Log.d(TAG, "SMILE, capturing the screen");
-				executeShellCommand("su -c '/system/bin/screenshot /mnt/sdcard/foofoo.png'");
+
+				executeShellCommand(new String[]{"su" ,"-c" ,"/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screen-" + count + ".png", "root"});
 				// executeShellCommand("su - root && /system/bin/screenshot /mnt/sdcard/foo3.png");
 				// executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/foofoo.png'");
 				// executeShellCommand("su - root");
@@ -98,7 +100,7 @@ public class EpochWatchdogActivity extends Activity
 				// executeShellCommand("su -c '/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png' root");
 				// executeShellCommand("/system/bin/screencap -p /mnt/sdcard/sl4a/scripts/mcpfeeds/screengrab-" + count + ".png");
 				count++;
-				if (count == 10) {
+				if (count == MAX_THUMBS_IN_ROLL) {
 					count = 0;
 				}
 			}
@@ -231,11 +233,11 @@ public class EpochWatchdogActivity extends Activity
 		}
 	}
 
-	private boolean executeShellCommand(String command){
+	private boolean executeShellCommand(String[] command){
 	    Process process = null;
 
 	    try{
-	    	process = Runtime.getRuntime().exec(new String[]{"su" ,"-c" ,"/system/bin/screencap -p /mnt/sdcard/tmp/foofoo.png", "root"});
+	    	process = Runtime.getRuntime().exec(command);
 
 	        // process = Runtime.getRuntime().exec(command);
 	    	/* process = new ProcessBuilder()
