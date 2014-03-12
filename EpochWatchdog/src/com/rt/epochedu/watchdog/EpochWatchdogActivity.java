@@ -51,8 +51,10 @@ public class EpochWatchdogActivity extends Activity
 	private static final String MCPFEEDS_SCREENSHOT_PATH = "/mnt/sdcard/sl4a/scripts/mcpfeeds"; // XXX Don't assume this path works on all devices
 	private static final String SCREENGRAB_PREFIX = "screen-";
 	private static final String THUMBNAIL_48X48 = "thumb48x48.png";
-	private static final int THUMBNAIL_WIDTH_DEFAULT = 48;
-	private static final int THUMBNAIL_HEIGHT_DEFAULT = 48;
+	// XXX Our original screengrabs are 1024x768
+	private static final String THUMBNAIL_256X192 = "thumb256x192.png";
+	private static final int THUMBNAIL_WIDTH_DEFAULT = 256;
+	private static final int THUMBNAIL_HEIGHT_DEFAULT = 192;
 	private static final int MAX_THUMBS_IN_ROLL = 20;
 	private static ScheduledExecutorService mScheduledChatWorkerTaskExecutor;
 
@@ -120,13 +122,14 @@ public class EpochWatchdogActivity extends Activity
 					File sgfile = screengrabs[0];
 					Bitmap sgbmp = BitmapFactory.decodeFile(sgfile.getPath());
 					Bitmap thumbbmp = Bitmap.createScaledBitmap(sgbmp, THUMBNAIL_WIDTH_DEFAULT, THUMBNAIL_HEIGHT_DEFAULT, false);
-					File thumbf = new File(MCPFEEDS_SCREENSHOT_PATH + "/" + THUMBNAIL_48X48);
+					File thumbf = new File(MCPFEEDS_SCREENSHOT_PATH + "/" + THUMBNAIL_256X192);
 					FileOutputStream fout  = null;
 					// XXX This all can fail if we don't have write access
 					try {
     					fout = new FileOutputStream(thumbf);
     					thumbbmp.compress(Bitmap.CompressFormat.PNG, 93, fout);
     					fout.flush();
+    					Log.d(TAG, "Generated thumbnail");
     				} catch(FileNotFoundException fnfe) {
     					Log.e(TAG, "Unable to write out thumbnail, reason, " + fnfe.getMessage());
     					// XXX We should visually report the error
@@ -152,7 +155,7 @@ public class EpochWatchdogActivity extends Activity
 				}
 
 			}
-		}, 30000, 30000, TimeUnit.MILLISECONDS); // XXX Hardcoded values 
+		}, 30000L, 30000L, TimeUnit.MILLISECONDS); // XXX Hardcoded values 
 
         // mPackageManager.setComponentEnabledSetting (ComponentName componentName, int newState, int flags);
     	// mPackageManager.setComponentEnabledSetting(mThisComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
