@@ -11,7 +11,8 @@
 
 	Spec for MCP is here: http://www.box.net/shared/j3xka7ofy5
 
-	Note, all inbound requests are expected to be JSON, as are the responses.
+	Note, all inbound requests are expected to be JSON, as are the responses, 
+	unless otherwise specified
 
 """
 import logging
@@ -36,6 +37,8 @@ import urllib
 import urllib2
 import types
 import threading
+import fnmatch
+import re
 
 #
 # Utility Class
@@ -387,12 +390,13 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.1.0.1:5000'], # DEMOSETUP
 			| | |~
 			|_|_|_
 			""",
-			'COPYRIGHT' : 'Copyright 2011-2014 Razortooth Communications, LLC'
+			'COPYRIGHT' : 'Copyright 2011-2012, 2014 Razortooth Communications, LLC'
 			  }
 
 class MCPService(object):
 	droid = None
-	
+	rescreen = re.compile('screen-.*\\.png$')
+
 	#
 	# CONFIG
 	# 
@@ -400,24 +404,25 @@ class MCPService(object):
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
 	# If you change this version, change the SHORT and the TAG
-	VERSION_TAG = '1.0.0-ces2014-b14-' + datetime.datetime.now().isoformat()
-	VERSION_SHORT = '1.0.0 b14'
+	VERSION_TAG = '1.0.1-postces2014-b1-' + datetime.datetime.now().isoformat()
+	VERSION_SHORT = '1.0.1 b1'
+	# ISANDROID = False
 	VERSION_DESC = """
-	ISANDROID = False
-	<P>Turn off mcploop monitor.  Doesn't work on Vizio tablets.  Loop has some bugs anyway.  Turn off talking on kill player for all items.  
-	Should be speaking error if there is a sync error.  Already synced content should not list out all of the url. Fixed breakage 
-	from CES, and change handling of rpc to properly return a JSON response.  JSONFIY tool for 
-	CherryPy doesn't really work well.  I'd like to get rid of CherryPy.  Implement pingheartbeat command.
-	Implement basic functionality in launchurl to call into getbesturlpath to check the local cache for content.
-	Fix some bad stuff in getbesturlpath.  Added ISANDROID.  Fix broken notification.  Sync works now.
-	Finished killplatformplayer.  Bug fixes on launchviewer.  Added a few more players to the list.
-	Added threaded sync BackgroundSync so that we background the request.  Haven't sorted out how to handle 
-	callback to notify the teacher sync is done, but we might be able to fake it till we make it.  Reactivate 
-	teacher control monitor to send student back to classroom.  Added bug fixes for launchurl bugs.  Added players 
-	to player list.  Fix for endplayer, launch browser class.  Added handler for syncack callback.  Turn on MCP Loop.
-	Fix typo bug in urllib2.  Added reads/writes for sync on smaller, configurable number of bytes, currently 1024.  
-	Added droid reader to list of players.  Fix for video stutter launch.
-	</P>
+	<H3>Recent Fixes</H3>
+	<UL>
+		<li>1e9e85b refs #83 Add showUserDialog to mcpservice, set stop mcpmode to show a dialog instead of start home intent</li>
+		<li>e7b383f refs #45 Fix MCP download error, misreported.  It fails the sync ack, which we don't care.</li>
+		<li>075156f refs #5 Need to fix a bug in MCP ... should call python function with () parens.  Not sure why these are missing, but the MCP doesn't work well if we don't acti</li>
+		<li>2ca540f refs #5 Integrate mcp control mode into teacher interface</li>
+		<li>d1bc3bd refs #5 Fix globals issue with referencing the mcpmodetoggle in a local context.  Verified toggle of mcpmode on and off works.</li>
+		<li>d30abba refs #5 Add local server IP address for testing set up of mcp. Add tester.html.</li>
+		<li>12668d3 refs #5 Add code to launch EpochWatchdog by default if mcpmode is on, and add an icon + some nice message on the screen in an english localization bundle.</li>
+		<li>c63e445 refs #5 bump version to 1.0.0-ces2014-b1-</li>
+		<li>0e87ccf refs #5 Rename mcpsetup.py.  Cleanup some typos</li>
+		<li>09e0289 refs #5 Modify mcpservice to properly check for mcpmodeon or not.  Move SETUP.txt up a directory.</li>
+		<li>a4a4d5e refs #1 Implement a silly screengrab service via mcpservice</li>
+		<li>f826c1d refs #1 Add screen grab service endpoint to mcpservice</li>
+	</UL>
 	"""
 	# XXX Cleanup this duplicate config code, move it into global MCP_CONFIG
 	PACKAGE_BLACKLIST = ['com.android.browser', # Android Browser
@@ -495,13 +500,31 @@ Todo ...
 			if os.path.isfile(os.path.join(mcpfeedsdir, f))]
 		screengrabs.sort(key=lambda x: os.path.getmtime(x), reverse=True)
 		for currentframe in screengrabs:
-			if os.path.getsize(currentframe) > 0:
+			# if os.path.getsize(currentframe) > 0 and fnmatch.fnmatch(currentframe, 'screen*.png'):
+			if os.path.getsize(currentframe) > 0 and self.rescreen.match(os.path.basename(currentframe)):
 				return serve_file(currentframe, content_type='image/png')
 		#
 		# XXX Need to handle this
 		#
 		print "Error, no Non-Zero screen grabs found, return 0"
 		return 0
+
+	@cherrypy.expose
+	def screenthumb(self, **params):
+		#
+		# Get the file named thumb256x192.png
+		# and serve up non-zero length thumbnail file
+		#
+		mcpfeedsdir = '/mnt/sdcard/sl4a/scripts/mcpfeeds'
+		thumb = 'thumb256x192.png'
+		thumbpath = os.path.join(mcpfeedsdir, thumb)
+
+		if os.path.isfile(thumbpath):
+			if os.path.getsize(thumbpath) > 0:
+				print "thumbpath = " + thumbpath
+				return serve_file(thumbpath, content_type='image/png')
+		else:
+			raise cherrypy.HTTPError(404)
 
 		
 
