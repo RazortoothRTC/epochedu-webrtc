@@ -516,7 +516,7 @@ Todo ...
 		# and serve up non-zero length thumbnail file
 		#
 		mcpfeedsdir = '/mnt/sdcard/sl4a/scripts/mcpfeeds'
-		thumb = 'thumb256x192.png'
+		thumb = 'thumb48x36.png'
 		thumbpath = os.path.join(mcpfeedsdir, thumb)
 
 		if os.path.isfile(thumbpath):

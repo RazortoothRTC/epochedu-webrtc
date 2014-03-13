@@ -328,7 +328,7 @@ a#smile {
 }
 
 #users ul li {
-	height:18px;
+	height:28px;
 	margin:2px 0px;
 	padding:5px;
 }
@@ -458,6 +458,10 @@ a#smile {
 	background:url('../images/css/online.gif') no-repeat right top;
 }
 
+.thumbscale {
+	background-size: 48px auto;
+}
+
 .offline {
 	background:url('../images/css/offline.gif') no-repeat right top;
 }
@@ -486,6 +490,11 @@ a#smile {
 	height:305px;
 	overflow:hidden;
 	padding:0px;
+}
+
+#userstatus {
+	clear:both;
+	margin-left:10px;
 }
 
 .jScrollPaneContainer {

@@ -61,6 +61,7 @@ var STUDENT_SCREENSHARE_PORT='8080';
 var STUDENT_SCREENGRAB_ENDPOINT = '/screengrab?rand=';
 var STUDENT_SCREENSHARE_ENDPOINT = '/screenmonitor'; // /screenmonitor?nick=%s&ipaddress=%s'
 var STUDENT_CONTENTSHARE_ENDPOINT = '/contentshare'; // 'http://< student IP >:8080/contentshare?nick=< nick >&token=< credential >&channel=< channel name >&filename=< filename > '
+var STUDENT_SCREENTHUMB_ENDPOINT = '/screenthumb'; // 'http://< student IP >:8080/screenthumb
 var BROWSERPLAYERWINDOW_OPTIONS = "location=no, scrollbar=yes,width=430,height=360,toolbar=yes";
 var SMILE_STUDENT_WEB_ENDPOINT = '/smile-student.html';
 var SMILE_STUDENT_WEB_PORT = '80';
@@ -389,7 +390,8 @@ function handleNicklistUpdate(nick, timestamp) {
 		// XXX If I can come up with a way to get URL type into payload, I won't need to do the full URL
 		//
 		var monitorurl = 'http://' + CONFIG.remoteipaddress +':'+ CONFIG.remoteport + STUDENT_SCREENSHARE_ENDPOINT + '?nick=' + nick + '&ipaddress=' + usermeta[nick].address;
-		$('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="sendmediamsg(\'' + monitorurl + '\', \'screenshare\', \'Click to view screen of: <em>'+ nick +'</em>\', null, null, [\'' + nick +'\']); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		$('#userstatus').append('<li id="' + nick + '"class="" style="background:url(http://' + usermeta[nick].address + ':'+ STUDENT_SCREENSHARE_PORT + STUDENT_SCREENTHUMB_ENDPOINT + '?' + (new Date()).getTime() +') no-repeat scroll right top;"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="sendmediamsg(\'' + monitorurl + '\', \'screenshare\', \'Click to view screen of: <em>'+ nick +'</em>\', null, null, [\'' + nick +'\']); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
+		// $('#userstatus').append('<li id="' + nick + '"class="online"><a href="#" id="'+ nick + '" onclick="alert(\'user at ip: \' + usermeta.'+ nick + '.address);">' + nick +'</a> &nbsp;<a href="' + monitorurl +'" target="_blank">[<img src="/static/images/black/video.png" /> View]</a><a href="#" onclick="sendmediamsg(\'' + monitorurl + '\', \'screenshare\', \'Click to view screen of: <em>'+ nick +'</em>\', null, null, [\'' + nick +'\']); return false;">[<img src="/static/images/black/group.png" />  Share]</a></li>');
 	}
 }
 
@@ -437,6 +439,26 @@ function userJoin(nick, timestamp, payload) {
   		updateUserStatus2(nick, timestamp);
 	}
   }
+}
+
+function refreshUserStatus() {
+	console.log("refreshUserStatus");
+    $('#userstatus').each(function(i, listitems){
+        $(listitems).find('li').each(function(j, li){
+            if ($(li).attr('id') !== "teacher") {
+            	var bg = $(li).css('background');
+     			$(li).css('background', '');
+            	console.log("Update the image = " + bg);
+            	var idx = bg.indexOf('?');
+            	bg = bg.substring(0, idx) + '?' + (new Date()).getTime() + '") no-repeat scroll right top';
+            	$(li).css('background', bg);
+            	// :url(http://' + usermeta[nick].address + ':'+ STUDENT_SCREENSHARE_PORT + STUDENT_SCREENTHUMB_ENDPOINT + ') no-repeat scroll right top;"
+            	// Refresh
+            } else {
+            	console.log("No image to update");
+            }
+        })
+    });
 }
 
 function updateAttendanceSheet(page) {
@@ -2013,6 +2035,9 @@ $(document).ready(function() {
     updateUptime();
   }, 10*1000);
 
+  setInterval(function () {
+  	refreshUserStatus();
+  }, 30000);
   if (CONFIG.debug) {
     // $("#loading").hide();
     // $("#connect").hide();

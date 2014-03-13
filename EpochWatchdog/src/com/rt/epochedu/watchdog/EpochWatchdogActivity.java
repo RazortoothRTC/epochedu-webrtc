@@ -50,7 +50,7 @@ public class EpochWatchdogActivity extends Activity
 	private ComponentName mThisComponent;
 	private static final String MCPFEEDS_SCREENSHOT_PATH = "/mnt/sdcard/sl4a/scripts/mcpfeeds"; // XXX Don't assume this path works on all devices
 	private static final String SCREENGRAB_PREFIX = "screen-";
-	private static final String THUMBNAIL_48X48 = "thumb48x48.png";
+	private static final String THUMBNAIL_48X36 = "thumb48x36.png";
 	// XXX Our original screengrabs are 1024x768
 	private static final String THUMBNAIL_256X192 = "thumb256x192.png";
 	private static final int THUMBNAIL_WIDTH_DEFAULT = 256;
@@ -106,7 +106,7 @@ public class EpochWatchdogActivity extends Activity
 					count = 0;
 				}
 			}
-		}, 1000L, 10000L,  TimeUnit.MILLISECONDS);
+		}, 1000L, 10000L,  TimeUnit.MILLISECONDS); // XXX Hardcoded values
 
         mScheduledChatWorkerTaskExecutor.scheduleAtFixedRate(new Runnable() {
 			public void run() {
@@ -121,8 +121,8 @@ public class EpochWatchdogActivity extends Activity
 				if (screengrabs.length > 0) {
 					File sgfile = screengrabs[0];
 					Bitmap sgbmp = BitmapFactory.decodeFile(sgfile.getPath());
-					Bitmap thumbbmp = Bitmap.createScaledBitmap(sgbmp, THUMBNAIL_WIDTH_DEFAULT, THUMBNAIL_HEIGHT_DEFAULT, false);
-					File thumbf = new File(MCPFEEDS_SCREENSHOT_PATH + "/" + THUMBNAIL_256X192);
+					Bitmap thumbbmp = Bitmap.createScaledBitmap(sgbmp, 48, 36, false);
+					File thumbf = new File(MCPFEEDS_SCREENSHOT_PATH + "/" + THUMBNAIL_48X36);
 					FileOutputStream fout  = null;
 					// XXX This all can fail if we don't have write access
 					try {
@@ -155,7 +155,7 @@ public class EpochWatchdogActivity extends Activity
 				}
 
 			}
-		}, 30000L, 30000L, TimeUnit.MILLISECONDS); // XXX Hardcoded values 
+		}, 20000L, 20000L, TimeUnit.MILLISECONDS); // XXX Hardcoded values 
 
         // mPackageManager.setComponentEnabledSetting (ComponentName componentName, int newState, int flags);
     	// mPackageManager.setComponentEnabledSetting(mThisComponent, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
