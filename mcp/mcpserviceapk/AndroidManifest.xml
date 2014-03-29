@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest 	package="com.android.python27"
+<manifest 	package="com.rt.epochedu.mcp"
   			android:versionCode="1"
   			android:versionName="1.0"
   			android:installLocation="internalOnly"
@@ -31,13 +31,13 @@
     
     <service 	android:name="ScriptService">
     	<intent-filter>
-			<action android:name="com.android.python27.ScriptService" />
+			<action android:name="com.rt.epochedu.mcp.ScriptService" />
 		</intent-filter>
 	</service>
 	
     <service 	android:name="BackgroundScriptService">
     	<intent-filter>
-			<action android:name="com.android.python27.BackgroundScriptService" />
+			<action android:name="com.rt.epochedu.mcp.BackgroundScriptService" />
 		</intent-filter>
 	</service>
 	

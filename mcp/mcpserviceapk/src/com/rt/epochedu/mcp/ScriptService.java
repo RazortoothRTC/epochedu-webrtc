@@ -34,7 +34,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.android.python27.R;
+import com.rt.epochedu.mcp.R;
 import com.googlecode.android_scripting.AndroidProxy;
 import com.googlecode.android_scripting.Constants;
 import com.googlecode.android_scripting.FeaturedInterpreters;

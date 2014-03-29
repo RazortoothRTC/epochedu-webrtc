@@ -22,7 +22,7 @@
 
 package com.rt.epochedu.mcp;
 
-import com.android.python27.R;
+import com.rt.epochedu.mcp.R;
 import com.googlecode.android_scripting.FileUtils;
 import com.rt.epochedu.mcp.config.GlobalConstants;
 import com.rt.epochedu.mcp.support.Utils;
@@ -199,12 +199,12 @@ public class ScriptActivity extends Activity {
 					if(sFileName.endsWith(GlobalConstants.PYTHON_PROJECT_ZIP_NAME)) {
 						succeed &= Utils.unzip(content, this.getFilesDir().getAbsolutePath()+ "/", true);
 					}
-					// python -> /data/data/com.android.python27/files/python
+					// python -> /data/data/com.rt.epochedu.mcp/files/python
 					else if (sFileName.endsWith(GlobalConstants.PYTHON_ZIP_NAME)) {
 						succeed &= Utils.unzip(content, this.getFilesDir().getAbsolutePath()+ "/", true);
 						FileUtils.chmod(new File(this.getFilesDir().getAbsolutePath()+ "/python/bin/python" ), 0755);
 					}
-					// python extras -> /sdcard/com.android.python27/extras/python
+					// python extras -> /sdcard/com.rt.epochedu.mcp/extras/python
 					else if (sFileName.endsWith(GlobalConstants.PYTHON_EXTRAS_ZIP_NAME)) {
 						Utils.createDirectoryOnExternalStorage( this.getPackageName() + "/" + "extras");
 						Utils.createDirectoryOnExternalStorage( this.getPackageName() + "/" + "extras" + "/" + "tmp");
