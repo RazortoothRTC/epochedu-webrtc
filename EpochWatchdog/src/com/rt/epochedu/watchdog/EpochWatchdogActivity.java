@@ -56,6 +56,8 @@ public class EpochWatchdogActivity extends Activity
 	private static final int THUMBNAIL_WIDTH_DEFAULT = 256;
 	private static final int THUMBNAIL_HEIGHT_DEFAULT = 192;
 	private static final int MAX_THUMBS_IN_ROLL = 20;
+	private static final String MCPSERVICE_PACKAGE = "com.rt.epochedu.mcp";
+	private static final String MCPSERVICE_APP = "com.rt.epochedu.mcp.ScriptApplication";
 	private static ScheduledExecutorService mScheduledChatWorkerTaskExecutor;
 
     /** Called when the activity is first created. */
@@ -79,6 +81,11 @@ public class EpochWatchdogActivity extends Activity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        //
+        // Hacky startup of MCPService
+        // XXX We should (1) check if it's running (2) start it as a service
+        startActivity(getPackageManager().getLaunchIntentForPackage(MCPSERVICE_PACKAGE));
 
         mLauncherComponent = new ComponentName("com.android.launcher", "Launcher");
         mThisComponent = getComponentName();
