@@ -91,8 +91,8 @@ CONTENT_REPO_FILE_PATH = "./contentrepo";
 // versions.
 CONTENT_REPO_LOCAL_URL = "content://com.android.htmlfileprovider/sdcard/content"; // XXX This is fixed for android!!!! -> No it's not, I think it's broken since 4.x.
 
-DEFAULT_CHANNELS = ['science', 'math', 'history', 'spanish']; // XXX DEMOSETUP
-
+// DEFAULT_CHANNELS = ['science', 'math', 'history', 'spanish']; // XXX DEMOSETUP
+DEFAULT_CHANNELS = ['science'];
 //
 // INTERVALS & TIMEOUT VALUES
 //
@@ -103,7 +103,7 @@ var starttime = (new Date()).getTime();
 //
 // VERSION - generic version string for support and QA
 //
-VERSION = "epochedu-marvell-ces-stable-demo-v3-b88-" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
+VERSION = "epochedu-smile-postces2014-presale-b1" + starttime ;  // XXX Can  we instrument this using hudson during packaging, maybe use commit GUID
 WIP = " <li>MCP command work completed.</li>\n \
 		<li>Incorporating feedback for crayola demo from customer</li> \n \
 		<li>Remove Cufon </li>\n \
@@ -1013,6 +1013,36 @@ js.get("/channels", function (req, res) {
 	// sys.log('channelslist is ' + JSON.stringify(channelslist));
   	res.simpleJSON(200, channelslist);
 });
+
+js.get("/defaultchannels", function (req, res) {
+  	// var id = qs.parse(url.parse(req.url).query).id;
+	// Setup the default channels if they don't exist
+	var channelslist = {};
+	
+	for (var i = 0; i < DEFAULT_CHANNELS.length; i++) {
+		if (!channels[DEFAULT_CHANNELS[i]]) {
+			// Add it
+			var achannel = channelFactory();
+			sys.puts('channelFactory invoked for @' + DEFAULT_CHANNELS[i]);
+			channels[DEFAULT_CHANNELS[i]] = achannel;
+		}
+	}
+	
+	for (i in channels) {
+		if (channels[i].sessions) {
+			var count = 0;
+			for (ses in channels[i].sessions) {
+				count = count + 1;
+			}
+			channelslist[i] = count;
+		}
+		// sys.log('channelslist is ' + JSON.stringify(channelslist));
+	}
+             
+	// sys.log('channelslist is ' + JSON.stringify(channelslist));
+  	res.simpleJSON(200, channelslist);
+});
+
 
 /*
 	/info

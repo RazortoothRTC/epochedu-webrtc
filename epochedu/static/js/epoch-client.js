@@ -848,6 +848,17 @@ function getChannelsList(jcallback, ecallback) {
 	});
 }
 
+function getDefaultChannelsList(jcallback, ecallback) {
+	$.ajax({ cache: false
+	         , type: "GET"
+	         , url: "/defaultchannels"
+	         , dataType: "json"
+	         , data: {}
+			 , success: jcallback
+			 , error: ecallback
+	});
+}
+
 function updateRSS () {
   var bytes = parseInt(rss);
   if (bytes) {

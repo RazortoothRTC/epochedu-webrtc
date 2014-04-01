@@ -16,34 +16,36 @@
 		//
 		// Setup any data we need for this thing
 		//
-		getChannelsList(function(json) {
+		getDefaultChannelsList(function(json) {
 			var channelslist = json;
 			var classrooms = "";
 			$('#classrooms').append('<table cellspacing="0" style="width:100%"><tr><td style="padding-left:10px;width:50%">');
 			for (aclass in channelslist) {
-				$('#classrooms').append('<div id="folder' + aclass + '" title="' + aclass + '(' + channelslist[aclass]+ ')"><p>Classroom: ' + aclass + ' Intermediate Level I.</p><br><span class"openchannels" id="launchClass'+ aclass +'"></span></div>');
-				classrooms = classrooms + '#folder' + aclass + ',';
-				$('#launchClass' + aclass).ninjaButtonCreate({
-				  onSelect:function(){
-					var clicked = this.id;
-					if (clicked.indexOf('launchClass') == 0) { // XXX This is stupid, fix it, gotta know what classroom
-						clicked = clicked.substr(11);
-					}
-					// alert('clicked ' + clicked);
-				    $.ninjaWaitStart({
-				      onStop:function(){ // optional JavaScript function
-				        // $('#launch').ninjaButtonDeselect();
-						var suffix = "";
-						if (isTeacher()) suffix = 'moderator';
-						
-						window.open('/class' + suffix + '/' + clicked, '_self','resizable,location,menubar,toolbar,scrollbars,status');
-				      },
-				      seconds:3,
-				      text:'Joining classroom: ' + clicked + '...'
-				    });
-				  },
-				  title:'Join Class'
-				});
+				if (aclass !== "landing") {
+					$('#classrooms').append('<div id="folder' + aclass + '" title="' + aclass + '(' + channelslist[aclass]+ ')"><p>Classroom: ' + aclass + ' Intermediate Level I.</p><br><span class"openchannels" id="launchClass'+ aclass +'"></span></div>');
+					classrooms = classrooms + '#folder' + aclass + ',';
+					$('#launchClass' + aclass).ninjaButtonCreate({
+					  onSelect:function(){
+						var clicked = this.id;
+						if (clicked.indexOf('launchClass') == 0) { // XXX This is stupid, fix it, gotta know what classroom
+							clicked = clicked.substr(11);
+						}
+						// alert('clicked ' + clicked);
+					    $.ninjaWaitStart({
+					      onStop:function(){ // optional JavaScript function
+					        // $('#launch').ninjaButtonDeselect();
+							var suffix = "";
+							if (isTeacher()) suffix = 'moderator';
+							
+							window.open('/class' + suffix + '/' + clicked, '_self','resizable,location,menubar,toolbar,scrollbars,status');
+					      },
+					      seconds:3,
+					      text:'Joining classroom: ' + clicked + '...'
+					    });
+					  },
+					  title:'Join Class'
+					});
+				}
 			}
 			$(classrooms).ninjaFoldersCreate({
 			  direction:'vertical', // optional, defaults to horizontal
