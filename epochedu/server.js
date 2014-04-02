@@ -779,6 +779,20 @@ js.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
+js.getterer("/classmoderator-v4/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
+	var roomcl = JSON.stringify(contentlist); // V1
+		
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var teacher_tpl = nTPL("./templates/epoch-teacher-v4.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html");
+	  res.end(teacher_tpl({
+	      channel: chan,
+		  roomcl: roomcl,
+	    }));
+});
+
 js.getterer("/screenmonitor", function(req, res) {
 	var ipaddr = qs.parse(url.parse(req.url).query).ipaddress;
 	var nickname = qs.parse(url.parse(req.url).query).nick;
