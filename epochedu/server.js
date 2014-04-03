@@ -786,7 +786,7 @@ js.getterer("/classmoderator-v4/[\\w\\.\\-]+", function(req, res) {
 		
 	res.writeHead(200, {"Content-Type": "text/html"});   
 	  var teacher_tpl = nTPL("./templates/epoch-teacher-v4.html");
-	  var base = nTPL("./templates/boilerplate-ntpl.html");
+	  var base = nTPL("./templates/boilerplate2-ntpl.html");
 	  res.end(teacher_tpl({
 	      channel: chan,
 		  roomcl: roomcl,
