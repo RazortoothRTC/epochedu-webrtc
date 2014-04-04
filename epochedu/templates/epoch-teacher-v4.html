@@ -25,21 +25,27 @@
 				<h1>Classroom: {%= channel %}</h1>
 			</div>
 			<div id="session">
-				<div id="timer"></div><div id='sessioncontrols'>
+				<div id="timer"></div>
+				<!--
+				<div id='sessioncontrols'>
 					<span id='stopsessionbtn'></span><br/ ><span id='startsessionbtn'></span><br /><span id='resetsessionbtn'></span>
 				</div>
+				-->
 				<!-- <a class="start" href="#">Start Session</a> -->
 			</div>
+			<!--
 			<div id="mcp">
 				<div id='mcpcontrols'><span id='stopmcpbtn'></span><span id='startmcpbtn'></span><span id='startepochsmile'></span><span id='openiqmanager'></span></div>
 			</div>
-			
+			-->
 			<div id="account">
 				<p>Hello, <span id="nickname"></span><a class="logout jqModal" href="javascript:void(0);" onclick="doLogout(); return false;">Logout</a></p>
 			</div>
 			
 			<div id="toolbar">
+				<!--
 				<span id="home"></span><span id="monitor"></span><br/>
+				-->
 		        <ul id="status">
 		          <li><a id="usersLink" href="#">5 users</a></li>
 		          <li>uptime: <span id="uptime">?</span></li>
@@ -52,9 +58,13 @@
 		<div id="sideNav">
 			<nav id="xcontrols">
 	            <ul>
-	              <li><a href="http://topcoat.io">Home</a></li>
-	              <li class="selected"><a href="http://topcoat.io/topcoat">Demo</a></li>
-	              <li><a href="http://bench.topcoat.io/">Benchmarks</a></li>
+	              <li><span id='stopsessionbtn'></span></li>
+	              <li class="selected"><span id='startsessionbtn'></span></li>
+	              <li><span id='resetsessionbtn'></span></li>
+	              <li><span id='stopmcpbtn'></span></li>
+	              <li><span id='startmcpbtn'></span></li>
+	              <li><span id="home"></span></li>
+	              <li><span id="monitor"></span></li>
 	              <li><a href="http://topcoat.io/blog">Blog</a></li>
 	            </ul>
           </nav>

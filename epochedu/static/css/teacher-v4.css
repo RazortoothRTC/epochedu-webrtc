@@ -1,3 +1,9 @@
+h1 {
+    font-size: 2.3em;
+    margin: 0;
+    padding: 5px 25px;
+}
+
 .max-width {
 	max-width: 1180;
 	position: relative;
@@ -39,7 +45,7 @@
 #content {
     clear: both;
     left: 200px;
-    padding: 60px 25px 0;
+    padding: 50px 25px 0;
     position: absolute;
     top: 20px;
     width: 72%;
