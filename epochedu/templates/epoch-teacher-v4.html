@@ -3,8 +3,11 @@
 {%extends 'boilerplate2' %}
 {%block 'title' %}Teachers: Welcome to class: {%= channel %}{%/block %}
 {%block 'css-styles' %}
+	<link type="text/css" rel="stylesheet" href="/static/fonts/stylesheet.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/topcoat-mobile-dark.css">
 	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v3.css" media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v4.css" media="all">
+	<link type='text/css' rel='stylesheet' href='/static/css/icomatic.css' media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/jquery.gritter.css" media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/colorbox.css" media="all">
@@ -15,7 +18,7 @@
 
 {%block 'container' %}
 	<!-- page -->
-	<div id="page">
+	<div id="page" class="max-width">
 		<!-- header -->
 		<div id="header">
 			<div id="branding">
@@ -45,6 +48,18 @@
 		    </div>
 		</div>
 		<!-- end header -->
+		<!-- sideNav -->
+		<div id="sideNav">
+			<nav id="xcontrols">
+	            <ul>
+	              <li><a href="http://topcoat.io">Home</a></li>
+	              <li class="selected"><a href="http://topcoat.io/topcoat">Demo</a></li>
+	              <li><a href="http://bench.topcoat.io/">Benchmarks</a></li>
+	              <li><a href="http://topcoat.io/blog">Blog</a></li>
+	            </ul>
+          </nav>
+		</div>
+		<!-- end sideNav -->
 
 		<!-- content -->
 		<div id="content">
@@ -184,7 +199,7 @@
 		<div class="modalmsg">
 			<div class="modaltxt">
 				<h3>Welcome to the EpochEDU - Classroom-in-a-box.</h3>
-				<p>This is the teacher’s demonstration device.<br />Please touch the “Login Now” to login to the teacher’s control panel.</p>
+				<p>This is the teacher’s demonstration device.<br />Please touch the “Login Now” to login to the teacher’s control panel. <div class='icomatic icon' style="font-size: 21px; color: rgb(69, 69, 69);">user</div></p>
 			</div>
 			<div class="modalbranding">
 				

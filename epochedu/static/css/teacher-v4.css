@@ -1,0 +1,55 @@
+.max-width {
+	max-width: 1180;
+	position: relative;
+	margin: 0 auto;
+}
+
+#sideNav {
+	background: #4A4D4E;
+	position: : absolute;
+	width:200px;
+	z-index: 2;
+	left: 0;
+	margin: 0;
+	padding: 75px 0 0 0;
+	top:20px;
+}
+
+#sideNav ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#sideNav li a {
+	color: #F0F1F1;
+	display: block;
+	height: 46px;
+	font-size: 16px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 12px 0 0 20px;
+	text-decoration: none;
+}
+
+#xcontrols li {
+    border-bottom: 1px solid #E0E0E0;
+}
+
+#content {
+    clear: both;
+    left: 200px;
+    padding: 60px 25px 0;
+    position: absolute;
+    top: 20px;
+    width: 72%;
+}
+
+#site {
+	width: 100%;
+	position: relative;
+	z-index: 10;
+	background: inherit;
+	left: 0;
+	transition: all 0.2s ease-out;
+}
