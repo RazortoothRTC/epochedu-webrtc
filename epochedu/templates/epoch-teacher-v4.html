@@ -1,9 +1,10 @@
 {%set name teacher %}
 {%set args channel, roomcl %}
-{%extends 'boilerplate' %}
+{%extends 'boilerplate2' %}
 {%block 'title' %}Teachers: Welcome to class: {%= channel %}{%/block %}
 {%block 'css-styles' %}
 	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v3.css" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/teacher-v4.css" media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/jquery.gritter.css" media="all">
 	<link type="text/css" rel="stylesheet" href="/static/css/colorbox.css" media="all">
@@ -227,6 +228,8 @@
 {%/block %}
 
 {%block 'body-scripts' %}
+	<script src="/static/js/jquery.gritter.min.js"></script>
+	<script src="/static/js/jquery.ninjaui.min.js?v=0.9.9.9"></script>
 	<script type="text/javascript" src="/static/js/jquery.stopwatch.js"></script>
 	<script type="text/javascript" src="/static/js/jScrollPane.js"></script>
 	<script type="text/javascript" src="/static/js/jqModal.js"></script>
@@ -479,7 +482,7 @@
 			  title:'End'
 			});
 			$('#home').ninjaButtonCreate({
-			  icon:'home', 
+			  icon:'home',
 			  onSelect:function(){ 
 				$(this).ninjaButtonDeselect();
 			  },
