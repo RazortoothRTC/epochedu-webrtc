@@ -4,6 +4,47 @@ h1 {
     padding: 5px 25px;
 }
 
+/*
+.chatscroll {
+	clear:both;
+	height:100px;
+	overflow:hidden;
+	padding:0px;
+}
+
+.userscroll {
+	clear:both;
+	height:105px;
+	overflow:hidden;
+	padding:0px;
+}
+*/
+
+.userscroll {
+	clear:both;
+	height:240px;
+	overflow:hidden;
+	padding:0px;
+}
+
+#chatmsg {
+	background:#FFFFFF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding:10px;
+	margin:0px 0px 10px 0px;
+	overflow:hidden;
+	height:200px;
+}
+
+
+#users {
+	float:right;
+	width:25%;
+	/* height: 200px; */
+}
+
 .max-width {
 	max-width: 1180;
 	position: relative;
@@ -51,11 +92,13 @@ h1 {
     width: 72%;
 }
 
-#site {
+#bottom {
+	/* overflow: hidden; */
+	height: 100px;
+	background: gray;
+	margin: 0 0 0 0;
+	bottom: 0px;
+	position: fixed;
 	width: 100%;
-	position: relative;
-	z-index: 10;
-	background: inherit;
-	left: 0;
-	transition: all 0.2s ease-out;
+	padding: 0 0 0 0;
 }
