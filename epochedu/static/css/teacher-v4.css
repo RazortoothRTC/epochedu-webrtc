@@ -53,13 +53,13 @@ h1 {
 
 #sideNav {
 	background: #4A4D4E;
-	position: : absolute;
+	position: absolute;
 	width:200px;
 	z-index: 2;
 	left: 0;
-	margin: 0;
-	padding: 75px 0 0 0;
-	top:20px;
+	margin: 50px 0 0 0;
+	padding: 0px 0 0 0;
+	top: 20px;
 }
 
 #sideNav ul {
