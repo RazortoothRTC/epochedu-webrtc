@@ -83,6 +83,27 @@ h1 {
     border-bottom: 1px solid #E0E0E0;
 }
 
+.mediabank {
+	/* padding: 0px 20px 0px 20px; */
+}
+
+.mediabank ul {
+	list-style: none;
+	margin: 0 0 0 -10px; 
+	overflow: hidden;
+	padding: 0;
+}
+
+.mediabank li {
+	background: #eee;
+	border-radius: 3px;
+	float: left;
+	margin: 0 0 10px 10px;
+	width: 6em;
+	padding: 30px;
+	text-align: center;
+}
+
 #content {
     clear: both;
     left: 200px;
