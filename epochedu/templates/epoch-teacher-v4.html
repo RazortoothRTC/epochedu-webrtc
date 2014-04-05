@@ -170,9 +170,11 @@
 		</div>
 		<!-- end media -->
 		<!-- media control -->
+		<!-- 
 		<div id="mediacontrol">
 			<span id="send"></span><span id="end"></span><span id="preview"></span><span id="sync-btn"></span>
 		</div>
+		-->
 		<!-- end media control -->
 		
 		<!-- footer -->
@@ -231,6 +233,19 @@
 			</div>
 			<span class="modalrow" id="status"></span>
 		</form>
+	</div>
+
+	<div class="jqmWindow2" id="mediaDialog">
+		<div class="modalmsg">
+			<div class="modaltxt">
+				<h3>Media Controls</h3>
+				<p>Send content to the students or preview using the buttons below.  Click anywhere outside to dismiss the window</p>
+			</div>
+		</div>
+		<p>Selected: <span class="modalrow" id="mediafqname"></span>
+		<div class="modalrow">
+			<span class="send2"></span><span class="end2"></span><span class="preview2"></span><span class="sync-btn2"></span>
+		</div>
 	</div>
 {%/block %}
 
@@ -311,8 +326,7 @@
 			// var $contentul = $('.mediabank > ul > li#' + contentType).children().first();
 			var $contentul = $('.mediabank > ul > li#' + contentType).find('ul');
 			if ($contentul) {
-				console.log('Contentul ' + $contentul);
-				$contentul.append('<li>' + fqname + '</li>');
+				$contentul.append('<li id="' + content + '">' + fqname + '</li>');
 			}
 		});
 		console.log(contentitems);
@@ -350,6 +364,7 @@
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
 			$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
 			$('#monitorLaunchDialog').jqm({modal:false, toTop:true});
+			$('#mediaDialog').jqm({modal:false, toTop:true});
 			$('#timer').stopwatch();;
 			$('#startsessionbtn').ninjaButtonCreate({
 			  icon:'bookmark', 
@@ -482,6 +497,76 @@
 			  state:'enabled',
 			  title:'Edit SMILE ?s' 
 			});
+			
+
+			$(".mediabank > ul > li > ul > li").click(function() {
+				// alert("clicked: " + $(this).text());
+				var fqname = $(this).text();
+				var mediaurl = $(this).attr('id');
+				$('#mediaDialog').jqmShow();
+				$('#mediaDialog').find('#mediafqname').text(fqname);
+
+				$('.send2').ninjaButtonCreate({
+				  icon:'mail', 
+				  onSelect:function(){ 
+					$(this).ninjaButtonDeselect();
+			        var msg = mediaurl;
+			        if (!util.isBlank(msg)) send(msg, "universalsend");
+					// toggleNinjaButton('#mediacontrol', false);
+					$('#mediaDialog').jqmHide();
+					// $('#end').ninjaButtonEnable();,
+				  },
+				  state:'enabled',
+				  title:'Send' 
+				});
+
+				$('.preview2').ninjaButtonCreate({
+				  icon:'video',
+				  onSelect:function(){ 
+					$(this).ninjaButtonDeselect();
+			        var msg = mediaurl;
+					// alert('url ' + msg);
+			        if (!util.isBlank(msg)) openBestPlayer(msg);			
+					$('#mediaDialog').jqmHide();
+				  },
+				  state:'enabled',
+				  title:'Preview' 
+				});
+
+				$('.sync-btn2').ninjaButtonCreate({
+				  icon:'upload', 
+				  onSelect:function(){ 
+					$(this).ninjaButtonDeselect();
+			        var msg = mediaurl;
+			        messageDispatcher("sync", msg);
+			        this.checked = false;
+					$('#mediaDialog').jqmHide();
+				  },
+				  state:'enabled',
+				  title:'Sync' 
+				});
+
+				$('.end2').ninjaButtonCreate({
+				  icon:'remove', 
+				  onSelect:function(){ 
+					$(this).ninjaButtonDeselect();
+					/* XXX Put this back into epoch-client.js once design is final */
+					var msg = "#endviewer";
+					// console.log("Clicked endviewer");
+				    send(msg, "endviewer");
+					$('#mediaDialog').jqmHide();
+				    return false;
+				  },
+				  state:'enabled',
+				  title:'End'
+				});
+
+			});
+
+			//
+			// XXX Legacy
+			//
+
 			$('#send').ninjaButtonCreate({
 			  icon:'mail', 
 			  onSelect:function(){ 
@@ -501,24 +586,6 @@
 			  title:'Send' 
 			});
 
-			$(".mediabank > ul > li > ul > li").click(function() {
-				var mediaitem = $(this).children('.icon-label').text();
-				var contentgroup = contentitems[mediaitem];
-				var contentstr = "";
-				if (contentgroup != null) {
-					for (var i = 0; i < contentgroup.length; i++) {
-						contentstr += contentgroup[i].fqname + "\n";
-					}
-					alert(contentstr);
-				} else {
-					alert("No " + mediaitem + " Content Available");
-				}
-
-			});
-
-			//
-			// XXX Legacy
-			//
 			$('#preview').ninjaButtonCreate({
 			  icon:'video',
 			  onSelect:function(){ 
