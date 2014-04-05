@@ -120,33 +120,49 @@
 			<form>
 				<div class="mediabank">
 					<ul>
-						<li>
+						<li id='Audio'>
 							<div class='icomatic icon' style='font-size: 28px; color: #3399FF'>audio</div>
 	        				<div class='icon-label'>Audio</div>
+	        				<ul>
+	        				</ul>
 						</li>
-						<li>
+						<li id='Video'>
 							<div class='icomatic icon' style='font-size: 28px; color: #3399FF'>videocamera</div>
 	        				<div class='icon-label'>Video</div>
+	        				<ul>
+	        				</ul>
 						</li>
-						<li>
+						<li id='Photos'>
 							<div class='icomatic icon' style='font-size: 28px; color: #3399FF'>image</div>
 	        				<div class='icon-label'>Photos</div>
+	        				<ul>
+	        				</ul>
 						</li>
-					    <li>
+					    <li id='Slides'>
 							<div class='icomatic icon' style='font-size: 28px; color: #3399FF'>computer</div>
 	        				<div class='icon-label'>Slides</div>
+	        				<ul>
+	        				</ul>
 						</li>
-						<li>
+						<li id='Docs'>
 							<div class='icomatic icon' style='font-size: 28px; color: #3399FF'>page</div>
 	        				<div class='icon-label'>Docs</div>
+	        				<ul>
+	        				</ul>
 						</li>
-						<li>
+						<li id='Apps'>
 							<div class='icomatic icon' style='font-size: 28px; color: #3399FF'>tileview</div>
-	        				<div class='icon-label'>Apps</div> 
-	        				<ul> 
+	        				<div class='icon-label'>Apps</div>
+	        				<ul>
+	        				</ul>
+	        				{*
+	        				<ul>
 	        					<li>Foo</li>
 	        					<li>Bar</li>
+	        					<li>Zed</li>
+	        					<li>Gamma</li>
 	        				</ul>
+	        				*}
 						</li>
 					</ul>
 				</div>
@@ -289,6 +305,15 @@
 				contentitems[contentType] = [];
 			}
 			contentitems[contentType].push(mediaobj);
+
+			// Add to media
+			// $('.mediabank > ul > li.' + contentType + ' > ul').append('<li>' + fqname + '</li>');
+			// var $contentul = $('.mediabank > ul > li#' + contentType).children().first();
+			var $contentul = $('.mediabank > ul > li#' + contentType).find('ul');
+			if ($contentul) {
+				console.log('Contentul ' + $contentul);
+				$contentul.append('<li>' + fqname + '</li>');
+			}
 		});
 		console.log(contentitems);
 
@@ -476,7 +501,7 @@
 			  title:'Send' 
 			});
 
-			$(".mediabank > ul > li").click(function() {
+			$(".mediabank > ul > li > ul > li").click(function() {
 				var mediaitem = $(this).children('.icon-label').text();
 				var contentgroup = contentitems[mediaitem];
 				var contentstr = "";
