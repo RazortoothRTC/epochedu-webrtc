@@ -238,6 +238,60 @@
 	<script type="text/javascript">
 		var contents = {%= roomcl %};
 		var listitemdata = '';
+		var listitems = {};
+
+		//
+		// XXX Refactor to epoch-client.js
+		//
+		function getContentType(type) {
+			if (type === 'docx' || type === 'txt' || type === 'pdf' || type === 'xlsx') {
+				return 'Docs';
+			} else if (type === 'jpg' || type === 'png') {
+				return 'Photos';
+			} else if (type === 'mov' || type === 'mp4' || type === 'threegp') {
+				return 'Videos';	
+			} else if (type === 'mp3') {
+				return 'Audio';	
+			} else if (type === 'ppt') {
+				return 'Slides';
+			} else if (type === 'apk') {
+				return 'Apps';	
+			} else {
+				return 'Unknown';	
+			}
+		}
+
+		$.each(contents, function(i, content) {
+			var mime, fqname, filename, itemi, mediaobj, contentType;
+			
+			itemi = 'item' + (i+1);
+			fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
+			mime = fqname.split('.')[1].toLowerCase();
+			// Handle any special cases for mime types
+			if (mime == '3gp') {
+				mime = mime.replace('3', 'three');
+			}
+			filename = fqname.split('.')[0];
+			mediaobj = {};
+			mediaobj['mime'] = mime;
+			mediaobj['fqname'] = fqname;
+			mediaobj['filename'] = filename;
+			mediaobj['itemi'] = itemi;
+			mediaobj['url'] = content;
+			
+			contentType = getContentType(mime);
+
+			if (!listitems[contentType]) {
+				listitems[contentType] = [];
+			}
+			listitems[contentType].push(mediaobj);
+		});
+		console.log(listitems);
+
+		//
+		// XXX Legacy
+		//
+		{*
 		$.each(contents, function(i, content) {
 			var mime, fqname, filename, itemi, contentli, contentin, contentlab;
 			
@@ -253,6 +307,8 @@
 			listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><br><label for="'+ itemi +'">' + filename + '</label></li>';
 		});
 		$('#resources').append(listitemdata);
+		*}
+		
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -415,6 +471,15 @@
 			  state:'disabled',
 			  title:'Send' 
 			});
+
+			$(".mediabank > ul > li").click(function() {
+				var mediaitem = $(this).children('.icon-label').text();
+				alert("clicked media " + mediaitem);
+			});
+
+			//
+			// XXX Legacy
+			//
 			$('#preview').ninjaButtonCreate({
 			  icon:'video',
 			  onSelect:function(){ 
