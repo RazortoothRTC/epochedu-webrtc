@@ -4,22 +4,6 @@ h1 {
     padding: 5px 25px;
 }
 
-/*
-.chatscroll {
-	clear:both;
-	height:100px;
-	overflow:hidden;
-	padding:0px;
-}
-
-.userscroll {
-	clear:both;
-	height:105px;
-	overflow:hidden;
-	padding:0px;
-}
-*/
-
 .userscroll {
 	clear:both;
 	height:240px;
@@ -42,7 +26,6 @@ h1 {
 #users {
 	float:right;
 	width:25%;
-	/* height: 200px; */
 }
 
 .max-width {
@@ -84,7 +67,7 @@ h1 {
 }
 
 .mediabank {
-	/* padding: 0px 20px 0px 20px; */
+	padding: 0px 20px 0px 20px;
 }
 
 .mediabank ul {
@@ -100,7 +83,7 @@ h1 {
 	float: left;
 	margin: 0 0 10px 10px;
 	width: 6em;
-	padding: 30px;
+	padding: 18px;
 	text-align: center;
 }
 
