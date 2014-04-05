@@ -68,6 +68,11 @@ h1 {
 
 .mediabank {
 	padding: 0px 20px 0px 20px;
+	/*
+	width: 980px;
+    height: 38px;
+    margin-top:100px;
+    */
 }
 
 .mediabank ul {
@@ -85,8 +90,47 @@ h1 {
 	width: 6em;
 	padding: 18px;
 	text-align: center;
-}
-
+	/* border: 2px solid gray; */
+} .mediabank li:hover { background: silver; }
+                    .mediabank li a {
+                        text-transform: uppercase;
+                        color: white;
+                        padding: 13px 33px;
+                        line-height: 38px;
+                        font-size: 11px;
+                    }	/* Second layer of Drop Up Menus */
+                        .mediabank li a:hover { text-decoration: none; }
+                        .mediabank li ul {
+                            position: absolute;
+                            display:none;
+                            z-index: 1000;
+                            min-width: 100%;
+                            left:-1px;
+                        }
+                        .mediabank li:hover ul {
+                            bottom:20px;
+                            display:block;
+                            background:#eee;
+                            margin-bottom: 78px;
+                        }
+                            .mediabank li ul li {
+                                background: none;
+                                border: 2px solid gray;
+                                margin: 0 0 0px 0px;
+								padding: 5px;
+                                width: 100%;
+                            }
+                                .mediabank li ul li:hover {
+                                    background: none;
+                                    background-color: #2a51b5;
+                                }
+                                .mediabank li ul li a {
+                                    text-transform: uppercase;
+                                    color: white;
+                                    padding: 8px 10px;
+                                    line-height: 28px;
+                                	width: 100%;
+                                }
 #content {
     clear: both;
     left: 200px;
