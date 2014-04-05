@@ -631,7 +631,7 @@ js.getterer("/class-v3/[\\w\\.\\-]+", function(req, res) {
 
 
 
-js.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/classmoderator-v1/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist); // V1
@@ -702,7 +702,7 @@ js.getterer("/classmoderator-v3/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
-js.getterer("/classmoderator-v4/[\\w\\.\\-]+", function(req, res) {
+js.getterer("/classmoderator/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
 	var contentlist = pullcontent(CONTENT_REPO_FILE_PATH, (CONTENT_REPO_URL || ('http://' + js.address + ':' + PORT + '/content')), chan);
 	var roomcl = JSON.stringify(contentlist); // V1
