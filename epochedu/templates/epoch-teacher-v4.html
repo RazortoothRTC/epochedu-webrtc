@@ -238,7 +238,7 @@
 	<script type="text/javascript">
 		var contents = {%= roomcl %};
 		var listitemdata = '';
-		var listitems = {};
+		var contentitems = {};
 
 		//
 		// XXX Refactor to epoch-client.js
@@ -249,7 +249,7 @@
 			} else if (type === 'jpg' || type === 'png') {
 				return 'Photos';
 			} else if (type === 'mov' || type === 'mp4' || type === 'threegp') {
-				return 'Videos';	
+				return 'Video';	
 			} else if (type === 'mp3') {
 				return 'Audio';	
 			} else if (type === 'ppt') {
@@ -281,12 +281,12 @@
 			
 			contentType = getContentType(mime);
 
-			if (!listitems[contentType]) {
-				listitems[contentType] = [];
+			if (!contentitems[contentType]) {
+				contentitems[contentType] = [];
 			}
-			listitems[contentType].push(mediaobj);
+			contentitems[contentType].push(mediaobj);
 		});
-		console.log(listitems);
+		console.log(contentitems);
 
 		//
 		// XXX Legacy
@@ -474,7 +474,17 @@
 
 			$(".mediabank > ul > li").click(function() {
 				var mediaitem = $(this).children('.icon-label').text();
-				alert("clicked media " + mediaitem);
+				var contentgroup = contentitems[mediaitem];
+				var contentstr = "";
+				if (contentgroup != null) {
+					for (var i = 0; i < contentgroup.length; i++) {
+						contentstr += contentgroup[i].fqname + "\n";
+					}
+					alert(contentstr);
+				} else {
+					alert("No " + mediaitem + " Content Available");
+				}
+
 			});
 
 			//
