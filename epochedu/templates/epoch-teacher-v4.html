@@ -274,6 +274,7 @@
 		var contents = {%= roomcl %};
 		var listitemdata = '';
 		var contentitems = {};
+		var mediaurl = null;
 
 		//
 		// XXX Refactor to epoch-client.js
@@ -497,18 +498,74 @@
 			  state:'enabled',
 			  title:'Edit SMILE ?s' 
 			});
-			
+
+			$('.send2').ninjaButtonCreate({
+				  icon:'mail', 
+				  onSelect:function(){ 
+				  	console.log('send called');
+					$(this).ninjaButtonDeselect();
+			        var msg = mediaurl;
+			        if (!util.isBlank(msg)) send(msg, "universalsend");
+					// toggleNinjaButton('#mediacontrol', false);
+					$('#mediaDialog').jqmHide();
+					// $('#end').ninjaButtonEnable();,
+				  },
+				  state:'enabled',
+				  title:'Send' 
+			});
+
+			$('.preview2').ninjaButtonCreate({
+				  icon:'video',
+				  onSelect:function(){ 
+					$(this).ninjaButtonDeselect();
+			        var msg = mediaurl;
+					// alert('url ' + msg);
+			        if (!util.isBlank(msg)) openBestPlayer(msg);			
+					$('#mediaDialog').jqmHide();
+				  },
+				  state:'enabled',
+				  title:'Preview' 
+			});
+
+			$('.sync-btn2').ninjaButtonCreate({
+				  icon:'upload', 
+				  onSelect:function(){ 
+					$(this).ninjaButtonDeselect();
+			        var msg = mediaurl;
+			        messageDispatcher("sync", msg);
+					$('#mediaDialog').jqmHide();
+				  },
+				  state:'enabled',
+				  title:'Sync' 
+			});
+
+			$('.end2').ninjaButtonCreate({
+				  icon:'remove', 
+				  onSelect:function(){ 
+				  	console.log('end2 called');
+					$(this).ninjaButtonDeselect();
+					var msg = "#endviewer";
+					// console.log("Clicked endviewer");
+				    send(msg, "endviewer");
+					$('#mediaDialog').jqmHide();
+				    return false;
+				  },
+				  state:'enabled',
+				  title:'End'
+			});
 
 			$(".mediabank > ul > li > ul > li").click(function() {
 				// alert("clicked: " + $(this).text());
 				var fqname = $(this).text();
-				var mediaurl = $(this).attr('id');
+				mediaurl = $(this).attr('id');
 				$('#mediaDialog').jqmShow();
 				$('#mediaDialog').find('#mediafqname').text(fqname);
 
+				/*
 				$('.send2').ninjaButtonCreate({
 				  icon:'mail', 
 				  onSelect:function(){ 
+				  	console.log('send called');
 					$(this).ninjaButtonDeselect();
 			        var msg = mediaurl;
 			        if (!util.isBlank(msg)) send(msg, "universalsend");
@@ -519,7 +576,7 @@
 				  state:'enabled',
 				  title:'Send' 
 				});
-
+				
 				$('.preview2').ninjaButtonCreate({
 				  icon:'video',
 				  onSelect:function(){ 
@@ -539,7 +596,6 @@
 					$(this).ninjaButtonDeselect();
 			        var msg = mediaurl;
 			        messageDispatcher("sync", msg);
-			        this.checked = false;
 					$('#mediaDialog').jqmHide();
 				  },
 				  state:'enabled',
@@ -549,8 +605,8 @@
 				$('.end2').ninjaButtonCreate({
 				  icon:'remove', 
 				  onSelect:function(){ 
+				  	console.log('end2 called');
 					$(this).ninjaButtonDeselect();
-					/* XXX Put this back into epoch-client.js once design is final */
 					var msg = "#endviewer";
 					// console.log("Clicked endviewer");
 				    send(msg, "endviewer");
@@ -560,7 +616,7 @@
 				  state:'enabled',
 				  title:'End'
 				});
-
+				*/
 			});
 
 			//
