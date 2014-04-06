@@ -1,0 +1,159 @@
+{%set name landing3 %}
+{%set args who %}
+
+{%extends 'boilerplate2' %}
+
+{%block 'title' %}Welcome to EpochEDU : {%= who%}{%/block %}
+{%block 'css-styles' %}
+	<link type="text/css" rel="stylesheet" href="/static/fonts/stylesheet.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/topcoat-mobile-dark.css">
+	<link type='text/css' rel='stylesheet' href='/static/css/icomatic.css' media="all">
+	<!-- <link type="text/css" rel="stylesheet" href="/static/css/student.css" media="all"> -->
+	<link type="text/css" rel="stylesheet" href="/static/css/ninjaui.css?v=0.9.9.9" media="all">
+	<link type="text/css" rel="stylesheet" href="/static/css/jquery.gritter.css" media="all">
+{%/block %}
+
+{%block 'body-scripts' %}
+<script src="/static/js/jquery.ninjaui.min.js?v=0.9.9.9"></script>
+<script type="text/javascript">
+	$(document).ready(function() {		
+		//
+		// Setup any data we need for this thing
+		//
+		getDefaultChannelsList(function(json) {
+			var channelslist = json;
+			var classrooms = "";
+			$('#classrooms').append('<table cellspacing="0" style="width:100%"><tr><td style="padding-left:10px;width:50%">');
+			for (aclass in channelslist) {
+				if (aclass !== "landing") {
+					$('#classrooms').append('<div id="folder' + aclass + '" title="' + aclass + '(' + channelslist[aclass]+ ')"><p>Classroom: ' + aclass + ' Intermediate Level I.</p><br><button class="topcoat-button--large joinbtn" id="' + aclass + '">Join ' + aclass + '</button></div>');
+					classrooms = classrooms + '#folder' + aclass + ',';
+					/*
+					$('#launchClass' + aclass).ninjaButtonCreate({
+					  onSelect:function(){
+						var clicked = this.id;
+						if (clicked.indexOf('launchClass') == 0) { // XXX This is stupid, fix it, gotta know what classroom
+							clicked = clicked.substr(11);
+						}
+						// alert('clicked ' + clicked);
+					    $.ninjaWaitStart({
+					      onStop:function(){ // optional JavaScript function
+					        // $('#launch').ninjaButtonDeselect();
+							var suffix = "";
+							if (isTeacher()) suffix = 'moderator';
+							
+							window.open('/class' + suffix + '/' + clicked, '_self','resizable,location,menubar,toolbar,scrollbars,status');
+					      },
+					      seconds:3,
+					      text:'Joining classroom: ' + clicked + '...'
+					    });
+					  },
+					  title:'Join Class'
+					});
+					*/
+
+				}
+			}
+			$(classrooms).ninjaFoldersCreate({
+			  direction:'vertical', // optional, defaults to horizontal
+			  onChange:function(){ // optional JavaScript function
+			    // alert('Folder changed to: ' + this.attr('title') + '.');
+			  },
+			  // selected:$('#folderhistory') // optional, defaults to first folder
+			});
+			$('#classrooms').append('</td></tr></table>');
+		}, function(error) {
+			$('#classrooms').append('<h1>No Classrooms Available</h1>');
+		});
+		
+		$('.joinbtn').live('click', function(e) {
+			var suffix = "";
+			var clicked = this.id;
+			if (isTeacher()) suffix = 'moderator';
+			window.open('/class' + suffix + '/' + clicked, '_self','resizable,location,menubar,toolbar,scrollbars,status');
+			return false;
+		});
+
+		$('#tabFirst, #tabSecond, #tabThird, #tabFourth').ninjaTabsCreate({
+			selected:$('#tabFirst')
+		});
+		$('.footertab').click(function() {
+			if ($(this).attr('id') == "tabSecond") { 
+				$.ninjaWindowOpen({
+				      id:'aboutWindow', // optional unique identifier
+				      onClose:function(){ // optional JavaScript function
+				        $('#windowButton').ninjaButtonDeselect();
+				      },
+				      icon:'profile', // optional image before title
+				      title:'About EpochEDU',
+				      url:'/about'
+				});
+			}
+			if ($(this).attr('id') == "tabThird") { 
+					$.ninjaWindowOpen({
+					      id:'statusWindow', // optional unique identifier
+					      onClose:function(){ // optional JavaScript function
+					        $('#windowButton').ninjaButtonDeselect();
+					      },
+					      icon:'profile', // optional image before title
+					      title:'Status MCP Service',
+					      url:'http://localhost:8080/about'
+					});
+			}
+	 	});
+		// add any existing channels into the list and refresh the list
+		// Get the other channels
+	});
+</script>
+<script type="text/javascript">
+	/* XXX Refactor this into epoch-client.js */
+	function getChannel() {
+		return 'landing';
+	}
+	function isTeacher() {
+		return ('{%= who%}'.indexOf('teacher') === 0 ? true: false);
+	}
+</script>
+<script type="text/javascript" src="/static/js/epoch-client.js" ></script>
+{%/block %}
+{%block 'head' %}
+{%/block %}
+
+{%block 'container' %}
+	<!-- Start of first page -->
+	<div data-role="page" id="chat">
+
+		<div data-role="header" data-id="header" data-position="fixed">
+			<div id="branding">
+				<h1>Welcome, {%= who%}</h1>
+			</div>
+		</div><!-- /header -->
+		<!--
+					<div class="topcoat-button-bar">
+			  <div class="topcoat-button-bar__item">
+			    <button class="topcoat-button-bar__button--large">One</button>
+			  </div>
+			  <div class="topcoat-button-bar__item">
+			    <button class="topcoat-button-bar__button--large">Two</button>
+			  </div>
+			  <div class="topcoat-button-bar__item">
+			    <button class="topcoat-button-bar__button--large">Three</button>
+			  </div>
+			</div>
+		-->
+		<div id='classrooms'>
+		</div>
+
+		<div class="footer">
+			<span class="footertab" id="tabFirst" title="target">Classrooms</span>
+			<span class="footertab" id="tabSecond">About</span> <!-- title attribute used for icon -->
+			<span class="footertab" id="tabThird">Status</span>
+			<span class="footertab" id="tabFourth">Sync</span>
+			
+			<div class="footercopy">
+				<p>Powered by Razortooth Communications, LLC</p>
+			</div>
+		</div><!-- /footer -->
+	</div><!-- /page -->
+</body>
+{%/block%}

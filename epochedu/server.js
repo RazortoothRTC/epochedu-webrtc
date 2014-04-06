@@ -670,7 +670,7 @@ js.getterer("(/student-v3|/teacher-v3)", function(req, res) { // Match either st
 	    }));
 });
 
-js.getterer("(/student|/teacher)", function(req, res) { // Match either student or teacher URL
+js.getterer("(/student-v1|/teacher-v1)", function(req, res) { // Match either student or teacher URL
 	try {
 		var path = url.parse(req.url).pathname.split("/")[1];
 		util.puts('landing page path: ' + path);
@@ -678,6 +678,24 @@ js.getterer("(/student|/teacher)", function(req, res) { // Match either student 
 		var landing_tpl = nTPL("./templates/epoch-landing2.html");
 		console.log("landing_tpl");
 		var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
+		console.log("base");
+		res.end(landing_tpl({
+		      who: path,
+		}));
+	} catch(e) {
+		var stack = new Error().stack;
+		console.log(stack);
+	}
+});
+
+js.getterer("(/student|/teacher)", function(req, res) { // Match either student or teacher URL
+	try {
+		var path = url.parse(req.url).pathname.split("/")[1];
+		util.puts('v4 landing page path: ' + path);
+		res.writeHead(200, {"Content-Type": "text/html"});   
+		var landing_tpl = nTPL("./templates/epoch-landing3.html");
+		console.log("landing_tpl");
+		var base = nTPL("./templates/boilerplate2-ntpl.html"); // V2
 		console.log("base");
 		res.end(landing_tpl({
 		      who: path,
