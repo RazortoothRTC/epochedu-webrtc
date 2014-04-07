@@ -123,7 +123,7 @@ public class EpochWatchdogActivity extends Activity
 					count = 0;
 				}
 			}
-		}, 1000L, 10000L,  TimeUnit.MILLISECONDS); // XXX Hardcoded values
+		}, 1000L, 7000L,  TimeUnit.MILLISECONDS); // XXX Hardcoded values
 
         mScheduledChatWorkerTaskExecutor.scheduleAtFixedRate(new Runnable() {
 			public void run() {
