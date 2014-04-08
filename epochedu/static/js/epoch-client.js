@@ -1,6 +1,6 @@
 /**
 #Created by David J. Kordsmeier on 2009-01-30.
-#Copyright (c) 2009 Razortooth Communications, LLC. All rights reserved.
+#Copyright (c) 2009-2011, 2014 Razortooth Communications, LLC. All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification,
 #are permitted provided that the following conditions are met:
@@ -181,17 +181,23 @@ function dateInFutureMilliseconds(aDate, milliseconds) {
 
 function isEpochCookieSet() {
 	// alert('cookie value = ' + $.cookie(EPOCH_COOKIE));
+	console.log("isEpochCookieSet: " + $.cookie(EPOCH_COOKIE))
 	return $.cookie(EPOCH_COOKIE);
 }
 
 function invalidateEpochCookie() {
 	// alert('invalidateEpochCookie');
-	if ($.cookie) $.cookie(EPOCH_COOKIE, null, {path: '/class'});
+	console.log("invalidateEpochCookie()");
+	if ($.cookie) {
+		console.log("invalidating")
+		$.cookie(EPOCH_COOKIE, null); //, {path: '/class'});
+	} else {
+		console.log("No Cookie set, ignore");
+	}
 }
 
 
 function verifyEpochCookie(sessionid) {
-	var nick;
 	$.ajax({ cache: false
 	           , type: "GET" // XXX should be POST
 	           , dataType: "json"
@@ -200,22 +206,23 @@ function verifyEpochCookie(sessionid) {
 	           , error: function (xhr, text, err) {
 					// alert('cannot rejoin');
 					invalidateEpochCookie(sessionid);
-					showLogin(getChannel());
+					$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
+					// showLogin(getChannel());
+					return undefined;
 	             }
 	           , success: onConnect
-	           });
-	if (nick) return nick;
-	return undefined; 
+	});
 }
 
 function setEpochCookie(sessionid, startdate) {
 	// $.cookie(EPOCH_COOKIE, sessionid, { path: '/class', expires: dateInFutureMilliseconds(startdate, COOKIE_TIMEOUT_IN_MILLIS) }); // XXX We may want to make the path configurable as an arg
-	$.cookie(EPOCH_COOKIE, sessionid);
+	$.cookie(EPOCH_COOKIE, sessionid); // , { path: '/class'});
+	console.log('setting epochedu cookie = ' + $.cookie(EPOCH_COOKIE))
 	// alert('setting epochedu cookie = ' + $.cookie(EPOCH_COOKIE));
 }
 
 function isLoggedIn() {
-	var sessionid = isEpochCookieSet();
+	var  sessionid = isEpochCookieSet();
 	var nick = CONFIG.nick;
 	if (!sessionid) {
 		// alert('not isLoggedIn');
@@ -282,7 +289,8 @@ function doLogout() {
 	$('#account').hide();
 	$('#nickname').text('');
 	// $('#notificationTabInner').find('a.sessionstatus1').removeClass('sessionstatus1').addClass('sessionstatus2');
-	displayLogin();
+	// displayLogin();
+	reloadURL();
 }
 
 function logoutSession() {
@@ -442,20 +450,20 @@ function userJoin(nick, timestamp, payload) {
 }
 
 function refreshUserStatus() {
-	console.log("refreshUserStatus");
+	// console.log("refreshUserStatus");
     $('#userstatus').each(function(i, listitems){
         $(listitems).find('li').each(function(j, li){
             if ($(li).attr('id') !== "teacher") {
             	var bg = $(li).css('background');
      			$(li).css('background', '');
-            	console.log("Update the image = " + bg);
+            	// console.log("Update the image = " + bg);
             	var idx = bg.indexOf('?');
             	bg = bg.substring(0, idx) + '?' + (new Date()).getTime() + '") no-repeat scroll right top';
             	$(li).css('background', bg);
             	// :url(http://' + usermeta[nick].address + ':'+ STUDENT_SCREENSHARE_PORT + STUDENT_SCREENTHUMB_ENDPOINT + ') no-repeat scroll right top;"
             	// Refresh
             } else {
-            	console.log("No image to update");
+            	// console.log("No image to update for teacher");
             }
         })
     });
@@ -1308,7 +1316,8 @@ function mcpPayloadFactory(msg, type, apdu) {
 
 // XXX Can I modify these to continue to work for this demo?
 //Transition the page to the state that prompts the user for a nickname
-function showConnect () {
+function showConnect() {
+  console.log("showConnect()");
   $("#connect").show();
   $("#loading").hide();
   $("#toolbar").hide();
@@ -1415,13 +1424,16 @@ function onConnect (session) {
 	isClassInSession = false;
   }
 
-  
-
   //update the UI to show the chat
   if (teacher) {
 	if (!$.mobile) {
+		if (!isEpochCookieSet()) {
+			setEpochCookie(CONFIG.id, starttime);
+		} else {
+			console.log("Don't set cookie, currently set to: " + isEpochCookieSet());
+		}
 		showChat(CONFIG.nick);
-	} else {
+	} else { // XXX JQuery Mobile Depreciated
 		showMobileChat(CONFIG.nick);
 	}
   } else {
@@ -1434,7 +1446,7 @@ function onConnect (session) {
 		} else {
 			showMobileChat(CONFIG.nick);
 		}
-	}
+  }
 }
 
   //listen for browser events so we know to update the document title
@@ -1845,19 +1857,6 @@ $(document).ready(function() {
 	    return false;
 	});
 
-	/* XXX DEPRICATED, NOW LIVES IN HTML TEMPLATE */
-	/*
-	$("#sync").click(function(e) {
-	    $('#resources').find('input:checked').each(
-	    function(index) {
-	        var msg = this.value;
-	        // alert('click sync ' + msg);
-	        messageDispatcher("sync", msg);
-	        this.checked = false;
-	    }
-	    );
-	    return false;
-	}); */ 
 	//make the actual join request to the server
 	$.ajax({
 	    cache: false
@@ -2083,6 +2082,8 @@ $(document).ready(function() {
 
 //if we can, notify the server that we're going away.
 $(window).unload(function () {
-	partSession();
+	if (!teacher) {
+		partSession();
+	}
 	// setTimeout(partSession(), 60000);  // XXX Give the user a minute to return
 });
