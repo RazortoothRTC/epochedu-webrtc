@@ -404,8 +404,8 @@ class MCPService(object):
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
 	# If you change this version, change the SHORT and the TAG
-	VERSION_TAG = '1.0.1-postces2014-b1-' + datetime.datetime.now().isoformat()
-	VERSION_SHORT = '1.0.1 b1'
+	VERSION_TAG = '1.0.2-postces2014-b1-' + datetime.datetime.now().isoformat()
+	VERSION_SHORT = '1.0.2 b1'
 	# ISANDROID = False
 	VERSION_DESC = """
 	<H3>Recent Fixes</H3>
@@ -874,6 +874,8 @@ Todo ...
 			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
 		rsp['status'] = 0;
 		self.notifyUser("Starting Teacher Control Mode")
+		self.droid.vibrate(100)
+		self.droid.vibrate(100)
 		return rsp
 	
 	def mcpmodestop(self, rsp):
@@ -887,6 +889,7 @@ Todo ...
 		self.launchIntent(MCP_CONFIG['ACTION_MAIN'], None, None, None, [MCP_CONFIG['CATEGORY_HOME']], None, None, MCP_CONFIG['FLAG_ACTIVITY_NEW_TASK'])
 		# self.showUserDialog("You are free to resume your normal activities", "MCP Mode Stopped")
 		# self.droid.launch(MCP_CONFIG['LAUNCHER_ACTIVITY'])
+		self.droid.vibrate(500)
 		return rsp
 	
 	#
@@ -939,7 +942,7 @@ Todo ...
 				# self.droid.notify(title, message)
 				self.droid.makeToast(title)
 			self.droid.makeToast(message)
-			self.droid.ttsSpeak(message)
+			# self.droid.ttsSpeak(message)
 		else:
 			print 'notifyUser NOT ISANDROID'
 			print message
@@ -1064,7 +1067,7 @@ def mcploop():
 				pkgs = droid.getRunningPackages()[1] # XXX ugly ... 
 				if 'com.android.launcher' in pkgs:
 					droid.makeToast("Teacher's Assistant sending user back to class")
-					droid.ttsSpeak("Please return to class")
+					# droid.ttsSpeak("Please return to class")
 					droid.forceStopPackage('com.android.launcher') # XXX Move this package in to MCP_CONFIG as a property of launcher
 					droid.launch(MCP_CONFIG['EPOCHWATCHDOG_ACTIVITY'])
 					# XXX SAVE THIS SO WE CAN LAUNCH BROWSER WITH EPOCHEDU
@@ -1090,8 +1093,10 @@ def mcpServiceConnector():
 	mcpconnectorurl = MCP_CONFIG['MCP_SERVER_ADDRESS'][0] + MCP_CONFIG['STUDENT_ENDPOINT']
 	
 	try:
-		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)	
-		droid.ttsSpeak('Launching M C P version ' + MCPService.VERSION_SHORT);
+		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)
+		# XXX Add an audio alert
+		droid.vibrate()
+		# droid.ttsSpeak('Launching M C P version ' + MCPService.VERSION_SHORT)
 		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], mcpconnectorurl, None, None, False) # Nonblocking
 	except:
 		print "opening " + mcpconnectorurl

@@ -82,6 +82,16 @@ public class EpochWatchdogActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        File screenshotdir = new File(MCPFEEDS_SCREENSHOT_PATH);
+
+ 
+    	if (!screenshotdir.exists()) {
+    		if (!screenshotdir.mkdirs()) {
+    			Log.d(TAG, "Error creating path for screenshots");
+				Toast.makeText(this, "Unable to create path for screenshots.  Create manually or contact technical support", 1).show();
+    		}
+    	}
+
         //
         // Hacky startup of MCPService
         // XXX We should (1) check if it's running (2) start it as a service
@@ -113,7 +123,7 @@ public class EpochWatchdogActivity extends Activity
 					count = 0;
 				}
 			}
-		}, 1000L, 10000L,  TimeUnit.MILLISECONDS); // XXX Hardcoded values
+		}, 1000L, 7000L,  TimeUnit.MILLISECONDS); // XXX Hardcoded values
 
         mScheduledChatWorkerTaskExecutor.scheduleAtFixedRate(new Runnable() {
 			public void run() {

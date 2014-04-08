@@ -599,15 +599,7 @@ js.get("/about", function(req, res) {
 });
 
 
-js.getterer("/class/[\\w\\.\\-]+", function(req, res) {
-	var chan = url.parse(req.url).pathname.split("/")[2];
-	res.writeHead(200, {"Content-Type": "text/html"});   
-	  var student_tpl = nTPL("./templates/epoch-student-v3.html");
-	  var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
-	  res.end(student_tpl({
-	      channel: chan,
-	    }));
-});
+
 
 js.getterer("/class-v2/[\\w\\.\\-]+", function(req, res) {
 	var chan = url.parse(req.url).pathname.split("/")[2];
@@ -629,6 +621,15 @@ js.getterer("/class-v3/[\\w\\.\\-]+", function(req, res) {
 	    }));
 });
 
+js.getterer("/class/[\\w\\.\\-]+", function(req, res) {
+	var chan = url.parse(req.url).pathname.split("/")[2];
+	res.writeHead(200, {"Content-Type": "text/html"});   
+	  var student_tpl = nTPL("./templates/epoch-student-v3.html");
+	  var base = nTPL("./templates/boilerplate-ntpl.html"); // V1
+	  res.end(student_tpl({
+	      channel: chan,
+	    }));
+});
 
 
 js.getterer("/classmoderator-v1/[\\w\\.\\-]+", function(req, res) {
