@@ -330,29 +330,7 @@
 				$contentul.append('<li id="' + content + '">' + fqname + '</li>');
 			}
 		});
-		console.log(contentitems);
-
-		//
-		// XXX Legacy
-		//
-		{*
-		$.each(contents, function(i, content) {
-			var mime, fqname, filename, itemi, contentli, contentin, contentlab;
-			
-			itemi = 'item' + (i+1);
-			fqname = contents[i].substring(contents[i].lastIndexOf('/') + 1); // XXX Escape me		
-			mime = fqname.split('.')[1].toLowerCase();
-			
-			// Handle any special cases for mime types
-			if (mime == '3gp') {
-				mime = mime.replace('3', 'three');
-			}
-			filename = fqname.split('.')[0];	
-			listitemdata += '<li class="' + mime + '" ><input type="checkbox" name="' + itemi + '" id="' + itemi + '" value="' + content + '" /><br><label for="'+ itemi +'">' + filename + '</label></li>';
-		});
-		$('#resources').append(listitemdata);
-		*}
-		
+		// console.log(contentitems);
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -363,7 +341,12 @@
 				animateTo: true,
 			});
 			$('.userscroll').jScrollPane({showArrows:true,scrollbarWidth:30});
-			$('#dialog').jqm({modal:true, toTop:true}).jqmShow();
+
+			//
+			// If we don't have a valid session cookie with a real logged in user, then show a login
+			//
+			verifyEpochCookie(isEpochCookieSet());
+
 			$('#monitorLaunchDialog').jqm({modal:false, toTop:true});
 			$('#mediaDialog').jqm({modal:false, toTop:true});
 			$('#timer').stopwatch();;
@@ -560,63 +543,6 @@
 				mediaurl = $(this).attr('id');
 				$('#mediaDialog').jqmShow();
 				$('#mediaDialog').find('#mediafqname').text(fqname);
-
-				/*
-				$('.send2').ninjaButtonCreate({
-				  icon:'mail', 
-				  onSelect:function(){ 
-				  	console.log('send called');
-					$(this).ninjaButtonDeselect();
-			        var msg = mediaurl;
-			        if (!util.isBlank(msg)) send(msg, "universalsend");
-					// toggleNinjaButton('#mediacontrol', false);
-					$('#mediaDialog').jqmHide();
-					// $('#end').ninjaButtonEnable();,
-				  },
-				  state:'enabled',
-				  title:'Send' 
-				});
-				
-				$('.preview2').ninjaButtonCreate({
-				  icon:'video',
-				  onSelect:function(){ 
-					$(this).ninjaButtonDeselect();
-			        var msg = mediaurl;
-					// alert('url ' + msg);
-			        if (!util.isBlank(msg)) openBestPlayer(msg);			
-					$('#mediaDialog').jqmHide();
-				  },
-				  state:'enabled',
-				  title:'Preview' 
-				});
-
-				$('.sync-btn2').ninjaButtonCreate({
-				  icon:'upload', 
-				  onSelect:function(){ 
-					$(this).ninjaButtonDeselect();
-			        var msg = mediaurl;
-			        messageDispatcher("sync", msg);
-					$('#mediaDialog').jqmHide();
-				  },
-				  state:'enabled',
-				  title:'Sync' 
-				});
-
-				$('.end2').ninjaButtonCreate({
-				  icon:'remove', 
-				  onSelect:function(){ 
-				  	console.log('end2 called');
-					$(this).ninjaButtonDeselect();
-					var msg = "#endviewer";
-					// console.log("Clicked endviewer");
-				    send(msg, "endviewer");
-					$('#mediaDialog').jqmHide();
-				    return false;
-				  },
-				  state:'enabled',
-				  title:'End'
-				});
-				*/
 			});
 
 			//
