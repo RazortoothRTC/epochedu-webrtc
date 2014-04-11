@@ -404,8 +404,8 @@ class MCPService(object):
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
 	# If you change this version, change the SHORT and the TAG
-	VERSION_TAG = '1.0.2-postces2014-b1-' + datetime.datetime.now().isoformat()
-	VERSION_SHORT = '1.0.2 b1'
+	VERSION_TAG = '1.0.2-postces2014-b2-' + datetime.datetime.now().isoformat()
+	VERSION_SHORT = '1.0.2 b2'
 	# ISANDROID = False
 	VERSION_DESC = """
 	<H3>Recent Fixes</H3>
@@ -874,8 +874,8 @@ Todo ...
 			self.PACKAGE_RESTORELIST.append(packagename) # Save these to restore later
 		rsp['status'] = 0;
 		self.notifyUser("Starting Teacher Control Mode")
-		self.droid.vibrate(100)
-		self.droid.vibrate(100)
+		# self.droid.vibrate(100)
+		# self.droid.vibrate(100)
 		return rsp
 	
 	def mcpmodestop(self, rsp):
@@ -1095,7 +1095,7 @@ def mcpServiceConnector():
 	try:
 		droid.makeToast('Launcing MCP service connector: ' + mcpconnectorurl)
 		# XXX Add an audio alert
-		droid.vibrate()
+		# droid.vibrate()
 		# droid.ttsSpeak('Launching M C P version ' + MCPService.VERSION_SHORT)
 		droid.startActivity(MCP_CONFIG['ANDROID_VIEW_ACTIVITY'], mcpconnectorurl, None, None, False) # Nonblocking
 	except:
