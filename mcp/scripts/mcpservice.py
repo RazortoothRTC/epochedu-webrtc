@@ -191,6 +191,7 @@ MCP_CONFIG = {'MCP_SERVER_ADDRESS':['http://10.1.0.1:5000'], # DEMOSETUP
 			  'CONTENT_REPO_LOCAL_URL3' : "file://localhost",
 			  'CONTENT_REPO_LOCAL_URL4' : "",
 			  'EPOCHWATCHDOG_ACTIVITY' : "com.rt.epochedu.watchdog.EpochWatchdogActivity",
+			  'FIREFOX_BETA_ACTIVITY' : "org.mozilla.gecko.AwesomeBar",
 			  'LAUNCHER_ACTIVITY' : "com.android.launcher.Launcher",
 			  'ACTION_MAIN' : "android.intent.action.MAIN",
 			  'CATEGORY_HOME' : "android.intent.category.HOME",
@@ -404,8 +405,8 @@ class MCPService(object):
 	ANDROID_CONTENT_PATH = '/sdcard/content'
 	DESKTOP_CONTENT_PATH = '/tmp'
 	# If you change this version, change the SHORT and the TAG
-	VERSION_TAG = '1.0.2-postces2014-b2-' + datetime.datetime.now().isoformat()
-	VERSION_SHORT = '1.0.2 b2'
+	VERSION_TAG = '1.0.2-postces2014-b3-' + datetime.datetime.now().isoformat()
+	VERSION_SHORT = '1.0.2 b3'
 	# ISANDROID = False
 	VERSION_DESC = """
 	<H3>Recent Fixes</H3>
@@ -886,10 +887,10 @@ Todo ...
 			print "attempting to restore " + packagename
 		rsp['status'] = 0;
 		self.notifyUser("Ending Teacher Control Mode")
-		self.launchIntent(MCP_CONFIG['ACTION_MAIN'], None, None, None, [MCP_CONFIG['CATEGORY_HOME']], None, None, MCP_CONFIG['FLAG_ACTIVITY_NEW_TASK'])
+		# self.launchIntent(MCP_CONFIG['ACTION_MAIN'], None, None, None, [MCP_CONFIG['CATEGORY_HOME']], None, None, MCP_CONFIG['FLAG_ACTIVITY_NEW_TASK'])
 		# self.showUserDialog("You are free to resume your normal activities", "MCP Mode Stopped")
 		# self.droid.launch(MCP_CONFIG['LAUNCHER_ACTIVITY'])
-		self.droid.vibrate(500)
+		# self.droid.vibrate(500)
 		return rsp
 	
 	#
